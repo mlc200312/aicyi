@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aicyi</groupId>
-    <artifactId>aicyi-engine</artifactId>
+    <artifactId>aicyi-frame</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
-    <name>aicyi engine</name>
-    <description>aicyi engine</description>
+    <name>aicyi frame</name>
+    <description>aicyi frame</description>
 
     <parent>
         <groupId>com.aicyi</groupId>
@@ -19,4 +19,7 @@
         <relativePath>../aicyi-base-starter-parent/pom.xml</relativePath>
     </parent>
 
+    <modules>
+        <module>aicyi-frame-engine</module>
+    </modules>
 </project>

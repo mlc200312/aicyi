@@ -5,7 +5,7 @@ package com.aichuangyi.base.lang;
  * @description 键值对
  * @date 2020-05-21
  **/
-public class Pair<K, V> extends BaseBean {
+public class Pair<K, V> extends BaseBean implements Cloneable {
     private final K key;
     private final V value;
 
@@ -25,6 +25,11 @@ public class Pair<K, V> extends BaseBean {
     @Override
     public String toString() {
         return key + "=" + value;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
 

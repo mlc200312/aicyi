@@ -17,7 +17,7 @@
         <module>aicyi-base-dependencies</module>
         <module>aicyi-base-starter-parent</module>
         <module>aicyi-demo</module>
-        <module>aicyi-engine</module>
+        <module>aicyi-frame</module>
         <module>aicyi-test</module>
     </modules>
 
