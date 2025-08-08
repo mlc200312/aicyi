@@ -48,7 +48,7 @@ public class MapperUtilsTest extends BaseLoggerTest {
     }
 
     @Test
-    public void mapperTest() {
+    public void mapTest() {
         Example example = DataSource.getExample();
         ExampleResp exampleResp = MAPPER_FACADE.map(example, ExampleResp.class);
         ExampleResp exampleResp2 = DataSource.getExampleResp();
@@ -58,18 +58,18 @@ public class MapperUtilsTest extends BaseLoggerTest {
     }
 
     @Test
-    public void mapperUtilsTest() {
+    public void mapTest2() {
         MapperUtils instance = MapperUtils.INSTANCE;
 
         ExampleResp exampleResp = instance.map(DataSource.getExample(), ExampleResp.class);
         Example example = instance.map(DataSource.getExampleResp(), Example.class);
         List<ExampleResp> exampleRespList = instance.mapAsList(DataSource.getExampleList(), ExampleResp.class);
 
-        log("mapperUtilsTest", exampleResp, example, exampleRespList);
+        log("mapTest2", exampleResp, example, exampleRespList);
     }
 
     @Test
-    public void mapperUtilsTest2() {
+    public void mapTest3() {
         MapperUtils instance = MapperUtils.INSTANCE;
 
         Map<String, String> configMap = new HashMap<>();
@@ -82,16 +82,16 @@ public class MapperUtilsTest extends BaseLoggerTest {
         configMap2.put("student.score0", "student.score");
         Example example = instance.map(DataSource.getExampleResp(), Example.class, configMap2);
 
-        log("mapperUtilsTest2", exampleResp, example);
+        log("mapTest3", exampleResp, example);
     }
 
     @Test
-    public void mapperUtilsTest3() {
+    public void mapTest4() {
         MapperUtils instance = MapperUtils.INSTANCE;
 
         Example example = instance.map(DataSource.getExample(), new Example());
         ExampleResp exampleResp = instance.map(DataSource.getExampleResp(), new ExampleResp());
 
-        log("mapperUtilsTest3", example, exampleResp);
+        log("mapTest4", example, exampleResp);
     }
 }

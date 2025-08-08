@@ -22,7 +22,6 @@
         <dependency>
             <groupId>com.aicyi</groupId>
             <artifactId>aicyi-base-util</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 

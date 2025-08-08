@@ -26,9 +26,4 @@ public class IdGeneratorTest extends BaseLoggerTest {
             log("newV7IdTest", uuid);
         }
     }
-
-    @Override
-    public String getTestName() {
-        return "SnowflakeTest";
-    }
 }

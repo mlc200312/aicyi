@@ -35,6 +35,21 @@
                 <artifactId>aicyi-base-lang</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>com.aicyi</groupId>
+                <artifactId>aicyi-base-logging</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aicyi</groupId>
+                <artifactId>aicyi-base-security</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aicyi</groupId>
+                <artifactId>aicyi-base-util</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

@@ -98,11 +98,6 @@ public class JsonUtilsTest extends BaseLoggerTest {
         log("isEmptyJsonTest", emptyJSON, emptyJSON1, emptyJSON2, emptyJSON3);
     }
 
-    @Override
-    public String getTestName() {
-        return "JsonUtilsTest";
-    }
-
     @Getter
     @Setter
     public static class A<T> extends BaseBean {

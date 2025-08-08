@@ -12,15 +12,6 @@ import com.aichuangyi.base.logging.LoggerFactory;
 public abstract class BaseLoggerTest {
     protected static final Logger LOGGER = LoggerFactory.getLogger(BaseLoggerTest.class);
 
-    /**
-     * 测试名
-     *
-     * @return
-     */
-    public String getTestName() {
-        return this.getClass().getSimpleName();
-    }
-
     public void log(String opt, Object... os) {
         int i = 0;
         StringBuilder sb = new StringBuilder(String.format("\n %s execute %s，输出的结果 : \n", this.getClass().getName(), opt));
