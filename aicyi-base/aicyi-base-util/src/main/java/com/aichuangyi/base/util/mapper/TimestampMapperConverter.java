@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 时间戳类型自定义映射转换器
  * @date 11:35
  **/
 public class TimestampMapperConverter extends BidirectionalConverter<Timestamp, String> {

@@ -8,7 +8,7 @@ import ma.glasnost.orika.metadata.Type;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description Json 类型自定义映射转换器
  * @date 11:35
  **/
 public class JsonMapperConverter extends BidirectionalConverter<BaseBean, String> {

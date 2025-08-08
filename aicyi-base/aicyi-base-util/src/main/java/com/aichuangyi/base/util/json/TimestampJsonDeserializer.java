@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 时间戳类型反序列化
  * @date 21:06
  **/
 public class TimestampJsonDeserializer extends com.fasterxml.jackson.databind.JsonDeserializer {

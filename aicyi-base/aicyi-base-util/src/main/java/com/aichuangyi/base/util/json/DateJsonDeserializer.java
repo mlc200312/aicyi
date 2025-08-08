@@ -8,7 +8,7 @@ import java.io.IOException;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 时间类型反序列化
  * @date 21:06
  **/
 public class DateJsonDeserializer extends com.fasterxml.jackson.databind.JsonDeserializer {

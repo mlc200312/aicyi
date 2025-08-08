@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 字符串枚举反序列化
  * @date 2023/8/10
  **/
 public class StringEnumTypeJsonDeserializer<E extends Enum<E> & StringEnumType> extends JsonDeserializer<E> implements ContextualDeserializer {

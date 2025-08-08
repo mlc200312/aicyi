@@ -5,7 +5,7 @@ import com.github.f4b6a3.uuid.UuidCreator;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description ID生成
  * @date 19:15
  **/
 public class IdGenerator {

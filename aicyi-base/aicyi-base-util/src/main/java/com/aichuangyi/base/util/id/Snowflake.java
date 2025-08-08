@@ -2,7 +2,7 @@ package com.aichuangyi.base.util.id;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 雪花算法
  * @date 2025/8/5
  **/
 public class Snowflake {

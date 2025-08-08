@@ -13,8 +13,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 映射工具类
- */
+ * @author Mr.Min
+ * @description 映射工具类
+ * @date 2025/8/8
+ **/
 public enum MapperUtils {
 
     INSTANCE;

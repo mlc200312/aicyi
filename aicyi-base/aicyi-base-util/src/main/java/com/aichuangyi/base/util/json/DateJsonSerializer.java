@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 时间类型序列化
  * @date 21:05
  **/
 public class DateJsonSerializer extends com.fasterxml.jackson.databind.JsonSerializer<Date> implements ContextualSerializer {

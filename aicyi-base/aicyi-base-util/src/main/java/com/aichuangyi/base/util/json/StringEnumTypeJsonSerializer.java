@@ -8,7 +8,7 @@ import java.io.IOException;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 字符串枚举序列化
  * @date 2023/8/10
  **/
 public class StringEnumTypeJsonSerializer<E extends Enum<E> & StringEnumType> extends com.fasterxml.jackson.databind.JsonSerializer<E> {

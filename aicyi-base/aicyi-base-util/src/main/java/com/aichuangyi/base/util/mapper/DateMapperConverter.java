@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 时间类型自定义映射转换器
  * @date 11:35
  **/
 public class DateMapperConverter extends BidirectionalConverter<Date, String> {
