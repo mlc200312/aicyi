@@ -14,7 +14,7 @@ public class IdGeneratorTest extends BaseLoggerTest {
     @Test
     public void newIdTest() {
         for (int i = 0; i < 10; i++) {
-            long nextId = IdGenerator.newId();
+            long nextId = IdGenerator.generateId();
             log("newIdTest", nextId);
         }
     }
@@ -22,7 +22,7 @@ public class IdGeneratorTest extends BaseLoggerTest {
     @Test
     public void newV7IdTest() {
         for (int i = 0; i < 10; i++) {
-            String uuid = IdGenerator.newV7Id();
+            String uuid = IdGenerator.generateV7Id();
             log("newV7IdTest", uuid);
         }
     }

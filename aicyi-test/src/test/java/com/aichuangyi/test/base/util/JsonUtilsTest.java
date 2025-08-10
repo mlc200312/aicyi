@@ -31,7 +31,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
         a = new A(new B(new C()));
         aList = Lists.newArrayList(a);
         aMap = new HashMap<>();
-        aMap.put(IdGenerator.newV7Id(), a);
+        aMap.put(IdGenerator.generateV7Id(), a);
     }
 
     @Test

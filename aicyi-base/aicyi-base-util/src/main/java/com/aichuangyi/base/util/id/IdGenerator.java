@@ -11,11 +11,11 @@ import com.github.f4b6a3.uuid.UuidCreator;
 public class IdGenerator {
     private static final Snowflake SNOWFLAKE = new Snowflake(0L, 0L);
 
-    public static long newId() {
+    public static long generateId() {
         return SNOWFLAKE.nextId();
     }
 
-    public static String newV7Id() {
+    public static String generateV7Id() {
         return UuidCreator.getTimeOrdered().toString().replace("-", "");
     }
 }

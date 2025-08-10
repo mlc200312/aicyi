@@ -50,19 +50,19 @@ public class DataSource {
         message.setCreateTime(System.currentTimeMillis());
         message.setMsgType("1");
         message.setContent(RandomGenerator.generatePhoneNum());
-        message.setMsgId(IdGenerator.newId());
+        message.setMsgId(IdGenerator.generateId());
         return message;
     }
 
     public static String getMessageXml() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<xml Content=\"" + RandomGenerator.generatePhoneNum() + "\" CreateTime=\"" + System.currentTimeMillis() + "\" FromUserName=\"" + RandomGenerator.generateFullName() + "\" MsgId=\"" + IdGenerator.newId() + "\" MsgType=\"1\" ToUserName=\"" + RandomGenerator.generateFullName() + "\"/>";
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<xml Content=\"" + RandomGenerator.generatePhoneNum() + "\" CreateTime=\"" + System.currentTimeMillis() + "\" FromUserName=\"" + RandomGenerator.generateFullName() + "\" MsgId=\"" + IdGenerator.generateId() + "\" MsgType=\"1\" ToUserName=\"" + RandomGenerator.generateFullName() + "\"/>";
     }
 
     public static User getUser() {
         User user = new User();
-        user.setId(IdGenerator.newId());
+        user.setId(IdGenerator.generateId());
         user.setAge(RandomUtils.nextInt(0, 100));
-        user.setIdCard(IdGenerator.newV7Id());
+        user.setIdCard(IdGenerator.generateV7Id());
         user.setUserName(RandomGenerator.generateFullName());
         user.setMobile(RandomGenerator.generatePhoneNum());
         user.setGenderType(GenderType.MAN);
@@ -82,9 +82,9 @@ public class DataSource {
         student.setCreateTime(new Date());
         student.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
-        student.setId(IdGenerator.newId());
+        student.setId(IdGenerator.generateId());
         student.setAge(RandomUtils.nextInt(0, 100));
-        student.setIdCard(IdGenerator.newV7Id());
+        student.setIdCard(IdGenerator.generateV7Id());
         student.setUserName(RandomGenerator.generateFullName());
         student.setMobile(RandomGenerator.generatePhoneNum());
         student.setGenderType(GenderType.MAN);
@@ -117,9 +117,9 @@ public class DataSource {
         resp.setCreateTime(DateUtils.formatDate(new Date()));
         resp.setUpdateTime(System.currentTimeMillis() + "");
 
-        resp.setId(IdGenerator.newId() + "");
+        resp.setId(IdGenerator.generateId() + "");
         resp.setAge(RandomUtils.nextInt(0, 100));
-        resp.setIdCard(IdGenerator.newV7Id());
+        resp.setIdCard(IdGenerator.generateV7Id());
         resp.setUserName(RandomGenerator.generateFullName());
         resp.setMobile(RandomGenerator.generatePhoneNum());
         resp.setGenderType(RandomUtils.nextInt(1, 2));
@@ -133,7 +133,7 @@ public class DataSource {
 
     public static Example getExample() {
         Example example = new Example();
-        example.setId(IdGenerator.newId());
+        example.setId(IdGenerator.generateId());
         example.setIdx(RandomUtils.nextInt(1, 99));
         example.setStatus(BooleanType.FALSE);
         example.setAmount(getBigDecimal());
@@ -182,7 +182,7 @@ public class DataSource {
 
     public static ExampleResp getExampleResp() {
         ExampleResp resp = new ExampleResp();
-        resp.setUuid(IdGenerator.newId() + "");
+        resp.setUuid(IdGenerator.generateId() + "");
         resp.setIdx(RandomUtils.nextInt(1, 99));
         resp.setStatus(RandomUtils.nextInt(0, 1));
         resp.setAmount(getBigDecimal().toString());
