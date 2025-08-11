@@ -1,11 +1,13 @@
 package com.aichuangyi.commons.util.id;
 
+import com.aichuangyi.commons.IdGenerator;
+
 /**
  * @author Mr.Min
  * @description 雪花算法
  * @date 2025/8/5
  **/
-public class Snowflake {
+public class Snowflake implements IdGenerator {
     private final long epoch = 1609459200000L; // 2021-01-01 00:00:00 UTC
     private final int workerIdBits = 5;
     private final int dataCenterIdBits = 5;

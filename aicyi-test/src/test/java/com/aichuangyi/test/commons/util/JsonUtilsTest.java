@@ -1,6 +1,6 @@
 package com.aichuangyi.test.commons.util;
 
-import com.aichuangyi.commons.core.JsonConverter;
+import com.aichuangyi.commons.JsonConverter;
 import com.aichuangyi.commons.lang.BaseBean;
 import com.aichuangyi.commons.util.id.IdGenerator;
 import com.aichuangyi.commons.util.json.JsonUtils;

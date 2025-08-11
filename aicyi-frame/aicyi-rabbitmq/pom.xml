@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aicyi</groupId>
-    <artifactId>aicyi-frame-core</artifactId>
+    <artifactId>aicyi-rabbitmq</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi frame core</name>
-    <description>aicyi frame core</description>
+    <name>aicyi frame engine</name>
+    <description>aicyi frame engine</description>
 
     <parent>
         <groupId>com.aicyi</groupId>

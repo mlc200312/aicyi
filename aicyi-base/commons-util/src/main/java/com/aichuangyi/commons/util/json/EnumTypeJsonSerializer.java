@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.util.json;
 
-import com.aichuangyi.commons.core.EnumType;
+import com.aichuangyi.commons.EnumType;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 

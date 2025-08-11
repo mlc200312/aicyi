@@ -5,24 +5,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aicyi</groupId>
-    <artifactId>aicyi-frame</artifactId>
+    <artifactId>aicyi-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <packaging>pom</packaging>
-    <name>aicyi frame</name>
-    <description>aicyi frame</description>
+    <packaging>jar</packaging>
+    <name>aicyi frame core</name>
+    <description>aicyi frame core</description>
 
     <parent>
         <groupId>com.aicyi</groupId>
         <artifactId>aicyi-base-starter-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../aicyi-base-starter-parent/pom.xml</relativePath>
+        <relativePath>../../aicyi-base-starter-parent/pom.xml</relativePath>
     </parent>
 
-    <modules>
-        <module>aicyi-core</module>
-        <module>aicyi-mybatis-plus</module>
-        <module>aicyi-rabbitmq</module>
-        <module>aicyi-redis</module>
-    </modules>
+    <dependencies>
+    </dependencies>
+
 </project>

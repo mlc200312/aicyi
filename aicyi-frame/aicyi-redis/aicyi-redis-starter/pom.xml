@@ -5,21 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aicyi</groupId>
-    <artifactId>aicyi-frame-redis</artifactId>
+    <artifactId>aicyi-redis-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi frame redis</name>
-    <description>aicyi frame redis</description>
+    <name>aicyi redis starter</name>
+    <description>aicyi redis starter</description>
 
     <parent>
-        <groupId>com.aicyi</groupId>
-        <artifactId>aicyi-base-starter-parent</artifactId>
+        <groupId>com.aicyiframework</groupId>
+        <artifactId>aicyi-redis</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../../aicyi-base-starter-parent/pom.xml</relativePath>
     </parent>
-
-    <dependencies>
-    </dependencies>
 
 </project>

@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.security.jwt;
 
-import com.aichuangyi.commons.core.TokenManager;
+import com.aichuangyi.commons.TokenManager;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -36,13 +36,13 @@ public class JJwtTokenManagerImpl implements TokenManager {
 
 
     @Override
-    public String createToken(String id, Date expire, Map<String, Object> claimMap) {
+    public String createToken(String id, Date expiresAt, Map<String, Object> claimMap) {
         return Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS256)    // 签名算法和密钥
                 .setSubject(JJWT_SUBJECT)// 设置主题
                 .setId(id)
                 .setIssuedAt(new Date())// 设置签发时间
-                .setExpiration(expire) // 1小时后过期
+                .setExpiration(expiresAt) // 1小时后过期
                 .addClaims(claimMap == null ? new HashMap<>() : claimMap)
                 .compact();
     }
@@ -53,7 +53,7 @@ public class JJwtTokenManagerImpl implements TokenManager {
     }
 
     @Override
-    public String refreshToken(String token, Date expire) {
+    public String refreshToken(String token, Date expiresAt) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()

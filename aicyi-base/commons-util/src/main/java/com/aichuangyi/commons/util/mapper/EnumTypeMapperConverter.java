@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.util.mapper;
 
-import com.aichuangyi.commons.core.EnumType;
+import com.aichuangyi.commons.EnumType;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;

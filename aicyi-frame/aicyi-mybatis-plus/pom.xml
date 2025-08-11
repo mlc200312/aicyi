@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aicyi</groupId>
-    <artifactId>aicyi-frame-engine</artifactId>
+    <artifactId>aicyi-mybatis-plus</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi frame engine</name>
-    <description>aicyi frame engine</description>
+    <name>aicyi frame mybatis</name>
+    <description>aicyi frame mybatis</description>
 
     <parent>
         <groupId>com.aicyi</groupId>
