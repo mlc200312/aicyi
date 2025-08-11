@@ -42,7 +42,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         stringTemplate = enhancedRedisTemplateFactory.getStringTemplate();
 
         JavaType javaType = new JacksonConverter().constructType(Example.class);
-        exampleRedisTemplate = enhancedRedisTemplateFactory.getTemplate(javaType);
+        exampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(javaType);
 
         objectJdkRedisTemplate = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.JDK, Example.class);
         objectXmlRedisTemplate = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.XML, Message.class);
@@ -72,19 +72,19 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         Example example = exampleRedisTemplateTest.get();
 
         JavaType stringType = jacksonConverter.constructType(String.class);
-        RedisTemplate<String, String> stringExampleRedisTemplate = enhancedRedisTemplateFactory.getTemplate(stringType);
+        RedisTemplate<String, String> stringExampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(stringType);
         BoundValueOperations<String, String> stringExampleRedisTemplateTest = stringExampleRedisTemplate.boundValueOps("stringExampleRedisTemplateTest");
         stringExampleRedisTemplateTest.set("stringExampleRedisTemplateTest");
         String stringExampleRedisTemplateTestValue = stringExampleRedisTemplateTest.get();
 
         JavaType intType = jacksonConverter.constructType(Integer.class);
-        RedisTemplate<String, Integer> intExampleRedisTemplate = enhancedRedisTemplateFactory.getTemplate(intType);
+        RedisTemplate<String, Integer> intExampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(intType);
         BoundValueOperations<String, Integer> intExampleRedisTemplateTest = intExampleRedisTemplate.boundValueOps("intExampleRedisTemplateTest");
         intExampleRedisTemplateTest.set(999999);
         Integer intExampleRedisTemplateTestValue = intExampleRedisTemplateTest.get();
 
         JavaType exampleType = jacksonConverter.constructParametricType(List.class, jacksonConverter.constructType(Example.class));
-        RedisTemplate<String, List<Example>> listExampleRedisTemplate = enhancedRedisTemplateFactory.getTemplate(exampleType);
+        RedisTemplate<String, List<Example>> listExampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(exampleType);
         BoundValueOperations<String, List<Example>> listExampleRedisTemplateTest = listExampleRedisTemplate.boundValueOps("listExampleRedisTemplateTest");
         listExampleRedisTemplateTest.set(DataSource.getExampleList());
         Object listExampleRedisTemplateTestValue = listExampleRedisTemplateTest.get();

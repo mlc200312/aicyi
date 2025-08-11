@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.lang.type;
 
-import com.aichuangyi.commons.EnumType;
+import com.aichuangyi.core.EnumType;
 
 /**
  * @author Mr.Min

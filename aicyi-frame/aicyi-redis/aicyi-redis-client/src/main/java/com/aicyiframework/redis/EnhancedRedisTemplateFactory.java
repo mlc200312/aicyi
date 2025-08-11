@@ -47,7 +47,7 @@ public class EnhancedRedisTemplateFactory {
         return template;
     }
 
-    public <T> RedisTemplate<String, T> getTemplate(JavaType javaType) {
+    public <T> RedisTemplate<String, T> getJsonTemplate(JavaType javaType) {
         RedisTemplate<String, T> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
 

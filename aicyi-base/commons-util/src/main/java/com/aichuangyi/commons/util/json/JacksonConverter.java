@@ -1,8 +1,8 @@
 package com.aichuangyi.commons.util.json;
 
-import com.aichuangyi.commons.EnumType;
-import com.aichuangyi.commons.JsonConverter;
-import com.aichuangyi.commons.StringEnumType;
+import com.aichuangyi.core.EnumType;
+import com.aichuangyi.core.JsonConverter;
+import com.aichuangyi.core.StringEnumType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -1,6 +1,6 @@
 package com.aichuangyi.test.domain.type;
 
-import com.aichuangyi.commons.IEnumType;
+import com.aichuangyi.core.IEnumType;
 
 /**
  * @author Mr.Min

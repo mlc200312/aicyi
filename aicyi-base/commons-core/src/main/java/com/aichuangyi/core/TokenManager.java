@@ -1,4 +1,4 @@
-package com.aichuangyi.commons;
+package com.aichuangyi.core;
 
 import java.util.Date;
 import java.util.Map;
@@ -23,11 +23,11 @@ public interface TokenManager {
      * 创建令牌
      *
      * @param id
-     * @param expiresAt
+     * @param expireAt
      * @param claimMap
      * @return
      */
-    String createToken(String id, Date expiresAt, Map<String, Object> claimMap);
+    String createToken(String id, Date expireAt, Map<String, Object> claimMap);
 
     /**
      * 刷新令牌
@@ -43,7 +43,7 @@ public interface TokenManager {
      * @param token
      * @return
      */
-    String refreshToken(String token, Date expiresAt);
+    String refreshToken(String token, Date expireAt);
 
     /**
      * 验证令牌
@@ -59,7 +59,7 @@ public interface TokenManager {
      * @param token
      * @return
      */
-    String verifyAndGetId(String token);
+    String getId(String token);
 
     /**
      * 验证令牌有效期
@@ -67,7 +67,7 @@ public interface TokenManager {
      * @param token
      * @return
      */
-    Date verifyAndGetExpire(String token);
+    Date getExpire(String token);
 
     /**
      * 验证令牌并返回
@@ -77,5 +77,5 @@ public interface TokenManager {
      * @param clazz
      * @return
      */
-    <T> T verifyAndGet(String token, String key, Class<T> clazz);
+    <T> T get(String token, String key, Class<T> clazz);
 }

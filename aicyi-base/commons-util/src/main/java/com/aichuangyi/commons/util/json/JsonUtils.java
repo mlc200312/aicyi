@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.util.json;
 
-import com.aichuangyi.commons.JsonConverter;
+import com.aichuangyi.core.JsonConverter;
 
 /**
  * @author Mr.Min

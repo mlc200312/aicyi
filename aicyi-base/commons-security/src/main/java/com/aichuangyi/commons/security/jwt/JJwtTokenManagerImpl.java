@@ -1,6 +1,7 @@
 package com.aichuangyi.commons.security.jwt;
 
-import com.aichuangyi.commons.TokenManager;
+import com.aichuangyi.core.AbstractTokenManager;
+import com.aichuangyi.core.TokenManager;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -16,9 +17,9 @@ import java.util.Map;
  * @description jjwt 实现
  * @date 18:30
  **/
-public class JJwtTokenManagerImpl implements TokenManager {
+public class JJwtTokenManagerImpl extends AbstractTokenManager implements TokenManager {
     private static final String JJWT_SUBJECT = "aichuangyi";
-    private static final long TOKEN_EXPIRE_MS = 3600000L;
+
     private SecretKey secretKey;
 
     public JJwtTokenManagerImpl(String base64Key) {
@@ -30,30 +31,19 @@ public class JJwtTokenManagerImpl implements TokenManager {
     }
 
     @Override
-    public String createToken(String id, Map<String, Object> claimMap) {
-        return createToken(id, new Date(System.currentTimeMillis() + TOKEN_EXPIRE_MS), claimMap); // 1小时后过期,)
-    }
-
-
-    @Override
-    public String createToken(String id, Date expiresAt, Map<String, Object> claimMap) {
+    public String createToken(String id, Date expireAt, Map<String, Object> claimMap) {
         return Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS256)    // 签名算法和密钥
                 .setSubject(JJWT_SUBJECT)// 设置主题
                 .setId(id)
                 .setIssuedAt(new Date())// 设置签发时间
-                .setExpiration(expiresAt) // 1小时后过期
+                .setExpiration(expireAt) // 1小时后过期
                 .addClaims(claimMap == null ? new HashMap<>() : claimMap)
                 .compact();
     }
 
     @Override
-    public String refreshToken(String token) {
-        return refreshToken(token, new Date(System.currentTimeMillis() + TOKEN_EXPIRE_MS));
-    }
-
-    @Override
-    public String refreshToken(String token, Date expiresAt) {
+    public String refreshToken(String token, Date expireAt) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
@@ -63,7 +53,7 @@ public class JJwtTokenManagerImpl implements TokenManager {
                 .signWith(secretKey, SignatureAlgorithm.HS256)    // 签名算法和密钥
                 .setClaims(claims)
                 .setIssuedAt(new Date())// 设置签发时间
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRE_MS))
+                .setExpiration(expireAt)
                 .compact();
     }
 
@@ -91,39 +81,30 @@ public class JJwtTokenManagerImpl implements TokenManager {
     }
 
     @Override
-    public String verifyAndGetId(String token) {
-        if (verifyToken(token)) {
-            Jws<Claims> jws = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token);
-            return jws.getBody().getId();
-        }
-        throw new JwtException("verifyAndGetId has error");
+    public String getId(String token) {
+        Jws<Claims> jws = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token);
+        return jws.getBody().getId();
     }
 
     @Override
-    public Date verifyAndGetExpire(String token) {
-        if (verifyToken(token)) {
-            Jws<Claims> jws = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token);
-            return jws.getBody().getExpiration();
-        }
-        throw new JwtException("verifyAndGetExpire has error");
+    public Date getExpire(String token) {
+        Jws<Claims> jws = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token);
+        return jws.getBody().getExpiration();
     }
 
     @Override
-    public <T> T verifyAndGet(String token, String key, Class<T> clazz) {
-        if (verifyToken(token)) {
-            Jws<Claims> jws = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token);
-            return jws.getBody().get(key, clazz);
-        }
-        throw new JwtException("verifyAndGet has error");
+    public <T> T get(String token, String key, Class<T> clazz) {
+        Jws<Claims> jws = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token);
+        return jws.getBody().get(key, clazz);
     }
 
     public static SecretKey randomSecretKey() {

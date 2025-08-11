@@ -1,6 +1,6 @@
 package com.aichuangyi.test.domain;
 
-import com.aichuangyi.commons.BoBean;
+import com.aichuangyi.core.BoBean;
 import com.aichuangyi.commons.lang.BaseBean;
 import com.aichuangyi.commons.lang.type.BooleanType;
 import com.aichuangyi.test.domain.type.Season;

@@ -1,6 +1,6 @@
 package com.aichuangyi.test.dto;
 
-import com.aichuangyi.commons.DtoBean;
+import com.aichuangyi.core.DtoBean;
 import com.aichuangyi.commons.lang.BaseBean;
 import lombok.Getter;
 import lombok.Setter;
