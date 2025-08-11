@@ -1,8 +1,8 @@
 package com.aichuangyi.test.util;
 
-import com.aichuangyi.base.lang.type.BooleanType;
-import com.aichuangyi.base.util.DateTimeUtils;
-import com.aichuangyi.base.util.DateUtils;
+import com.aichuangyi.commons.lang.type.BooleanType;
+import com.aichuangyi.commons.util.DateTimeUtils;
+import com.aichuangyi.commons.util.DateUtils;
 import com.aichuangyi.test.domain.type.GradeType;
 import com.aichuangyi.test.domain.type.Week;
 import com.aichuangyi.test.domain.type.Season;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 import java.util.Date;
 
-import com.aichuangyi.base.util.id.IdGenerator;
-import com.aichuangyi.base.util.json.JsonUtils;
+import com.aichuangyi.commons.util.id.IdGenerator;
+import com.aichuangyi.commons.util.json.JsonUtils;
 import com.aichuangyi.test.AicyiFactory;
 import com.aichuangyi.test.domain.Example;
 import com.aichuangyi.test.domain.Message;

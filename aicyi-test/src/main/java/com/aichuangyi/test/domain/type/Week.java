@@ -1,7 +1,7 @@
 package com.aichuangyi.test.domain.type;
 
-import com.aichuangyi.base.core.EnumType;
-import com.aichuangyi.base.util.json.EnumTypeJsonDeserializer;
+import com.aichuangyi.commons.core.EnumType;
+import com.aichuangyi.commons.util.json.EnumTypeJsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**

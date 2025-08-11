@@ -20,10 +20,10 @@
     </parent>
 
     <modules>
-        <module>aicyi-base-core</module>
-        <module>aicyi-base-lang</module>
-        <module>aicyi-base-logging</module>
-        <module>aicyi-base-security</module>
-        <module>aicyi-base-util</module>
+        <module>commons-core</module>
+        <module>commons-lang</module>
+        <module>commons-logging</module>
+        <module>commons-security</module>
+        <module>commons-util</module>
     </modules>
 </project>

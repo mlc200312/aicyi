@@ -27,27 +27,27 @@
         <dependencies>
             <dependency>
                 <groupId>com.aicyi</groupId>
-                <artifactId>aicyi-base-core</artifactId>
+                <artifactId>commons-core</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aicyi</groupId>
-                <artifactId>aicyi-base-lang</artifactId>
+                <artifactId>commons-lang</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aicyi</groupId>
-                <artifactId>aicyi-base-logging</artifactId>
+                <artifactId>commons-logging</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aicyi</groupId>
-                <artifactId>aicyi-base-security</artifactId>
+                <artifactId>commons-security</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aicyi</groupId>
-                <artifactId>aicyi-base-util</artifactId>
+                <artifactId>commons-util</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>

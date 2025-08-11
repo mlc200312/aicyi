@@ -1,8 +1,8 @@
 package com.aichuangyi.test.domain;
 
 
-import com.aichuangyi.base.logging.Logger;
-import com.aichuangyi.base.logging.LoggerFactory;
+import com.aichuangyi.commons.logging.Logger;
+import com.aichuangyi.commons.logging.LoggerFactory;
 
 /**
  * @author Mr.Min

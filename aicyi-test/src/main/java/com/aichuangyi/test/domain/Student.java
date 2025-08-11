@@ -1,6 +1,6 @@
 package com.aichuangyi.test.domain;
 
-import com.aichuangyi.base.util.DateTimeUtils;
+import com.aichuangyi.commons.util.DateTimeUtils;
 import com.aichuangyi.test.domain.type.GradeType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

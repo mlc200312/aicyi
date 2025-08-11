@@ -1,7 +1,7 @@
 package com.aichuangyi.test.domain;
 
-import com.aichuangyi.base.core.BoBean;
-import com.aichuangyi.base.lang.BaseBean;
+import com.aichuangyi.commons.core.BoBean;
+import com.aichuangyi.commons.lang.BaseBean;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;

@@ -1,7 +1,7 @@
 package com.aichuangyi.test;
 
-import com.aichuangyi.base.logging.Logger;
-import com.aichuangyi.base.logging.LoggerFactory;
+import com.aichuangyi.commons.logging.Logger;
+import com.aichuangyi.commons.logging.LoggerFactory;
 import com.aichuangyi.test.util.RandomGenerator;
 
 import java.time.Instant;
