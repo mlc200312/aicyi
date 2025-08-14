@@ -29,7 +29,7 @@
 
         <dependency>
             <groupId>com.aicyiframework</groupId>
-            <artifactId>aicyi-redis-client</artifactId>
+            <artifactId>aicyi-redis-commons</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

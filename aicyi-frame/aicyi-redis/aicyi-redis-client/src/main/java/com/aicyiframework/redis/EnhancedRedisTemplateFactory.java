@@ -81,6 +81,7 @@ public class EnhancedRedisTemplateFactory {
             case JSON:
                 JacksonConverter jacksonConverter = new JacksonConverter();
                 JavaType javaType = jacksonConverter.constructType(clazz);
+
                 Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(javaType);
                 jackson2JsonRedisSerializer.setObjectMapper(jacksonConverter);
                 template.setValueSerializer(jackson2JsonRedisSerializer);

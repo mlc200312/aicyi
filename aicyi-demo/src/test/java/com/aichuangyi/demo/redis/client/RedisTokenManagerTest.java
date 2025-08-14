@@ -1,13 +1,14 @@
 package com.aichuangyi.demo.redis.client;
 
-import com.aichuangyi.core.TokenManager;
-import com.aichuangyi.commons.security.jwt.JJwtTokenManagerImpl;
-import com.aichuangyi.commons.util.DateUtils;
+import com.aichuangyi.commons.lang.token.UserInfo;
+import com.aichuangyi.commons.security.SecretKeyUtils;
 import com.aichuangyi.commons.util.id.IdGenerator;
+import com.aichuangyi.core.token.TokenManager;
 import com.aichuangyi.demo.AicyiDemoApplication;
+import com.aicyiframework.redis.token.DefaultTokenConfig;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.util.RandomGenerator;
-import com.aicyiframework.redis.token.RedisTokenManagerImpl;
+import com.aicyiframework.redis.token.RedisJwtTokenManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.crypto.SecretKey;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mr.Min
@@ -30,35 +31,51 @@ import java.util.HashMap;
 public class RedisTokenManagerTest extends BaseLoggerTest {
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
-    private TokenManager tokenManager;
-    private String expiredToken;
+    private TokenManager<String, UserInfo> tokenManager;
+    private UserInfo userInfo;
 
     @Before
     public void before() {
-        SecretKey secretKey = JJwtTokenManagerImpl.randomSecretKey();
-        tokenManager = new RedisTokenManagerImpl(redisConnectionFactory, new JJwtTokenManagerImpl(secretKey));
-        expiredToken = tokenManager.createToken("123", DateUtils.parseDate("2020-01-1 00:00:00"), new HashMap<>());
+        String singingKey = SecretKeyUtils.randomSecretKeyStr();
+        System.out.println(singingKey);
+
+        tokenManager = new RedisJwtTokenManager<>(DefaultTokenConfig.builder()
+                .signingKey("LcR6QUhqWrDqK1InQDKlpZuKx6X/ZgEISdFpKwO3i/E=")
+                .multiTokenAllowed(true)
+                .build(), redisConnectionFactory);
+        userInfo = UserInfo.builder()
+                .userId("610780341698822144")
+                .username(RandomGenerator.generateFullName())
+                .isMasterDevice(false)
+                .build();
     }
 
     @Test
     public void tokenTest() {
-        String id = IdGenerator.generateId() + "";
-        String fullName = RandomGenerator.generateFullName();
-        HashMap<String, Object> claimMap = new HashMap<>();
-        claimMap.put("username", fullName);
+        userInfo.setDeviceId(IdGenerator.generateV7Id());
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("mobile", RandomGenerator.generatePhoneNum());
+        String token = tokenManager.createToken(userInfo, claims, 1, TimeUnit.HOURS);
+        Long tokenExpire = tokenManager.getTokenExpire(token, TimeUnit.MINUTES).get();
+        boolean validateToken = tokenManager.validateToken(token);
+        String refreshToken = tokenManager.refreshToken(token).get();
+        UserInfo parsedUserInfo = tokenManager.parseUserInfo(refreshToken).get();
+        Object mobile = tokenManager.parseClaim(refreshToken, "mobile").get();
+        Long refreshTokenExpire = tokenManager.getTokenExpire(refreshToken, TimeUnit.MINUTES).get();
+        Set<String> userTokens = tokenManager.getUserTokens(userInfo);
 
-        String token = tokenManager.createToken(id, claimMap);
-        Date date = tokenManager.getExpire(token);
+        log("tokenTest", token, tokenExpire, validateToken, refreshToken, parsedUserInfo, mobile, refreshTokenExpire, userTokens);
+    }
 
-        boolean verifyToken = tokenManager.verifyToken(token);
-        boolean verifyToken1 = tokenManager.verifyToken(expiredToken);
+    @Test
+    public void tokenTest2() {
+        userInfo.setDeviceId("1f078f9a6cfb6524a83d6b8f79fdf7c9");
+        String token = tokenManager.createToken(userInfo);
+        tokenManager.invalidateToken(token);
+    }
 
-        String getId = tokenManager.getId(token);
-        String username = tokenManager.get(token, "username", String.class);
-
-        String refreshToken = tokenManager.refreshToken(token, new Date(System.currentTimeMillis() + 7200000L));
-        Date date2 = tokenManager.getExpire(refreshToken);
-
-        log("tokenTest", token, refreshToken, verifyToken, verifyToken1, getId.equals(id), username.equals(fullName), DateUtils.formatDate(date), DateUtils.formatDate(date2));
+    @Test
+    public void tokenTest3() {
+        tokenManager.invalidateUserTokens(userInfo);
     }
 }

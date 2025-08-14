@@ -20,6 +20,7 @@
 
     <modules>
         <module>aicyi-redis-client</module>
+        <module>aicyi-redis-commons</module>
         <module>aicyi-redis-starter</module>
     </modules>
 

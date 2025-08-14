@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.util.id;
 
-import com.aichuangyi.core.BizNoGenerator;
+import com.aichuangyi.core.api.BizNoGenerator;
 import com.github.f4b6a3.uuid.UuidCreator;
 
 /**
@@ -12,6 +12,6 @@ public class UUIDV7Generator implements BizNoGenerator {
 
     @Override
     public String generateBizNo() {
-        return UuidCreator.getTimeOrdered().toString();
+        return UuidCreator.getTimeOrdered().toString().replace("-", "");
     }
 }

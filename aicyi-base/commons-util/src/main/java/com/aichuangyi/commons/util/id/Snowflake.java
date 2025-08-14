@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.util.id;
 
-import com.aichuangyi.core.IdGenerator;
+import com.aichuangyi.core.api.IdGenerator;
 
 /**
  * @author Mr.Min
