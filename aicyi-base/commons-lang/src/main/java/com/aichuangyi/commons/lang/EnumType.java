@@ -1,4 +1,4 @@
-package com.aichuangyi.core;
+package com.aichuangyi.commons.lang;
 
 /**
  * @author Mr.Min

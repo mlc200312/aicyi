@@ -1,4 +1,4 @@
-package com.aichuangyi.core.token;
+package com.aichuangyi.commons.core.token;
 
 import java.util.Map;
 import java.util.Optional;
@@ -61,20 +61,20 @@ public interface TokenManager<T, U> {
     boolean validateToken(T token);
 
     /**
-     * 刷新Token
-     *
-     * @param token 原Token
-     * @return 新Token
-     */
-    Optional<T> refreshToken(T token);
-
-    /**
      * 从Token中解析用户信息
      *
      * @param token Token
      * @return 用户信息
      */
     Optional<U> parseUserInfo(T token);
+
+    /**
+     * 从Token中解析声明
+     *
+     * @param token Token
+     * @return 声明值
+     */
+    Optional<Map<String, Object>> parseToken(T token);
 
     /**
      * 从Token中解析特定声明
@@ -84,6 +84,14 @@ public interface TokenManager<T, U> {
      * @return 声明值
      */
     Optional<Object> parseClaim(T token, String claimName);
+
+    /**
+     * 刷新Token
+     *
+     * @param token 原Token
+     * @return 新Token
+     */
+    Optional<T> refreshToken(T token);
 
     /**
      * 获取Token剩余有效时间

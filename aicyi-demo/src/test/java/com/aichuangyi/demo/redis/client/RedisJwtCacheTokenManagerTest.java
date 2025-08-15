@@ -1,14 +1,14 @@
 package com.aichuangyi.demo.redis.client;
 
-import com.aichuangyi.commons.lang.token.UserInfo;
+import com.aichuangyi.commons.core.token.TokenManager;
 import com.aichuangyi.commons.security.SecretKeyUtils;
 import com.aichuangyi.commons.util.id.IdGenerator;
-import com.aichuangyi.core.token.TokenManager;
 import com.aichuangyi.demo.AicyiDemoApplication;
-import com.aicyiframework.redis.token.DefaultTokenConfig;
+import com.aichuangyi.commons.lang.UserInfo;
+import com.aichuangyi.commons.core.token.DefaultTokenConfig;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.util.RandomGenerator;
-import com.aicyiframework.redis.token.RedisJwtTokenManager;
+import com.aicyiframework.redis.token.RedisJwtCacheTokenManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = AicyiDemoApplication.class)
-public class RedisTokenManagerTest extends BaseLoggerTest {
+public class RedisJwtCacheTokenManagerTest extends BaseLoggerTest {
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
     private TokenManager<String, UserInfo> tokenManager;
@@ -39,7 +39,7 @@ public class RedisTokenManagerTest extends BaseLoggerTest {
         String singingKey = SecretKeyUtils.randomSecretKeyStr();
         System.out.println(singingKey);
 
-        tokenManager = new RedisJwtTokenManager<>(DefaultTokenConfig.builder()
+        tokenManager = new RedisJwtCacheTokenManager<>(DefaultTokenConfig.builder()
                 .signingKey("LcR6QUhqWrDqK1InQDKlpZuKx6X/ZgEISdFpKwO3i/E=")
                 .multiTokenAllowed(true)
                 .build(), redisConnectionFactory);

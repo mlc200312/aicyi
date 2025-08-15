@@ -1,7 +1,7 @@
 package com.aichuangyi.commons.util;
 
-import com.aichuangyi.core.EnumType;
-import com.aichuangyi.core.StringEnumType;
+import com.aichuangyi.commons.lang.EnumType;
+import com.aichuangyi.commons.lang.StringEnumType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

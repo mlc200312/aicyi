@@ -20,11 +20,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aicyi</groupId>
-            <artifactId>commons-core</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>

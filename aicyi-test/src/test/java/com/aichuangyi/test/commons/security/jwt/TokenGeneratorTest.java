@@ -2,7 +2,7 @@ package com.aichuangyi.test.commons.security.jwt;
 
 import com.aichuangyi.commons.security.jwt.JwtTokenGenerator;
 import com.aichuangyi.commons.util.id.IdGenerator;
-import com.aichuangyi.core.token.TokenGenerator;
+import com.aichuangyi.commons.core.token.TokenGenerator;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.util.RandomGenerator;
 import io.jsonwebtoken.SignatureAlgorithm;

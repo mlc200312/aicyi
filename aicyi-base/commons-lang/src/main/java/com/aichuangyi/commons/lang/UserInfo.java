@@ -1,6 +1,4 @@
-package com.aichuangyi.commons.lang.token;
-
-import com.aichuangyi.commons.lang.BaseBean;
+package com.aichuangyi.commons.lang;
 
 /**
  * @author Mr.Min

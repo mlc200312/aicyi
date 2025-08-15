@@ -1,16 +1,16 @@
 package com.aicyiframework.redis.token;
 
-import com.aichuangyi.commons.lang.token.CacheTokenManager;
-import com.aichuangyi.commons.lang.token.UserInfo;
+import com.aichuangyi.commons.core.token.AbstractCacheTokenManager;
+import com.aichuangyi.commons.lang.UserInfo;
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
 import com.aichuangyi.commons.security.jwt.JwtTokenGenerator;
 import com.aichuangyi.commons.util.Assert;
 import com.aichuangyi.commons.util.json.JacksonConverter;
-import com.aichuangyi.core.api.JsonConverter;
-import com.aichuangyi.core.token.TokenConfig;
-import com.aichuangyi.core.token.TokenGenerator;
-import com.aichuangyi.core.token.TokenManager;
+import com.aichuangyi.commons.core.api.JsonConverter;
+import com.aichuangyi.commons.core.token.TokenConfig;
+import com.aichuangyi.commons.core.token.TokenGenerator;
+import com.aichuangyi.commons.core.token.TokenManager;
 import com.aicyiframework.redis.EnhancedRedisTemplateFactory;
 import com.aicyiframework.redis.cache.RedisCacheFactory;
 import com.aicyiframework.redis.cache.RedisCacheManager;
@@ -27,10 +27,10 @@ import java.util.concurrent.TimeUnit;
  * @description Redis缓存Token管理
  * @date 23:33
  **/
-public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<U> implements TokenManager<String, U> {
+public class RedisJwtCacheTokenManager<U extends UserInfo> extends AbstractCacheTokenManager<U> implements TokenManager<String, U> {
 
     // 日志
-    private static final Logger LOGGER = LoggerFactory.getLogger(RedisJwtTokenManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisJwtCacheTokenManager.class);
     // Json序列化
     private static final JacksonConverter INSTANCE = new JacksonConverter();
     // 用户Token集合前缀
@@ -46,7 +46,7 @@ public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<
     private final RedisCacheManager<U> redisCacheManager;
     private JsonConverter jsonConverter;
 
-    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JsonConverter jsonConverter) {
+    public RedisJwtCacheTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JsonConverter jsonConverter) {
         super(tokenConfig);
         EnhancedRedisTemplateFactory enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory);
         RedisCacheFactory redisCacheFactory = new RedisCacheFactory(redisConnectionFactory);
@@ -57,8 +57,45 @@ public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<
         this.jsonConverter = jsonConverter;
     }
 
-    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory) {
+    public RedisJwtCacheTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory) {
         this(tokenConfig, redisConnectionFactory, INSTANCE);
+    }
+
+    @Override
+    protected TokenGenerator<String> getTokenGenerator() {
+        return this.tokenGenerator;
+    }
+
+    @Override
+    public U getCache(String token) {
+
+        // 获取用户
+        String id = tokenGenerator.getId(token).get();
+        return redisCacheManager.get(id);
+    }
+
+    @Override
+    public boolean hashCache(String token) {
+
+        // 检查Token是否存在
+        String id = tokenGenerator.getId(token).get();
+        return redisCacheManager.containsKey(id);
+    }
+
+    @Override
+    public long getCacheExpire(String token, TimeUnit unit) {
+
+        // 获取Token的有效期
+        String id = tokenGenerator.getId(token).get();
+        return redisCacheManager.getExpire(id, unit);
+    }
+
+    @Override
+    public void removeCache(String token) {
+
+        // 删除Token
+        String id = tokenGenerator.getId(token).get();
+        redisCacheManager.remove(id);
     }
 
     @Override
@@ -113,87 +150,6 @@ public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<
     }
 
     @Override
-    public boolean validateToken(String token) {
-
-        // 验证JWT签名和过期时间
-        if (tokenGenerator.verifyToken(token)) {
-
-            // 检查Token是否存在
-            String id = tokenGenerator.getId(token).get();
-            return redisCacheManager.containsKey(id);
-        }
-
-        return false;
-    }
-
-    @Override
-    public Optional<String> refreshToken(String token) {
-        if (!validateToken(token)) {
-            return Optional.empty();
-        }
-
-        // 解析Token并获取用户
-        Optional<U> userInfo = parseUserInfo(token);
-
-        if (userInfo.isPresent()) {
-
-            // 解析原Token中的声明
-            Map<String, Object> claims = tokenGenerator.parseToken(token).get();
-
-            // 使原Token失效
-            invalidateToken(token);
-
-            // 创建新Token
-            String newToken = createToken(userInfo.get(), claims, config.getRefreshWindow(TimeUnit.SECONDS), TimeUnit.SECONDS);
-
-            return Optional.of(newToken);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<U> parseUserInfo(String token) {
-        if (!validateToken(token)) {
-            return Optional.empty();
-        }
-
-        // 获取用户
-        String id = tokenGenerator.getId(token).get();
-        U userInfo = redisCacheManager.get(id);
-
-        return Optional.ofNullable(userInfo);
-    }
-
-    @Override
-    public Optional<Object> parseClaim(String token, String claimName) {
-        if (!validateToken(token)) {
-            return Optional.empty();
-        }
-
-        // 解析原Token中的声明
-        Optional<Map<String, Object>> claims = tokenGenerator.parseToken(token);
-
-        if (claims.isPresent()) {
-            return Optional.ofNullable(claims.get().get(claimName));
-        }
-
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Long> getTokenExpire(String token, TimeUnit unit) {
-        if (!validateToken(token)) {
-            return Optional.empty();
-        }
-
-        // 获取Token的有效期
-        String id = tokenGenerator.getId(token).get();
-        long expire = redisCacheManager.getExpire(id, unit);
-
-        return Optional.of(expire);
-    }
-
-    @Override
     public Set<String> getUserTokens(U userInfo) {
 
         // 获取Token的Hash集合
@@ -215,11 +171,15 @@ public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<
             String value = entry.getValue();
 
             if (validateToken(value)) {
+
                 // 添加有效Token
                 userTokens.add(value);
+
             } else {
+
                 // 自动清理无效Token
                 opsForHash.delete(hashKey, key);
+
             }
         }
 
@@ -243,20 +203,8 @@ public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<
             }
 
             // 删除Token
-            String id = tokenGenerator.getId(token).get();
-            redisCacheManager.remove(id);
+            removeCache(token);
         }
-    }
-
-    @Override
-    public void invalidateUserTokens(U userInfo) {
-
-        // 获取用户所有的Token
-        Set<String> userTokens = getUserTokens(userInfo);
-
-        // 使Token失效
-        userTokens.forEach(this::invalidateToken);
-
     }
 
     /**

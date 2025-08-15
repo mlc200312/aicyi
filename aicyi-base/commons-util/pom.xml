@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>com.aicyi</groupId>
-            <artifactId>commons-lang</artifactId>
+            <artifactId>commons-core</artifactId>
         </dependency>
 
         <dependency>

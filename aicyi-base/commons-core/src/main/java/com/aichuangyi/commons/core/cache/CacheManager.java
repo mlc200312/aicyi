@@ -1,4 +1,4 @@
-package com.aichuangyi.core.cache;
+package com.aichuangyi.commons.core.cache;
 
 import java.util.Collection;
 import java.util.Map;

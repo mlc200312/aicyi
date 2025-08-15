@@ -2,8 +2,8 @@ package com.aicyiframework.redis.cache;
 
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
-import com.aichuangyi.core.cache.CacheConfig;
-import com.aichuangyi.core.cache.StringCacheManager;
+import com.aichuangyi.commons.core.cache.CacheConfig;
+import com.aichuangyi.commons.core.cache.StringCacheManager;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;

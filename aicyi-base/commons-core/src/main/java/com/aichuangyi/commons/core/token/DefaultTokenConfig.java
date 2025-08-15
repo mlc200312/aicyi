@@ -1,7 +1,4 @@
-package com.aicyiframework.redis.token;
-
-import com.aichuangyi.commons.security.SecretKeyUtils;
-import com.aichuangyi.core.token.TokenConfig;
+package com.aichuangyi.commons.core.token;
 
 import java.util.concurrent.TimeUnit;
 
@@ -107,7 +104,7 @@ public class DefaultTokenConfig implements TokenConfig {
 
     public static class Builder {
         private String issuer = "default-issuer";
-        private String signingKey = SecretKeyUtils.randomSecretKeyStr();
+        private String signingKey;
         private boolean multiTokenAllowed = true;
         private int multiTokenCount = DEFAULT_MULTI_TOKEN_COUNT;
         private long defaultExpire = DEFAULT_EXPIRE_TIME;

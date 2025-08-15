@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.util.id;
 
-import com.aichuangyi.core.api.BizNoGenerator;
+import com.aichuangyi.commons.core.api.BizNoGenerator;
 import com.github.f4b6a3.uuid.UuidCreator;
 
 /**

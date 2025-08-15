@@ -1,6 +1,6 @@
 package com.aichuangyi.test.domain;
 
-import com.aichuangyi.core.BoBean;
+import com.aichuangyi.commons.lang.BoBean;
 import com.aichuangyi.commons.lang.BaseBean;
 import com.aichuangyi.test.domain.type.GenderType;
 import com.fasterxml.jackson.annotation.JsonFormat;
