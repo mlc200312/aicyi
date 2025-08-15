@@ -51,7 +51,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
     }
 
     @Test
-    public void stringRedisTemplateTest() {
+    public void test() {
         BoundValueOperations<String, String> stringRedisTemplate = stringTemplate.boundValueOps("stringRedisTemplateTest");
         stringRedisTemplate.set("stringRedisTemplateTest");
         String stringRedisTemplateTestValue = stringRedisTemplate.get();
@@ -61,7 +61,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         intRedisTemplate.increment();
         String intRedisTemplateValue = intRedisTemplate.get();
 
-        log("stringRedisTemplateTest", stringRedisTemplateTestValue, intRedisTemplateValue);
+        log("test", stringRedisTemplateTestValue, intRedisTemplateValue);
     }
 
     @Test

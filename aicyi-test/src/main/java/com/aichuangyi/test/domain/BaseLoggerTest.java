@@ -3,6 +3,9 @@ package com.aichuangyi.test.domain;
 
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
+import org.junit.Test;
+
+import javax.xml.bind.JAXBException;
 
 /**
  * @author Mr.Min
@@ -20,5 +23,8 @@ public abstract class BaseLoggerTest {
         }
         LOGGER.info(sb);
     }
+
+    @Test
+    public abstract void test() throws JAXBException;
 
 }

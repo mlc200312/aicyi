@@ -13,12 +13,12 @@ import org.junit.Test;
 public class MessageDigestUtilsTest extends BaseLoggerTest {
 
     @Test
-    public void digestTest() {
+    public void test() {
         String data = "test 123";
         String generateMd5 = MessageDigestUtils.generateMd5(data);
         String generateSha1 = MessageDigestUtils.generateSha1(data);
         String generateSha256 = MessageDigestUtils.generateSha256(data);
 
-        log("digestTest", generateMd5, generateSha1, generateSha256, generateMd5.equals(Md5Utils.md5(data)));
+        log("test", generateMd5, generateSha1, generateSha256, generateMd5.equals(Md5Utils.md5(data)));
     }
 }

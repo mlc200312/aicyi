@@ -41,7 +41,7 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
 
     @Override
     public void put(String key, T value) {
-        put(buildKey(key), value, CacheConfig.defaultConfig().getDefaultExpireTime(), CacheConfig.defaultConfig().getDefaultTimeUnit());
+        put(key, value, CacheConfig.defaultConfig().getDefaultExpireTime(), CacheConfig.defaultConfig().getDefaultTimeUnit());
     }
 
     @Override
@@ -52,6 +52,7 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
     @Override
     public void putAll(Map<String, T> map) {
         redisTemplate.executePipelined((RedisCallback<T>) connection -> {
+
             // 批量设置键值对
             connection.stringCommands().mSet(map.entrySet().stream()
                     .collect(Collectors.toMap(
@@ -64,6 +65,7 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
             for (String key : map.keySet()) {
                 connection.keyCommands().expire(buildKey(key).getBytes(StandardCharsets.UTF_8), expireSeconds);
             }
+
             return null;
         });
     }
@@ -77,26 +79,27 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
     public Map<String, T> getAll(Collection<String> keys) {
         List<String> keyList = keys.stream().map(item -> buildKey(item)).collect(Collectors.toList());
         List<T> values = redisTemplate.opsForValue().multiGet(keyList);
-        return IntStream.range(0, keys.size())
-                .filter(i -> values.get(i) != null)
+        return IntStream
+                .range(0, keys.size())
+                .filter(i -> Objects.nonNull(values.get(i)))
                 .boxed()
                 .collect(Collectors.toMap(keyList::get, values::get));
-
     }
 
     @Override
     public T get(String key, CacheLoader<String, T> loader) {
-        T value = get(buildKey(key));
-        T loadValue = loader.load(buildKey(key));
-        return Optional.ofNullable(value).orElse(loadValue);
+        return Optional.ofNullable(get(key)).orElse(loader.load(key));
     }
 
     @Override
     public T get(String key, CacheLoader<String, T> loader, long timeout, TimeUnit unit) {
+
         //获取value
-        T value = get(buildKey(key), loader);
+        T value = get(key, loader);
+
         //缓存value
         put(buildKey(key), value, timeout, unit);
+
         return value;
     }
 
@@ -118,12 +121,12 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
 
     @Override
     public Set<String> keys() {
-        throw new UnsupportedOperationException("unsupported operation");
+        return redisTemplate.keys(buildKey("*"));
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("unsupported operation");
+        redisTemplate.delete(buildKey("*"));
     }
 
     @Override
@@ -152,9 +155,11 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
     }
 
     private String buildKey(String key) {
+
         // 添加缓存名前缀
         String cacheKey = cacheName + ":" + key;
-        LOGGER.info("build key: {}", cacheKey);
+        LOGGER.debug("build key ==> {}", cacheKey);
+
         return cacheKey;
     }
 }

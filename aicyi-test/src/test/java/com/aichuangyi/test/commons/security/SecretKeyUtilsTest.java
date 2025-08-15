@@ -14,7 +14,7 @@ import javax.crypto.SecretKey;
 public class SecretKeyUtilsTest extends BaseLoggerTest {
 
     @Test
-    public void secretKeyUtilsTest() {
+    public void test() {
         SecretKey secretKey = SecretKeyUtils.randomSecretKey();
 
         String keyToString = SecretKeyUtils.keyToString(secretKey);
@@ -23,6 +23,6 @@ public class SecretKeyUtilsTest extends BaseLoggerTest {
 
         SecretKey stringToKey = SecretKeyUtils.stringToKey(randomSecretKeyStr);
 
-        log("secretKeyUtilsTest", keyToString, randomSecretKeyStr, SecretKeyUtils.keyToString(stringToKey));
+        log("test", keyToString, randomSecretKeyStr, SecretKeyUtils.keyToString(stringToKey));
     }
 }

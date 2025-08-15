@@ -35,7 +35,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
     }
 
     @Test
-    public void toJson() {
+    public void test() {
         JsonConverter instance = JsonUtils.getInstance();
         List<Example> exampleList = DataSource.getExampleList();
 
@@ -45,7 +45,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
         String json3 = instance.toJson(exampleList);
 
-        log("toJson", json, json1, json2, json3);
+        log("test", json, json1, json2, json3);
     }
 
     @Test

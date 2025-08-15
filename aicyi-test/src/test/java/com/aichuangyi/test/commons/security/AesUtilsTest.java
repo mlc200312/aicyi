@@ -12,7 +12,7 @@ import org.junit.Test;
 public class AesUtilsTest extends BaseLoggerTest {
 
     @Test
-    public void aesTest() {
+    public void test() {
         try {
             // AES加密要求key必须要128个比特位（这里需要长度为16，否则会报错）
             String KEY = "1234567887654321";

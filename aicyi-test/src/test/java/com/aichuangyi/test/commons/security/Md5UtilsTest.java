@@ -13,11 +13,11 @@ import org.junit.Test;
 public class Md5UtilsTest extends BaseLoggerTest {
 
     @Test
-    public void md5Test() {
+    public void test() {
         String data = "test 123";
         String md5 = Md5Utils.md5(data);
         String generateMd5 = MessageDigestUtils.generateMd5(data);
 
-        log("md5Test", md5, md5.equals(generateMd5));
+        log("test", md5, md5.equals(generateMd5));
     }
 }

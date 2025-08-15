@@ -42,7 +42,7 @@ public class TokenGeneratorTest extends BaseLoggerTest {
     }
 
     @Test
-    public void jwtTest() {
+    public void test() {
         boolean verifyToken0 = tokenGenerator.verifyToken(expiredToken);
         boolean verifyToken1 = tokenGenerator.verifyToken(token);
 
@@ -51,6 +51,6 @@ public class TokenGeneratorTest extends BaseLoggerTest {
         Map<String, Object> claims = tokenGenerator.parseToken(token).orElse(null);
         String username = MapUtils.getString(claims, "username");
 
-        log("jwtTest", token, verifyToken0, verifyToken1, getId, getUserId, getUserId.equals(userId), claims, username);
+        log("test", token, verifyToken0, verifyToken1, getId, getUserId, getUserId.equals(userId), claims, username);
     }
 }

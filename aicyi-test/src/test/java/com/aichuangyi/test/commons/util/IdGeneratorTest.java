@@ -12,10 +12,10 @@ import org.junit.Test;
 public class IdGeneratorTest extends BaseLoggerTest {
 
     @Test
-    public void newIdTest() {
+    public void test() {
         for (int i = 0; i < 10; i++) {
             long nextId = IdGenerator.generateId();
-            log("newIdTest", nextId);
+            log("test", nextId);
         }
     }
 

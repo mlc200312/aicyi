@@ -48,13 +48,13 @@ public class MapperUtilsTest extends BaseLoggerTest {
     }
 
     @Test
-    public void mapTest() {
+    public void test() {
         Example example = DataSource.getExample();
         ExampleResp exampleResp = MAPPER_FACADE.map(example, ExampleResp.class);
         ExampleResp exampleResp2 = DataSource.getExampleResp();
         Example example2 = MAPPER_FACADE.map(exampleResp2, Example.class);
 
-        log("mapTest", exampleResp, example2);
+        log("test", exampleResp, example2);
     }
 
     @Test

@@ -26,7 +26,7 @@ public class RsaUtilsTest extends BaseLoggerTest {
     }
 
     @Test
-    public void rsaTest() {
+    public void test() {
         // 加密
         String text = "test rsa encrypt";
         String encodedText = RsaUtils.encrypt(text, publicKey);
@@ -34,7 +34,7 @@ public class RsaUtilsTest extends BaseLoggerTest {
 
         // 解密
         String str2 = "RSA decoded: " + RsaUtils.decrypt(encodedText, privateKey);
-        log("rsa", str, str2);
+        log("test", str, str2);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.aichuangyi.demo.redis.client;
+package com.aichuangyi.demo.redis.commons;
 
 import com.aichuangyi.commons.core.token.TokenManager;
 import com.aichuangyi.commons.security.SecretKeyUtils;
@@ -51,7 +51,7 @@ public class RedisJwtCacheTokenManagerTest extends BaseLoggerTest {
     }
 
     @Test
-    public void tokenTest() {
+    public void test() {
         userInfo.setDeviceId(IdGenerator.generateV7Id());
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("mobile", RandomGenerator.generatePhoneNum());
@@ -64,7 +64,7 @@ public class RedisJwtCacheTokenManagerTest extends BaseLoggerTest {
         Long refreshTokenExpire = tokenManager.getTokenExpire(refreshToken, TimeUnit.MINUTES).get();
         Set<String> userTokens = tokenManager.getUserTokens(userInfo);
 
-        log("tokenTest", token, tokenExpire, validateToken, refreshToken, parsedUserInfo, mobile, refreshTokenExpire, userTokens);
+        log("test", token, tokenExpire, validateToken, refreshToken, parsedUserInfo, mobile, refreshTokenExpire, userTokens);
     }
 
     @Test

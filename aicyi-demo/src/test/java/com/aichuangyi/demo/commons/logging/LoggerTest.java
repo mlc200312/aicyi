@@ -20,7 +20,7 @@ public class LoggerTest {
     private static final Logger logger = LoggerFactory.getLogger(LoggerType.BIZ);
 
     @Test
-    public void loggerTest() {
+    public void test() {
         logger.info("loggerTest", new RuntimeException("loggerTest"));
     }
 }

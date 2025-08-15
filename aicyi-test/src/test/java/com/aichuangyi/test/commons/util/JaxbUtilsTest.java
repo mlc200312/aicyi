@@ -25,10 +25,10 @@ public class JaxbUtilsTest extends BaseLoggerTest {
     }
 
     @Test
-    public void bean2XmlTest() throws JAXBException {
+    public void test() throws JAXBException {
         String xml = JaxbUtils.bean2Xml(message);
 
-        log("bean2Xml", xml);
+        log("test", xml);
     }
 
     @Test

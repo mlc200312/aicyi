@@ -16,8 +16,8 @@ public class BeanCglibCopierTest extends BaseLoggerTest {
 
     @SneakyThrows
     @Test
-    public void copyTest() {
+    public void test() {
         ExampleResp resp = BeanCglibCopier.copy(DataSource.getExample(), ExampleResp.class);
-        log("copyTest", resp);
+        log("test", resp);
     }
 }
