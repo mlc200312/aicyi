@@ -1,6 +1,6 @@
 package com.aicyiframework.redis.token;
 
-import com.aichuangyi.commons.core.token.AbstractCacheTokenManager;
+import com.aichuangyi.commons.core.token.CacheTokenManager;
 import com.aichuangyi.commons.lang.UserInfo;
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
@@ -27,10 +27,10 @@ import java.util.concurrent.TimeUnit;
  * @description Redis缓存Token管理
  * @date 23:33
  **/
-public class RedisJwtCacheTokenManager<U extends UserInfo> extends AbstractCacheTokenManager<U> implements TokenManager<String, U> {
+public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<String, U> {
 
     // 日志
-    private static final Logger LOGGER = LoggerFactory.getLogger(RedisJwtCacheTokenManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisJwtTokenManager.class);
     // Json序列化
     private static final JacksonConverter INSTANCE = new JacksonConverter();
     // 用户Token集合前缀
@@ -40,31 +40,25 @@ public class RedisJwtCacheTokenManager<U extends UserInfo> extends AbstractCache
         INSTANCE.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private final TokenGenerator<String> tokenGenerator;
     private final RedisTemplate<String, String> stringRedisTemplate;
     private final HashOperations<String, String, String> opsForHash;
     private final RedisCacheManager<U> redisCacheManager;
-    private JsonConverter jsonConverter;
+    private final JsonConverter jsonConverter;
 
-    public RedisJwtCacheTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JsonConverter jsonConverter) {
-        super(tokenConfig);
+    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JsonConverter jsonConverter) {
+        super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
         EnhancedRedisTemplateFactory enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory);
         RedisCacheFactory redisCacheFactory = new RedisCacheFactory(redisConnectionFactory);
-        this.tokenGenerator = new JwtTokenGenerator(tokenConfig.getIssuer(), tokenConfig.getSigningKey());
         this.stringRedisTemplate = enhancedRedisTemplateFactory.getStringTemplate();
         this.opsForHash = this.stringRedisTemplate.opsForHash();
         this.redisCacheManager = (RedisCacheManager<U>) redisCacheFactory.createCache(UserInfo.class);
         this.jsonConverter = jsonConverter;
     }
 
-    public RedisJwtCacheTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory) {
+    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory) {
         this(tokenConfig, redisConnectionFactory, INSTANCE);
     }
 
-    @Override
-    protected TokenGenerator<String> getTokenGenerator() {
-        return this.tokenGenerator;
-    }
 
     @Override
     public U getCache(String token) {
@@ -101,7 +95,6 @@ public class RedisJwtCacheTokenManager<U extends UserInfo> extends AbstractCache
     @Override
     public String createToken(U userInfo, Map<String, Object> claims, long timeout, TimeUnit unit) {
         Assert.notNull(userInfo, "userInfo");
-        Assert.notNull(claims, "claims");
 
         // 允许创建多Token
         String hashKey = buildUserTokenKey(userInfo);
@@ -134,12 +127,13 @@ public class RedisJwtCacheTokenManager<U extends UserInfo> extends AbstractCache
 
         }
 
+        Map<String, Object> enhancedClaims = new HashMap<>(claims);
         String json = jsonConverter.toJson(userInfo);
         Map<String, Object> addClaims = jsonConverter.parseMap(json, Object.class);
-        claims.putAll(addClaims);
+        enhancedClaims.putAll(addClaims);
 
         // 存储用户Token
-        String token = tokenGenerator.generateToken(userInfo.getUserId(), claims, timeout, unit);
+        String token = tokenGenerator.generateToken(userInfo.getUserId(), enhancedClaims, timeout, unit);
         opsForHash.put(hashKey, userInfo.getDeviceId(), token);
 
         // 存储Token用户
@@ -188,6 +182,8 @@ public class RedisJwtCacheTokenManager<U extends UserInfo> extends AbstractCache
 
     @Override
     public void invalidateToken(String token) {
+
+        // 验证Token有效性
         if (validateToken(token)) {
 
             // 解析Token并获取用户

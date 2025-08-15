@@ -22,7 +22,11 @@
         <dependency>
             <groupId>com.aicyi</groupId>
             <artifactId>commons-util</artifactId>
-            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aicyi</groupId>
+            <artifactId>commons-logging</artifactId>
         </dependency>
 
         <dependency>

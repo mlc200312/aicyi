@@ -1,5 +1,6 @@
 package com.aichuangyi.commons.core.token;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +19,7 @@ public interface TokenGenerator<T> {
      * @param claims
      * @return
      */
-    String generateToken(String userId, Map<String, Object> claims);
+    T generateToken(String userId, Map<String, Object> claims);
 
     /**
      * 生成token
@@ -53,7 +54,7 @@ public interface TokenGenerator<T> {
      * @param token Token
      * @return
      */
-    Optional<String> getId(String token);
+    Optional<String> getId(T token);
 
     /**
      * 解析Token声明并返回userId
@@ -61,5 +62,13 @@ public interface TokenGenerator<T> {
      * @param token
      * @return
      */
-    Optional<String> getUserId(String token);
+    Optional<String> getUserId(T token);
+
+    /**
+     * 解析Token声明并返回userId
+     *
+     * @param token
+     * @return
+     */
+    Optional<Date> getExpiration(T token);
 }

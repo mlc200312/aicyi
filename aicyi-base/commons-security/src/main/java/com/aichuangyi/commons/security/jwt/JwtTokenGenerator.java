@@ -25,14 +25,14 @@ public class JwtTokenGenerator implements TokenGenerator<String> {
     private final String issuer;
     private final SecretKey secretKey;
 
-    public JwtTokenGenerator(String issuer, SecretKey secretKey) {
-        this.issuer = issuer;
+    public JwtTokenGenerator(SecretKey secretKey, String issuer) {
         this.secretKey = secretKey;
+        this.issuer = issuer;
     }
 
-    public JwtTokenGenerator(String issuer, String secretKey) {
-        this.issuer = issuer;
+    public JwtTokenGenerator(String secretKey, String issuer) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.issuer = issuer;
     }
 
     public String getIssuer() {
@@ -146,6 +146,18 @@ public class JwtTokenGenerator implements TokenGenerator<String> {
         if (claims.isPresent()) {
             String userId = (String) claims.get().get("userId");
             return Optional.ofNullable(userId);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Date> getExpiration(String token) {
+        if (verifyToken(token)) {
+            return Optional.ofNullable(Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getExpiration());
         }
         return Optional.empty();
     }

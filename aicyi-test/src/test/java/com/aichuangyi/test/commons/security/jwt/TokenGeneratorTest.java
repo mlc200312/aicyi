@@ -30,7 +30,7 @@ public class TokenGeneratorTest extends BaseLoggerTest {
     @Before
     public void before() {
         userId = IdGenerator.generateId() + "";
-        tokenGenerator = new JwtTokenGenerator("min", Keys.secretKeyFor(SignatureAlgorithm.HS256));
+        tokenGenerator = new JwtTokenGenerator(Keys.secretKeyFor(SignatureAlgorithm.HS256), "test");
         expiredToken = tokenGenerator.generateToken(userId, new HashMap<>(), -1 * 3600 * 1000, TimeUnit.MILLISECONDS);
 
         String fullName = RandomGenerator.generateFullName();
