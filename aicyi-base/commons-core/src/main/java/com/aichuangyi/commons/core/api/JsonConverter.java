@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  * @author Mr.Min
- * @description JSON转换器
+ * @description JSON转换器接口定义
  * @date 2019-05-22
  **/
 public interface JsonConverter {

@@ -2,7 +2,7 @@ package com.aichuangyi.commons.core.api;
 
 /**
  * @author Mr.Min
- * @description 业务号生成器
+ * @description 业务号生成器接口定义
  * @date 17:58
  **/
 public interface BizNoGenerator {

@@ -21,6 +21,10 @@
     <dependencies>
         <dependency>
             <groupId>com.aicyi</groupId>
+            <artifactId>commons-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.aicyi</groupId>
             <artifactId>commons-logging</artifactId>
         </dependency>
 
