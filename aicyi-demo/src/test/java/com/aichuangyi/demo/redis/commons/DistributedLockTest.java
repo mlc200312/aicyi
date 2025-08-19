@@ -1,54 +1,67 @@
 package com.aichuangyi.demo.redis.commons;
 
 import com.aichuangyi.commons.core.lock.DistributedLock;
+import com.aichuangyi.demo.AicyiDemoApplication;
+import com.aichuangyi.test.AicyiFactory;
 import com.aichuangyi.test.domain.BaseLoggerTest;
+import com.aichuangyi.test.util.DataSource;
 import com.aicyiframework.redis.lock.RedissonDistributedLock;
 import lombok.SneakyThrows;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = AicyiDemoApplication.class)
 public class DistributedLockTest extends BaseLoggerTest {
+
+    @Autowired
+    private RedissonClient redissonClient;
+
+    private static int LOCK = 3;
+    private Queue<DistributedLock> list = new LinkedList<>();
+
+    @Before
+    public void before() {
+        for (int i = 0; i < LOCK; i++) {
+            list.add(new RedissonDistributedLock("myLock:" + i, redissonClient));
+        }
+    }
 
     @SneakyThrows
     @Test
     public void test() {
-        System.out.println("Testing Redisson Distributed Lock...");
-        DistributedLock lock = new RedissonDistributedLock("myLock", "redis://127.0.0.1:6379");
 
-        try {
-            // 尝试获取锁
-            if (lock.tryLock(1, TimeUnit.SECONDS)) {
-                System.out.println("Redisson lock acquired");
-                // 模拟业务处理
-                Thread.sleep(500);
-            } else {
-                System.out.println("Failed to acquire Redisson lock");
-            }
-        } finally {
-            lock.unlock();
-            System.out.println("Redisson lock released");
-            ((RedissonDistributedLock) lock).shutdown();
-        }
+        AicyiFactory factory = getAicyiFactory();
+
+        factory.startRun();
+
+        factory.stopRun();
     }
 
-//    private static void testZkLock() throws InterruptedException {
-//        System.out.println("\nTesting ZooKeeper Distributed Lock...");
-//        DistributedLock lock = new ZkDistributedLock("127.0.0.1:2181", "/myLock");
-//
-//        try {
-//            // 尝试获取锁
-//            if (lock.tryLock(1, TimeUnit.SECONDS)) {
-//                System.out.println("ZooKeeper lock acquired");
-//                // 模拟业务处理
-//                Thread.sleep(500);
-//            } else {
-//                System.out.println("Failed to acquire ZooKeeper lock");
-//            }
-//        } finally {
-//            lock.unlock();
-//            System.out.println("ZooKeeper lock released");
-//            ((ZkDistributedLock) lock).close();
-//        }
-//    }
+    private AicyiFactory getAicyiFactory() {
+
+        AicyiFactory factory = new AicyiFactory(500, new AicyiFactory.Project() {
+            @Override
+            public DistributedLock getLock() {
+                return new RedissonDistributedLock("myLock", redissonClient);
+//                return null;
+            }
+
+            @SneakyThrows
+            @Override
+            public String work() {
+                Thread.sleep(new Random().nextInt(3) * 1000);
+                return "I am working...";
+            }
+        });
+        return factory;
+    }
 }

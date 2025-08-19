@@ -29,6 +29,7 @@ public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<
 
     // 日志
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisJwtTokenManager.class);
+
     // Json序列化
     private static final JacksonConverter INSTANCE = new JacksonConverter();
     // 用户Token集合前缀
@@ -162,6 +163,7 @@ public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<
             // Token
             String value = entry.getValue();
 
+            // 验证Token有效性
             if (validateToken(value)) {
 
                 // 添加有效Token

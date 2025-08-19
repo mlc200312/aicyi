@@ -9,8 +9,10 @@ import org.redisson.config.Config;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 基于Redisson的分布式锁实现
- */
+ * @author Mr.Min
+ * @description 基于Redisson的分布式锁实现
+ * @date 2025/8/18
+ **/
 public class RedissonDistributedLock implements DistributedLock {
 
     private final RLock rLock;
@@ -26,6 +28,17 @@ public class RedissonDistributedLock implements DistributedLock {
         Config config = new Config();
         config.useSingleServer().setAddress(redisAddress);
         this.redissonClient = Redisson.create(config);
+        this.rLock = redissonClient.getLock(lockKey);
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param lockKey
+     * @param redissonClient
+     */
+    public RedissonDistributedLock(String lockKey, RedissonClient redissonClient) {
+        this.redissonClient = redissonClient;
         this.rLock = redissonClient.getLock(lockKey);
     }
 

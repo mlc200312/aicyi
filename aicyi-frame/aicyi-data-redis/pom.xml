@@ -5,29 +5,34 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aicyiframework</groupId>
-    <artifactId>aicyi-redis-client</artifactId>
+    <artifactId>aicyi-data-redis</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi redis client</name>
-    <description>aicyi redis client</description>
+    <name>aicyiframework redis</name>
+    <description>aicyiframework redis</description>
 
     <parent>
-        <groupId>com.aicyiframework</groupId>
-        <artifactId>aicyi-redis</artifactId>
+        <groupId>com.aicyi</groupId>
+        <artifactId>aicyi-frame</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>com.aicyi</groupId>
-            <artifactId>commons-util</artifactId>
+            <artifactId>commons-logging</artifactId>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>com.aicyi</groupId>-->
-        <!--            <artifactId>commons-security</artifactId>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>com.aicyi</groupId>
+            <artifactId>commons-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aicyi</groupId>
+            <artifactId>commons-util</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>redis.clients</groupId>
@@ -44,4 +49,5 @@
             <artifactId>redisson</artifactId>
         </dependency>
     </dependencies>
+
 </project>

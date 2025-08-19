@@ -3,10 +3,10 @@ package com.aichuangyi.commons.core.lock;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 分布式锁接口定义
- *
- * @author liangchaomin
- */
+ * @author Mr.Min
+ * @description 分布式锁接口定义
+ * @date 2025/8/18
+ **/
 public interface DistributedLock {
 
     /**

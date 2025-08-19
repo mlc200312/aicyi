@@ -21,8 +21,8 @@
 
     <modules>
         <module>aicyi-core</module>
+        <module>aicyi-data-redis</module>
         <module>aicyi-mybatis-plus</module>
         <module>aicyi-rabbitmq</module>
-        <module>aicyi-redis</module>
     </modules>
 </project>
