@@ -7,7 +7,7 @@ import com.aichuangyi.commons.logging.LoggerFactory;
 import com.aichuangyi.commons.security.jwt.JwtTokenGenerator;
 import com.aichuangyi.commons.util.Assert;
 import com.aichuangyi.commons.util.json.JacksonConverter;
-import com.aichuangyi.commons.core.api.JsonConverter;
+import com.aichuangyi.commons.core.JsonConverter;
 import com.aichuangyi.commons.core.token.TokenConfig;
 import com.aicyiframework.redis.EnhancedRedisTemplateFactory;
 import com.aicyiframework.redis.cache.RedisCacheFactory;

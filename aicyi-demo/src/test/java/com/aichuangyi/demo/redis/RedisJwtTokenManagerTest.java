@@ -1,4 +1,4 @@
-package com.aichuangyi.demo.redis.commons;
+package com.aichuangyi.demo.redis;
 
 import com.aichuangyi.commons.core.token.TokenConfig;
 import com.aichuangyi.commons.core.token.TokenManager;

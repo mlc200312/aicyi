@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.security.jwt;
 
-import com.aichuangyi.commons.core.api.JsonConverter;
+import com.aichuangyi.commons.core.JsonConverter;
 import com.aichuangyi.commons.core.token.DefaultTokenManager;
 import com.aichuangyi.commons.core.token.TokenConfig;
 import com.aichuangyi.commons.lang.UserInfo;

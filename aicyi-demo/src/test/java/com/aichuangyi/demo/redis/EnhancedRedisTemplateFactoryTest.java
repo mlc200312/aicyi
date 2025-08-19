@@ -1,4 +1,4 @@
-package com.aichuangyi.demo.redis.client;
+package com.aichuangyi.demo.redis;
 
 import com.aichuangyi.commons.util.json.JacksonConverter;
 import com.aichuangyi.demo.AicyiDemoApplication;

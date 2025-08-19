@@ -1,4 +1,4 @@
-package com.aichuangyi.demo.redis.commons;
+package com.aichuangyi.demo.redis;
 
 import com.aichuangyi.commons.core.cache.CacheConfig;
 import com.aichuangyi.commons.core.cache.StringCacheManager;

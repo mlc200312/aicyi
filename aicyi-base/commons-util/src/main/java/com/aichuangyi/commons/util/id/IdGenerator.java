@@ -8,6 +8,9 @@ package com.aichuangyi.commons.util.id;
  **/
 public class IdGenerator {
 
+    private IdGenerator() {
+    }
+
     public static long generateId() {
         return new Snowflake(0L, 0L).nextId();
     }

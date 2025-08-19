@@ -1,10 +1,9 @@
-package com.aichuangyi.demo.redis.commons;
+package com.aichuangyi.demo.redis;
 
 import com.aichuangyi.commons.core.lock.DistributedLock;
 import com.aichuangyi.demo.AicyiDemoApplication;
 import com.aichuangyi.test.AicyiFactory;
 import com.aichuangyi.test.domain.BaseLoggerTest;
-import com.aichuangyi.test.util.DataSource;
 import com.aicyiframework.redis.lock.RedissonDistributedLock;
 import lombok.SneakyThrows;
 import org.junit.Before;

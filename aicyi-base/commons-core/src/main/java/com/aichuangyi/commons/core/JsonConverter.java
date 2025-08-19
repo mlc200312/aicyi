@@ -1,4 +1,4 @@
-package com.aichuangyi.commons.core.api;
+package com.aichuangyi.commons.core;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;

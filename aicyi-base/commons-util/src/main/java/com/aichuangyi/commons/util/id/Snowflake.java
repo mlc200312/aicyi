@@ -1,6 +1,6 @@
 package com.aichuangyi.commons.util.id;
 
-import com.aichuangyi.commons.core.api.IdGenerator;
+import com.aichuangyi.commons.core.IdGenerator;
 
 /**
  * @author Mr.Min
@@ -35,6 +35,26 @@ public class Snowflake implements IdGenerator {
         this.dataCenterId = dataCenterId;
     }
 
+    public long getWorkerId() {
+        return workerId;
+    }
+
+    public void setWorkerId(long workerId) {
+        this.workerId = workerId;
+    }
+
+    public long getDataCenterId() {
+        return dataCenterId;
+    }
+
+    public void setDataCenterId(long dataCenterId) {
+        this.dataCenterId = dataCenterId;
+    }
+
+    public int getMaxWorkerId() {
+        return maxWorkerId;
+    }
+
     public long nextId() {
         long timestamp = System.currentTimeMillis() - epoch;
         if (timestamp < lastTimestamp) {
@@ -49,8 +69,7 @@ public class Snowflake implements IdGenerator {
             sequence = 0L;
         }
         lastTimestamp = timestamp;
-        long id = ((timestamp << timestampLeftShift) | (dataCenterId << dataCenterIdShift) | (workerId << workerIdShift) | sequence);
-        return id;
+        return ((timestamp << timestampLeftShift) | (dataCenterId << dataCenterIdShift) | (workerId << workerIdShift) | sequence);
     }
 
     private long tilNextMillis(long lastTimestamp) {
