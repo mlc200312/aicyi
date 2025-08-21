@@ -196,7 +196,7 @@ public class DataSource {
         return resp;
     }
 
-    public static AicyiFactory getFactory(AicyiFactory.Project project) {
-        return new AicyiFactory(1000, project);
+    public static AicyiFactory getFactory(AicyiFactory.Robot robot) {
+        return new AicyiFactory(1000, robot);
     }
 }

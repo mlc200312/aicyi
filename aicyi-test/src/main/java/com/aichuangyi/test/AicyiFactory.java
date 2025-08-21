@@ -23,16 +23,16 @@ public class AicyiFactory extends ThreadFactory {
     public static int PRODUCT_COUNT = 0;
 
     private String name;
-    private Project project;
+    private Robot robot;
 
-    public AicyiFactory(int workerCount, String name, Project project) {
-        super(workerCount);
+    public AicyiFactory(int count, String name, Robot robot) {
+        super(count);
         this.name = name;
-        this.project = project;
+        this.robot = robot;
     }
 
-    public AicyiFactory(int worker, Project project) {
-        this(worker, "Aicyi", project);
+    public AicyiFactory(int count, Robot robot) {
+        this(count, "Aicyi", robot);
     }
 
     public String getName() {
@@ -40,6 +40,7 @@ public class AicyiFactory extends ThreadFactory {
     }
 
     /**
+     * z
      * 运作
      */
     public void startRun() {
@@ -55,7 +56,7 @@ public class AicyiFactory extends ThreadFactory {
 
         for (int i = 0; i < workerCount; i++) {
 
-            submitTask(new Worker(String.format("%06d", i), RandomGenerator.generateFullName(), project));
+            submitTask(new Worker(String.format("%06d", i), RandomGenerator.generateFullName(), robot));
         }
     }
 
@@ -81,42 +82,38 @@ public class AicyiFactory extends ThreadFactory {
         }
     }
 
-    public static void product() {
+    public static String product(Robot robot) {
         int count = AicyiFactory.PRODUCT_COUNT;
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        String work = robot.working();
 
         AicyiFactory.PRODUCT_COUNT = count + 1;
+
+        return work;
     }
 
     public static class Worker implements Runnable {
 
         private String userNo;
         private String name;
-        private Project project;
+        private Robot robot;
 
-        public Worker(String userNo, String name, Project project) {
+        public Worker(String userNo, String name, Robot robot) {
             this.userNo = userNo;
             this.name = name;
-            this.project = project;
+            this.robot = robot;
         }
 
         public void work() {
 
             logWork("开始干活了");
 
-            logWork(project.work());
-
-            DistributedLock distributedLock = this.project.getLock();
+            DistributedLock distributedLock = this.robot.getLock();
 
             try {
                 if (distributedLock == null || distributedLock.tryLock(1, TimeUnit.MINUTES)) {
 
-                    AicyiFactory.product();
+                    logWork(AicyiFactory.product(robot));
 
                     logWork(String.format("生产商品【%s】完成", AicyiFactory.PRODUCT_COUNT));
                 }
@@ -147,9 +144,9 @@ public class AicyiFactory extends ThreadFactory {
     }
 
     /**
-     * 项目工程
+     * 工厂器械
      */
-    public interface Project {
+    public interface Robot {
 
         /**
          * 获取Key
@@ -163,6 +160,6 @@ public class AicyiFactory extends ThreadFactory {
          *
          * @return
          */
-        String work();
+        String working();
     }
 }

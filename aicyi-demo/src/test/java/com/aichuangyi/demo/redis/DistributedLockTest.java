@@ -47,7 +47,7 @@ public class DistributedLockTest extends BaseLoggerTest {
 
     private AicyiFactory getAicyiFactory() {
 
-        AicyiFactory factory = new AicyiFactory(500, new AicyiFactory.Project() {
+        AicyiFactory factory = new AicyiFactory(500, new AicyiFactory.Robot() {
             @Override
             public DistributedLock getLock() {
                 return new RedissonDistributedLock("myLock", redissonClient);
@@ -56,8 +56,8 @@ public class DistributedLockTest extends BaseLoggerTest {
 
             @SneakyThrows
             @Override
-            public String work() {
-                Thread.sleep(new Random().nextInt(3) * 1000);
+            public String working() {
+                Thread.sleep(new Random().nextInt(3) * 10);
                 return "I am working...";
             }
         });
