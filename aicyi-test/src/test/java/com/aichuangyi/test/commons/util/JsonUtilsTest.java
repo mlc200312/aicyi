@@ -2,11 +2,15 @@ package com.aichuangyi.test.commons.util;
 
 import com.aichuangyi.commons.core.JsonConverter;
 import com.aichuangyi.commons.lang.BaseBean;
+import com.aichuangyi.commons.lang.UserInfo;
 import com.aichuangyi.commons.util.id.IdGenerator;
+import com.aichuangyi.commons.util.json.JacksonConverter;
+import com.aichuangyi.commons.util.json.JacksonHelper;
 import com.aichuangyi.commons.util.json.JsonUtils;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.domain.Example;
 import com.aichuangyi.test.util.DataSource;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import lombok.Getter;
 import lombok.Setter;
 import org.assertj.core.util.Lists;
@@ -58,6 +62,16 @@ public class JsonUtilsTest extends BaseLoggerTest {
         Example parse1 = instance.parse(json, type);
 
         log("parseJson", parse, parse1);
+    }
+
+    @Test
+    public void parseJson2() {
+        JacksonConverter jacksonConverter = new JacksonConverter();
+        jacksonConverter.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        String userJson = "{\"id\":613294732759531520,\"age\":0,\"idCard\":\"1f07da341eb26024b3f927826ef0e6e2\",\"mobile\":\"13010496590\",\"genderType\":\"WOMAN\",\"birthday\":\"2025-08-20\",\"userId\":\"610780341698822144\",\"username\":\"邓纨仪\",\"deviceId\":\"1f07da341ee56475b3f927826ef0e6e2\",\"isMasterDevice\":false}";
+        UserInfo parseUser = jacksonConverter.parse(userJson, JacksonHelper.getType(UserInfo.class));
+
+        log("parseJson2", parseUser);
     }
 
     @Test

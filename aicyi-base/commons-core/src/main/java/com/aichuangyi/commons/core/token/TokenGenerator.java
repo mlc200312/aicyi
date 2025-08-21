@@ -15,22 +15,40 @@ public interface TokenGenerator<T> {
     /**
      * 生成token(永久有效)
      *
-     * @param userId
+     * @param id
      * @param claims
      * @return
      */
-    T generateToken(String userId, Map<String, Object> claims);
+    T generateToken(String id, Map<String, Object> claims);
+
+    /**
+     * 生成token(永久有效)
+     *
+     * @param claims
+     * @return
+     */
+    T generateToken(Map<String, Object> claims);
 
     /**
      * 生成token
      *
-     * @param userId
+     * @param id
      * @param claims
      * @param timeout
      * @param unit
      * @return
      */
-    T generateToken(String userId, Map<String, Object> claims, long timeout, TimeUnit unit);
+    T generateToken(String id, Map<String, Object> claims, long timeout, TimeUnit unit);
+
+    /**
+     * 生成token
+     *
+     * @param claims
+     * @param timeout
+     * @param unit
+     * @return
+     */
+    T generateToken(Map<String, Object> claims, long timeout, TimeUnit unit);
 
     /**
      * 验证Token签名
@@ -55,14 +73,6 @@ public interface TokenGenerator<T> {
      * @return
      */
     Optional<String> getId(T token);
-
-    /**
-     * 解析Token声明并返回userId
-     *
-     * @param token
-     * @return
-     */
-    Optional<String> getUserId(T token);
 
     /**
      * 解析Token声明并返回userId

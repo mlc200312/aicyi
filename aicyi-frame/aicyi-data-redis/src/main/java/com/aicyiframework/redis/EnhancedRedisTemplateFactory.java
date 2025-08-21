@@ -3,9 +3,6 @@ package com.aicyiframework.redis;
 import com.aichuangyi.commons.util.json.JacksonConverter;
 import com.fasterxml.jackson.databind.JavaType;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.*;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -17,14 +14,16 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
  **/
 public class EnhancedRedisTemplateFactory {
 
-    private RedisConnectionFactory redisConnectionFactory;
+    private final RedisConnectionFactory redisConnectionFactory;
+    private final JacksonConverter jacksonConverter;
 
-    public EnhancedRedisTemplateFactory(RedisConnectionFactory redisConnectionFactory) {
+    public EnhancedRedisTemplateFactory(RedisConnectionFactory redisConnectionFactory, JacksonConverter jacksonConverter) {
         this.redisConnectionFactory = redisConnectionFactory;
+        this.jacksonConverter = jacksonConverter;
     }
 
-    public EnhancedRedisTemplateFactory(String host, int port, String password, boolean useLettuce) {
-        this.redisConnectionFactory = createConnectionFactory(host, port, password, useLettuce);
+    public EnhancedRedisTemplateFactory(RedisConnectionFactory redisConnectionFactory) {
+        this(redisConnectionFactory, JacksonConverter.DEFAULT_SIMPLE_CONVERTER);
     }
 
     public RedisConnectionFactory getRedisConnectionFactory() {
@@ -40,6 +39,7 @@ public class EnhancedRedisTemplateFactory {
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
 
+        // 值始终使用字符串序列化
         template.setValueSerializer(new StringRedisSerializer());
         template.setHashValueSerializer(new StringRedisSerializer());
 
@@ -56,7 +56,9 @@ public class EnhancedRedisTemplateFactory {
         template.setHashKeySerializer(new StringRedisSerializer());
 
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(javaType);
-        jackson2JsonRedisSerializer.setObjectMapper(new JacksonConverter());
+        jackson2JsonRedisSerializer.setObjectMapper(jacksonConverter);
+
+        // 值使用Jackson序列化
         template.setValueSerializer(jackson2JsonRedisSerializer);
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
 
@@ -64,8 +66,68 @@ public class EnhancedRedisTemplateFactory {
         return template;
     }
 
-    public <T> RedisTemplate<String, T> getTemplate(SerializerType serializerType, Class<T> clazz) {
+    /**
+     * * XML模版
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public <T> RedisTemplate<String, T> getXmlTemplate(Class<T> clazz) {
         RedisTemplate<String, T> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+
+        // 键始终使用字符串序列化
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setClassesToBeBound(clazz);
+
+        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
+        unmarshaller.setClassesToBeBound(clazz);
+
+        OxmSerializer oxmSerializer = new OxmSerializer(marshaller, unmarshaller);
+
+        template.setValueSerializer(oxmSerializer);
+        template.setHashValueSerializer(oxmSerializer);
+
+        template.afterPropertiesSet();
+        return template;
+    }
+
+    /**
+     * XML模版
+     *
+     * @param packagesToScan
+     * @param <T>
+     * @return
+     */
+    public <T> RedisTemplate<String, T> getXmlTemplate(String packagesToScan) {
+        RedisTemplate<String, T> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+
+        // 键始终使用字符串序列化
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setPackagesToScan(packagesToScan);
+
+        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
+        unmarshaller.setPackagesToScan(packagesToScan);
+
+        OxmSerializer oxmSerializer = new OxmSerializer(marshaller, unmarshaller);
+
+        template.setValueSerializer(oxmSerializer);
+        template.setHashValueSerializer(oxmSerializer);
+
+        template.afterPropertiesSet();
+        return template;
+    }
+
+    public RedisTemplate<String, Object> getGenericTemplate(SerializerType serializerType) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
 
         // 键始终使用字符串序列化
@@ -79,29 +141,13 @@ public class EnhancedRedisTemplateFactory {
                 template.setHashValueSerializer(new JdkSerializationRedisSerializer());
                 break;
             case JSON:
-                JacksonConverter jacksonConverter = new JacksonConverter();
-                JavaType javaType = jacksonConverter.constructType(clazz);
-
-                Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(javaType);
-                jackson2JsonRedisSerializer.setObjectMapper(jacksonConverter);
-                template.setValueSerializer(jackson2JsonRedisSerializer);
-                template.setHashValueSerializer(jackson2JsonRedisSerializer);
-                break;
-            case XML:
-                Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-                marshaller.setClassesToBeBound(clazz);
-
-                Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-                unmarshaller.setClassesToBeBound(clazz);
-
-                OxmSerializer oxmSerializer = new OxmSerializer(marshaller, unmarshaller);
-
-                template.setValueSerializer(oxmSerializer);
-                template.setHashValueSerializer(oxmSerializer);
+                GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(jacksonConverter);
+                template.setValueSerializer(genericJackson2JsonRedisSerializer);
+                template.setHashValueSerializer(genericJackson2JsonRedisSerializer);
                 break;
             case STRING:
-                template.setValueSerializer(new GenericToStringSerializer<>(clazz));
-                template.setHashValueSerializer(new GenericToStringSerializer<>(clazz));
+                template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
+                template.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
                 break;
             default:
                 template.setValueSerializer(new StringRedisSerializer());
@@ -113,23 +159,6 @@ public class EnhancedRedisTemplateFactory {
     }
 
     public enum SerializerType {
-        JDK, JSON, XML, STRING
-    }
-
-    /**
-     * 创建连接工厂
-     *
-     * @param host
-     * @param port
-     * @param password
-     * @param useLettuce
-     * @return
-     */
-    private RedisConnectionFactory createConnectionFactory(String host, int port, String password, boolean useLettuce) {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
-        if (password != null && !password.isEmpty()) {
-            config.setPassword(password);
-        }
-        return useLettuce ? new LettuceConnectionFactory(config) : new JedisConnectionFactory(config);
+        JDK, JSON, STRING
     }
 }

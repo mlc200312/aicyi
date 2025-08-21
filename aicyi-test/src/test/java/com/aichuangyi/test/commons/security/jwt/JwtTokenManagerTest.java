@@ -4,10 +4,12 @@ import com.aichuangyi.commons.core.token.DefaultTokenConfig;
 import com.aichuangyi.commons.core.token.TokenConfig;
 import com.aichuangyi.commons.core.token.TokenManager;
 import com.aichuangyi.commons.lang.UserInfo;
-import com.aichuangyi.commons.security.SecretKeyUtils;
 import com.aichuangyi.commons.security.jwt.JwtTokenManager;
 import com.aichuangyi.commons.util.id.IdGenerator;
+import com.aichuangyi.commons.util.json.JacksonHelper;
 import com.aichuangyi.test.domain.BaseLoggerTest;
+import com.aichuangyi.test.domain.User;
+import com.aichuangyi.test.util.DataSource;
 import com.aichuangyi.test.util.RandomGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,26 +30,25 @@ public class JwtTokenManagerTest extends BaseLoggerTest {
 
     @Before
     public void before() {
-        userInfo = UserInfo.builder()
-                .userId("610780341698822144")
-                .username(RandomGenerator.generateFullName())
-                .isMasterDevice(false)
-                .build();
-        String singingKey = SecretKeyUtils.randomSecretKeyStr();
+        userInfo = DataSource.getUser();
+        userInfo.setUserId("610780341698822144");
+        userInfo.setMasterDevice(false);
+
         config = DefaultTokenConfig.builder()
                 .signingKey("LcR6QUhqWrDqK1InQDKlpZuKx6X/ZgEISdFpKwO3i/E=")
                 .multiTokenAllowed(true)
                 .build();
-        System.out.println(singingKey);
-        tokenManager = new JwtTokenManager<>(config);
+
+        tokenManager = new JwtTokenManager<>(config, JacksonHelper.getType(User.class));
     }
 
     @Test
     public void test() {
+        userInfo.setUserId(null);
         userInfo.setDeviceId(IdGenerator.generateV7Id());
         HashMap<String, Object> claims = new HashMap<>();
         String mobile = RandomGenerator.generatePhoneNum();
-        claims.put("mobile", mobile);
+        claims.put("testMobile", mobile);
         String token = tokenManager.createToken(userInfo, claims, 1, TimeUnit.HOURS);
         Long tokenExpire = tokenManager.getTokenExpire(token, TimeUnit.MINUTES).get();
 
@@ -59,7 +60,7 @@ public class JwtTokenManagerTest extends BaseLoggerTest {
 
         String refreshToken = tokenManager.refreshToken(token).get();
         UserInfo parsedUserInfo = tokenManager.parseUserInfo(refreshToken).get();
-        Object getMobile = tokenManager.parseClaim(refreshToken, "mobile").get();
+        Object getMobile = tokenManager.parseClaim(refreshToken, "testMobile").get();
 
         assert getMobile.equals(mobile);
 
@@ -68,6 +69,8 @@ public class JwtTokenManagerTest extends BaseLoggerTest {
         assert refreshTokenExpire <= config.getRefreshWindow(TimeUnit.MINUTES);
 
         Set<String> userTokens = tokenManager.getUserTokens(userInfo);
+
+        assert userTokens.size() == 0;
 
         log("test", token, tokenExpire, validateToken, refreshToken, parsedUserInfo, getMobile, refreshTokenExpire, userTokens);
     }
@@ -81,6 +84,6 @@ public class JwtTokenManagerTest extends BaseLoggerTest {
 
     @Test
     public void tokenTest3() {
-        tokenManager.invalidateUserTokens(userInfo);
+        tokenManager.invalidateAllTokens(userInfo);
     }
 }

@@ -28,6 +28,8 @@ import java.util.TimeZone;
  **/
 public class JacksonConverter extends ObjectMapper implements JsonConverter {
 
+    public static final JacksonConverter DEFAULT_SIMPLE_CONVERTER = new JacksonConverter().enableSimple();
+
     public JacksonConverter() {
         // Include.Include.ALWAYS 默认
         // Include.NON_DEFAULT 属性为默认值不序列化
@@ -77,12 +79,12 @@ public class JacksonConverter extends ObjectMapper implements JsonConverter {
      * @return
      */
     public final JacksonConverter enableSimple() {
-        //解析器支持解析单引号
+        // 解析器支持解析单引号
         this.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
-        //解析器支持解析结束符
+        // 解析器支持解析结束符
         this.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES);
-        //允许出现特殊字符和转义符
-//        this.enable(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
+        // 允许出现特殊字符和转义符
+        this.enable(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
         // 设置输入时忽略在JSON字符串中存在但Java对象实际没有的属性,在遇到未知属性的时候不抛出异常
         this.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         return this;

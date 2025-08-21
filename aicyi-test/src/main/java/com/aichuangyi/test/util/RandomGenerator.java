@@ -43,6 +43,17 @@ public class RandomGenerator {
         return firstNum + lastNum;
     }
 
+    /**
+     * 随机枚举
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T extends Enum<T>> T randomEnum(Class<T> clazz) {
+        return clazz.getEnumConstants()[new Random().nextInt(clazz.getEnumConstants().length)];
+    }
+
 
     /**
      * 生成百家姓

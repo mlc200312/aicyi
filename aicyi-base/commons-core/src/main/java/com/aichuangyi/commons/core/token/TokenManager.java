@@ -122,5 +122,5 @@ public interface TokenManager<T, U> {
      *
      * @param userInfo 用户信息
      */
-    void invalidateUserTokens(U userInfo);
+    void invalidateAllTokens(U userInfo);
 }

@@ -3,12 +3,12 @@ package com.aichuangyi.test.util;
 import com.aichuangyi.commons.lang.type.BooleanType;
 import com.aichuangyi.commons.util.DateTimeUtils;
 import com.aichuangyi.commons.util.DateUtils;
+import com.aichuangyi.commons.util.mapper.MapperUtils;
 import com.aichuangyi.test.domain.type.GradeType;
 import com.aichuangyi.test.domain.type.Week;
 import com.aichuangyi.test.domain.type.Season;
 
 import java.util.ArrayList;
-
 import java.util.Date;
 
 import com.aichuangyi.commons.util.id.IdGenerator;
@@ -37,7 +37,7 @@ import java.util.*;
  * @date 2019-05-22
  **/
 public class DataSource {
-    private static final int MAX_NUM = 3;
+    public static final int MAX_NUM = 3;
 
     public static BigDecimal getBigDecimal() {
         return BigDecimal.valueOf(RandomUtils.nextDouble(0, 100)).setScale(2, RoundingMode.HALF_UP);
@@ -60,12 +60,17 @@ public class DataSource {
 
     public static User getUser() {
         User user = new User();
+        user.setUserId(IdGenerator.generateV7Id());
+        user.setDeviceId(IdGenerator.generateV7Id());
+        user.setUsername(RandomGenerator.generateFullName());
+        user.setMasterDevice(false);
+
         user.setId(IdGenerator.generateId());
         user.setAge(RandomUtils.nextInt(0, 100));
         user.setIdCard(IdGenerator.generateV7Id());
-        user.setUserName(RandomGenerator.generateFullName());
+        user.setUsername(RandomGenerator.generateFullName());
         user.setMobile(RandomGenerator.generatePhoneNum());
-        user.setGenderType(GenderType.MAN);
+        user.setGenderType(RandomGenerator.randomEnum(GenderType.class));
         user.setBirthday(LocalDate.now());
         return user;
     }
@@ -75,20 +80,12 @@ public class DataSource {
     }
 
     public static Student getStudent() {
-        Student student = new Student();
-        student.setGradeType(GradeType.FIVE);
+        Student student = MapperUtils.INSTANCE.map(getUser(), Student.class);
+        student.setGradeType(RandomGenerator.randomEnum(GradeType.class));
         student.setScore(getBigDecimal().doubleValue());
         student.setRegisterTime(LocalDateTime.now());
         student.setCreateTime(new Date());
         student.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-
-        student.setId(IdGenerator.generateId());
-        student.setAge(RandomUtils.nextInt(0, 100));
-        student.setIdCard(IdGenerator.generateV7Id());
-        student.setUserName(RandomGenerator.generateFullName());
-        student.setMobile(RandomGenerator.generatePhoneNum());
-        student.setGenderType(GenderType.MAN);
-        student.setBirthday(LocalDate.now());
         return student;
     }
 
@@ -111,7 +108,7 @@ public class DataSource {
 
     public static StudentResp getStudentResp() {
         StudentResp resp = new StudentResp();
-        resp.setGradeType(GradeType.FIVE.getCode());
+        resp.setGradeType(RandomGenerator.randomEnum(GradeType.class).getCode());
         resp.setScore0(getBigDecimal().doubleValue() + "");
         resp.setRegisterTime(DateTimeUtils.formatLDateTime(LocalDateTime.now()));
         resp.setCreateTime(DateUtils.formatDate(new Date()));
@@ -135,15 +132,15 @@ public class DataSource {
         Example example = new Example();
         example.setId(IdGenerator.generateId());
         example.setIdx(RandomUtils.nextInt(1, 99));
-        example.setStatus(BooleanType.FALSE);
+        example.setStatus(RandomGenerator.randomEnum(BooleanType.class));
         example.setAmount(getBigDecimal());
         example.setScore(getBigDecimal().doubleValue());
         example.setDate(new Date());
         example.setLocalDate(LocalDate.now());
         example.setDateTime(LocalDateTime.now());
         example.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        example.setSeason(Season.SPRING);
-        example.setWeek(Week.MON);
+        example.setSeason(RandomGenerator.randomEnum(Season.class));
+        example.setWeek(RandomGenerator.randomEnum(Week.class));
         example.setIdList(Arrays.asList(1L, 2L, 3L));
         example.setUser(getUser());
         example.setStudent(getStudent());
@@ -191,8 +188,8 @@ public class DataSource {
         resp.setLocalDate(LocalDate.now().format(DateTimeFormatter.ofPattern(DateTimeUtils.DATE_PATTERN)));
         resp.setDateTime(DateTimeUtils.formatLDateTime(LocalDateTime.now()));
         resp.setTimestamp(System.currentTimeMillis() + "");
-        resp.setSeason(Season.SPRING.getCode());
-        resp.setWeek(Week.FRI.getCode());
+        resp.setSeason(RandomGenerator.randomEnum(Season.class).getCode());
+        resp.setWeek(RandomGenerator.randomEnum(Week.class).getCode());
         resp.setIdList(Arrays.asList("1", "2", "3"));
         resp.setUser(getUserJson());
         resp.setStudent(getStudentResp());

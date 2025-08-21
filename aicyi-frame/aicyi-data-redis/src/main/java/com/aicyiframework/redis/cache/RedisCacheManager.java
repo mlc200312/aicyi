@@ -21,14 +21,18 @@ import java.util.stream.IntStream;
  **/
 public class RedisCacheManager<T> implements StringCacheManager<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RedisCacheManager.class);
-
     private final RedisTemplate<String, T> redisTemplate;
+    private final CacheConfig cacheConfig;
     private final String cacheName;
 
-    public RedisCacheManager(RedisTemplate<String, T> redisTemplate, String cacheName) {
+    public RedisCacheManager(RedisTemplate<String, T> redisTemplate, CacheConfig cacheConfig, String cacheName) {
         this.redisTemplate = redisTemplate;
+        this.cacheConfig = cacheConfig;
         this.cacheName = cacheName;
+    }
+
+    public RedisCacheManager(RedisTemplate<String, T> redisTemplate, String cacheName) {
+        this(redisTemplate, CacheConfig.defaultConfig(), cacheName);
     }
 
     public RedisTemplate<String, T> getRedisTemplate() {
@@ -41,7 +45,7 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
 
     @Override
     public void put(String key, T value) {
-        put(key, value, CacheConfig.defaultConfig().getDefaultExpireTime(), CacheConfig.defaultConfig().getDefaultTimeUnit());
+        put(key, value, cacheConfig.getDefaultExpireTime(), cacheConfig.getDefaultTimeUnit());
     }
 
     @Override
@@ -61,7 +65,7 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
                     )));
 
             // 为每个键设置相同的过期时间
-            long expireSeconds = CacheConfig.defaultConfig().getDefaultExpireTime();
+            long expireSeconds = cacheConfig.getDefaultExpireTime();
             for (String key : map.keySet()) {
                 connection.keyCommands().expire(buildKey(key).getBytes(StandardCharsets.UTF_8), expireSeconds);
             }
@@ -93,13 +97,11 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
 
     @Override
     public T get(String key, CacheLoader<String, T> loader, long timeout, TimeUnit unit) {
-
         //获取value
         T value = get(key, loader);
 
         //缓存value
         put(buildKey(key), value, timeout, unit);
-
         return value;
     }
 
@@ -155,11 +157,7 @@ public class RedisCacheManager<T> implements StringCacheManager<T> {
     }
 
     private String buildKey(String key) {
-
         // 添加缓存名前缀
-        String cacheKey = cacheName + ":" + key;
-        LOGGER.debug("build key ==> {}", cacheKey);
-
-        return cacheKey;
+        return cacheName + ":" + key;
     }
 }

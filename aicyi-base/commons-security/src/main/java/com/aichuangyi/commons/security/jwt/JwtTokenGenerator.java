@@ -9,7 +9,6 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -44,52 +43,50 @@ public class JwtTokenGenerator implements TokenGenerator<String> {
     }
 
     @Override
-    public String generateToken(String userId, Map<String, Object> claims) {
-        Assert.notBlank(userId, "userId");
-
-        String id = IdGenerator.generateV7Id();
+    public String generateToken(String id, Map<String, Object> claims) {
+        Assert.notBlank(id, "id");
         Date now = new Date();
 
-        // 合并自定义声明和默认声明
-        Map<String, Object> enhancedClaims = new HashMap<>(claims);
-        enhancedClaims.put("userId", userId);
-
-        String token = Jwts.builder()
+        // 自定义声明和默认声明
+        return Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .setSubject(JJWT_SUBJECT)
                 .setIssuer(issuer)
                 .setId(id)
-                .addClaims(enhancedClaims)
+                .addClaims(claims)
                 .setIssuedAt(now)
                 .compact();
-
-        return token;
     }
 
     @Override
-    public String generateToken(String userId, Map<String, Object> claims, long timeout, TimeUnit unit) {
-        Assert.notBlank(userId, "userId");
-        Assert.notNull(unit, "unit");
-
+    public String generateToken(Map<String, Object> claims) {
         String id = IdGenerator.generateV7Id();
+        return generateToken(id, claims);
+    }
+
+    @Override
+    public String generateToken(String id, Map<String, Object> claims, long timeout, TimeUnit unit) {
+        Assert.notBlank(id, "id");
+        Assert.notNull(unit, "unit");
         Date now = new Date();
         Date expiration = new Date(now.getTime() + unit.toMillis(timeout));
 
         // 合并自定义声明和默认声明
-        Map<String, Object> enhancedClaims = new HashMap<>(claims);
-        enhancedClaims.put("userId", userId);
-
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .setSubject(JJWT_SUBJECT)
                 .setIssuer(issuer)
                 .setId(id)
-                .addClaims(enhancedClaims)
+                .addClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .compact();
+    }
 
-        return token;
+    @Override
+    public String generateToken(Map<String, Object> claims, long timeout, TimeUnit unit) {
+        String id = IdGenerator.generateV7Id();
+        return generateToken(id, claims, timeout, unit);
     }
 
     @Override
@@ -136,16 +133,6 @@ public class JwtTokenGenerator implements TokenGenerator<String> {
                     .parseClaimsJws(token)
                     .getBody()
                     .getId());
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<String> getUserId(String token) {
-        Optional<Map<String, Object>> claims = parseToken(token);
-        if (claims.isPresent()) {
-            String userId = (String) claims.get().get("userId");
-            return Optional.ofNullable(userId);
         }
         return Optional.empty();
     }

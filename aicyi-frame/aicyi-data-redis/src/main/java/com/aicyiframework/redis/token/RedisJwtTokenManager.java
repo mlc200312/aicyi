@@ -1,18 +1,20 @@
 package com.aicyiframework.redis.token;
 
-import com.aichuangyi.commons.core.token.CacheTokenManager;
+import com.aichuangyi.commons.core.JsonConverter;
+import com.aichuangyi.commons.core.token.DefaultTokenManager;
+import com.aichuangyi.commons.core.token.TokenConfig;
+import com.aichuangyi.commons.core.token.TokenManager;
 import com.aichuangyi.commons.lang.UserInfo;
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
 import com.aichuangyi.commons.security.jwt.JwtTokenGenerator;
 import com.aichuangyi.commons.util.Assert;
 import com.aichuangyi.commons.util.json.JacksonConverter;
-import com.aichuangyi.commons.core.JsonConverter;
-import com.aichuangyi.commons.core.token.TokenConfig;
+import com.aichuangyi.commons.util.json.JacksonHelper;
 import com.aicyiframework.redis.EnhancedRedisTemplateFactory;
 import com.aicyiframework.redis.cache.RedisCacheFactory;
 import com.aicyiframework.redis.cache.RedisCacheManager;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,185 +24,166 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mr.Min
- * @description Redis缓存Token管理
- * @date 23:33
+ * @description 业务描述
+ * @date 15:48
  **/
-public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<String, U> {
+public class RedisJwtTokenManager<U extends UserInfo> extends DefaultTokenManager<String, U> implements TokenManager<String, U> {
 
     // 日志
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisJwtTokenManager.class);
 
-    // Json序列化
-    private static final JacksonConverter INSTANCE = new JacksonConverter();
     // 用户Token集合前缀
     private static final String USER_TOKENS_PREFIX = "user_tokens:";
-
-    static {
-        INSTANCE.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
 
     private final RedisTemplate<String, String> stringRedisTemplate;
     private final HashOperations<String, String, String> opsForHash;
     private final RedisCacheManager<U> redisCacheManager;
     private final JsonConverter jsonConverter;
 
-    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JsonConverter jsonConverter) {
+    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JacksonConverter jsonConverter, JavaType javaType) {
         super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
-        EnhancedRedisTemplateFactory enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory);
-        RedisCacheFactory redisCacheFactory = new RedisCacheFactory(redisConnectionFactory);
+        EnhancedRedisTemplateFactory enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory, jsonConverter);
+        RedisCacheFactory redisCacheFactory = new RedisCacheFactory(redisConnectionFactory, jsonConverter);
         this.stringRedisTemplate = enhancedRedisTemplateFactory.getStringTemplate();
         this.opsForHash = this.stringRedisTemplate.opsForHash();
-        this.redisCacheManager = (RedisCacheManager<U>) redisCacheFactory.createCache(UserInfo.class);
+        this.redisCacheManager = redisCacheFactory.createCache(javaType);
         this.jsonConverter = jsonConverter;
     }
 
+    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JavaType javaType) {
+        this(tokenConfig, redisConnectionFactory, JacksonConverter.DEFAULT_SIMPLE_CONVERTER, javaType);
+    }
+
     public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory) {
-        this(tokenConfig, redisConnectionFactory, INSTANCE);
+        this(tokenConfig, redisConnectionFactory, JacksonHelper.getType(UserInfo.class));
     }
 
-
-    @Override
-    public U getCache(String token) {
-
-        // 获取用户
-        String id = tokenGenerator.getId(token).get();
-        return redisCacheManager.get(id);
-    }
-
-    @Override
-    public boolean hashCache(String token) {
-
-        // 检查Token是否存在
-        String id = tokenGenerator.getId(token).get();
-        return redisCacheManager.containsKey(id);
-    }
-
-    @Override
-    public long getCacheExpire(String token, TimeUnit unit) {
-
-        // 获取Token的有效期
-        String id = tokenGenerator.getId(token).get();
-        return redisCacheManager.getExpire(id, unit);
-    }
-
-    @Override
-    public void removeCache(String token) {
-
-        // 删除Token
-        String id = tokenGenerator.getId(token).get();
-        redisCacheManager.remove(id);
-    }
 
     @Override
     public String createToken(U userInfo, Map<String, Object> claims, long timeout, TimeUnit unit) {
         Assert.notNull(userInfo, "userInfo");
+        Assert.notNull(userInfo.getUserId(), "userInfo.userId");
+        Assert.notNull(userInfo.getDeviceId(), "userInfo.deviceId");
 
         // 允许创建多Token
-        String hashKey = buildUserTokenKey(userInfo);
         if (config.isMultiTokenAllowed()) {
 
-            // 获取有效的Token列表
+            // 获取Token列表
             Set<String> userTokens = getUserTokens(userInfo);
-
             if (userInfo.isMasterDevice()) {
 
                 // 踢出主设备
-                invalidateOtherToken(userTokens, userInfo.isMasterDevice());
-
+                invalidateOneToken(userTokens, true);
             }
 
-            // 获取用户设备ID列表
-            Set<String> deviceIds = opsForHash.keys(hashKey);
+            // 如果已存在Token数大于最大Token数，踢出其中一个Token
+            if (userTokens.size() >= config.getMultiTokenCount()) {
 
-            // 如果不是当前设备且Token数量大于允许最大计数，踢出其中一个Token
-            if (!deviceIds.contains(userInfo.getDeviceId()) && userTokens.size() >= config.getMultiTokenCount()) {
-
-                // 保留最新Token，踢出该用户其他一个Token
-                invalidateOtherToken(userTokens, false);
-
+                // 保留最新Token，踢出其中一个Token
+                invalidateOneToken(userTokens, false);
             }
         } else {
 
             // 使用户的所有Token失效
-            invalidateUserTokens(userInfo);
-
+            invalidateAllTokens(userInfo);
         }
 
+        // 自定义声明和默认声明组合
         Map<String, Object> enhancedClaims = new HashMap<>(claims);
         String json = jsonConverter.toJson(userInfo);
         Map<String, Object> addClaims = jsonConverter.parseMap(json, Object.class);
         enhancedClaims.putAll(addClaims);
 
-        // 存储用户Token
-        String token = tokenGenerator.generateToken(userInfo.getUserId(), enhancedClaims, timeout, unit);
-        opsForHash.put(hashKey, userInfo.getDeviceId(), token);
+        // 生成Token
+        String id = userInfo.getUserId() + ":" + userInfo.getDeviceId();
+        String token = tokenGenerator.generateToken(id, enhancedClaims, timeout, unit);
 
-        // 存储Token用户
-        String id = tokenGenerator.getId(token).get();
+        // 存储用户Token
+        String hashKey = buildTokenKey(userInfo);
+        opsForHash.put(hashKey, userInfo.getDeviceId(), token);
         redisCacheManager.put(id, userInfo, timeout, unit);
 
         return token;
     }
 
     @Override
+    public boolean validateToken(String token) {
+        Optional<String> opt = tokenGenerator.getId(token);
+        if (opt.isPresent()) {
+            String id = opt.get();
+            return redisCacheManager.containsKey(id);
+        }
+        return false;
+    }
+
+    @Override
+    public Optional<U> parseUserInfo(String token) {
+        Optional<String> opt = tokenGenerator.getId(token);
+        if (opt.isPresent()) {
+            String id = opt.get();
+            U userInfo = redisCacheManager.get(id);
+            return Optional.ofNullable(userInfo);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Long> getTokenExpire(String token, TimeUnit unit) {
+        Optional<String> opt = tokenGenerator.getId(token);
+        if (opt.isPresent()) {
+            String id = opt.get();
+            long expire = redisCacheManager.getExpire(id, unit);
+            return Optional.of(expire);
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Set<String> getUserTokens(U userInfo) {
-
-        // 获取Token的Hash集合
-        String hashKey = buildUserTokenKey(userInfo);
-        Map<String, String> tokenMap = opsForHash.entries(hashKey);
-
-        if (tokenMap == null || tokenMap.isEmpty()) {
+        String hashKey = buildTokenKey(userInfo);
+        Map<String, String> entries = opsForHash.entries(hashKey);
+        if (entries == null || entries.size() == 0) {
             return Collections.emptySet();
         }
-
-        // 过滤掉已失效的Token
         Set<String> userTokens = new HashSet<>();
-        for (Map.Entry<String, String> entry : tokenMap.entrySet()) {
-
-            // 设备ID
-            String key = entry.getKey();
-
-            // Token
-            String value = entry.getValue();
-
-            // 验证Token有效性
-            if (validateToken(value)) {
-
-                // 添加有效Token
-                userTokens.add(value);
-
+        for (Map.Entry<String, String> entry : entries.entrySet()) {
+            if (validateToken(entry.getValue())) {
+                userTokens.add(entry.getValue());
             } else {
-
-                // 自动清理无效Token
-                opsForHash.delete(hashKey, key);
-
+                invalidateToken(entry.getValue());
             }
         }
-
         return userTokens;
     }
 
     @Override
     public void invalidateToken(String token) {
-
-        // 验证Token有效性
-        if (validateToken(token)) {
-
+        Optional<String> opt = tokenGenerator.getId(token);
+        if (opt.isPresent()) {
             // 解析Token并获取用户
             Optional<U> parseUserInfo = parseUserInfo(token);
-
             if (parseUserInfo.isPresent()) {
-
-                // 删除Hash集合里的Token
                 U userInfo = parseUserInfo.get();
-                String hashKey = buildUserTokenKey(userInfo);
+                String hashKey = buildTokenKey(userInfo);
                 opsForHash.delete(hashKey, userInfo.getDeviceId());
-
+                LOGGER.info("ID：{} username：{} deviceId【{}】 token invalidated.", userInfo.getUserId(), userInfo.getUsername(), userInfo.getDeviceId());
             }
-
-            // 删除Token
-            removeCache(token);
+            String id = opt.get();
+            redisCacheManager.remove(id);
         }
+    }
+
+    @Override
+    public void invalidateAllTokens(U userInfo) {
+        // 获取用户所有的Token
+        Set<String> userTokens = getUserTokens(userInfo);
+
+        // 使Token失效
+        userTokens.forEach(this::invalidateToken);
+    }
+
+    private String buildTokenKey(U userInfo) {
+        return redisCacheManager.getCacheName() + ":" + USER_TOKENS_PREFIX + ":" + userInfo.getUserId();
     }
 
     /**
@@ -209,24 +192,19 @@ public class RedisJwtTokenManager<U extends UserInfo> extends CacheTokenManager<
      * @param userTokens
      * @param isMasterDevice
      */
-    protected void invalidateOtherToken(Set<String> userTokens, boolean isMasterDevice) {
+    protected void invalidateOneToken(Set<String> userTokens, boolean isMasterDevice) {
         Iterator<String> iterator = userTokens.iterator();
         while (iterator.hasNext()) {
             String token = iterator.next();
-            Optional<U> opt = parseUserInfo(token);
-            if (opt.isPresent()) {
-                U u = opt.get();
-                if (isMasterDevice == u.isMasterDevice()) {
+            Optional<U> parseUserInfo = parseUserInfo(token);
+            if (parseUserInfo.isPresent()) {
+                U userInfo = parseUserInfo.get();
+                if (isMasterDevice == userInfo.isMasterDevice()) {
                     invalidateToken(token);
                     iterator.remove();
-                    LOGGER.debug("踢出Token，设备号ID:{}.", u.getDeviceId());
                     break;
                 }
             }
         }
-    }
-
-    private String buildUserTokenKey(UserInfo userInfo) {
-        return redisCacheManager.getCacheName() + ":" + USER_TOKENS_PREFIX + ":" + userInfo.getUserId();
     }
 }

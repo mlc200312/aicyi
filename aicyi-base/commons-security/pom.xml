@@ -21,6 +21,11 @@
     <dependencies>
         <dependency>
             <groupId>com.aicyi</groupId>
+            <artifactId>commons-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aicyi</groupId>
             <artifactId>commons-util</artifactId>
         </dependency>
 

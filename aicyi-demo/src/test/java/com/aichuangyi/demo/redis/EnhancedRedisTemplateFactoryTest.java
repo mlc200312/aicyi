@@ -1,6 +1,6 @@
 package com.aichuangyi.demo.redis;
 
-import com.aichuangyi.commons.util.json.JacksonConverter;
+import com.aichuangyi.commons.util.json.JacksonHelper;
 import com.aichuangyi.demo.AicyiDemoApplication;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.domain.Example;
@@ -8,6 +8,7 @@ import com.aichuangyi.test.domain.Message;
 import com.aichuangyi.test.util.DataSource;
 import com.aicyiframework.redis.EnhancedRedisTemplateFactory;
 import com.fasterxml.jackson.databind.JavaType;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,136 +33,180 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     private RedisTemplate<String, String> stringTemplate;
     private RedisTemplate<String, Example> exampleRedisTemplate;
-    private RedisTemplate<String, Example> objectJdkRedisTemplate;
-    private RedisTemplate<String, Message> objectXmlRedisTemplate;
-    private RedisTemplate<String, Example> objectJsonRedisTemplate;
-    private RedisTemplate<String, String> objectStringRedisTemplate;
 
     @Before
     public void before() {
         stringTemplate = enhancedRedisTemplateFactory.getStringTemplate();
-
-        JavaType javaType = new JacksonConverter().constructType(Example.class);
-        exampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(javaType);
-
-        objectJdkRedisTemplate = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.JDK, Example.class);
-        objectXmlRedisTemplate = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.XML, Message.class);
-        objectJsonRedisTemplate = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON, Example.class);
-        objectStringRedisTemplate = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.STRING, String.class);
+        exampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(JacksonHelper.getType(Example.class));
     }
 
     @Test
     public void test() {
         BoundValueOperations<String, String> stringRedisTemplate = stringTemplate.boundValueOps("stringRedisTemplateTest");
         stringRedisTemplate.set("stringRedisTemplateTest");
-        String stringRedisTemplateTestValue = stringRedisTemplate.get();
+        String value = stringRedisTemplate.get();
+
+        assert value.equals("stringRedisTemplateTest");
 
         BoundValueOperations<String, String> intRedisTemplate = stringTemplate.boundValueOps("intRedisTemplateTest");
         intRedisTemplate.set("999999");
         intRedisTemplate.increment();
-        String intRedisTemplateValue = intRedisTemplate.get();
+        String value2 = intRedisTemplate.get();
 
-        log("test", stringRedisTemplateTestValue, intRedisTemplateValue);
+        assert value2.equals("1000000");
+
+        log("test", value, value2);
     }
 
     @Test
-    public void exampleRedisTemplateTest() {
-        JacksonConverter jacksonConverter = new JacksonConverter();
-        BoundValueOperations<String, Example> exampleRedisTemplateTest = exampleRedisTemplate.boundValueOps("exampleRedisTemplateTest");
-        exampleRedisTemplateTest.set(DataSource.getExample());
-        Example example = exampleRedisTemplateTest.get();
+    public void jsonRedisTemplateTest() {
+        BoundValueOperations<String, Example> redisTemplateTest = exampleRedisTemplate.boundValueOps("jsonRedisTemplateTest");
+        redisTemplateTest.set(DataSource.getExample());
+        Example example = redisTemplateTest.get();
+        String exampleStr = stringTemplate.opsForValue().get("jsonRedisTemplateTest");
 
-        JavaType stringType = jacksonConverter.constructType(String.class);
-        RedisTemplate<String, String> stringExampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(stringType);
-        BoundValueOperations<String, String> stringExampleRedisTemplateTest = stringExampleRedisTemplate.boundValueOps("stringExampleRedisTemplateTest");
-        stringExampleRedisTemplateTest.set("stringExampleRedisTemplateTest");
-        String stringExampleRedisTemplateTestValue = stringExampleRedisTemplateTest.get();
+        assert example != null;
 
-        JavaType intType = jacksonConverter.constructType(Integer.class);
-        RedisTemplate<String, Integer> intExampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(intType);
-        BoundValueOperations<String, Integer> intExampleRedisTemplateTest = intExampleRedisTemplate.boundValueOps("intExampleRedisTemplateTest");
-        intExampleRedisTemplateTest.set(999999);
-        Integer intExampleRedisTemplateTestValue = intExampleRedisTemplateTest.get();
+        JavaType exampleType = JacksonHelper.getParametricType(List.class, JacksonHelper.getType(Example.class));
+        RedisTemplate<String, List<Example>> listRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(exampleType);
+        BoundValueOperations<String, List<Example>> jsonListRedisTemplateTest = listRedisTemplate.boundValueOps("jsonListRedisTemplateTest");
+        jsonListRedisTemplateTest.set(DataSource.getExampleList());
+        List<Example> exampleList = jsonListRedisTemplateTest.get();
+        String exampleListStr = stringTemplate.opsForValue().get("jsonListRedisTemplateTest");
 
-        JavaType exampleType = jacksonConverter.constructParametricType(List.class, jacksonConverter.constructType(Example.class));
-        RedisTemplate<String, List<Example>> listExampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(exampleType);
-        BoundValueOperations<String, List<Example>> listExampleRedisTemplateTest = listExampleRedisTemplate.boundValueOps("listExampleRedisTemplateTest");
-        listExampleRedisTemplateTest.set(DataSource.getExampleList());
-        Object listExampleRedisTemplateTestValue = listExampleRedisTemplateTest.get();
+        assert CollectionUtils.isNotEmpty(exampleList) && exampleList.size() == DataSource.MAX_NUM;
 
-        log("exampleRedisTemplateTest", example, stringExampleRedisTemplateTestValue, intExampleRedisTemplateTestValue, listExampleRedisTemplateTestValue);
+        log("jsonRedisTemplateTest", example, exampleStr, exampleList, exampleListStr);
+    }
+
+    @Test
+    public void jsonStrRedisTemplateTest() {
+        JavaType stringType = JacksonHelper.getType(String.class);
+        RedisTemplate<String, String> redisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(stringType);
+        BoundValueOperations<String, String> jsonStrRedisTemplateTest = redisTemplate.boundValueOps("jsonStrRedisTemplateTest");
+        jsonStrRedisTemplateTest.set("jsonStrRedisTemplateTest");
+        String value = jsonStrRedisTemplateTest.get();
+        String valueStr = stringTemplate.opsForValue().get("jsonStrRedisTemplateTest");
+
+        assert value.equals("jsonStrRedisTemplateTest");
+
+        log("jsonStrRedisTemplateTest", value, valueStr);
+    }
+
+    @Test
+    public void jsonIntRedisTemplateTest() {
+        JavaType intType = JacksonHelper.getType(Integer.class);
+        RedisTemplate<String, Integer> redisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(intType);
+        BoundValueOperations<String, Integer> jsonIntRedisTemplateTest = redisTemplate.boundValueOps("jsonIntRedisTemplateTest");
+        jsonIntRedisTemplateTest.set(999999);
+        Integer value = jsonIntRedisTemplateTest.get();
+        jsonIntRedisTemplateTest.increment();
+        String valueStr = stringTemplate.opsForValue().get("jsonIntRedisTemplateTest");
+
+        assert value.equals(999999);
+
+        log("jsonIntRedisTemplate", value, valueStr);
     }
 
     @Test
     public void objectJdkRedisTemplateTest() {
-        BoundValueOperations<String, Example> objectJdkRedisTemplateTest = objectJdkRedisTemplate.boundValueOps("objectJdkRedisTemplateTest");
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JDK);
+        BoundValueOperations<String, Object> objectJdkRedisTemplateTest = genericTemplate.boundValueOps("objectJdkRedisTemplateTest");
         objectJdkRedisTemplateTest.set(DataSource.getExample());
-        Object objectJdkRedisTemplateTestValue = objectJdkRedisTemplateTest.get();
+        Object value = objectJdkRedisTemplateTest.get();
+        String valueStr = stringTemplate.opsForValue().get("objectJdkRedisTemplateTest");
 
-        log("objectJdkRedisTemplateTest", objectJdkRedisTemplateTestValue);
+        assert value instanceof Example && value != null;
+
+        log("objectJdkRedisTemplateTest", value, valueStr);
     }
 
 
     @Test
     public void objectXmlRedisTemplateTest() {
-//        RedisTemplate<String, Object> objectXmlRedisTemplate = new RedisTemplate<>();
-//        objectXmlRedisTemplate.setConnectionFactory(enhancedRedisTemplateFactory.getRedisConnectionFactory());
-//        objectXmlRedisTemplate.setKeySerializer(new StringRedisSerializer());
-//
-//        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-//        marshaller.setPackagesToScan("com.aichuangyi.test.domain");
-//
-//        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-//        unmarshaller.setPackagesToScan("com.aichuangyi.test.domain");
-//
-//        OxmSerializer oxmSerializer = new OxmSerializer(marshaller, unmarshaller);
-//        objectXmlRedisTemplate.setValueSerializer(oxmSerializer);
-//
-//        objectXmlRedisTemplate.afterPropertiesSet();
-
-        BoundValueOperations<String, Message> objectXmlRedisTemplateTest = objectXmlRedisTemplate.boundValueOps("objectXmlRedisTemplateTest");
+        RedisTemplate<String, Message> genericTemplate = enhancedRedisTemplateFactory.getXmlTemplate(Message.class);
+        BoundValueOperations<String, Message> objectXmlRedisTemplateTest = genericTemplate.boundValueOps("objectXmlRedisTemplateTest");
         objectXmlRedisTemplateTest.set(DataSource.getMessage());
-        Message objectXmlRedisTemplateTestValue = objectXmlRedisTemplateTest.get();
+        Message value = objectXmlRedisTemplateTest.get();
+        String valueStr = stringTemplate.opsForValue().get("objectXmlRedisTemplateTest");
 
-        log("objectXmlRedisTemplateTest", objectXmlRedisTemplateTestValue);
+        assert value != null && value instanceof Message;
+
+        log("objectXmlRedisTemplateTest", value, valueStr);
     }
 
     @Test
     public void objectJsonRedisTemplateTest() {
-        BoundValueOperations<String, Example> objectJsonRedisTemplateTest = objectJsonRedisTemplate.boundValueOps("objectJsonRedisTemplateTest");
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
+        BoundValueOperations<String, Object> objectJsonRedisTemplateTest = genericTemplate.boundValueOps("objectJsonRedisTemplateTest");
         objectJsonRedisTemplateTest.set(DataSource.getExample());
-        Example objectJsonRedisTemplateTestValue = objectJsonRedisTemplateTest.get();
+        Object value = objectJsonRedisTemplateTest.get();
+        String valueStr = stringTemplate.opsForValue().get("objectJsonRedisTemplateTest");
 
-        RedisTemplate<String, String> stringJsonRedisTemplate = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON, String.class);
-        BoundValueOperations<String, String> stringJsonRedisTemplateTest = stringJsonRedisTemplate.boundValueOps("stringJsonRedisTemplateTest");
-        stringJsonRedisTemplateTest.set("stringJsonRedisTemplateTest");
-        String stringJsonRedisTemplateTestValue = stringJsonRedisTemplateTest.get();
+        assert value != null;
 
-        RedisTemplate<String, Double> doubleJsonRedisTemplate = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON, Double.class);
-        BoundValueOperations<String, Double> doubleJsonRedisTemplateTest = doubleJsonRedisTemplate.boundValueOps("doubleJsonRedisTemplateTest");
-        doubleJsonRedisTemplateTest.set(Double.valueOf("9.9999"));
-        Double doubleJsonRedisTemplateTestValue = doubleJsonRedisTemplateTest.get();
-
-        log("objectJsonRedisTemplateTest", objectJsonRedisTemplateTestValue, stringJsonRedisTemplateTestValue, doubleJsonRedisTemplateTestValue);
+        log("objectJsonRedisTemplateTest", value, valueStr);
     }
 
     @Test
-    public void objectPrimitiveTypRedisTemplateTest() {
-        BoundValueOperations<String, String> stringPrimitiveTypRedisTemplateTest = objectStringRedisTemplate.boundValueOps("stringPrimitiveTypRedisTemplateTest");
-        stringPrimitiveTypRedisTemplateTest.set("stringPrimitiveTypRedisTemplateTest");
-        String stringPrimitiveTypRedisTemplateTestValue = stringPrimitiveTypRedisTemplateTest.get();
+    public void objectStrJsonRedisTemplateTest() {
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
+        BoundValueOperations<String, Object> objectStrJsonRedisTemplateTest = genericTemplate.boundValueOps("objectStrJsonRedisTemplateTest");
+        objectStrJsonRedisTemplateTest.set("objectStrJsonRedisTemplateTest");
+        Object value = objectStrJsonRedisTemplateTest.get();
+        String valueStr = stringTemplate.opsForValue().get("objectStrJsonRedisTemplateTest");
 
-        RedisTemplate<String, Integer> intPrimitiveTypRedisTemplateTest = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.STRING, Integer.class);
-        BoundValueOperations<String, Integer> intPrimitiveTypRedisTemplate = intPrimitiveTypRedisTemplateTest.boundValueOps("intPrimitiveTypRedisTemplateTest");
-        intPrimitiveTypRedisTemplate.set(999999);
-        intPrimitiveTypRedisTemplate.increment();
-        Integer intPrimitiveTypRedisTemplateValue = intPrimitiveTypRedisTemplate.get();
+        assert value instanceof String;
 
-        RedisTemplate<String, Double> doublePrimitiveTypRedisTemplate = enhancedRedisTemplateFactory.getTemplate(EnhancedRedisTemplateFactory.SerializerType.STRING, Double.class);
-        BoundValueOperations<String, Double> doublePrimitiveTypRedisTemplateTest = doublePrimitiveTypRedisTemplate.boundValueOps("doublePrimitiveTypRedisTemplateTest");
-        doublePrimitiveTypRedisTemplateTest.set(Double.valueOf("9.9999"));
-        Double doublePrimitiveTypRedisTemplateTestValue = doublePrimitiveTypRedisTemplateTest.get();
+        log("objectStrJsonRedisTemplateTest", value, valueStr);
+    }
 
-        log("objectPrimitiveTypRedisTemplateTest", stringPrimitiveTypRedisTemplateTestValue, intPrimitiveTypRedisTemplateValue, doublePrimitiveTypRedisTemplateTestValue);
+    @Test
+    public void objectNumJsonRedisTemplateTest() {
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
+        BoundValueOperations<String, Object> objectNumJsonRedisTemplateTest = genericTemplate.boundValueOps("objectNumJsonRedisTemplateTest");
+        objectNumJsonRedisTemplateTest.set(Double.valueOf("9.9999"));
+        Object value = objectNumJsonRedisTemplateTest.get();
+        objectNumJsonRedisTemplateTest.increment(0.0001);
+        String valueStr = stringTemplate.opsForValue().get("objectNumJsonRedisTemplateTest");
+
+        assert value instanceof Double && ((Double) value).doubleValue() == 9.9999;
+
+        log("objectNumJsonRedisTemplateTest", value, valueStr);
+    }
+
+    @Test
+    public void objectStrTypRedisTemplateTest() {
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.STRING);
+        BoundValueOperations<String, Object> objectStrTypRedisTemplateTest = genericTemplate.boundValueOps("objectStrTypRedisTemplateTest");
+        objectStrTypRedisTemplateTest.set("objectStrTypRedisTemplateTest");
+        Object value = objectStrTypRedisTemplateTest.get();
+        String valueStr = stringTemplate.opsForValue().get("objectStrTypRedisTemplateTest");
+
+        assert value.equals("objectStrTypRedisTemplateTest");
+
+        log("objectStrTypRedisTemplateTest", value, valueStr);
+    }
+
+    @Test
+    public void objectNumTypRedisTemplateTest() {
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.STRING);
+        BoundValueOperations<String, Object> objectNumTypRedisTemplateTest = genericTemplate.boundValueOps("objectNumTypRedisTemplateTest");
+        objectNumTypRedisTemplateTest.set(999999);
+        Object value = objectNumTypRedisTemplateTest.get();
+        objectNumTypRedisTemplateTest.increment();
+        String valueStr = stringTemplate.opsForValue().get("objectNumTypRedisTemplateTest");
+
+        assert value.equals("999999");
+
+        BoundValueOperations<String, Object> objectDoubleTypRedisTemplateTest = genericTemplate.boundValueOps("objectDoubleTypRedisTemplateTest");
+        objectDoubleTypRedisTemplateTest.set(Double.valueOf("9.9999"));
+        Object value2 = objectDoubleTypRedisTemplateTest.get();
+        objectDoubleTypRedisTemplateTest.increment(0.0001);
+        String valueStr2 = stringTemplate.opsForValue().get("objectDoubleTypRedisTemplateTest");
+
+        assert value2.equals("9.9999");
+
+        log("objectPrimitiveTypRedisTemplateTest", value, valueStr, value2, valueStr2);
     }
 }

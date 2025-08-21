@@ -1,7 +1,7 @@
 package com.aichuangyi.test.domain;
 
 import com.aichuangyi.commons.lang.BoBean;
-import com.aichuangyi.commons.lang.BaseBean;
+import com.aichuangyi.commons.lang.UserInfo;
 import com.aichuangyi.test.domain.type.GenderType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
@@ -18,11 +18,10 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @FieldNameConstants
-public class User extends BaseBean implements BoBean {
+public class User extends UserInfo implements BoBean {
     private Long id;
     private Integer age;
     private String idCard;
-    private String userName;
     private String mobile;
     private GenderType genderType;
     @JsonFormat(pattern = "yyyy/MM/dd")

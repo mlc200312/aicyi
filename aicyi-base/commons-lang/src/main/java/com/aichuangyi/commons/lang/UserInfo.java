@@ -11,7 +11,7 @@ public class UserInfo extends BaseBean {
     private String deviceId;
     private boolean isMasterDevice;
 
-    private UserInfo() {
+    public UserInfo() {
     }
 
     public String getUserId() {

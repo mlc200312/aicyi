@@ -33,12 +33,11 @@ public class TokenGeneratorTest extends BaseLoggerTest {
         tokenGenerator = new JwtTokenGenerator(Keys.secretKeyFor(SignatureAlgorithm.HS256), "test");
         expiredToken = tokenGenerator.generateToken(userId, new HashMap<>(), -1 * 3600 * 1000, TimeUnit.MILLISECONDS);
 
-        String fullName = RandomGenerator.generateFullName();
         HashMap<String, Object> claims = new HashMap<>();
-        claims.put("username", fullName);
         claims.put("jti", IdGenerator.generateV7Id());
+        claims.put("userId", IdGenerator.generateId());
         Date date = new Date(System.currentTimeMillis() + 2 * 3600 * 1000);
-        token = tokenGenerator.generateToken(userId, claims, date.getTime(), TimeUnit.MILLISECONDS);
+        token = tokenGenerator.generateToken(claims, date.getTime(), TimeUnit.MILLISECONDS);
     }
 
     @Test
@@ -47,10 +46,9 @@ public class TokenGeneratorTest extends BaseLoggerTest {
         boolean verifyToken1 = tokenGenerator.verifyToken(token);
 
         String getId = tokenGenerator.getId(token).orElse(null);
-        String getUserId = tokenGenerator.getUserId(token).orElse(null);
         Map<String, Object> claims = tokenGenerator.parseToken(token).orElse(null);
-        String username = MapUtils.getString(claims, "username");
+        String getUserId = MapUtils.getString(claims, "userId");
 
-        log("test", token, verifyToken0, verifyToken1, getId, getUserId, getUserId.equals(userId), claims, username);
+        log("test", token, verifyToken0, verifyToken1, getId, getUserId, getUserId.equals(userId), claims);
     }
 }

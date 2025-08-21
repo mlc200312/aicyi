@@ -46,14 +46,6 @@ public class CacheConfig {
         this.recordStats = recordStats;
     }
 
-    public static CacheConfig defaultConfig() {
-        return new CacheConfig();
-    }
-
-    public static CacheConfig custom() {
-        return new CacheConfig();
-    }
-
     public CacheConfig expireAfterWrite(long duration, TimeUnit unit) {
         this.defaultExpireTime = duration;
         this.defaultTimeUnit = unit;
@@ -68,5 +60,9 @@ public class CacheConfig {
     public CacheConfig recordStats(boolean recordStats) {
         this.recordStats = recordStats;
         return this;
+    }
+
+    public static CacheConfig defaultConfig() {
+        return new CacheConfig();
     }
 }
