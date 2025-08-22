@@ -1,8 +1,8 @@
 package com.aichuangyi.demo.redis;
 
-import com.aichuangyi.commons.core.IdGenerator;
 import com.aichuangyi.demo.AicyiDemoApplication;
 import com.aichuangyi.test.domain.BaseLoggerTest;
+import com.aicyiframework.core.IdGenerator;
 import com.aicyiframework.redis.EnhancedRedisTemplateFactory;
 import com.aicyiframework.redis.id.RedisSnowflakeIdGenerator;
 import org.junit.Before;

@@ -13,11 +13,11 @@
     <description>aicyi</description>
 
     <modules>
-        <module>aicyi-base</module>
         <module>aicyi-base-dependencies</module>
         <module>aicyi-base-starter-parent</module>
+        <module>aicyi-commons</module>
         <module>aicyi-demo</module>
-        <module>aicyi-frame</module>
+        <module>aicyi-framework</module>
         <module>aicyi-test</module>
     </modules>
 

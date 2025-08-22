@@ -1,12 +1,11 @@
 package com.aichuangyi.test.commons.util;
 
-
-import com.aichuangyi.commons.core.BizNoGenerator;
-import com.aichuangyi.commons.core.IdGenerator;
-import com.aichuangyi.commons.util.id.Snowflake;
-import com.aichuangyi.commons.util.id.UUIDV7Generator;
+import com.aichuangyi.commons.util.id.IdGenerator;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Mr.Min
@@ -17,26 +16,27 @@ public class IdGeneratorTest extends BaseLoggerTest {
 
     @Test
     public void test() {
-        IdGenerator idGenerator = new Snowflake(0, 0);
-
+        Set<Long> idSet = new HashSet<>();
         for (int i = 0; i < 50; i++) {
-
-            long id = idGenerator.nextId();
+            long id = IdGenerator.generateId();
+            idSet.add(id);
 
             System.out.println(id);
         }
+
+        assert idSet.size() == 50;
     }
 
     @Test
     public void newV7IdTest() {
-
-        BizNoGenerator bizNoGenerator = new UUIDV7Generator();
-
+        Set<String> uuidSet = new HashSet<>();
         for (int i = 0; i < 50; i++) {
-
-            String uuid = bizNoGenerator.generateBizNo();
+            String uuid = IdGenerator.generateV7Id();
+            uuidSet.add(uuid);
 
             System.out.println(uuid);
         }
+
+        assert uuidSet.size() == 50;
     }
 }

@@ -41,6 +41,7 @@ public class MapperUtilsTest extends BaseLoggerTest {
         mapperFactory.classMap(Example.class, ExampleResp.class)
                 .field(Example.Fields.id, ExampleResp.Fields.uuid)
                 .field("student.score", "student.score0")
+                .field("student.username", "student.userName")
                 .exclude(Example.Fields.nothing)
                 .byDefault()
                 .register();
@@ -51,8 +52,13 @@ public class MapperUtilsTest extends BaseLoggerTest {
     public void test() {
         Example example = DataSource.getExample();
         ExampleResp exampleResp = MAPPER_FACADE.map(example, ExampleResp.class);
+
+        assert exampleResp != null;
+
         ExampleResp exampleResp2 = DataSource.getExampleResp();
         Example example2 = MAPPER_FACADE.map(exampleResp2, Example.class);
+
+        assert example2 != null;
 
         log("test", exampleResp, example2);
     }
@@ -62,8 +68,16 @@ public class MapperUtilsTest extends BaseLoggerTest {
         MapperUtils instance = MapperUtils.INSTANCE;
 
         ExampleResp exampleResp = instance.map(DataSource.getExample(), ExampleResp.class);
+
+        assert exampleResp != null;
+
         Example example = instance.map(DataSource.getExampleResp(), Example.class);
+
+        assert example != null;
+
         List<ExampleResp> exampleRespList = instance.mapAsList(DataSource.getExampleList(), ExampleResp.class);
+
+        assert exampleRespList != null && exampleRespList.size() > 0;
 
         log("mapTest2", exampleResp, example, exampleRespList);
     }
@@ -75,12 +89,18 @@ public class MapperUtilsTest extends BaseLoggerTest {
         Map<String, String> configMap = new HashMap<>();
         configMap.put(Example.Fields.id, ExampleResp.Fields.uuid);
         configMap.put("student.score", "student.score0");
+        configMap.put("student.username", "student.userName");
         ExampleResp exampleResp = instance.map(DataSource.getExample(), ExampleResp.class, configMap);
+
+        assert exampleResp != null;
 
         Map<String, String> configMap2 = new HashMap<>();
         configMap2.put(ExampleResp.Fields.uuid, Example.Fields.id);
         configMap2.put("student.score0", "student.score");
+        configMap2.put("student.userName", "student.username");
         Example example = instance.map(DataSource.getExampleResp(), Example.class, configMap2);
+
+        assert example != null;
 
         log("mapTest3", exampleResp, example);
     }
@@ -90,7 +110,12 @@ public class MapperUtilsTest extends BaseLoggerTest {
         MapperUtils instance = MapperUtils.INSTANCE;
 
         Example example = instance.map(DataSource.getExample(), new Example());
-        ExampleResp exampleResp = instance.map(DataSource.getExampleResp(), new ExampleResp());
+
+        assert example != null;
+
+        ExampleResp exampleResp = instance.map(DataSource.getExample(), new ExampleResp());
+
+        assert exampleResp != null;
 
         log("mapTest4", example, exampleResp);
     }

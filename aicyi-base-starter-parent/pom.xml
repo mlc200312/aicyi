@@ -42,7 +42,7 @@
             </dependency>
             <dependency>
                 <groupId>com.aicyi</groupId>
-                <artifactId>commons-security</artifactId>
+                <artifactId>commons-codec</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
