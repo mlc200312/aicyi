@@ -13,7 +13,7 @@
     <description>commons lang</description>
 
     <parent>
-        <groupId>com.aicyi</groupId>
+        <groupId>com.aicyi.commons</groupId>
         <artifactId>aicyi-commons</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>

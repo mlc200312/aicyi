@@ -13,7 +13,7 @@
     <description>aicyiframework core</description>
 
     <parent>
-        <groupId>com.aicyi</groupId>
+        <groupId>com.aicyi.framework</groupId>
         <artifactId>aicyi-framework</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
