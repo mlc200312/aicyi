@@ -1,6 +1,7 @@
 package com.aicyiframework.core.token;
 
 import com.aichuangyi.commons.jwt.JwtGenerator;
+import com.aichuangyi.commons.lang.TokenGenerator;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -13,9 +14,9 @@ import java.util.concurrent.TimeUnit;
 public abstract class DefaultTokenManager<U> implements TokenManager<String, U> {
 
     protected final TokenConfig config;
-    protected final JwtGenerator tokenGenerator;
+    protected final TokenGenerator<String> tokenGenerator;
 
-    public DefaultTokenManager(TokenConfig tokenConfig, JwtGenerator tokenGenerator) {
+    public DefaultTokenManager(TokenConfig tokenConfig, TokenGenerator<String> tokenGenerator) {
         this.config = tokenConfig;
         this.tokenGenerator = tokenGenerator;
     }

@@ -1,4 +1,4 @@
-package com.aicyiframework.core.token;
+package com.aichuangyi.commons.lang;
 
 import java.util.Date;
 import java.util.Map;

@@ -1,5 +1,6 @@
 package com.aichuangyi.commons.jwt;
 
+import com.aichuangyi.commons.lang.TokenGenerator;
 import com.aichuangyi.commons.util.Assert;
 import com.aichuangyi.commons.util.id.IdGenerator;
 import io.jsonwebtoken.*;
@@ -14,10 +15,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description jwt令牌生成器
  * @date 10:50
  **/
-public class JwtGenerator {
+public class JwtGenerator implements TokenGenerator<String> {
     private static final String JJWT_SUBJECT = "aichuangyi";
 
     private final String issuer;
@@ -41,13 +42,7 @@ public class JwtGenerator {
         return secretKey;
     }
 
-    /**
-     * 生成token(永久有效)
-     *
-     * @param id
-     * @param claims
-     * @return Token
-     */
+    @Override
     public String generateToken(String id, Map<String, Object> claims) {
         Assert.notBlank(id, "id");
         Date now = new Date();
@@ -63,26 +58,13 @@ public class JwtGenerator {
                 .compact();
     }
 
-    /**
-     * 生成token(永久有效)
-     *
-     * @param claims
-     * @return Token
-     */
+    @Override
     public String generateToken(Map<String, Object> claims) {
         String id = IdGenerator.generateV7Id();
         return generateToken(id, claims);
     }
 
-    /**
-     * 生成token
-     *
-     * @param id
-     * @param claims
-     * @param timeout
-     * @param unit
-     * @return Token
-     */
+    @Override
     public String generateToken(String id, Map<String, Object> claims, long timeout, TimeUnit unit) {
         Assert.notBlank(id, "id");
         Assert.notNull(unit, "unit");
@@ -101,25 +83,13 @@ public class JwtGenerator {
                 .compact();
     }
 
-    /**
-     * 生成token
-     *
-     * @param claims
-     * @param timeout
-     * @param unit
-     * @return Token
-     */
+    @Override
     public String generateToken(Map<String, Object> claims, long timeout, TimeUnit unit) {
         String id = IdGenerator.generateV7Id();
         return generateToken(id, claims, timeout, unit);
     }
 
-    /**
-     * 验证Token签名
-     *
-     * @param token Token
-     * @return 是否有效
-     */
+    @Override
     public boolean verifyToken(String token) {
         try {
             return Jwts.parserBuilder()
@@ -142,12 +112,7 @@ public class JwtGenerator {
         return false;
     }
 
-    /**
-     * 解析Token声明
-     *
-     * @param token Token
-     * @return 声明集合
-     */
+    @Override
     public Optional<Map<String, Object>> parseToken(String token) {
         if (verifyToken(token)) {
             return Optional.ofNullable(Jwts.parserBuilder()
@@ -159,12 +124,7 @@ public class JwtGenerator {
         return Optional.empty();
     }
 
-    /**
-     * 解析Token声明并获取Id
-     *
-     * @param token Token
-     * @return 声明id
-     */
+    @Override
     public Optional<String> getId(String token) {
         if (verifyToken(token)) {
             return Optional.ofNullable(Jwts.parserBuilder()
@@ -177,12 +137,7 @@ public class JwtGenerator {
         return Optional.empty();
     }
 
-    /**
-     * 解析Token声明并返回有效期
-     *
-     * @param token
-     * @return 声明有效期
-     */
+    @Override
     public Optional<Date> getExpiration(String token) {
         if (verifyToken(token)) {
             return Optional.ofNullable(Jwts.parserBuilder()
