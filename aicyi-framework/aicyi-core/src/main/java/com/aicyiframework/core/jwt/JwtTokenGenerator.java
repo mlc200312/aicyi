@@ -1,4 +1,4 @@
-package com.aichuangyi.commons.jwt;
+package com.aicyiframework.core.jwt;
 
 import com.aichuangyi.commons.lang.TokenGenerator;
 import com.aichuangyi.commons.util.Assert;
@@ -18,18 +18,18 @@ import java.util.concurrent.TimeUnit;
  * @description jwt令牌生成器
  * @date 10:50
  **/
-public class JwtGenerator implements TokenGenerator<String> {
+public class JwtTokenGenerator implements TokenGenerator<String> {
     private static final String JJWT_SUBJECT = "aichuangyi";
 
     private final String issuer;
     private final SecretKey secretKey;
 
-    public JwtGenerator(SecretKey secretKey, String issuer) {
+    public JwtTokenGenerator(SecretKey secretKey, String issuer) {
         this.secretKey = secretKey;
         this.issuer = issuer;
     }
 
-    public JwtGenerator(String secretKey, String issuer) {
+    public JwtTokenGenerator(String secretKey, String issuer) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.issuer = issuer;
     }

@@ -11,7 +11,7 @@ import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.domain.User;
 import com.aichuangyi.test.util.DataSource;
 import com.aichuangyi.test.util.RandomGenerator;
-import com.aicyiframework.redis.token.RedisJwtTokenManager;
+import com.aicyiframework.redis.jwt.RedisJwtTokenManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,9 +1,8 @@
-package com.aichuangyi.demo.commons.logging;
+package com.aichuangyi.demo;
 
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
 import com.aichuangyi.commons.logging.LoggerType;
-import com.aichuangyi.demo.AicyiDemoApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

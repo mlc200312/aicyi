@@ -1,6 +1,6 @@
 package com.aichuangyi.test.commons.jwt;
 
-import com.aichuangyi.commons.jwt.JwtGenerator;
+import com.aicyiframework.core.jwt.JwtTokenGenerator;
 import com.aichuangyi.commons.util.id.IdGenerator;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
  * @Author: Mr.Min
  * @Date: 2025/8/9
  **/
-public class JwtGeneratorTest extends BaseLoggerTest {
-    private JwtGenerator tokenGenerator;
+public class JwtTokenGeneratorTest extends BaseLoggerTest {
+    private JwtTokenGenerator tokenGenerator;
     private String userId;
     private String expiredToken;
     private String token;
@@ -28,7 +28,7 @@ public class JwtGeneratorTest extends BaseLoggerTest {
     @Before
     public void before() {
         userId = IdGenerator.generateId() + "";
-        tokenGenerator = new JwtGenerator(Keys.secretKeyFor(SignatureAlgorithm.HS256), "test");
+        tokenGenerator = new JwtTokenGenerator(Keys.secretKeyFor(SignatureAlgorithm.HS256), "test");
         expiredToken = tokenGenerator.generateToken(userId, new HashMap<>(), -1 * 3600 * 1000, TimeUnit.MILLISECONDS);
 
         HashMap<String, Object> claims = new HashMap<>();

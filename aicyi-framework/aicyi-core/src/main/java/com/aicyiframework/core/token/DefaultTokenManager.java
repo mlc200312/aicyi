@@ -1,6 +1,5 @@
 package com.aicyiframework.core.token;
 
-import com.aichuangyi.commons.jwt.JwtGenerator;
 import com.aichuangyi.commons.lang.TokenGenerator;
 
 import java.util.*;
@@ -82,7 +81,6 @@ public abstract class DefaultTokenManager<U> implements TokenManager<String, U> 
 
             // 创建新Token
             String newToken = createToken(userInfo.get(), claims, config.getRefreshWindow(TimeUnit.SECONDS), TimeUnit.SECONDS);
-
             return Optional.of(newToken);
         }
         return Optional.empty();
@@ -92,7 +90,6 @@ public abstract class DefaultTokenManager<U> implements TokenManager<String, U> 
     public Optional<Long> getTokenExpire(String token, TimeUnit unit) {
         // 解析原Token中的有效期
         Optional<Date> expiration = tokenGenerator.getExpiration(token);
-
         if (expiration.isPresent()) {
             Date now = new Date();
             Date date = expiration.get();

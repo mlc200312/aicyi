@@ -1,6 +1,5 @@
 package com.aicyiframework.core.jwt;
 
-import com.aichuangyi.commons.jwt.JwtGenerator;
 import com.aichuangyi.commons.lang.JsonConverter;
 import com.aichuangyi.commons.lang.UserInfo;
 import com.aichuangyi.commons.util.json.JacksonConverter;
@@ -22,7 +21,7 @@ public class JwtTokenManager<U extends UserInfo> extends DefaultTokenManager<U> 
     private final Type type;
 
     public JwtTokenManager(TokenConfig tokenConfig, JsonConverter jsonConverter, Type type) {
-        super(tokenConfig, new JwtGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
+        super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
         this.jsonConverter = jsonConverter;
         this.type = type;
     }

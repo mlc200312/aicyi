@@ -1,4 +1,4 @@
-package com.aicyiframework.redis.token;
+package com.aicyiframework.redis.jwt;
 
 import com.aichuangyi.commons.lang.JsonConverter;
 import com.aicyiframework.core.token.DefaultTokenManager;
@@ -7,7 +7,7 @@ import com.aicyiframework.core.token.TokenManager;
 import com.aichuangyi.commons.lang.UserInfo;
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
-import com.aichuangyi.commons.jwt.JwtGenerator;
+import com.aicyiframework.core.jwt.JwtTokenGenerator;
 import com.aichuangyi.commons.util.Assert;
 import com.aichuangyi.commons.util.json.JacksonConverter;
 import com.aichuangyi.commons.util.json.JacksonHelper;
@@ -41,7 +41,7 @@ public class RedisJwtTokenManager<U extends UserInfo> extends DefaultTokenManage
     private final JsonConverter jsonConverter;
 
     public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JacksonConverter jsonConverter, JavaType javaType) {
-        super(tokenConfig, new JwtGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
+        super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
         EnhancedRedisTemplateFactory enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory, jsonConverter);
         RedisCacheFactory redisCacheFactory = new RedisCacheFactory(redisConnectionFactory, jsonConverter);
         this.stringRedisTemplate = enhancedRedisTemplateFactory.getStringTemplate();
