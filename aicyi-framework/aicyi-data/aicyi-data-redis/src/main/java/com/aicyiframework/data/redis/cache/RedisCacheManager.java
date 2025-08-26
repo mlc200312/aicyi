@@ -1,4 +1,4 @@
-package com.aicyiframework.redis.cache;
+package com.aicyiframework.data.redis.cache;
 
 import com.aicyiframework.core.cache.CacheConfig;
 import com.aicyiframework.core.cache.StringCacheManager;

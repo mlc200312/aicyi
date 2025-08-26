@@ -21,8 +21,10 @@
 
     <modules>
         <module>aicyi-core</module>
-        <module>aicyi-data-redis</module>
-        <module>aicyi-mybatis-plus</module>
-        <module>aicyi-rabbitmq</module>
+        <module>aicyi-data</module>
+        <module>aicyi-db</module>
+        <module>aicyi-httpclient</module>
+        <module>aicyi-integ</module>
+        <module>aicyi-mq</module>
     </modules>
 </project>

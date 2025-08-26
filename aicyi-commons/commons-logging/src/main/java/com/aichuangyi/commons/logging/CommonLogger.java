@@ -33,6 +33,6 @@ public class CommonLogger extends BaseLogger {
 
     @Override
     protected String concatMsg(Throwable cause, String format, Object... args) {
-        return String.format("%s ==> ERROR:[%s]", StringFormat.format1(format, args), cause.getMessage());
+        return String.format("%s ==> %s", StringFormat.format1(format, args), cause.getMessage());
     }
 }

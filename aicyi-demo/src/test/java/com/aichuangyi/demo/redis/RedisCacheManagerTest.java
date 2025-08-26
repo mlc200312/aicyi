@@ -4,7 +4,7 @@ import com.aicyiframework.core.cache.CacheConfig;
 import com.aicyiframework.core.cache.StringCacheManager;
 import com.aichuangyi.demo.AicyiDemoApplication;
 import com.aichuangyi.test.domain.BaseLoggerTest;
-import com.aicyiframework.redis.cache.RedisCacheFactory;
+import com.aicyiframework.data.redis.cache.RedisCacheFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -30,7 +30,7 @@ public interface EmailManager {
             String subject,
             String content,
             boolean isHtml,
-            List<Attachment> attachments) throws MessageSendException;
+            List<Attachment> attachments);
 
     /**
      * 发送简单文本邮件
@@ -41,7 +41,7 @@ public interface EmailManager {
      * @return
      * @throws MessageSendException
      */
-    boolean sendTextEmail(List<String> toList, String subject, String content) throws MessageSendException;
+    boolean sendTextEmail(List<String> toList, String subject, String content);
 
     /**
      * 发送HTML格式邮件
@@ -52,7 +52,7 @@ public interface EmailManager {
      * @return
      * @throws MessageSendException
      */
-    boolean sendHtmlEmail(List<String> toList, String subject, String htmlContent) throws MessageSendException;
+    boolean sendHtmlEmail(List<String> toList, String subject, String htmlContent);
 
     /**
      * 发送带附件的邮件
@@ -64,7 +64,7 @@ public interface EmailManager {
      * @return
      * @throws MessageSendException
      */
-    boolean sendEmailWithAttachment(List<String> toList, String subject, String content, List<Attachment> attachments) throws MessageSendException;
+    boolean sendEmailWithAttachment(List<String> toList, String subject, String content, List<Attachment> attachments);
 
     /**
      * 发送模板邮件
@@ -76,7 +76,7 @@ public interface EmailManager {
      * @return
      * @throws MessageSendException
      */
-    boolean sendTemplateEmail(List<String> toList, String subject, String templateName, Map<String, Object> templateVariables) throws MessageSendException;
+    boolean sendTemplateEmail(List<String> toList, String subject, String templateName, Map<String, Object> templateVariables);
 
     /**
      * 异步发送邮件

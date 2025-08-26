@@ -1,4 +1,4 @@
-package com.aicyiframework.redis.id;
+package com.aicyiframework.data.redis.id;
 
 import com.aichuangyi.commons.util.id.Snowflake;
 import com.aicyiframework.core.IdGenerator;

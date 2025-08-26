@@ -1,4 +1,4 @@
-package com.aicyiframework.redis.jwt;
+package com.aicyiframework.data.redis.jwt;
 
 import com.aichuangyi.commons.lang.JsonConverter;
 import com.aicyiframework.core.token.DefaultTokenManager;
@@ -11,9 +11,9 @@ import com.aicyiframework.core.jwt.JwtTokenGenerator;
 import com.aichuangyi.commons.util.Assert;
 import com.aichuangyi.commons.util.json.JacksonConverter;
 import com.aichuangyi.commons.util.json.JacksonHelper;
-import com.aicyiframework.redis.EnhancedRedisTemplateFactory;
-import com.aicyiframework.redis.cache.RedisCacheFactory;
-import com.aicyiframework.redis.cache.RedisCacheManager;
+import com.aicyiframework.data.redis.EnhancedRedisTemplateFactory;
+import com.aicyiframework.data.redis.cache.RedisCacheFactory;
+import com.aicyiframework.data.redis.cache.RedisCacheManager;
 import com.fasterxml.jackson.databind.JavaType;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;

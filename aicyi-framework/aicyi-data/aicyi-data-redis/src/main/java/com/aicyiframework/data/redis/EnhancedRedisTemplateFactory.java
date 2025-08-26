@@ -1,4 +1,4 @@
-package com.aicyiframework.redis;
+package com.aicyiframework.data.redis;
 
 import com.aichuangyi.commons.util.json.JacksonConverter;
 import com.fasterxml.jackson.databind.JavaType;

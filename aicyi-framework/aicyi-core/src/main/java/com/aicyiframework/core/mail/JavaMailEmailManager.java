@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
  * @date 2025/8/25
  **/
 public class JavaMailEmailManager implements EmailManager {
+
     private static final Logger logger = LoggerFactory.getLogger(JavaMailEmailManager.class);
 
     private final EmailConfig emailConfig;
@@ -80,26 +81,28 @@ public class JavaMailEmailManager implements EmailManager {
             Transport.send(messageHelper.getMimeMessage());
 
             logger.info("邮件发送成功 - 收件人: {}, 主题: {}", toList, subject);
-            return true;
 
+            return true;
         } catch (Exception e) {
+
             logger.error(e, "发送邮件失败 - 收件人: {}, 主题: {}", toList, subject);
-            return false;
+
+            throw new MessageSendException(e);
         }
     }
 
     @Override
-    public boolean sendTextEmail(List<String> toList, String subject, String content) throws MessageSendException {
+    public boolean sendTextEmail(List<String> toList, String subject, String content) {
         return sendEmail(toList, null, subject, content, false, null);
     }
 
     @Override
-    public boolean sendHtmlEmail(List<String> toList, String subject, String htmlContent) throws MessageSendException {
+    public boolean sendHtmlEmail(List<String> toList, String subject, String htmlContent) {
         return sendEmail(toList, null, subject, htmlContent, true, null);
     }
 
     @Override
-    public boolean sendEmailWithAttachment(List<String> toList, String subject, String content, List<Attachment> attachments) throws MessageSendException {
+    public boolean sendEmailWithAttachment(List<String> toList, String subject, String content, List<Attachment> attachments) {
         return sendEmail(toList, null, subject, content, false, attachments);
     }
 
@@ -122,13 +125,7 @@ public class JavaMailEmailManager implements EmailManager {
 
     @Override
     public CompletableFuture<Boolean> sendEmailAsync(List<String> toList, String subject, String content) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return sendTextEmail(toList, subject, content);
-            } catch (MessageSendException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        return CompletableFuture.supplyAsync(() -> sendTextEmail(toList, subject, content));
     }
 
     @Override

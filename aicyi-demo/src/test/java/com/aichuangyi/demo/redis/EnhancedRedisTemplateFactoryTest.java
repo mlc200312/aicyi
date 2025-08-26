@@ -6,7 +6,7 @@ import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.domain.Example;
 import com.aichuangyi.test.domain.Message;
 import com.aichuangyi.test.util.DataSource;
-import com.aicyiframework.redis.EnhancedRedisTemplateFactory;
+import com.aicyiframework.data.redis.EnhancedRedisTemplateFactory;
 import com.fasterxml.jackson.databind.JavaType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Before;

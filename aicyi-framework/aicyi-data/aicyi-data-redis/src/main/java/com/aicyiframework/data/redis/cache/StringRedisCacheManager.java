@@ -1,6 +1,6 @@
-package com.aicyiframework.redis.cache;
+package com.aicyiframework.data.redis.cache;
 
-import com.aicyiframework.redis.EnhancedRedisTemplateFactory;
+import com.aicyiframework.data.redis.EnhancedRedisTemplateFactory;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 

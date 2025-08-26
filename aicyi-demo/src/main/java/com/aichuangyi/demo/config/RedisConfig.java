@@ -1,6 +1,6 @@
 package com.aichuangyi.demo.config;
 
-import com.aicyiframework.redis.EnhancedRedisTemplateFactory;
+import com.aicyiframework.data.redis.EnhancedRedisTemplateFactory;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;

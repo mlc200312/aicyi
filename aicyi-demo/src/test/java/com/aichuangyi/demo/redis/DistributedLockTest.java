@@ -4,7 +4,7 @@ import com.aicyiframework.core.lock.DistributedLock;
 import com.aichuangyi.demo.AicyiDemoApplication;
 import com.aichuangyi.test.AicyiFactory;
 import com.aichuangyi.test.domain.BaseLoggerTest;
-import com.aicyiframework.redis.lock.RedissonDistributedLock;
+import com.aicyiframework.data.redis.lock.RedissonDistributedLock;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;

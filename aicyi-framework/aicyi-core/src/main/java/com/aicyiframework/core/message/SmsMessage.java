@@ -12,7 +12,7 @@ import java.util.HashMap;
  **/
 public class SmsMessage extends Message<String> {
     private final List<String> phoneNumbers; // 手机号列表
-    private final String templateCode; // 短信模板ID
+    private final String templateId; // 短信模板ID
     private final Map<String, String> templateParams; // 模板参数
     private final String signName; // 短信签名
 
@@ -20,7 +20,7 @@ public class SmsMessage extends Message<String> {
     private SmsMessage(Builder builder) {
         super(builder.content, MessageType.SMS);
         this.phoneNumbers = builder.phoneNumbers;
-        this.templateCode = builder.templateCode;
+        this.templateId = builder.templateId;
         this.templateParams = builder.templateParams;
         this.signName = builder.signName;
     }
@@ -30,8 +30,8 @@ public class SmsMessage extends Message<String> {
         return phoneNumbers;
     }
 
-    public String getTemplateCode() {
-        return templateCode;
+    public String getTemplateId() {
+        return templateId;
     }
 
     public Map<String, String> getTemplateParams() {
@@ -48,7 +48,7 @@ public class SmsMessage extends Message<String> {
     public static class Builder {
         private String content;
         private List<String> phoneNumbers = new ArrayList<>();
-        private String templateCode;
+        private String templateId;
         private Map<String, String> templateParams = new HashMap<>();
         private String signName;
 
@@ -75,8 +75,8 @@ public class SmsMessage extends Message<String> {
             return this;
         }
 
-        public Builder templateCode(String templateCode) {
-            this.templateCode = templateCode;
+        public Builder templateId(String templateId) {
+            this.templateId = templateId;
             return this;
         }
 
@@ -109,8 +109,8 @@ public class SmsMessage extends Message<String> {
             if (phoneNumbers.isEmpty()) {
                 throw new IllegalArgumentException("手机号列表不能为空");
             }
-            if (templateCode == null || templateCode.trim().isEmpty()) {
-                throw new IllegalArgumentException("短信模板ID不能为空");
+            if (content == null && (templateId == null || templateId.trim().isEmpty())) {
+                throw new IllegalArgumentException("短信内容或者短信模板ID不能为空");
             }
             if (signName == null || signName.trim().isEmpty()) {
                 throw new IllegalArgumentException("短信签名不能为空");
@@ -137,10 +137,10 @@ public class SmsMessage extends Message<String> {
     /**
      * 快速创建方法（使用模板参数）
      */
-    public static SmsMessage of(String templateCode, List<String> phoneNumbers,
+    public static SmsMessage of(String templateId, List<String> phoneNumbers,
                                 Map<String, String> templateParams, String signName) {
         return builder()
-                .templateCode(templateCode)
+                .templateId(templateId)
                 .phoneNumbers(phoneNumbers)
                 .templateParams(templateParams)
                 .signName(signName)
@@ -150,10 +150,10 @@ public class SmsMessage extends Message<String> {
     /**
      * 快速创建方法（单手机号）
      */
-    public static SmsMessage of(String templateCode, String phoneNumber,
+    public static SmsMessage of(String templateId, String phoneNumber,
                                 Map<String, String> templateParams, String signName) {
         return builder()
-                .templateCode(templateCode)
+                .templateId(templateId)
                 .phoneNumber(phoneNumber)
                 .templateParams(templateParams)
                 .signName(signName)
@@ -176,7 +176,7 @@ public class SmsMessage extends Message<String> {
      */
     public boolean isValid() {
         return !phoneNumbers.isEmpty() &&
-                templateCode != null && !templateCode.trim().isEmpty() &&
+                (isTemplateMessage() || isContentMessage()) &&
                 signName != null && !signName.trim().isEmpty();
     }
 
@@ -184,7 +184,7 @@ public class SmsMessage extends Message<String> {
      * 是否使用模板发送
      */
     public boolean isTemplateMessage() {
-        return templateCode != null && !templateCode.trim().isEmpty();
+        return templateId != null && !templateId.trim().isEmpty();
     }
 
     /**

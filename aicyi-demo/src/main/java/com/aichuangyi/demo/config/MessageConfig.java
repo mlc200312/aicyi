@@ -5,11 +5,11 @@ import com.aicyiframework.core.mail.EmailManager;
 import com.aicyiframework.core.mail.FreeMarkerTemplateEngine;
 import com.aicyiframework.core.mail.JavaMailEmailManager;
 import com.aicyiframework.core.message.*;
+import com.aicyiframework.integ.sms.EmailToSmsManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.javamail.JavaMailSender;
 
 /**
  * @author Mr.Min
@@ -37,10 +37,17 @@ public class MessageConfig {
     }
 
     @Bean
+    public SmsManager smsManager() {
+        EmailToSmsManager smsManager = new EmailToSmsManager();
+        smsManager.setEmailManager(emailManager());
+        return smsManager;
+    }
+
+    @Bean
     public UnifiedMessageManager unifiedMessageManager() {
         MessageSenderFactory factory = new DefaultMessageSenderFactory();
         factory.registerSender(MessageType.EMAIL, new EmailMessageSender(emailManager()));
-        factory.registerSender(MessageType.SMS, new SmsMessageSender());
+        factory.registerSender(MessageType.SMS, new SmsMessageSender(smsManager()));
         factory.registerSender(MessageType.MQ, new MqMessageSender());
 
         // 创建统一消息服务

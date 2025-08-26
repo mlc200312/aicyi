@@ -5,8 +5,14 @@ package com.aicyiframework.core.exception;
  * @description 消息发送异常
  * @date 2025/8/25
  **/
-public class MessageSendException extends Exception {
+public class MessageSendException extends RuntimeException {
     private final String code;
+
+
+    public MessageSendException(Throwable cause) {
+        super(cause);
+        this.code = "UNKNOWN_ERROR";
+    }
 
     public MessageSendException(String code, String message) {
         super(message);

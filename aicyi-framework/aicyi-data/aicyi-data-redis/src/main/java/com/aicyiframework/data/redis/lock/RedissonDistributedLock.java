@@ -1,4 +1,4 @@
-package com.aicyiframework.redis.lock;
+package com.aicyiframework.data.redis.lock;
 
 import com.aicyiframework.core.lock.DistributedLock;
 import org.redisson.Redisson;

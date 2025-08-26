@@ -28,14 +28,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.aicyiframework</groupId>
+            <groupId>com.aicyiframework.data</groupId>
             <artifactId>aicyi-data-redis</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <groupId>com.aicyiframework</groupId>
+            <artifactId>aicyi-integ</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
