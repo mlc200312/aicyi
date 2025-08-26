@@ -1,13 +1,17 @@
 package com.aicyiframework.core.message;
 
+import com.aicyiframework.core.exception.MessageSendException;
+
 /**
- * MQ消息服务
- */
-public interface MqService {
+ * @author Mr.Min
+ * @description MQ消息服务
+ * @date 2025/8/25
+ **/
+public interface MqManager {
     String send(
             String topic,
             String tag,
-            String body,
+            Object body,
             String key,
             Integer delayLevel) throws MessageSendException;
 }

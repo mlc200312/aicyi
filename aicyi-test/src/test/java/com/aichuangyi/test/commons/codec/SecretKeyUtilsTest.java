@@ -1,6 +1,6 @@
 package com.aichuangyi.test.commons.codec;
 
-import com.aichuangyi.commons.codec.SecretKeyUtils;
+import com.aicyiframework.core.jwt.SecretKeyUtils;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import org.junit.Test;
 

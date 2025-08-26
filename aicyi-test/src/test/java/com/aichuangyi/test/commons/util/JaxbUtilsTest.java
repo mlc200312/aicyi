@@ -4,6 +4,7 @@ import com.aichuangyi.commons.util.JaxbUtils;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.domain.Message;
 import com.aichuangyi.test.util.DataSource;
+import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,8 +25,9 @@ public class JaxbUtilsTest extends BaseLoggerTest {
         xml = DataSource.getMessageXml();
     }
 
+    @SneakyThrows
     @Test
-    public void test() throws JAXBException {
+    public void test() {
         String xml = JaxbUtils.bean2Xml(message);
 
         log("test", xml);

@@ -26,3 +26,9 @@ spring:
     password: root
     database: 0
     timeout: 5000
+
+  mail:
+    host: smtp.163.com
+    port: -1
+    username: minlc1024@163.com
+    password: FMBHOGEPRJONSQQQ

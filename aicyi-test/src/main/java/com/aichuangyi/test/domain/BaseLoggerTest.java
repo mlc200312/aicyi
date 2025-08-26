@@ -25,6 +25,6 @@ public abstract class BaseLoggerTest {
     }
 
     @Test
-    public abstract void test() throws JAXBException;
+    public abstract void test();
 
 }

@@ -1,6 +1,10 @@
 package com.aicyiframework.core.message;
 
-// 1. 在MessageType枚举中添加新类型
+/**
+ * @author Mr.Min
+ * @description 消息类型
+ * @date 2025/8/25
+ **/
 public enum MessageType {
     EMAIL,
     SMS,

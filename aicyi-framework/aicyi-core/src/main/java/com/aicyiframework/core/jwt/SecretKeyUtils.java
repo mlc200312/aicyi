@@ -1,4 +1,4 @@
-package com.aichuangyi.commons.codec;
+package com.aicyiframework.core.jwt;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

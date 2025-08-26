@@ -1,32 +1,32 @@
 package com.aicyiframework.core.message;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
- * 消息发送服务接口
- */
+ * @author Mr.Min
+ * @description 消息发送服务接口
+ * @date 2025/8/25
+ **/
 public interface MessageSender {
     /**
      * 发送消息
-     * @param message 消息对象
+     *
+     * @param content 消息对象
      * @return 发送结果
      */
-    SendResult send(Message message);
-    
+    SendResult send(MessageContent content);
+
     /**
-     * 批量发送消息
-     * @param messages 消息列表
-     * @return 发送结果列表
+     * 异步发送消息
+     *
+     * @param content  消息内容
+     * @param callback 发送结果回调
      */
-    default List<SendResult> sendBatch(List<Message> messages) {
-        return messages.stream().map(this::send).collect(Collectors.toList());
-    }
-    
+    void sendAsync(MessageContent content, SendCallback callback);
+
     /**
-     * 注册新的消息类型处理器
+     * 是否支持该消息类型
+     *
      * @param messageType 消息类型
-     * @param strategy 发送策略
+     * @return 是否支持
      */
-    void registerStrategy(MessageType messageType, MessageSendStrategy strategy);
+    boolean supports(MessageType messageType);
 }
