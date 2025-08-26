@@ -1,6 +1,7 @@
-package com.aicyiframework.core.message;
+package com.aicyiframework.core.push;
 
 import com.aicyiframework.core.exception.MessageSendException;
+import com.aicyiframework.core.message.PushPlatform;
 
 import java.util.List;
 import java.util.Map;

@@ -4,21 +4,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.aicyiframework.db</groupId>
-    <artifactId>aicyi-mybatis-flex</artifactId>
+    <groupId>com.aicyiframework</groupId>
+    <artifactId>aicyi-integration</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyiframework mybatis-flex</name>
-    <description>aicyiframework mybatis-flex</description>
+    <name>aicyiframework integration</name>
+    <description>aicyiframework integration</description>
 
     <parent>
-        <groupId>com.aicyiframework</groupId>
-        <artifactId>aicyi-db</artifactId>
+        <groupId>com.aicyi.framework</groupId>
+        <artifactId>aicyi-framework</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>com.aicyiframework</groupId>
+            <artifactId>aicyi-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
-
 </project>

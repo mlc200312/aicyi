@@ -1,7 +1,7 @@
 package com.aicyiframework.integ.sms;
 
 import com.aicyiframework.core.mail.EmailManager;
-import com.aicyiframework.core.message.SmsManager;
+import com.aicyiframework.core.sms.SmsManager;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

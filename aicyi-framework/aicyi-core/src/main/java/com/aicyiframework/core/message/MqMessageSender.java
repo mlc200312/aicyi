@@ -1,6 +1,7 @@
 package com.aicyiframework.core.message;
 
 import com.aicyiframework.core.exception.MessageSendException;
+import com.aicyiframework.core.mq.MqManager;
 
 /**
  * @author Mr.Min

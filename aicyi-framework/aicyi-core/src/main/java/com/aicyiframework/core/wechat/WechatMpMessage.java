@@ -1,4 +1,7 @@
-package com.aicyiframework.core.message;
+package com.aicyiframework.core.wechat;
+
+import com.aicyiframework.core.message.Message;
+import com.aicyiframework.core.message.MessageType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.aicyiframework.core.message;
+package com.aicyiframework.core.mq;
 
 import com.aicyiframework.core.exception.MessageSendException;
 

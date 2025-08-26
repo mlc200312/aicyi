@@ -5,6 +5,7 @@ import com.aicyiframework.core.mail.EmailManager;
 import com.aicyiframework.core.mail.FreeMarkerTemplateEngine;
 import com.aicyiframework.core.mail.JavaMailEmailManager;
 import com.aicyiframework.core.message.*;
+import com.aicyiframework.core.sms.SmsManager;
 import com.aicyiframework.integ.sms.EmailToSmsManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailProperties;

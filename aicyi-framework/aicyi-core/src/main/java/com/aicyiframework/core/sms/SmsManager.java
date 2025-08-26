@@ -1,4 +1,4 @@
-package com.aicyiframework.core.message;
+package com.aicyiframework.core.sms;
 
 import java.util.List;
 import java.util.Map;

@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.aicyiframework</groupId>
-    <artifactId>aicyi-mq</artifactId>
+    <groupId>com.aicyiframework.mq</groupId>
+    <artifactId>aicyi-rabbitmq</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <packaging>pom</packaging>
-    <name>aicyiframework mq</name>
-    <description>aicyiframework mq</description>
+    <packaging>jar</packaging>
+    <name>aicyiframework rabbitmq</name>
+    <description>aicyiframework rabbitmq</description>
 
     <parent>
         <groupId>com.aicyi.framework</groupId>
@@ -18,8 +18,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <modules>
-        <module>aicyi-spring-boot-start-rabbitmq</module>
-    </modules>
+    <dependencies>
+    </dependencies>
 
 </project>
