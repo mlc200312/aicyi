@@ -19,4 +19,11 @@ public interface MessageContent<T> {
      * @return
      */
     MessageType getMessageType();
+
+    /**
+     * 消息ID
+     *
+     * @return
+     */
+    String getMessageId();
 }

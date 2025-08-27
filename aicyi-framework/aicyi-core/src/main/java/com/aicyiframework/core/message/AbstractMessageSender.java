@@ -21,7 +21,7 @@ public abstract class AbstractMessageSender implements MessageSender {
             return doSend(content);
         } catch (MessageSendException e) {
             logger.error(e, "发送消息失败");
-            return SendResult.failure(e.getCode(), e.getMessage());
+            return SendResult.builder().messageId(content.getMessageId()).buildFailure(e.getCode(), e.getMessage());
         }
     }
 
@@ -52,6 +52,10 @@ public abstract class AbstractMessageSender implements MessageSender {
      * @param content
      */
     protected void validateContent(MessageContent content) {
+        if (!supports(content.getMessageType())) {
+            throw new UnsupportedOperationException("不支持的消息类型");
+        }
+
         if (content == null || content.getContent() == null) {
             throw new IllegalArgumentException("消息内容不能为空");
         }

@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -63,7 +64,7 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
 
     @Test
     public void test3() {
-        SmsMessage smsMessage = SmsMessage.withContent("tes send async sms", Arrays.asList("15910436675"), "TEST");
+        SmsMessage smsMessage = SmsMessage.withContent("tes send sms", Arrays.asList("+8615910436675"), "TEST");
         SendResult result = unifiedMessageManager.send(smsMessage);
 
         log("test3", result);
@@ -74,7 +75,7 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
     public void test4() {
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        SmsMessage smsMessage = SmsMessage.withContent("tes send async sms", Arrays.asList("15910436675"), "TEST");
+        SmsMessage smsMessage = SmsMessage.of("test_template", "+8615910436675", new HashMap<>(), "TEST");
         unifiedMessageManager.sendAsync(smsMessage, new SendCallback() {
             @Override
             public void onComplete(SendResult result) {

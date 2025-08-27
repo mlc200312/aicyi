@@ -67,9 +67,7 @@ public class StringFormat {
                     offset = src.length;
                 } else {
                     ///////////////////////////////////////仅仅修改了该else分支下的个别行代码////////////////////////
-
-                    String value = (argsIndex <= args.length - 1) ?
-                            (args[argsIndex] == null ? "" : args[argsIndex].toString()) : expression.toString();
+                    String value = (argsIndex <= args.length - 1) ? (args[argsIndex] == null ? "" : args[argsIndex].toString()) : expression.toString();
                     builder.append(value);
                     offset = end + closeToken.length();
                     argsIndex++;

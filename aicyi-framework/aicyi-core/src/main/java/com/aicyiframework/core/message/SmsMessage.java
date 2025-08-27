@@ -172,6 +172,17 @@ public class SmsMessage extends Message<String> {
     }
 
     /**
+     * 快速创建方法（直接内容，不使用模板）
+     */
+    public static SmsMessage withContent(String content, String phoneNumber, String signName) {
+        return builder()
+                .content(content)
+                .phoneNumber(phoneNumber)
+                .signName(signName)
+                .build();
+    }
+
+    /**
      * 验证短信消息基本信息是否完整
      */
     public boolean isValid() {

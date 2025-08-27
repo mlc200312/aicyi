@@ -6,11 +6,13 @@ import com.aicyiframework.core.mail.FreeMarkerTemplateEngine;
 import com.aicyiframework.core.mail.JavaMailEmailManager;
 import com.aicyiframework.core.message.*;
 import com.aicyiframework.core.sms.SmsManager;
-import com.aicyiframework.integ.sms.EmailToSmsManager;
+import com.aicyiframework.integ.sms.TwilioSmsManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.HashMap;
 
 /**
  * @author Mr.Min
@@ -39,8 +41,12 @@ public class MessageConfig {
 
     @Bean
     public SmsManager smsManager() {
-        EmailToSmsManager smsManager = new EmailToSmsManager();
-        smsManager.setEmailManager(emailManager());
+//        EmailToSmsManager smsManager = new EmailToSmsManager();
+//        smsManager.setEmailManager(emailManager());
+        String sid = "AC56dfa4c2d3284693ddebd2834b499486";
+        String authToken = "2589e1619a40d8e5bb565b49563fb80d";
+        String twilioNumber = "+19472182422";
+        TwilioSmsManager smsManager = new TwilioSmsManager(sid, authToken, twilioNumber, new HashMap<>());
         return smsManager;
     }
 

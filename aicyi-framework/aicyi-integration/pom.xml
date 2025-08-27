@@ -24,5 +24,12 @@
             <artifactId>aicyi-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <!-- 当前最新稳定版 (仍为9.x系列) -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>9.14.1</version>
+        </dependency>
     </dependencies>
 </project>

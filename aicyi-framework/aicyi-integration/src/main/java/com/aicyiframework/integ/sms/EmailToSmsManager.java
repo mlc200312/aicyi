@@ -1,22 +1,33 @@
 package com.aicyiframework.integ.sms;
 
 import com.aicyiframework.core.mail.EmailManager;
-import com.aicyiframework.core.sms.SmsManager;
-import org.apache.commons.lang3.StringUtils;
+import com.aicyiframework.core.sms.AbstractSmsManager;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 邮件转短信服务
  * @date 11:46
  **/
-public class EmailToSmsManager implements SmsManager {
+public class EmailToSmsManager extends AbstractSmsManager {
 
     private EmailManager emailManager;
+
+    public EmailToSmsManager(ExecutorService executorService, Map<String, String> template) {
+        super(executorService, template);
+    }
+
+    public EmailToSmsManager(Map<String, String> template) {
+        super(template);
+    }
+
+    public EmailToSmsManager() {
+        super(new HashMap<>());
+    }
 
     public EmailManager getEmailManager() {
         return emailManager;
@@ -27,31 +38,7 @@ public class EmailToSmsManager implements SmsManager {
     }
 
     @Override
-    public boolean sendSms(List<String> phoneNumbers, String content, String templateId, Map<String, String> templateParams, String signName) {
-        if (StringUtils.isNotBlank(content)) {
-            return sendTextSms(phoneNumbers, content, signName);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean sendTextSms(List<String> phoneNumbers, String content, String signName) {
-        List<String> toList = phoneNumbers.stream().map(phoneNumber -> phoneNumber + Carrier.CHINA_MOBILE.getGatewayDomain()).collect(Collectors.toList());
-        return emailManager.sendTextEmail(toList, "Notification", content);
-    }
-
-    @Override
-    public boolean sendTemplateSms(List<String> phoneNumbers, String templateId, Map<String, String> templateParams, String signName) {
-        return false;
-    }
-
-    @Override
-    public CompletableFuture<Boolean> sendSmsAsync(List<String> phoneNumbers, String content, String signName) {
-        return CompletableFuture.supplyAsync(() -> sendTextSms(phoneNumbers, content, signName));
-    }
-
-    @Override
-    public CompletableFuture<Boolean> sendSmsAsync(List<String> phoneNumbers, String templateId, Map<String, String> templateParams, String signName) {
-        return CompletableFuture.supplyAsync(() -> sendTemplateSms(phoneNumbers, templateId, templateParams, signName));
+    public boolean sendTextSms(String number, String content, String signName) {
+        return emailManager.sendTextEmail(Arrays.asList(number + Carrier.CHINA_MOBILE.getGatewayDomain()), "Notification", content);
     }
 }

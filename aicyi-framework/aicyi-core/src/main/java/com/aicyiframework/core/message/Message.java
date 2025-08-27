@@ -42,6 +42,7 @@ public abstract class Message<T> extends BaseBean implements MessageContent<T> {
         this.content = content;
     }
 
+    @Override
     public String getMessageId() {
         return messageId;
     }

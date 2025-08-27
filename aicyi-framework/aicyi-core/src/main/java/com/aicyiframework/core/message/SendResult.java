@@ -114,7 +114,6 @@ public class SendResult extends BaseBean {
          */
         public SendResult buildFailure(String errorCode, String errorMsg) {
             this.success = false;
-            this.messageId = null;
             this.channelMessageId = null;
             this.errorCode = errorCode;
             this.errorMsg = errorMsg;
@@ -226,6 +225,7 @@ public class SendResult extends BaseBean {
     public SendResult asFailure(String newErrorCode, String newErrorMsg) {
         return builder()
                 .success(false)
+                .messageId(this.messageId)
                 .errorCode(newErrorCode)
                 .errorMsg(newErrorMsg)
                 .completeTime(this.completeTime)

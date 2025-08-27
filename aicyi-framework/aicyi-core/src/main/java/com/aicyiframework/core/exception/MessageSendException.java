@@ -9,8 +9,8 @@ public class MessageSendException extends RuntimeException {
     private final String code;
 
 
-    public MessageSendException(Throwable cause) {
-        super(cause);
+    public MessageSendException(String message, Throwable cause) {
+        super(message, cause);
         this.code = "UNKNOWN_ERROR";
     }
 

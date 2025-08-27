@@ -10,81 +10,49 @@ import java.util.concurrent.CompletableFuture;
  * @date 2025/8/25
  **/
 public interface SmsManager {
-
-    /**
-     * 发送短信
-     *
-     * @param phoneNumbers
-     * @param content
-     * @param templateId
-     * @param templateParams
-     * @param signName
-     * @return
-     */
-    boolean sendSms(
-            List<String> phoneNumbers,
-            String content,
-            String templateId,
-            Map<String, String> templateParams,
-            String signName);
-
     /**
      * 发送简单文本短信
      *
-     * @param phoneNumbers
+     * @param number
      * @param content
      * @param signName
      * @return
      * @
      */
-    boolean sendTextSms(
-            List<String> phoneNumbers,
-            String content,
-            String signName);
+    boolean sendTextSms(String number, String content, String signName);
 
     /**
      * 发送模板短信
      *
-     * @param phoneNumbers
+     * @param number
      * @param templateId
      * @param templateParams
      * @param signName
      * @return
      * @
      */
-    boolean sendTemplateSms(
-            List<String> phoneNumbers,
-            String templateId,
-            Map<String, String> templateParams,
-            String signName);
+    boolean sendTemplateSms(String number, String templateId, Map<String, String> templateParams, String signName);
 
     /**
      * 异步发送短信
      *
-     * @param phoneNumbers
+     * @param numbers
      * @param content
      * @param signName
      * @return
      * @
      */
-    CompletableFuture<Boolean> sendSmsAsync(
-            List<String> phoneNumbers,
-            String content,
-            String signName);
+    CompletableFuture<Boolean> sendTextSmsAsync(List<String> numbers, String content, String signName);
 
     /**
      * 异步发送短信
      *
-     * @param phoneNumbers
+     * @param numbers
      * @param templateId
      * @param templateParams
      * @param signName
      * @return
      * @
      */
-    CompletableFuture<Boolean> sendSmsAsync(
-            List<String> phoneNumbers,
-            String templateId,
-            Map<String, String> templateParams,
-            String signName);
+    CompletableFuture<Boolean> sendTemplateSmsAsync(List<String> numbers, String templateId, Map<String, String> templateParams, String signName);
 }

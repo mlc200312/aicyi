@@ -21,6 +21,23 @@ public class SmsMessageSender extends AbstractMessageSender {
     }
 
     @Override
+    protected void validateContent(MessageContent content) {
+        if (!supports(content.getMessageType())) {
+            throw new UnsupportedOperationException("不支持的消息类型");
+        }
+
+        if (!(content instanceof SmsMessage)) {
+            throw new IllegalArgumentException("不支持的消息类型");
+        }
+
+        SmsMessage message = (SmsMessage) content;
+
+        if (!message.isValid()) {
+            throw new IllegalArgumentException("消息参数错误");
+        }
+    }
+
+    @Override
     protected SendResult doSend(MessageContent content) throws MessageSendException {
         if (!(content instanceof SmsMessage)) {
             throw new IllegalArgumentException("不支持的消息类型");
@@ -29,12 +46,14 @@ public class SmsMessageSender extends AbstractMessageSender {
         SmsMessage message = (SmsMessage) content;
 
         // 调用实际的短信发送服务
-        boolean isSend = smsManager.sendSms(message.getPhoneNumbers(), message.getContent(), message.getTemplateId(), message.getTemplateParams(), message.getSignName());
+        message.getPhoneNumbers().forEach(number -> {
+            if (message.isContentMessage()) {
+                smsManager.sendTextSms(number, message.getContent(), message.getSignName());
+            } else {
+                smsManager.sendTemplateSms(number, message.getTemplateId(), message.getTemplateParams(), message.getSignName());
+            }
+        });
 
-        if (isSend) {
-            return SendResult.success(message.getMessageId(), message.getBusinessId());
-        }
-
-        return SendResult.failure("SEND SMS FAIL");
+        return SendResult.success(message.getMessageId(), message.getBusinessId());
     }
 }

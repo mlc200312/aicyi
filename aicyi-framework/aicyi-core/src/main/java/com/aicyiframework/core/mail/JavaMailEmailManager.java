@@ -87,7 +87,7 @@ public class JavaMailEmailManager implements EmailManager {
 
             logger.error(e, "发送邮件失败 - 收件人: {}, 主题: {}", toList, subject);
 
-            throw new MessageSendException(e);
+            throw new MessageSendException("发送邮件失败:" + e.getMessage(), e);
         }
     }
 
