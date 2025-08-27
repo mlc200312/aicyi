@@ -37,10 +37,9 @@ public class TwilioSmsManager extends AbstractSmsManager {
                     content
             ).create();
 
-            twilioMessage.getSid();
+            return twilioMessage.getErrorCode() == null;
         } catch (ApiException e) {
             throw new MessageSendException("短信发送失败：" + e.getMessage(), e);
         }
-        return true;
     }
 }

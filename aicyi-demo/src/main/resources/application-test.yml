@@ -15,20 +15,28 @@ spring:
           url: jdbc:mysql://localhost:3306/nacos_config?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&verifyServerCertificate=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
           username: nacos
           password: nacos
-  #        slave_1:
-  #          driver-class-name: com.mysql.cj.jdbc.Driver
-  #          url: jdbc:mysql://123.56.170.25:3306/tavern_home?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&verifyServerCertificate=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
-  #          username: root
-  #          password: 123456
+    #        slave_1:
+    #          driver-class-name: com.mysql.cj.jdbc.Driver
+    #          url: jdbc:mysql://123.56.170.25:3306/tavern_home?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&verifyServerCertificate=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
+    #          username: root
+    #          password: 123456
   redis:
     host: localhost
     port: 6379
     password: root
     database: 0
     timeout: 5000
-
   mail:
     host: smtp.163.com
     port: -1
     username: minlc1024@163.com
     password: FMBHOGEPRJONSQQQ
+    properties:
+      fromName: minliangchao
+
+aicyi:
+  sms:
+    enabled: true
+    username: AC56dfa4c2d3284693ddebd2834b499486
+    password: 2589e1619a40d8e5bb565b49563fb80d
+    from: +19472182422

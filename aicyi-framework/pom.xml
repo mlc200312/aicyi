@@ -20,6 +20,7 @@
     </parent>
 
     <modules>
+        <module>aicyi-autoconfigure</module>
         <module>aicyi-core</module>
         <module>aicyi-data-redis</module>
         <module>aicyi-httpclient</module>

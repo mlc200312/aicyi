@@ -1,18 +1,6 @@
 package com.aichuangyi.demo.config;
 
-import com.aicyiframework.core.mail.EmailConfig;
-import com.aicyiframework.core.mail.EmailManager;
-import com.aicyiframework.core.mail.FreeMarkerTemplateEngine;
-import com.aicyiframework.core.mail.JavaMailEmailManager;
-import com.aicyiframework.core.message.*;
-import com.aicyiframework.core.sms.SmsManager;
-import com.aicyiframework.integ.sms.TwilioSmsManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mail.MailProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.HashMap;
 
 /**
  * @author Mr.Min
@@ -21,43 +9,4 @@ import java.util.HashMap;
  **/
 @Configuration
 public class MessageConfig {
-
-    @Autowired
-    private MailProperties mailProperties;
-
-    @Bean
-    public EmailManager emailManager() {
-        EmailConfig emailConfig = new EmailConfig();
-        emailConfig.setHost(mailProperties.getHost());
-        emailConfig.setPort(mailProperties.getPort());
-        emailConfig.setUsername(mailProperties.getUsername());
-        emailConfig.setPassword(mailProperties.getPassword());
-        emailConfig.setFromAddress("minlc1024@163.com");
-        emailConfig.setFromName("minliangchao");
-        emailConfig.setCharset("UTF-8");
-        JavaMailEmailManager javaMailEmailManager = new JavaMailEmailManager(emailConfig, new FreeMarkerTemplateEngine());
-        return javaMailEmailManager;
-    }
-
-    @Bean
-    public SmsManager smsManager() {
-//        EmailToSmsManager smsManager = new EmailToSmsManager();
-//        smsManager.setEmailManager(emailManager());
-        String sid = "AC56dfa4c2d3284693ddebd2834b499486";
-        String authToken = "2589e1619a40d8e5bb565b49563fb80d";
-        String twilioNumber = "+19472182422";
-        TwilioSmsManager smsManager = new TwilioSmsManager(sid, authToken, twilioNumber, new HashMap<>());
-        return smsManager;
-    }
-
-    @Bean
-    public UnifiedMessageManager unifiedMessageManager() {
-        MessageSenderFactory factory = new DefaultMessageSenderFactory();
-        factory.registerSender(MessageType.EMAIL, new EmailMessageSender(emailManager()));
-        factory.registerSender(MessageType.SMS, new SmsMessageSender(smsManager()));
-        factory.registerSender(MessageType.MQ, new MqMessageSender());
-
-        // 创建统一消息服务
-        return new DefaultUnifiedMessageManager(factory);
-    }
 }
