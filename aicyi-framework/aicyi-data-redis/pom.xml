@@ -22,7 +22,6 @@
         <dependency>
             <groupId>com.aicyiframework</groupId>
             <artifactId>aicyi-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

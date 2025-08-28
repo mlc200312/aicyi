@@ -16,21 +16,22 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <spring.version>5.3.27</spring.version>
         <spring-boot.version>2.6.15</spring-boot.version>
         <spring-cloud.version>2021.0.8</spring-cloud.version>
         <spring-data.version>2.6.10</spring-data.version>
-        <spring-framework.version>5.3.27</spring-framework.version>
 
         <slf4j.version>1.7.36</slf4j.version>
+        <hutool.version>5.8.36</hutool.version>
         <jackson.version>2.13.5</jackson.version>
         <org.quartz.version>2.3.2</org.quartz.version>
+
     </properties>
 
     <dependencyManagement>
         <dependencies>
 
-            <!--spring boot-->
-            <!-- https://spring.io/projects/spring-boot#learn -->
+            <!-- spring boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -38,9 +39,9 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- spring boot end -->
 
-            <!--spring cloud-->
-            <!-- https://spring.io/projects/spring-cloud#learn -->
+            <!-- spring cloud -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -48,6 +49,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- spring cloud end -->
 
             <!--jackson-->
             <!--            <dependency>-->
@@ -58,96 +60,78 @@
             <!--                <scope>import</scope>-->
             <!--            </dependency>-->
 
-            <!--spring start-->
+            <!-- spring -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>${spring-framework.version}</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>${spring-framework.version}</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>${spring-framework.version}</version>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>${spring-framework.version}</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
-                <version>${spring-framework.version}</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>${spring-framework.version}</version>
+                <version>${spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-redis</artifactId>
                 <version>${spring-data.version}</version>
             </dependency>
-            <!--spring end-->
+            <!-- spring end -->
 
-            <!--基础包-->
-            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-core -->
+            <!-- javax -->
             <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-core</artifactId>
-                <version>5.8.36</version>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>1.6.2</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-http -->
             <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-http</artifactId>
-                <version>5.8.36</version>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.0</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-crypto -->
             <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-crypto</artifactId>
-                <version>5.8.36</version>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>1.0.2</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-json -->
             <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-json</artifactId>
-                <version>5.8.36</version>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>4.0.1</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-cache -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-cache</artifactId>
-                <version>5.8.36</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-log -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-log</artifactId>
-                <version>5.8.36</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-jwt -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-jwt</artifactId>
-                <version>5.8.36</version>
-            </dependency>
+            <!-- javax end -->
 
-            <!-- Test -->
+            <!-- base -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.13.2</version>
             </dependency>
-
-            <!--日志-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -158,8 +142,77 @@
                 <artifactId>slf4j-nop</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.10.1</version>
+            </dependency>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>3.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>0.9.11</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>2.1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jcip</groupId>
+                <artifactId>jcip-annotations</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <!-- base -->
+
+            <!-- hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-http</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-crypto</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-json</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-cache</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-log</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-jwt</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <!-- hutool end -->
 
             <!-- apache -->
+            <dependency>
+                <groupId>commons-configuration</groupId>
+                <artifactId>commons-configuration</artifactId>
+                <version>1.10</version>
+            </dependency>
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
@@ -186,11 +239,6 @@
                 <version>1.13</version>
             </dependency>
             <dependency>
-                <groupId>commons-configuration</groupId>
-                <artifactId>commons-configuration</artifactId>
-                <version>1.10</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.5</version>
@@ -199,6 +247,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>4.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>5.2.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -215,24 +268,46 @@
                 <artifactId>httpmime</artifactId>
                 <version>4.5.14</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi</artifactId>
-                <version>5.2.2</version>
-            </dependency>
+            <!-- apache end -->
 
-            <!--utils-->
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.10.1</version>
-            </dependency>
+            <!-- json -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>1.2.83</version>
             </dependency>
-            <!-- MapStruct 依赖 Start-->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.10.1</version>
+            </dependency>
+            <!-- json end -->
+
+            <!-- jwt -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>0.11.5</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>0.11.5</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>0.11.5</version>
+            </dependency>
+            <!-- jwt end -->
+
+            <!-- ORM -->
+            <dependency>
+                <groupId>ma.glasnost.orika</groupId>
+                <artifactId>orika-core</artifactId>
+                <version>1.5.4</version>
+            </dependency>
+            <!-- MapStruct 依赖 -->
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
@@ -243,87 +318,10 @@
                 <artifactId>mapstruct-processor</artifactId>
                 <version>1.5.3.Final</version>
             </dependency>
-            <!-- MapStruct 依赖 End-->
-            <!-- https://mvnrepository.com/artifact/cglib/cglib -->
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib</artifactId>
-                <version>3.3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>2.10.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.belerweb</groupId>
-                <artifactId>pinyin4j</artifactId>
-                <version>2.5.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dom4j</groupId>
-                <artifactId>dom4j</artifactId>
-                <version>2.1.3</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>2.3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>2.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.auth0</groupId>
-                <artifactId>java-jwt</artifactId>
-                <version>4.4.0</version>
-            </dependency>
-            <!--ORM-->
-            <dependency>
-                <groupId>javax.persistence</groupId>
-                <artifactId>persistence-api</artifactId>
-                <version>1.0.2</version>
-            </dependency>
-            <!--多线程并发-->
-            <dependency>
-                <groupId>net.jcip</groupId>
-                <artifactId>jcip-annotations</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>0.9.11</version>
-            </dependency>
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>${org.quartz.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz-jobs</artifactId>
-                <version>${org.quartz.version}</version>
-            </dependency>
-            <!--web-->
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>4.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>3.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>8.0.18</version>
-            </dependency>
-            <!--缓存 -->
+            <!-- MapStruct 依赖 end -->
+            <!-- ORM end -->
+
+            <!-- cache -->
             <dependency>
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
@@ -344,7 +342,6 @@
                 <artifactId>jetcache-starter-redis-lettuce</artifactId>
                 <version>2.5.12</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -360,7 +357,61 @@
                 <artifactId>caffeine</artifactId>
                 <version>2.6.2</version>
             </dependency>
+            <!-- cache end -->
 
+            <!-- db -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.18</version>
+            </dependency>
+            <!-- db end -->
+
+            <!-- web -->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${org.quartz.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz-jobs</artifactId>
+                <version>${org.quartz.version}</version>
+            </dependency>
+            <!-- web end -->
+
+            <!-- utils -->
+            <dependency>
+                <groupId>com.twilio.sdk</groupId>
+                <artifactId>twilio</artifactId>
+                <version>9.14.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.32</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.f4b6a3</groupId>
+                <artifactId>uuid-creator</artifactId>
+                <version>6.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.belerweb</groupId>
+                <artifactId>pinyin4j</artifactId>
+                <version>2.5.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>2.0</version>
+            </dependency>
+            <!-- utils end -->
         </dependencies>
     </dependencyManagement>
 

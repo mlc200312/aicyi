@@ -32,7 +32,6 @@
         <dependency>
             <groupId>com.github.f4b6a3</groupId>
             <artifactId>uuid-creator</artifactId>
-            <version>6.1.1</version>
         </dependency>
 
         <!-- Jackson 依赖 -->
@@ -61,22 +60,9 @@
             <artifactId>cglib</artifactId>
         </dependency>
 
-        <!-- MapStruct 依赖 -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
-            <version>1.5.4</version>
         </dependency>
     </dependencies>
 </project>
