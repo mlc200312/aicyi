@@ -1,0 +1,66 @@
+package com.aichuangyi.example.redis;
+
+import com.aichuangyi.example.AicyiExampleApplication;
+import com.aicyiframework.core.lock.DistributedLock;
+import com.aichuangyi.test.AicyiFactory;
+import com.aichuangyi.test.domain.BaseLoggerTest;
+import com.aicyiframework.data.redis.lock.RedissonDistributedLock;
+import lombok.SneakyThrows;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.*;
+
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = AicyiExampleApplication.class)
+public class DistributedLockTest extends BaseLoggerTest {
+
+    @Autowired
+    private RedissonClient redissonClient;
+
+    private static int LOCK = 3;
+    private Queue<DistributedLock> list = new LinkedList<>();
+
+    @Before
+    public void before() {
+        for (int i = 0; i < LOCK; i++) {
+            list.add(new RedissonDistributedLock("myLock:" + i, redissonClient));
+        }
+    }
+
+    @SneakyThrows
+    @Test
+    public void test() {
+
+        AicyiFactory factory = getAicyiFactory();
+
+        factory.startRun();
+
+        factory.stopRun();
+    }
+
+    private AicyiFactory getAicyiFactory() {
+
+        AicyiFactory factory = new AicyiFactory(500, new AicyiFactory.Robot() {
+            @Override
+            public DistributedLock getLock() {
+                return new RedissonDistributedLock("myLock", redissonClient);
+//                return null;
+            }
+
+            @SneakyThrows
+            @Override
+            public String working() {
+                Thread.sleep(new Random().nextInt(3) * 10);
+                return "I am working...";
+            }
+        });
+        return factory;
+    }
+}

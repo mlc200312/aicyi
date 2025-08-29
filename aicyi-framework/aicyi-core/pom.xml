@@ -20,22 +20,22 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aicyi</groupId>
+            <groupId>com.aicyi.commons</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.aicyi</groupId>
+            <groupId>com.aicyi.commons</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.aicyi</groupId>
+            <groupId>com.aicyi.commons</groupId>
             <artifactId>commons-logging</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.aicyi</groupId>
+            <groupId>com.aicyi.commons</groupId>
             <artifactId>commons-util</artifactId>
         </dependency>
 

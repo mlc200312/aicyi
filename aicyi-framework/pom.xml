@@ -13,7 +13,7 @@
     <description>aicyi framework</description>
 
     <parent>
-        <groupId>com.aicyi</groupId>
+        <groupId>com.aicyi.base</groupId>
         <artifactId>aicyi-base-starter-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../aicyi-base-starter-parent/pom.xml</relativePath>
