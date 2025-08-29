@@ -5,7 +5,7 @@ import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.domain.User;
 import com.aichuangyi.test.util.DataSource;
 import com.aicyiframework.core.message.SendResult;
-import com.aicyiframework.core.mq.MqManager;
+import com.aicyiframework.message.stream.MqManager;
 import com.aichuangyi.example.channel.MessageChannels;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,6 @@ public class MqManagerTest extends BaseLoggerTest {
     @Test
     @Override
     public void test() {
-
         SendResult send = mqManager.send(DataSource.getUser(), "default.exchange", "default.queue");
 
         log("test", send);
@@ -44,7 +43,6 @@ public class MqManagerTest extends BaseLoggerTest {
 
     @Test
     public void test2() {
-
         Message<User> message = MessageBuilder.withPayload(DataSource.getUser()).build();
         boolean send = messageChannel.send(message);
 

@@ -26,7 +26,7 @@
         <module>aicyi-httpclient</module>
         <module>aicyi-integration</module>
         <module>aicyi-mybatis-flex</module>
-        <module>aicyi-rabbitmq</module>
+        <module>aicyi-message</module>
     </modules>
 
     <dependencyManagement>
@@ -45,7 +45,7 @@
 
             <dependency>
                 <groupId>com.aicyiframework</groupId>
-                <artifactId>aicyi-rabbitmq</artifactId>
+                <artifactId>aicyi-message</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>

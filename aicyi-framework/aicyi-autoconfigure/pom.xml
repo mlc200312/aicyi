@@ -26,6 +26,11 @@
 
         <dependency>
             <groupId>com.aicyiframework</groupId>
+            <artifactId>aicyi-message</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aicyiframework</groupId>
             <artifactId>aicyi-integration</artifactId>
             <optional>true</optional>
         </dependency>

@@ -2,13 +2,12 @@ package com.aicyiframework.autoconfigure;
 
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
-import com.aicyiframework.core.mail.EmailConfig;
-import com.aicyiframework.core.mail.EmailManager;
-import com.aicyiframework.core.mail.FreeMarkerTemplateEngine;
-import com.aicyiframework.core.mail.JavaMailEmailManager;
 import com.aicyiframework.core.message.*;
-import com.aicyiframework.core.sms.SmsManager;
 import com.aicyiframework.integ.sms.TwilioSmsManager;
+import com.aicyiframework.message.mail.*;
+import com.aicyiframework.message.sms.SmsManager;
+import com.aicyiframework.message.sms.SmsMessageSender;
+import com.aicyiframework.message.stream.MqMessageSender;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

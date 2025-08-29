@@ -1,7 +1,8 @@
 package com.aicyiframework.integ.sms;
 
-import com.aicyiframework.core.mail.EmailManager;
-import com.aicyiframework.core.sms.AbstractSmsManager;
+
+import com.aicyiframework.message.mail.EmailManager;
+import com.aicyiframework.message.sms.AbstractSmsManager;
 
 import java.util.Arrays;
 import java.util.HashMap;

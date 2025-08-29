@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>com.aicyiframework</groupId>
-            <artifactId>aicyi-core</artifactId>
+            <artifactId>aicyi-message</artifactId>
         </dependency>
 
         <!-- 当前最新稳定版 (仍为9.x系列) -->

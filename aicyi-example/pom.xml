@@ -47,8 +47,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.aicyiframework.mq</groupId>
-            <artifactId>aicyi-rabbitmq</artifactId>
+            <groupId>com.aicyiframework</groupId>
+            <artifactId>aicyi-message</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

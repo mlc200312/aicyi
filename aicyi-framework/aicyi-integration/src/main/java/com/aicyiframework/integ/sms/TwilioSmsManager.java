@@ -1,7 +1,7 @@
 package com.aicyiframework.integ.sms;
 
 import com.aicyiframework.core.exception.MessageSendException;
-import com.aicyiframework.core.sms.AbstractSmsManager;
+import com.aicyiframework.message.sms.AbstractSmsManager;
 import com.twilio.Twilio;
 import com.twilio.exception.ApiException;
 import com.twilio.rest.api.v2010.account.Message;

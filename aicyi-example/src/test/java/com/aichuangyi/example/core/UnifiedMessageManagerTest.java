@@ -2,7 +2,11 @@ package com.aichuangyi.example.core;
 
 import com.aichuangyi.example.AicyiExampleApplication;
 import com.aichuangyi.test.domain.BaseLoggerTest;
-import com.aicyiframework.core.message.*;
+import com.aicyiframework.core.message.SendCallback;
+import com.aicyiframework.core.message.SendResult;
+import com.aicyiframework.core.message.UnifiedMessageManager;
+import com.aicyiframework.message.mail.EmailMessage;
+import com.aicyiframework.message.sms.SmsMessage;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.junit.runner.RunWith;
