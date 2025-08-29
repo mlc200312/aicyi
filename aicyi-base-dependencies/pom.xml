@@ -16,16 +16,15 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring.version>5.3.27</spring.version>
-        <spring-boot.version>2.6.15</spring-boot.version>
-        <spring-cloud.version>2021.0.8</spring-cloud.version>
-        <spring-data.version>2.6.10</spring-data.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
+        <spring-cloud.version>2021.0.9</spring-cloud.version>
+        <spring-data.version>2.7.18</spring-data.version>
 
         <slf4j.version>1.7.36</slf4j.version>
         <hutool.version>5.8.36</hutool.version>
         <jackson.version>2.13.5</jackson.version>
+        <redis.version>7.2.4</redis.version>
         <org.quartz.version>2.3.2</org.quartz.version>
-
     </properties>
 
     <dependencyManagement>
@@ -51,57 +50,13 @@
             </dependency>
             <!-- spring cloud end -->
 
-            <!--jackson-->
-            <!--            <dependency>-->
-            <!--                <groupId>com.fasterxml.jackson</groupId>-->
-            <!--                <artifactId>jackson-bom</artifactId>-->
-            <!--                <version>${jackson.version}</version>-->
-            <!--                <type>pom</type>-->
-            <!--                <scope>import</scope>-->
-            <!--            </dependency>-->
-
-            <!-- spring -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
+            <!-- spring-data -->
             <dependency>
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-redis</artifactId>
                 <version>${spring-data.version}</version>
             </dependency>
-            <!-- spring end -->
+            <!-- spring-data end -->
 
             <!-- javax -->
             <dependency>
