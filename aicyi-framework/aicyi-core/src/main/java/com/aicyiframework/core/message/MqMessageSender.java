@@ -23,9 +23,9 @@ public class MqMessageSender extends AbstractMessageSender {
         }
 
         MqMessage message = (MqMessage) content;
-        // 调用实际的MQ发送服务
 
-        mqManager.send(message.getTopic(), message.getTag(), message.getContent(), message.getKey(), message.getDelayLevel());
+        // 调用实际的MQ发送服务
+        mqManager.send(message);
 
         return SendResult.success(message.getMessageId(), message.getBusinessId());
     }

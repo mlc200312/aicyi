@@ -4,6 +4,7 @@ import com.aichuangyi.commons.lang.BaseBean;
 import com.aichuangyi.commons.util.id.IdGenerator;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,14 +15,17 @@ import java.util.Map;
 public abstract class Message<T> extends BaseBean implements MessageContent<T> {
     private T content;// 消息内容
     private MessageType messageType; // 消息类型
-    private String messageId = IdGenerator.generateV7Id(); // 消息唯一ID
+    private String messageId; // 消息唯一ID
     private String businessId; // 业务ID
     private Map<String, Object> properties; // 扩展属性
-    private LocalDateTime sendTime = LocalDateTime.now(); // 发送时间
+    private LocalDateTime timestamp; // 发送时间
 
     public Message(T content, MessageType messageType) {
         this.content = content;
         this.messageType = messageType;
+        this.messageId = IdGenerator.generateV7Id();
+        this.properties = new HashMap<>();
+        this.timestamp = LocalDateTime.now();
     }
 
     @Override
@@ -67,12 +71,12 @@ public abstract class Message<T> extends BaseBean implements MessageContent<T> {
         this.properties = properties;
     }
 
-    public LocalDateTime getSendTime() {
-        return sendTime;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public void setSendTime(LocalDateTime sendTime) {
-        this.sendTime = sendTime;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }
 

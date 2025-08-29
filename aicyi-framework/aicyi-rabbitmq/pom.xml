@@ -19,6 +19,45 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>com.aicyiframework</groupId>
+            <artifactId>aicyi-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aicyiframework</groupId>
+            <artifactId>aicyi-integration</artifactId>
+        </dependency>
+
+        <!-- Spring Cloud Stream 核心 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream</artifactId>
+        </dependency>
+
+        <!-- RabbitMQ Binder -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Starter for AMQP (可选，提供额外RabbitMQ支持) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+        <!-- 响应式支持（可选） -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.cloud</groupId>-->
+        <!--            <artifactId>spring-cloud-stream-reactive</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- 配置元数据支持 -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.cloud</groupId>-->
+        <!--            <artifactId>spring-cloud-stream-configuration-metadata</artifactId>-->
+        <!--        </dependency>-->
     </dependencies>
 
 </project>

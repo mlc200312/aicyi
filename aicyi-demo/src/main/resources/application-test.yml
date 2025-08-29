@@ -20,12 +20,91 @@ spring:
     #          url: jdbc:mysql://123.56.170.25:3306/tavern_home?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&verifyServerCertificate=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
     #          username: root
     #          password: 123456
+
   redis:
     host: localhost
     port: 6379
     password: root
     database: 0
     timeout: 5000
+
+  cloud:
+    stream:
+      # 默认绑定器配置
+      default-binder: rabbit
+
+      # 绑定器配置
+      binders:
+        rabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: localhost
+                port: 5672
+                username: admin
+                password: admin
+                virtual-host: /
+
+      # 绑定配置
+      bindings:
+        messageOutput:
+          destination: default.exchange
+          group: default.queue
+          content-type: application/json
+          binder: rabbit
+          producer:
+            required-groups: default.queue
+
+        messageInput:
+          destination: default.exchange
+          group: default.queue
+          content-type: application/json
+          binder: rabbit
+          consumer:
+            concurrency: 3
+            max-attempts: 3
+            back-off-initial-interval: 1000
+
+      # RabbitMQ特定配置
+      rabbit:
+        bindings:
+          messageOutput:
+            producer:
+              exchange-type: topic
+              exchange-durable: true
+              exchange-auto-delete: false
+              delayed-exchange: false
+              declare-exchange: true
+              bind-queue: true
+
+          messageInput:
+            consumer:
+              queue-name-group-only: true
+              durable-subscription: true
+              exchange-auto-delete: false
+              declare-exchange: true
+              bind-queue: true
+              republish-to-dlq: true
+              dead-letter-exchange: default.exchange.dlx
+              dead-letter-routing-key: dead.test
+              dead-letter-queue-name: default.queue.dlq
+
+  # RabbitMQ原生配置
+  rabbitmq:
+    template:
+      retry:
+        enabled: true
+        max-attempts: 3
+        initial-interval: 1000ms
+    listener:
+      simple:
+        acknowledge-mode: auto
+        retry:
+          enabled: true
+          max-attempts: 3
+          stateless: true
+
   mail:
     host: smtp.163.com
     port: -1

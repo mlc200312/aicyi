@@ -6,7 +6,6 @@ import com.aicyiframework.core.exception.MessageSendException;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 import java.io.UnsupportedEncodingException;
@@ -27,7 +26,7 @@ public class JavaMailEmailManager implements EmailManager {
     private final TemplateEngine templateEngine; // 可选，用于模板渲染
 
     public JavaMailEmailManager(EmailConfig emailConfig) {
-        this(emailConfig, null);
+        this(emailConfig, new FreeMarkerTemplateEngine());
     }
 
     public JavaMailEmailManager(EmailConfig emailConfig, TemplateEngine templateEngine) {
@@ -149,13 +148,13 @@ public class JavaMailEmailManager implements EmailManager {
         // 设置发件人
         if (emailConfig.getFromName() != null) {
             try {
-                messageHelper.setFrom(new InternetAddress(emailConfig.getFromAddress(), emailConfig.getFromName()));
+                messageHelper.setFrom(emailConfig.getFromAddress(), emailConfig.getFromName());
             } catch (UnsupportedEncodingException e) {
                 logger.error(e, "set from address error");
                 throw new RuntimeException(e);
             }
         } else {
-            messageHelper.setFrom(new InternetAddress(emailConfig.getFromAddress()));
+            messageHelper.setFrom(emailConfig.getFromAddress());
         }
 
         // 设置收件人

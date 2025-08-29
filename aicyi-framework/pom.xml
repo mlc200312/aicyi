@@ -42,6 +42,12 @@
                 <artifactId>aicyi-integration</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.aicyiframework</groupId>
+                <artifactId>aicyi-rabbitmq</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
