@@ -1,7 +1,7 @@
 package com.aichuangyi.example.redis;
 
 import com.aichuangyi.example.AicyiExampleApplication;
-import com.aicyiframework.core.lock.DistributedLock;
+import com.aichuangyi.commons.core.lock.DistributedLock;
 import com.aichuangyi.test.AicyiFactory;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aicyiframework.data.redis.lock.RedissonDistributedLock;

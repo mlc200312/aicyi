@@ -21,6 +21,7 @@
 
     <modules>
         <module>commons-codec</module>
+        <module>commons-core</module>
         <module>commons-lang</module>
         <module>commons-logging</module>
         <module>commons-util</module>

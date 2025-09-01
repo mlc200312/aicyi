@@ -1,6 +1,6 @@
 package com.aicyiframework.data.redis.lock;
 
-import com.aicyiframework.core.lock.DistributedLock;
+import com.aichuangyi.commons.core.lock.DistributedLock;
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;

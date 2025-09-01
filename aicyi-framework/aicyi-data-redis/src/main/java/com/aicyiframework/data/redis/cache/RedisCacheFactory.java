@@ -1,7 +1,7 @@
 package com.aicyiframework.data.redis.cache;
 
-import com.aicyiframework.core.cache.CacheConfig;
-import com.aicyiframework.core.cache.CacheFactory;
+import com.aichuangyi.commons.core.cache.CacheConfig;
+import com.aichuangyi.commons.core.cache.CacheFactory;
 import com.aichuangyi.commons.util.json.JacksonConverter;
 import com.aicyiframework.data.redis.EnhancedRedisTemplateFactory;
 import com.fasterxml.jackson.databind.JavaType;

@@ -20,7 +20,6 @@ public class IdGeneratorTest extends BaseLoggerTest {
         for (int i = 0; i < 50; i++) {
             long id = IdGenerator.generateId();
             idSet.add(id);
-
             System.out.println(id);
         }
 
@@ -33,7 +32,6 @@ public class IdGeneratorTest extends BaseLoggerTest {
         for (int i = 0; i < 50; i++) {
             String uuid = IdGenerator.generateV7Id();
             uuidSet.add(uuid);
-
             System.out.println(uuid);
         }
 

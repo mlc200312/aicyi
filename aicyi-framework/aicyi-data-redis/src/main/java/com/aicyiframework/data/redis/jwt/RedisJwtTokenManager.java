@@ -1,13 +1,13 @@
 package com.aicyiframework.data.redis.jwt;
 
 import com.aichuangyi.commons.lang.JsonConverter;
-import com.aicyiframework.core.token.DefaultTokenManager;
-import com.aicyiframework.core.token.TokenConfig;
-import com.aicyiframework.core.token.TokenManager;
+import com.aichuangyi.commons.core.token.DefaultTokenManager;
+import com.aichuangyi.commons.core.token.TokenConfig;
+import com.aichuangyi.commons.core.token.TokenManager;
 import com.aichuangyi.commons.lang.UserInfo;
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
-import com.aicyiframework.core.jwt.JwtTokenGenerator;
+import com.aichuangyi.commons.core.jwt.JwtTokenGenerator;
 import com.aichuangyi.commons.util.Assert;
 import com.aichuangyi.commons.util.json.JacksonConverter;
 import com.aichuangyi.commons.util.json.JacksonHelper;

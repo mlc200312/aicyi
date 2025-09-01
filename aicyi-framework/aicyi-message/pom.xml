@@ -20,8 +20,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aicyiframework</groupId>
-            <artifactId>aicyi-core</artifactId>
+            <groupId>com.aicyi.commons</groupId>
+            <artifactId>commons-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

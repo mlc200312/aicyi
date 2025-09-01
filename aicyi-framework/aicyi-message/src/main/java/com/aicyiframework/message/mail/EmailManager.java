@@ -1,6 +1,6 @@
 package com.aicyiframework.message.mail;
 
-import com.aicyiframework.core.exception.MessageSendException;
+import com.aichuangyi.commons.core.exception.MessageSendException;
 
 import java.util.List;
 import java.util.Map;

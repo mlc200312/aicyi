@@ -1,7 +1,7 @@
 package com.aicyiframework.message.stream;
 
 import com.aichuangyi.commons.util.id.IdGenerator;
-import com.aicyiframework.core.message.SendResult;
+import com.aichuangyi.commons.core.message.SendResult;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;

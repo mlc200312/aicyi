@@ -1,7 +1,7 @@
 package com.aicyiframework.data.redis.id;
 
 import com.aichuangyi.commons.util.id.Snowflake;
-import com.aicyiframework.core.IdGenerator;
+import com.aichuangyi.commons.core.IdGenerator;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;

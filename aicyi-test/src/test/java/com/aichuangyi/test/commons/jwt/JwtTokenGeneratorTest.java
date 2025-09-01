@@ -1,6 +1,7 @@
 package com.aichuangyi.test.commons.jwt;
 
-import com.aicyiframework.core.jwt.JwtTokenGenerator;
+import com.aichuangyi.commons.core.jwt.JwtTokenGenerator;
+import com.aichuangyi.commons.util.DateUtils;
 import com.aichuangyi.commons.util.id.IdGenerator;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -33,7 +34,7 @@ public class JwtTokenGeneratorTest extends BaseLoggerTest {
 
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("jti", IdGenerator.generateV7Id());
-        claims.put("userId", IdGenerator.generateId());
+        claims.put("userId", userId);
         Date date = new Date(System.currentTimeMillis() + 2 * 3600 * 1000);
         token = tokenGenerator.generateToken(claims, date.getTime(), TimeUnit.MILLISECONDS);
     }
@@ -43,10 +44,17 @@ public class JwtTokenGeneratorTest extends BaseLoggerTest {
         boolean verifyToken0 = tokenGenerator.verifyToken(expiredToken);
         boolean verifyToken1 = tokenGenerator.verifyToken(token);
 
-        String getId = tokenGenerator.getId(token).orElse(null);
         Map<String, Object> claims = tokenGenerator.parseToken(token).orElse(null);
+        String getId = tokenGenerator.getId(token).orElse(null);
+        Date date = tokenGenerator.getExpiration(token).get();
         String getUserId = MapUtils.getString(claims, "userId");
 
-        log("test", token, verifyToken0, verifyToken1, getId, getUserId, getUserId.equals(userId), claims);
+        assert !verifyToken0;
+
+        assert verifyToken1;
+
+        assert getUserId.equals(userId);
+
+        log("test", token, verifyToken0, verifyToken1, claims, getId, DateUtils.formatDate(date), getUserId, getUserId.equals(userId));
     }
 }

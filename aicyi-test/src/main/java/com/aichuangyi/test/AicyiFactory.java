@@ -4,7 +4,7 @@ import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
 import com.aichuangyi.commons.util.DateTimeUtils;
 import com.aichuangyi.test.util.RandomGenerator;
-import com.aicyiframework.core.lock.DistributedLock;
+import com.aichuangyi.commons.core.lock.DistributedLock;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

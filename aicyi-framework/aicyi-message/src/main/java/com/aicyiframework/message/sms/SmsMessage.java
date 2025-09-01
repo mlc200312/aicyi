@@ -1,7 +1,7 @@
 package com.aicyiframework.message.sms;
 
-import com.aicyiframework.core.message.AbstractMessage;
-import com.aicyiframework.core.message.MessageType;
+import com.aichuangyi.commons.core.message.AbstractMessage;
+import com.aichuangyi.commons.core.message.MessageType;
 
 import java.util.List;
 import java.util.Map;

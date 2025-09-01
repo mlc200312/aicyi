@@ -2,7 +2,7 @@ package com.aichuangyi.example.redis;
 
 import com.aichuangyi.example.AicyiExampleApplication;
 import com.aichuangyi.test.domain.BaseLoggerTest;
-import com.aicyiframework.core.IdGenerator;
+import com.aichuangyi.commons.core.IdGenerator;
 import com.aicyiframework.data.redis.EnhancedRedisTemplateFactory;
 import com.aicyiframework.data.redis.id.RedisSnowflakeIdGenerator;
 import org.junit.Before;

@@ -1,10 +1,10 @@
 package com.aicyiframework.message.stream;
 
-import com.aicyiframework.core.message.AbstractMessageSender;
-import com.aicyiframework.core.message.MessageContent;
-import com.aicyiframework.core.message.MessageType;
-import com.aicyiframework.core.message.SendResult;
-import com.aicyiframework.core.exception.MessageSendException;
+import com.aichuangyi.commons.core.message.AbstractMessageSender;
+import com.aichuangyi.commons.core.message.MessageContent;
+import com.aichuangyi.commons.core.message.MessageType;
+import com.aichuangyi.commons.core.message.SendResult;
+import com.aichuangyi.commons.core.exception.MessageSendException;
 
 /**
  * @author Mr.Min

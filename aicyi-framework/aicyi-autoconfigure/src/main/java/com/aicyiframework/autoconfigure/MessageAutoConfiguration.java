@@ -1,8 +1,8 @@
 package com.aicyiframework.autoconfigure;
 
+import com.aichuangyi.commons.core.message.*;
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
-import com.aicyiframework.core.message.*;
 import com.aicyiframework.integ.sms.TwilioSmsManager;
 import com.aicyiframework.message.mail.*;
 import com.aicyiframework.message.sms.SmsManager;

@@ -1,7 +1,7 @@
 package com.aicyiframework.message.stream;
 
 
-import com.aicyiframework.core.message.SendResult;
+import com.aichuangyi.commons.core.message.SendResult;
 
 /**
  * @author Mr.Min

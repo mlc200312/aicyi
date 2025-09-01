@@ -21,12 +21,13 @@
     <dependencies>
         <dependency>
             <groupId>com.aicyi.commons</groupId>
-            <artifactId>commons-util</artifactId>
+            <artifactId>commons-logging</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.aicyi.commons</groupId>
-            <artifactId>commons-logging</artifactId>
+            <artifactId>commons-util</artifactId>
         </dependency>
 
         <dependency>

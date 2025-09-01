@@ -1,9 +1,9 @@
 package com.aichuangyi.example.core;
 
-import com.aicyiframework.core.jwt.JwtTokenManager;
-import com.aicyiframework.core.token.DefaultTokenConfig;
-import com.aicyiframework.core.token.TokenConfig;
-import com.aicyiframework.core.token.TokenManager;
+import com.aichuangyi.commons.core.jwt.JwtTokenManager;
+import com.aichuangyi.commons.core.token.DefaultTokenConfig;
+import com.aichuangyi.commons.core.token.TokenConfig;
+import com.aichuangyi.commons.core.token.TokenManager;
 import com.aichuangyi.commons.lang.UserInfo;
 import com.aichuangyi.commons.util.id.IdGenerator;
 import com.aichuangyi.commons.util.json.JacksonHelper;

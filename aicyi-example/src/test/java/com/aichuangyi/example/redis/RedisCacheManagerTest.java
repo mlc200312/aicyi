@@ -1,8 +1,8 @@
 package com.aichuangyi.example.redis;
 
 import com.aichuangyi.example.AicyiExampleApplication;
-import com.aicyiframework.core.cache.CacheConfig;
-import com.aicyiframework.core.cache.StringCacheManager;
+import com.aichuangyi.commons.core.cache.CacheConfig;
+import com.aichuangyi.commons.core.cache.StringCacheManager;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aicyiframework.data.redis.cache.RedisCacheFactory;
 import org.junit.Before;

@@ -21,8 +21,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aicyiframework</groupId>
-            <artifactId>aicyi-core</artifactId>
+            <groupId>com.aicyi.commons</groupId>
+            <artifactId>commons-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
@@ -37,18 +37,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
         <dependency>

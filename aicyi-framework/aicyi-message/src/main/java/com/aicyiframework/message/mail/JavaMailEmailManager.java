@@ -2,7 +2,7 @@ package com.aicyiframework.message.mail;
 
 import com.aichuangyi.commons.logging.Logger;
 import com.aichuangyi.commons.logging.LoggerFactory;
-import com.aicyiframework.core.exception.MessageSendException;
+import com.aichuangyi.commons.core.exception.MessageSendException;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.*;

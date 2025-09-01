@@ -1,6 +1,6 @@
 package com.aichuangyi.test.commons.codec;
 
-import com.aicyiframework.core.jwt.SecretKeyUtils;
+import com.aichuangyi.commons.core.jwt.SecretKeyUtils;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import org.junit.Test;
 
@@ -15,14 +15,12 @@ public class SecretKeyUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test() {
-        String randomSecretKeyStr = SecretKeyUtils.randomSecretKeyStr();
+        String randomKey = SecretKeyUtils.secretKeyToString(SecretKeyUtils.randomSecretKey());
+        SecretKey secretKey = SecretKeyUtils.toHmacSHA256SecretKey(randomKey);
+        String keyToString = SecretKeyUtils.secretKeyToString(secretKey);
 
-        SecretKey secretKey = SecretKeyUtils.stringToKey(randomSecretKeyStr);
+        assert randomKey.equals(keyToString);
 
-        String keyToString = SecretKeyUtils.keyToString(secretKey);
-
-        assert randomSecretKeyStr.equals(keyToString);
-
-        log("test", randomSecretKeyStr, keyToString);
+        log("test", randomKey, keyToString);
     }
 }

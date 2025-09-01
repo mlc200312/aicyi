@@ -10,10 +10,8 @@ import com.aichuangyi.commons.util.json.JsonUtils;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.domain.Example;
 import com.aichuangyi.test.util.DataSource;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import lombok.Getter;
 import lombok.Setter;
-import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +31,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
     @Before
     public void beforeTest() {
         a = new A(new B(new C()));
-        aList = Lists.newArrayList(a);
+        aList = Arrays.asList(a);
         aMap = new HashMap<>();
         aMap.put(IdGenerator.generateV7Id(), a);
     }

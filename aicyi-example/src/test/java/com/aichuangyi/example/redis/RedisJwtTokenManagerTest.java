@@ -1,12 +1,12 @@
 package com.aichuangyi.example.redis;
 
 import com.aichuangyi.example.AicyiExampleApplication;
-import com.aicyiframework.core.token.TokenConfig;
-import com.aicyiframework.core.token.TokenManager;
+import com.aichuangyi.commons.core.token.TokenConfig;
+import com.aichuangyi.commons.core.token.TokenManager;
 import com.aichuangyi.commons.util.id.IdGenerator;
 import com.aichuangyi.commons.util.json.JacksonHelper;
 import com.aichuangyi.commons.lang.UserInfo;
-import com.aicyiframework.core.token.DefaultTokenConfig;
+import com.aichuangyi.commons.core.token.DefaultTokenConfig;
 import com.aichuangyi.test.domain.BaseLoggerTest;
 import com.aichuangyi.test.domain.User;
 import com.aichuangyi.test.util.DataSource;
