@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.aicyi.base</groupId>
+    <groupId>io.github.aicyi.base</groupId>
     <artifactId>aicyi-base-starter-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -18,7 +18,7 @@
     </properties>
 
     <parent>
-        <groupId>com.aicyi.base</groupId>
+        <groupId>io.github.aicyi.base</groupId>
         <artifactId>aicyi-base-dependencies</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../aicyi-base-dependencies/pom.xml</relativePath>
@@ -27,27 +27,27 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.aicyi.commons</groupId>
+                <groupId>io.github.aicyi.commons</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.aicyi.commons</groupId>
+                <groupId>io.github.aicyi.commons</groupId>
                 <artifactId>commons-core</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.aicyi.commons</groupId>
+                <groupId>io.github.aicyi.commons</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.aicyi.commons</groupId>
+                <groupId>io.github.aicyi.commons</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.aicyi.commons</groupId>
+                <groupId>io.github.aicyi.commons</groupId>
                 <artifactId>commons-util</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>

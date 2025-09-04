@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.aicyi.test</groupId>
+    <groupId>io.github.aicyi.test</groupId>
     <artifactId>aicyi-test</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -13,7 +13,7 @@
     <description>aicyi test</description>
 
     <parent>
-        <groupId>com.aicyi.base</groupId>
+        <groupId>io.github.aicyi.base</groupId>
         <artifactId>aicyi-base-starter-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../aicyi-base-starter-parent/pom.xml</relativePath>
@@ -21,7 +21,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aicyi.commons</groupId>
+            <groupId>io.github.aicyi.commons</groupId>
             <artifactId>commons-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

@@ -1,0 +1,168 @@
+package io.github.aicyi.test.commons.util;
+
+import io.github.aicyi.commons.lang.JsonConverter;
+import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.UserInfo;
+import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.json.JacksonConverter;
+import io.github.aicyi.commons.util.json.JacksonHelper;
+import io.github.aicyi.commons.util.json.JsonUtils;
+import io.github.aicyi.test.domain.BaseLoggerTest;
+import io.github.aicyi.test.domain.Example;
+import io.github.aicyi.test.util.DataSource;
+import lombok.Getter;
+import lombok.Setter;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.lang.reflect.Type;
+import java.util.*;
+
+/**
+ * @author Mr.Min
+ * @description 业务描述
+ * @date 21:36
+ **/
+public class JsonUtilsTest extends BaseLoggerTest {
+    private A a;
+    private List<A> aList;
+    private Map<String, A<B<C>>> aMap;
+
+    @Before
+    public void beforeTest() {
+        a = new A(new B(new C()));
+        aList = Arrays.asList(a);
+        aMap = new HashMap<>();
+        aMap.put(IdGenerator.generateV7Id(), a);
+    }
+
+    @Test
+    public void test() {
+        JsonConverter instance = JsonUtils.getInstance();
+        List<Example> exampleList = DataSource.getExampleList();
+
+        String json = instance.toJson(a);
+        String json1 = instance.toJson(aList);
+        String json2 = instance.toJson(aMap);
+
+        String json3 = instance.toJson(exampleList);
+
+        log("test", json, json1, json2, json3);
+    }
+
+    @Test
+    public void parseJson() {
+        JsonConverter instance = JsonUtils.getInstance();
+        String json = DataSource.getExampleJson();
+
+        Object parse = instance.parse(json);
+
+        assert parse instanceof Map;
+
+        Type type = instance.constructType(Example.class);
+        Example parse1 = instance.parse(json, type);
+
+        assert parse1 != null;
+
+        log("parseJson", parse, parse1);
+    }
+
+    @Test
+    public void parseJson2() {
+        JacksonConverter instance = JacksonConverter.DEFAULT_SIMPLE_CONVERTER;
+
+        String json = "{\"id\":613294732759531520,\"age\":0,\"idCard\":\"1f07da341eb26024b3f927826ef0e6e2\",\"mobile\":\"13010496590\",\"genderType\":\"WOMAN\",\"birthday\":\"2025-08-20\",\"userId\":\"610780341698822144\",\"username\":\"邓纨仪\",\"deviceId\":\"1f07da341ee56475b3f927826ef0e6e2\",\"isMasterDevice\":false}";
+        UserInfo parse = instance.parse(json, JacksonHelper.getType(UserInfo.class));
+
+        assert parse != null;
+
+        log("parseJson2", parse);
+    }
+
+    @Test
+    public void parseList() {
+        JsonConverter instance = JsonUtils.getInstance();
+        String json = DataSource.getExampleListJson();
+
+        List<Example> exampleList = instance.parseList(json);
+
+        assert exampleList != null;
+
+        Type type = instance.constructType(Example.class);
+        List<Example> exampleList1 = instance.parseList(json, type);
+
+        assert exampleList1 != null;
+
+        log("parseList", exampleList, exampleList1);
+    }
+
+    @Test
+    public void parseMap() {
+        JsonConverter instance = JsonUtils.getInstance();
+        String json = DataSource.getExampleMapJson();
+
+        Map<Object, Object> exampleMap = instance.parseMap(json);
+
+        assert exampleMap != null;
+
+        Map<String, Example> exampleMap1 = instance.parseMap(json, Example.class);
+
+        assert exampleMap1 != null;
+
+        Type ktype = instance.constructType(Long.class);
+        Type vtype = instance.constructType(Example.class);
+        Map<Long, Example> exampleMap2 = instance.parseMap(json, ktype, vtype);
+
+        assert exampleMap2 != null;
+
+        log("parseMap", exampleMap, exampleMap1, exampleMap2);
+    }
+
+    @Test
+    public void isEmptyJsonTest() {
+        JsonConverter instance = JsonUtils.getInstance();
+
+        boolean emptyJSON = instance.isEmptyJSON("");
+        boolean emptyJSON1 = instance.isEmptyJSON("{}");
+        boolean emptyJSON2 = instance.isEmptyJSON("[]");
+        boolean emptyJSON3 = instance.isEmptyJSON("123");
+
+        assert emptyJSON && emptyJSON1 && emptyJSON2 && !emptyJSON3;
+
+        log("isEmptyJsonTest", emptyJSON, emptyJSON1, emptyJSON2, emptyJSON3);
+    }
+
+    @Getter
+    @Setter
+    public static class A<T> extends BaseBean {
+        private String a = "a";
+        private T b;
+
+        public A() {
+        }
+
+        public A(T b) {
+            this.b = b;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class B<T> extends BaseBean {
+        private String b = "b";
+        private T c;
+
+        public B() {
+        }
+
+        public B(T c) {
+            this.c = c;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class C extends BaseBean {
+        private String c = "c";
+    }
+}

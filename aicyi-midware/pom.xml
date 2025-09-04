@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.aicyi.midware</groupId>
+    <artifactId>aicyi-midware</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+    <name>aicyi midware</name>
+    <description>aicyi midware</description>
+
+    <parent>
+        <groupId>io.github.aicyi.base</groupId>
+        <artifactId>aicyi-base-starter-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../aicyi-base-starter-parent/pom.xml</relativePath>
+    </parent>
+
+    <modules>
+        <module>aicyi-midware-autoconfigure</module>
+        <module>aicyi-midware-kit</module>
+        <module>aicyi-midware-message</module>
+        <module>aicyi-midware-mybatis-flex</module>
+        <module>aicyi-midware-rabbitmq</module>
+        <module>aicyi-midware-redis</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-autoconfigure</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-kit</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-message</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-mybatis-flex</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-rabbitmq</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-redis</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.aicyi.example</groupId>
+    <groupId>io.github.aicyi.example</groupId>
     <artifactId>aicyi-example</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -13,7 +13,7 @@
     <description>aicyi example</description>
 
     <parent>
-        <groupId>com.aicyi.base</groupId>
+        <groupId>io.github.aicyi.base</groupId>
         <artifactId>aicyi-base-starter-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../aicyi-base-starter-parent/pom.xml</relativePath>
@@ -21,34 +21,45 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aicyi.test</groupId>
+            <groupId>io.github.aicyi.test</groupId>
             <artifactId>aicyi-test</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.aicyiframework</groupId>
-            <artifactId>aicyi-autoconfigure</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.aicyiframework.data</groupId>
-            <artifactId>aicyi-data-redis</artifactId>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-autoconfigure</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>com.aicyiframework</groupId>
-            <artifactId>aicyi-integration</artifactId>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-kit</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>com.aicyiframework</groupId>
-            <artifactId>aicyi-message</artifactId>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-message</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-mybatis-flex</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-rabbitmq</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-redis</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
@@ -118,7 +129,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.aichuangyi.example.AicyiExampleApplication</mainClass>
+                    <mainClass>io.github.aicyi.example.AicyiExampleApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
