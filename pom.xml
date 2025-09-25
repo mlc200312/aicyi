@@ -18,7 +18,6 @@
         <module>aicyi-commons</module>
         <module>aicyi-example</module>
         <module>aicyi-midware</module>
-        <module>aicyi-test</module>
     </modules>
 
     <properties>

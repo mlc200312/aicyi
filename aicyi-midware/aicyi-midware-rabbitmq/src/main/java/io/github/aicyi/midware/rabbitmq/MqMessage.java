@@ -9,35 +9,35 @@ import io.github.aicyi.commons.core.message.MessageType;
  * @date 2025/8/25
  **/
 public class MqMessage extends AbstractMessage<Object> {
-    private final String topic; // 消息主题
-    private final String tag; // 消息标签
-    private final String key; // 业务key
-    private final Integer delayLevel; // 延迟级别
+    private final String destination; // 消息主题
+    private final String group; // 组
+    private final String routingKey; // 路由键
+    private final Long delay; // 延迟时间（毫秒）
 
     // 私有构造函数，只能通过Builder创建
     private MqMessage(Builder builder) {
         super(builder.content, MessageType.MQ);
-        this.topic = builder.topic;
-        this.tag = builder.tag;
-        this.key = builder.key;
-        this.delayLevel = builder.delayLevel;
+        this.destination = builder.destination;
+        this.group = builder.group;
+        this.routingKey = builder.routingKey;
+        this.delay = builder.delay;
     }
 
     // Getter 方法
-    public String getTopic() {
-        return topic;
+    public String getDestination() {
+        return destination;
     }
 
-    public String getTag() {
-        return tag;
+    public String getGroup() {
+        return group;
     }
 
-    public String getKey() {
-        return key;
+    public String getRoutingKey() {
+        return routingKey;
     }
 
-    public Integer getDelayLevel() {
-        return delayLevel;
+    public Long getDelay() {
+        return delay;
     }
 
     /**
@@ -45,10 +45,10 @@ public class MqMessage extends AbstractMessage<Object> {
      */
     public static class Builder {
         private Object content;
-        private String topic;
-        private String tag;
-        private String key;
-        private Integer delayLevel;
+        private String destination;
+        private String group;
+        private String routingKey;
+        private Long delay;
 
         public Builder() {
             // 空构造
@@ -59,23 +59,23 @@ public class MqMessage extends AbstractMessage<Object> {
             return this;
         }
 
-        public Builder topic(String topic) {
-            this.topic = topic;
+        public Builder destination(String destination) {
+            this.destination = destination;
             return this;
         }
 
-        public Builder tag(String tag) {
-            this.tag = tag;
+        public Builder group(String group) {
+            this.group = group;
             return this;
         }
 
-        public Builder key(String key) {
-            this.key = key;
+        public Builder routingKey(String routingKey) {
+            this.routingKey = routingKey;
             return this;
         }
 
-        public Builder delayLevel(Integer delayLevel) {
-            this.delayLevel = delayLevel;
+        public Builder delayLevel(Long delay) {
+            this.delay = delay;
             return this;
         }
 
@@ -89,7 +89,7 @@ public class MqMessage extends AbstractMessage<Object> {
             if (content == null) {
                 throw new IllegalArgumentException("消息内容不能为空");
             }
-            if (topic == null || topic.trim().isEmpty()) {
+            if (destination == null || destination.trim().isEmpty()) {
                 throw new IllegalArgumentException("消息主题不能为空");
             }
 
@@ -114,33 +114,33 @@ public class MqMessage extends AbstractMessage<Object> {
     /**
      * 快速创建方法
      */
-    public static MqMessage of(Object content, String topic) {
+    public static MqMessage of(Object content, String destination) {
         return builder()
                 .content(content)
-                .topic(topic)
+                .destination(destination)
                 .build();
     }
 
     /**
      * 快速创建方法（带标签）
      */
-    public static MqMessage of(Object content, String topic, String tag) {
+    public static MqMessage of(Object content, String destination, String tag) {
         return builder()
                 .content(content)
-                .topic(topic)
-                .tag(tag)
+                .destination(destination)
+                .group(tag)
                 .build();
     }
 
     /**
-     * 快速创建方法（带标签和业务key）
+     * 快速创建方法（带标签和业务routingKey）
      */
-    public static MqMessage of(Object content, String topic, String tag, String key) {
+    public static MqMessage of(Object content, String destination, String tag, String routingKey) {
         return builder()
                 .content(content)
-                .topic(topic)
-                .tag(tag)
-                .key(key)
+                .destination(destination)
+                .group(tag)
+                .routingKey(routingKey)
                 .build();
     }
 
@@ -149,27 +149,27 @@ public class MqMessage extends AbstractMessage<Object> {
      */
     public boolean isValid() {
         return getContent() != null &&
-                topic != null && !topic.trim().isEmpty();
+                destination != null && !destination.trim().isEmpty();
     }
 
     /**
      * 是否延迟消息
      */
     public boolean isDelayed() {
-        return delayLevel != null && delayLevel > 0;
+        return delay != null && delay > 0;
     }
 
     /**
-     * 是否包含业务key
+     * 是否包含业务routingKey
      */
-    public boolean hasKey() {
-        return key != null && !key.trim().isEmpty();
+    public boolean hasRoutingKey() {
+        return routingKey != null && !routingKey.trim().isEmpty();
     }
 
     /**
      * 是否包含标签
      */
-    public boolean hasTag() {
-        return tag != null && !tag.trim().isEmpty();
+    public boolean hasGroup() {
+        return group != null && !group.trim().isEmpty();
     }
 }

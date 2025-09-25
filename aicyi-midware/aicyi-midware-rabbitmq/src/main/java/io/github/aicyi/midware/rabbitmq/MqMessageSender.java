@@ -12,11 +12,19 @@ import io.github.aicyi.commons.core.exception.MessageSendException;
  * @date 2025/8/25
  **/
 public class MqMessageSender extends AbstractMessageSender {
-    private MqManager mqManager;
+    private final MessageSender messageSender;
+
+    public MqMessageSender(MessageSender messageSender) {
+        this.messageSender = messageSender;
+    }
+
+    public MessageSender getMessageSender() {
+        return messageSender;
+    }
 
     @Override
     public boolean supports(MessageType messageType) {
-        return MessageType.SMS.equals(messageType);
+        return MessageType.MQ.equals(messageType);
     }
 
     @Override
@@ -28,7 +36,13 @@ public class MqMessageSender extends AbstractMessageSender {
         MqMessage message = (MqMessage) content;
 
         // 调用实际的MQ发送服务
-        mqManager.send(message);
+        if (message.isDelayed()) {
+
+            messageSender.sendDelayed(message.getDestination(), message.getContent(), message.getDelay());
+        } else {
+
+            messageSender.send(message.getDestination(), message.getContent(), message.getProperties());
+        }
 
         return SendResult.success(message.getMessageId(), message.getBusinessId());
     }

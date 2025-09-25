@@ -7,6 +7,7 @@ import io.github.aicyi.midware.autoconfigure.sms.TwilioSmsManager;
 import io.github.aicyi.midware.message.mail.*;
 import io.github.aicyi.midware.message.sms.SmsManager;
 import io.github.aicyi.midware.message.sms.SmsMessageSender;
+import io.github.aicyi.midware.rabbitmq.MessageSender;
 import io.github.aicyi.midware.rabbitmq.MqMessageSender;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +61,14 @@ public class MessageAutoConfiguration implements InitializingBean {
 
     @Bean
     @ConditionalOnMissingBean(UnifiedMessageManager.class)
-    public UnifiedMessageManager unifiedMessageManager(@Autowired(required = false) EmailManager emailManager, @Autowired(required = false) SmsManager smsManager) {
+    public UnifiedMessageManager unifiedMessageManager(@Autowired(required = false) EmailManager emailManager,
+                                                       @Autowired(required = false) SmsManager smsManager,
+                                                       @Autowired(required = false) MessageSender messageSender
+    ) {
         MessageSenderFactory factory = new DefaultMessageSenderFactory();
         Optional.ofNullable(emailManager).ifPresent(item -> factory.registerSender(MessageType.EMAIL, new EmailMessageSender(emailManager)));
         Optional.ofNullable(smsManager).ifPresent(item -> factory.registerSender(MessageType.SMS, new SmsMessageSender(smsManager)));
-        factory.registerSender(MessageType.MQ, new MqMessageSender());
+        Optional.ofNullable(messageSender).ifPresent(item -> factory.registerSender(MessageType.MQ, new MqMessageSender(messageSender)));
 
         // 创建统一消息服务
         return new DefaultUnifiedMessageManager(factory);

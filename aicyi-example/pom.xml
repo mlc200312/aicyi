@@ -8,7 +8,7 @@
     <artifactId>aicyi-example</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>aicyi example</name>
     <description>aicyi example</description>
 
@@ -19,53 +19,26 @@
         <relativePath>../aicyi-base-starter-parent/pom.xml</relativePath>
     </parent>
 
+    <modules>
+        <module>aicyi-example-boot</module>
+        <module>aicyi-example-consumer</module>
+        <module>aicyi-example-dao</module>
+        <module>aicyi-example-domain</module>
+        <module>aicyi-example-service</module>
+        <module>aicyi-example-web</module>
+        <module>aicyi-test</module>
+    </modules>
+
     <dependencies>
-        <dependency>
-            <groupId>io.github.aicyi.test</groupId>
-            <artifactId>aicyi-test</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-autoconfigure</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-kit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-message</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-mybatis-flex</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-rabbitmq</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-redis</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -105,40 +78,4 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                    <encoding>UTF-8</encoding>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.24</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>io.github.aicyi.example.AicyiExampleApplication</mainClass>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
