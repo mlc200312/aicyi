@@ -49,7 +49,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>io.github.aicyi.example.consumer.AicyiExampleApplication</mainClass>
+                    <mainClass>io.github.aicyi.example.consumer.AicyiExampleConsumerApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

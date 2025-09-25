@@ -3,7 +3,7 @@ package io.github.aicyi.example.consumer.handler;
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.example.domain.User;
-import io.github.aicyi.example.service.channel.MessageChannels;
+import io.github.aicyi.example.channel.MessageChannels;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;

@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * @author Mr.Min
- * @description 功能描述
+ * @description 示例类DTO
  * @date 2019-05-27
  **/
 @Getter

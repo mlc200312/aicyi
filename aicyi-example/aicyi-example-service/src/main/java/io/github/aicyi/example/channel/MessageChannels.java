@@ -1,4 +1,4 @@
-package io.github.aicyi.example.service.channel;
+package io.github.aicyi.example.channel;
 
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;

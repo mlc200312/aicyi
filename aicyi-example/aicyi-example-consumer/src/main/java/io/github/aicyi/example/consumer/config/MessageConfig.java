@@ -2,7 +2,7 @@ package io.github.aicyi.example.consumer.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.aicyi.example.service.channel.MessageChannels;
+import io.github.aicyi.example.channel.MessageChannels;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

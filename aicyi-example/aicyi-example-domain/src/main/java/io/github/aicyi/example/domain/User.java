@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 /**
  * @author Mr.Min
- * @description 功能描述
+ * @description 用户类
  * @date 2019-05-14
  **/
 @Getter

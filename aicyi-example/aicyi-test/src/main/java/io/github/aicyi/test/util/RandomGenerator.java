@@ -6,7 +6,7 @@ import java.util.Random;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 随机生成器
  * @date 09:45
  **/
 public class RandomGenerator {

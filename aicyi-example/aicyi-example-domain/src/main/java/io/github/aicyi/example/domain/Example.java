@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * @author Mr.Min
- * @description 功能描述
+ * @description 示例类
  * @date 2019-05-21
  **/
 @Getter

@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Mr.Min
- * @description 功能描述
+ * @description 消息类
  * @date 2019-06-24
  **/
 @XmlRootElement(name = "xml")

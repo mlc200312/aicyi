@@ -40,11 +40,9 @@ public class JsonUtilsTest extends BaseLoggerTest {
     public void test() {
         JsonConverter instance = JsonUtils.getInstance();
         List<Example> exampleList = DataSource.getExampleList();
-
         String json = instance.toJson(a);
         String json1 = instance.toJson(aList);
         String json2 = instance.toJson(aMap);
-
         String json3 = instance.toJson(exampleList);
 
         log("test", json, json1, json2, json3);
@@ -54,7 +52,6 @@ public class JsonUtilsTest extends BaseLoggerTest {
     public void parseJson() {
         JsonConverter instance = JsonUtils.getInstance();
         String json = DataSource.getExampleJson();
-
         Object parse = instance.parse(json);
 
         assert parse instanceof Map;
@@ -70,7 +67,6 @@ public class JsonUtilsTest extends BaseLoggerTest {
     @Test
     public void parseJson2() {
         JacksonConverter instance = JacksonConverter.DEFAULT_SIMPLE_CONVERTER;
-
         String json = "{\"id\":613294732759531520,\"age\":0,\"idCard\":\"1f07da341eb26024b3f927826ef0e6e2\",\"mobile\":\"13010496590\",\"genderType\":\"WOMAN\",\"birthday\":\"2025-08-20\",\"userId\":\"610780341698822144\",\"username\":\"邓纨仪\",\"deviceId\":\"1f07da341ee56475b3f927826ef0e6e2\",\"isMasterDevice\":false}";
         UserInfo parse = instance.parse(json, JacksonHelper.getType(UserInfo.class));
 
@@ -83,7 +79,6 @@ public class JsonUtilsTest extends BaseLoggerTest {
     public void parseList() {
         JsonConverter instance = JsonUtils.getInstance();
         String json = DataSource.getExampleListJson();
-
         List<Example> exampleList = instance.parseList(json);
 
         assert exampleList != null;
@@ -100,7 +95,6 @@ public class JsonUtilsTest extends BaseLoggerTest {
     public void parseMap() {
         JsonConverter instance = JsonUtils.getInstance();
         String json = DataSource.getExampleMapJson();
-
         Map<Object, Object> exampleMap = instance.parseMap(json);
 
         assert exampleMap != null;
@@ -121,7 +115,6 @@ public class JsonUtilsTest extends BaseLoggerTest {
     @Test
     public void isEmptyJsonTest() {
         JsonConverter instance = JsonUtils.getInstance();
-
         boolean emptyJSON = instance.isEmptyJSON("");
         boolean emptyJSON1 = instance.isEmptyJSON("{}");
         boolean emptyJSON2 = instance.isEmptyJSON("[]");

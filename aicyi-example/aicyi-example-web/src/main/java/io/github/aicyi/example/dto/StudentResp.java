@@ -7,7 +7,7 @@ import lombok.Setter;
 
 /**
  * @author Mr.Min
- * @description 功能描述
+ * @description 学生类DTO
  * @date 2019-05-27
  **/
 @Getter

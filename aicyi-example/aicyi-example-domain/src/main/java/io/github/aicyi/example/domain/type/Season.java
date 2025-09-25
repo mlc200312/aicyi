@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author Mr.Min
- * @description 功能描述
+ * @description 季节枚举
  * @date 2019-05-21
  **/
 @JsonDeserialize(using = StringEnumTypeJsonDeserializer.class)

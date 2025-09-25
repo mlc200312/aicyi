@@ -13,7 +13,7 @@ import java.util.Date;
 
 /**
  * @author Mr.Min
- * @description 功能描述
+ * @description 学生类
  * @date 2019-05-21
  **/
 @Getter

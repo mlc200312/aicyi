@@ -6,7 +6,7 @@ import io.github.aicyi.commons.logging.LoggerFactory;
 
 /**
  * @author Mr.Min
- * @description 功能描述
+ * @description 基础日志测试
  * @date 2020-04-20
  **/
 public abstract class BaseLoggerTest {

@@ -4,7 +4,7 @@ import io.github.aicyi.commons.lang.IEnumType;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 错误码
  * @date 2023/8/1
  **/
 public enum ResultCode implements IEnumType<Integer> {

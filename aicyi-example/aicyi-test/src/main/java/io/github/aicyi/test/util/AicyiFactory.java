@@ -39,7 +39,6 @@ public class AicyiFactory extends ThreadFactory {
     }
 
     /**
-     * z
      * 运作
      */
     public void startRun() {
@@ -92,7 +91,6 @@ public class AicyiFactory extends ThreadFactory {
     }
 
     public static class Worker implements Runnable {
-
         private String userNo;
         private String name;
         private Robot robot;

@@ -38,7 +38,6 @@ public class EmailManagerTest extends BaseLoggerTest {
     private EmailManager emailManager;
 
     private List<String> toList;
-
     private TemplateEngine templateEngine;
 
     @Before
@@ -63,12 +62,11 @@ public class EmailManagerTest extends BaseLoggerTest {
 
     @SneakyThrows
     @Test
-    public void test2() {
+    public void sendEmailWithAttachmentTest() {
         boolean connection = emailManager.testConnection();
-
         Attachment attachment = new Attachment();
         attachment.setName("test.xlsx");
-        attachment.setFile(new File("/Users/liangchaomin/Downloads/1.xlsx"));
+        attachment.setFile(new File("/Users/liangchaomin/Downloads/bank_insert.xlsx"));
         attachment.setContentType("xlsx");
         List<Attachment> attachmentList = Arrays.asList(attachment);
         boolean isSend = emailManager.sendEmailWithAttachment(toList, "附件", "测试带附件的邮件", attachmentList);
@@ -117,7 +115,7 @@ public class EmailManagerTest extends BaseLoggerTest {
     @SneakyThrows
     @Test
     public void test4() {
-        CompletableFuture<Boolean> async = emailManager.sendEmailAsync(toList, "附件", "测试带附件的邮件");
+        CompletableFuture<Boolean> async = emailManager.sendEmailAsync(toList, "异步短信", "测试异步发送短信");
 
         assert async.get();
 

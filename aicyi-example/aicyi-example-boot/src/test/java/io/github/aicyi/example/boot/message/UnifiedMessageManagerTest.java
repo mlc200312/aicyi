@@ -1,7 +1,7 @@
 package io.github.aicyi.example.boot.message;
 
 import io.github.aicyi.example.boot.AicyiExampleApplication;
-import io.github.aicyi.example.service.channel.MessageChannels;
+import io.github.aicyi.example.channel.MessageChannels;
 import io.github.aicyi.midware.rabbitmq.MqMessage;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.commons.core.message.SendCallback;
@@ -48,7 +48,7 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
 
     @SneakyThrows
     @Test
-    public void sendAsyncEmailTest() {
+    public void sendEmailErrorTest() {
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
         EmailMessage asyncEmailMessage = EmailMessage.of("test send async email", "Send Async Email", "1591043667@163.com");
@@ -79,7 +79,7 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
 
     @SneakyThrows
     @Test
-    public void sendTemplateSmsTest() {
+    public void sendSmsErrorTest() {
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
         SmsMessage smsMessage = SmsMessage.of("test_template", "+8615910436675", new HashMap<>(), "TEST");

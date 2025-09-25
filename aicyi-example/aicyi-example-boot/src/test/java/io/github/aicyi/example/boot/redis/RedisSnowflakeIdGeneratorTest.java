@@ -6,6 +6,7 @@ import io.github.aicyi.commons.core.IdGenerator;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.id.RedisSnowflakeIdGenerator;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +35,7 @@ public class RedisSnowflakeIdGeneratorTest extends BaseLoggerTest {
     }
 
     @Override
+    @Test
     public void test() {
         IdGenerator idGenerator = new RedisSnowflakeIdGenerator(stringRedisTemplate);
 

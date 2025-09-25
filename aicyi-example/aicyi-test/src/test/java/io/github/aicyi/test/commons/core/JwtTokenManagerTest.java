@@ -1,4 +1,4 @@
-package io.github.aicyi.example.boot.core;
+package io.github.aicyi.test.commons.core;
 
 import io.github.aicyi.commons.core.jwt.JwtTokenManager;
 import io.github.aicyi.commons.core.token.DefaultTokenConfig;

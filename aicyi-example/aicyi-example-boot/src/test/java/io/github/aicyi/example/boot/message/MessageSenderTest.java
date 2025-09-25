@@ -2,7 +2,7 @@ package io.github.aicyi.example.boot.message;
 
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.domain.User;
-import io.github.aicyi.example.service.channel.MessageChannels;
+import io.github.aicyi.example.channel.MessageChannels;
 import io.github.aicyi.midware.rabbitmq.MessageSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
@@ -56,7 +56,7 @@ public class MessageSenderTest extends BaseLoggerTest {
 
     @Test
     public void sendDirectTest() {
-        boolean send = messageSender.sendDelayed(MessageChannels.DIRECT_OUTPUT, DataSource.getUser(), 10 * 1000);
+        boolean send = messageSender.send(MessageChannels.DIRECT_OUTPUT, DataSource.getUser());
 
         log("sendDirectTest", send);
     }
@@ -64,7 +64,6 @@ public class MessageSenderTest extends BaseLoggerTest {
     @Test
     public void sendTopicOrderCreatedTest() {
         Map<String, Object> properties = Maps.of("routingKey", (Object) "order.created").build();
-
         boolean send = messageSender.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
 
         log("sendTopicOrderCreatedTest", send);
@@ -73,7 +72,6 @@ public class MessageSenderTest extends BaseLoggerTest {
     @Test
     public void sendTopicOrderPaidTest() {
         Map<String, Object> properties = Maps.of("routingKey", (Object) "order.paid").build();
-
         boolean send = messageSender.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
 
         log("sendTopicOrderPaidTest", send);
@@ -82,7 +80,6 @@ public class MessageSenderTest extends BaseLoggerTest {
     @Test
     public void sendTopicSystemLogTest() {
         Map<String, Object> properties = Maps.of("routingKey", (Object) "system.log").build();
-
         boolean send = messageSender.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
 
         log("sendTopicSystemLogTest", send);
