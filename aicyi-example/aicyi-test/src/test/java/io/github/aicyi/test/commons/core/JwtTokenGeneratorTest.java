@@ -49,11 +49,7 @@ public class JwtTokenGeneratorTest extends BaseLoggerTest {
         Date date = tokenGenerator.getExpiration(token).get();
         String getUserId = MapUtils.getString(claims, "userId");
 
-        assert !verifyToken0;
-
-        assert verifyToken1;
-
-        assert getUserId.equals(userId);
+        assert !verifyToken0 && verifyToken1 && getUserId.equals(userId);
 
         log("test", token, verifyToken0, verifyToken1, claims, getId, DateUtils.formatDate(date), getUserId, getUserId.equals(userId));
     }

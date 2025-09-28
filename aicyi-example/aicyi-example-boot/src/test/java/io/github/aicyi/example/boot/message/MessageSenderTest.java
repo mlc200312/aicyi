@@ -40,7 +40,6 @@ public class MessageSenderTest extends BaseLoggerTest {
         // 方式一
         Message<User> message = MessageBuilder.withPayload(DataSource.getUser()).build();
         boolean send = messageChannel.send(message);
-
         // 方式一
         boolean send2 = messageSender.send(MessageChannels.OUTPUT, DataSource.getUser());
 

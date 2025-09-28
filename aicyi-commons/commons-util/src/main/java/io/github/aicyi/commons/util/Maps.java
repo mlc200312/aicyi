@@ -35,6 +35,6 @@ public final class Maps {
     public interface MapBuilder<K, V> {
         MapBuilder<K, V> and(K var1, V var2);
 
-        Map<K, V> build();
+        Map build();
     }
 }

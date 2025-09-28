@@ -66,7 +66,9 @@ public class EmailManagerTest extends BaseLoggerTest {
         boolean connection = emailManager.testConnection();
         Attachment attachment = new Attachment();
         attachment.setName("test.xlsx");
-        attachment.setFile(new File("/Users/liangchaomin/Downloads/bank_insert.xlsx"));
+        String absolutePath = new File("").getAbsoluteFile().getParentFile().getPath();
+        File file = new File(absolutePath + "/aicyi-test/src/test/resources/test/bank_insert.xlsx");
+        attachment.setFile(file);
         attachment.setContentType("xlsx");
         List<Attachment> attachmentList = Arrays.asList(attachment);
         boolean isSend = emailManager.sendEmailWithAttachment(toList, "附件", "测试带附件的邮件", attachmentList);
@@ -81,7 +83,6 @@ public class EmailManagerTest extends BaseLoggerTest {
     public void test3() {
         String subject = "复杂模板测试";
         String templateName = "order-confirmation.ftl";
-
         Map<String, Object> variables = new HashMap<>();
         variables.put("orderId", IdGenerator.generateId() + "");
         variables.put("userName", "王五");
