@@ -376,6 +376,18 @@
                 <artifactId>easyexcel</artifactId>
                 <version>3.3.2</version>
             </dependency>
+            <!-- ZXing核心库 -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>3.5.1</version>
+            </dependency>
+            <!-- ZXing J2SE扩展 -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>3.5.1</version>
+            </dependency>
             <!-- utils end -->
         </dependencies>
     </dependencyManagement>

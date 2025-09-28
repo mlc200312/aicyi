@@ -77,8 +77,7 @@ public class EasyExcelUtilsTest extends BaseLoggerTest {
     public void exportToBytesTest() {
         List<Student> studentList = DataSource.getStudentList();
         List<StudentResp> respList = MapperUtils.INSTANCE.mapAsList(studentList, StudentResp.class);
-        String absolutePath = new File("").getAbsoluteFile().getParentFile().getPath();
-        Path path = Paths.get(absolutePath + "/aicyi-test/src/test/resources/test/excel_test_001.xlsx");
+        Path path = Paths.get("excel_001.xlsx");
         byte[] bytes = EasyExcelUtils.exportToBytes("12123", respList, StudentResp.class);
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes)) {
             Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
@@ -94,8 +93,7 @@ public class EasyExcelUtilsTest extends BaseLoggerTest {
     public void exportToFileTest() {
         List<Student> studentList = DataSource.getStudentList();
         List<StudentResp> respList = MapperUtils.INSTANCE.mapAsList(studentList, StudentResp.class);
-        String absolutePath = new File("").getAbsoluteFile().getParentFile().getPath();
-        String path = absolutePath + "/aicyi-test/src/test/resources/test/excel_test_002.xlsx";
+        String path = "excel_002.xlsx";
         EasyExcelUtils.exportToFile(path, "123", respList, StudentResp.class);
     }
 
