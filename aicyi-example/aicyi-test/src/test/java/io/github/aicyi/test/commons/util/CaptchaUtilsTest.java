@@ -28,7 +28,6 @@ public class CaptchaUtilsTest extends BaseLoggerTest {
 
             BufferedImage image2 = CaptchaUtils.generateImage("2 + 4 = ?");
             ImageIO.write(image2, "png", Paths.get("captcha2.png").toFile());
-            System.out.println("验证码生成成功: " + code);
 
         } catch (IOException e) {
             e.printStackTrace();
