@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.util;
+package io.github.aicyi.commons.logging;
 
 /**
  * @author Mr.Min

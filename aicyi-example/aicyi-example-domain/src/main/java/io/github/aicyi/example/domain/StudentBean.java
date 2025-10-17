@@ -19,9 +19,9 @@ import java.util.Date;
 @Getter
 @Setter
 @FieldNameConstants
-public class Student extends User {
-    private GradeType gradeType;
+public class StudentBean extends UserBean {
     private Double score;
+    private GradeType gradeType;
     @JsonFormat(pattern = DateTimeUtils.ISO_DATE_TIME_PATTERN)
     private LocalDateTime registerTime;
     @JsonFormat(pattern = DateTimeUtils.DATE_TIME_PATTERN)

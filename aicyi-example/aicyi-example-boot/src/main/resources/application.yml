@@ -6,20 +6,20 @@ spring:
     active: test
   application:
     name: aicyi-example
-  datasource:
-    dynamic:
-      druid:
-        initial-size: 5
-        min-idle: 5
-        max-wait: 60000
-        max-active: 20
-        min-evictable-idle-time-millis: 300000
-        time-between-eviction-runs-millis: 60000
-        validation-query: SELECT 1 FROM DUAL
-        init-connection-sqls: SET NAMES utf8mb4
-        # 下面这两个配置，可以在每次连接的时候判断一些连接是否有效
-        test-on-borrow: true
-        test-while-idle: true
+  #    datasource:
+  #    dynamic:
+  #      druid:
+  #        initial-size: 5
+  #        min-idle: 5
+  #        max-wait: 60000
+  #        max-active: 20
+  #        min-evictable-idle-time-millis: 300000
+  #        time-between-eviction-runs-millis: 60000
+  #        validation-query: SELECT 1 FROM DUAL
+  #        init-connection-sqls: SET NAMES utf8mb4
+  #        # 下面这两个配置，可以在每次连接的时候判断一些连接是否有效
+  #        test-on-borrow: true
+  #        test-while-idle: true
   # redis配置
   redis:
     jedis:
@@ -31,3 +31,7 @@ spring:
   mvc:
     path-match:
       matching-strategy: ant_path_matcher
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

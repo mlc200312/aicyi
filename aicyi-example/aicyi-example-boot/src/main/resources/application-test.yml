@@ -1,25 +1,25 @@
 logging:
   level:
     root: INFO
-# 重写logback模版 默认：common-logging下的logback-spring.xml
-#  config: classpath:logback-test.xml
+  # 重写logback模版 默认：common-logging下的logback-spring.xml
+  config: classpath:logback-spring.xml
 
 spring:
-  datasource:
-    dynamic:
-      primary: master
-      strict: false
-      datasource:
-        master:
-          driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/nacos_config?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&verifyServerCertificate=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
-          username: nacos
-          password: nacos
-    #        slave_1:
-    #          driver-class-name: com.mysql.cj.jdbc.Driver
-    #          url: jdbc:mysql://123.56.170.25:3306/tavern_home?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&verifyServerCertificate=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
-    #          username: root
-    #          password: 123456
+  #  datasource:
+  #    dynamic:
+  #      primary: master
+  #      strict: false
+  #      datasource:
+  #        master:
+  #          driver-class-name: com.mysql.cj.jdbc.Driver
+  #          url: jdbc:mysql://localhost:3306/nacos_config?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&verifyServerCertificate=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
+  #          username: nacos
+  #          password: nacos
+  #        slave_1:
+  #          driver-class-name: com.mysql.cj.jdbc.Driver
+  #          url: jdbc:mysql://123.56.170.25:3306/tavern_home?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&verifyServerCertificate=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8
+  #          username: root
+  #          password: 123456
 
   redis:
     host: localhost

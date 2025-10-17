@@ -1,7 +1,7 @@
 package io.github.aicyi.example.boot.message;
 
 import io.github.aicyi.example.boot.AicyiExampleApplication;
-import io.github.aicyi.example.domain.User;
+import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.channel.MessageChannels;
 import io.github.aicyi.midware.rabbitmq.MessageSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
@@ -38,7 +38,7 @@ public class MessageSenderTest extends BaseLoggerTest {
     @Override
     public void test() {
         // 方式一
-        Message<User> message = MessageBuilder.withPayload(DataSource.getUser()).build();
+        Message<UserBean> message = MessageBuilder.withPayload(DataSource.getUser()).build();
         boolean send = messageChannel.send(message);
         // 方式一
         boolean send2 = messageSender.send(MessageChannels.OUTPUT, DataSource.getUser());

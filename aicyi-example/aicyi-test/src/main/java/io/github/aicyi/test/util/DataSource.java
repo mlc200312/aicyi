@@ -6,8 +6,8 @@ import io.github.aicyi.commons.util.DateUtils;
 import io.github.aicyi.commons.util.mapper.MapperUtils;
 import io.github.aicyi.example.domain.Example;
 import io.github.aicyi.example.domain.Message;
-import io.github.aicyi.example.domain.Student;
-import io.github.aicyi.example.domain.User;
+import io.github.aicyi.example.domain.StudentBean;
+import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.domain.type.GradeType;
 import io.github.aicyi.example.domain.type.Week;
 import io.github.aicyi.example.domain.type.Season;
@@ -38,7 +38,7 @@ import java.util.*;
 public class DataSource {
     public static final int MAX_NUM = 3;
 
-    public static BigDecimal getBigDecimal() {
+    public static BigDecimal randomBigDecimal() {
         return BigDecimal.valueOf(RandomUtils.nextDouble(0, 100)).setScale(2, RoundingMode.HALF_UP);
     }
 
@@ -57,8 +57,8 @@ public class DataSource {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<xml Content=\"" + RandomGenerator.generatePhoneNum() + "\" CreateTime=\"" + System.currentTimeMillis() + "\" FromUserName=\"" + RandomGenerator.generateFullName() + "\" MsgId=\"" + IdGenerator.generateId() + "\" MsgType=\"1\" ToUserName=\"" + RandomGenerator.generateFullName() + "\"/>";
     }
 
-    public static User getUser() {
-        User user = new User();
+    public static UserBean getUser() {
+        UserBean user = new UserBean();
         user.setUserId(IdGenerator.generateV7Id());
         user.setDeviceId(IdGenerator.generateV7Id());
         user.setUsername(RandomGenerator.generateFullName());
@@ -78,28 +78,28 @@ public class DataSource {
         return JsonUtils.getInstance().toJson(getUser());
     }
 
-    public static Student getStudent() {
-        Student student = MapperUtils.INSTANCE.map(getUser(), Student.class);
+    public static StudentBean getStudent() {
+        StudentBean student = MapperUtils.INSTANCE.map(getUser(), StudentBean.class);
         student.setGradeType(RandomGenerator.randomEnum(GradeType.class));
-        student.setScore(getBigDecimal().doubleValue());
+        student.setScore(randomBigDecimal().doubleValue());
         student.setRegisterTime(LocalDateTime.now());
         student.setCreateTime(new Date());
         student.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         return student;
     }
 
-    public static List<Student> getStudentList() {
-        List<Student> list = new ArrayList<>();
+    public static List<StudentBean> getStudentList() {
+        List<StudentBean> list = new ArrayList<>();
         for (int i = 0; i < MAX_NUM; i++) {
             list.add(getStudent());
         }
         return list;
     }
 
-    public static Map<Long, Student> getStudentMap() {
-        Map<Long, Student> map = new HashMap<>(MAX_NUM);
+    public static Map<Long, StudentBean> getStudentMap() {
+        Map<Long, StudentBean> map = new HashMap<>(MAX_NUM);
         for (int i = 0; i < MAX_NUM; i++) {
-            Student data = getStudent();
+            StudentBean data = getStudent();
             map.put(data.getId(), data);
         }
         return map;
@@ -108,7 +108,7 @@ public class DataSource {
     public static StudentResp getStudentResp() {
         StudentResp resp = new StudentResp();
         resp.setGradeType(RandomGenerator.randomEnum(GradeType.class).getCode());
-        resp.setScore0(getBigDecimal().doubleValue() + "");
+        resp.setScore0(randomBigDecimal().doubleValue() + "");
         resp.setRegisterTime(DateTimeUtils.formatLDateTime(LocalDateTime.now()));
         resp.setCreateTime(DateUtils.formatDate(new Date()));
         resp.setUpdateTime(System.currentTimeMillis() + "");
@@ -132,8 +132,8 @@ public class DataSource {
         example.setId(IdGenerator.generateId());
         example.setIdx(RandomUtils.nextInt(1, 99));
         example.setStatus(RandomGenerator.randomEnum(BooleanType.class));
-        example.setAmount(getBigDecimal());
-        example.setScore(getBigDecimal().doubleValue());
+        example.setAmount(randomBigDecimal());
+        example.setScore(randomBigDecimal().doubleValue());
         example.setDate(new Date());
         example.setLocalDate(LocalDate.now());
         example.setDateTime(LocalDateTime.now());
@@ -181,8 +181,8 @@ public class DataSource {
         resp.setUuid(IdGenerator.generateId() + "");
         resp.setIdx(RandomUtils.nextInt(1, 99));
         resp.setStatus(RandomUtils.nextInt(0, 1));
-        resp.setAmount(getBigDecimal().toString());
-        resp.setScore(getBigDecimal().toString());
+        resp.setAmount(randomBigDecimal().toString());
+        resp.setScore(randomBigDecimal().toString());
         resp.setDate(DateUtils.formatDate(new Date()));
         resp.setLocalDate(LocalDate.now().format(DateTimeFormatter.ofPattern(DateTimeUtils.DATE_PATTERN)));
         resp.setDateTime(DateTimeUtils.formatLDateTime(LocalDateTime.now()));

@@ -2,7 +2,7 @@ package io.github.aicyi.example.consumer.handler;
 
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.example.domain.User;
+import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.channel.MessageChannels;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.MessageHeaders;
@@ -19,7 +19,7 @@ public class DirectMessageHandlers {
     private static final Logger LOGGER = LoggerFactory.getLogger(DirectMessageHandlers.class);
 
     @StreamListener(MessageChannels.DIRECT_INPUT)
-    public void handleMessage(org.springframework.messaging.Message<User> message) {
+    public void handleMessage(org.springframework.messaging.Message<UserBean> message) {
         MessageHeaders headers = message.getHeaders();
 
         Object object = headers.get("amqp_receivedRoutingKey");

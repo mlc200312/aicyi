@@ -6,5 +6,4 @@ package io.github.aicyi.commons.lang;
  * @date 2025/9/29
  **/
 public abstract class BaseEntity extends BaseBean {
-
 }

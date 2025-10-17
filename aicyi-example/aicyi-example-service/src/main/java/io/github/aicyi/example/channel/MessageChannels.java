@@ -6,7 +6,6 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
 
 public interface MessageChannels {
-
     String OUTPUT = "message-output";
     String DELAYED_OUTPUT = "delayed-output";
     String DIRECT_OUTPUT = "direct-output";

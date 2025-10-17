@@ -7,7 +7,7 @@ import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.commons.util.json.JacksonHelper;
 import io.github.aicyi.commons.lang.UserInfo;
 import io.github.aicyi.commons.core.token.DefaultTokenConfig;
-import io.github.aicyi.example.domain.User;
+import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
 import io.github.aicyi.test.util.RandomGenerator;
@@ -51,7 +51,7 @@ public class RedisJwtTokenManagerTest extends BaseLoggerTest {
                 .multiTokenAllowed(true)
                 .build();
 
-        tokenManager = new RedisJwtTokenManager(config, redisConnectionFactory, JacksonHelper.getType(User.class));
+        tokenManager = new RedisJwtTokenManager(config, redisConnectionFactory, JacksonHelper.getType(UserBean.class));
     }
 
     @Test

@@ -1,7 +1,5 @@
 package io.github.aicyi.commons.logging;
 
-import io.github.aicyi.commons.util.StringFormat;
-
 /**
  * @author Mr.Min
  * @description 通用日志实现

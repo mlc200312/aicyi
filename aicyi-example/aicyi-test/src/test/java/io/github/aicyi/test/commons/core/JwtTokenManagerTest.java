@@ -7,7 +7,7 @@ import io.github.aicyi.commons.core.token.TokenManager;
 import io.github.aicyi.commons.lang.UserInfo;
 import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.commons.util.json.JacksonHelper;
-import io.github.aicyi.example.domain.User;
+import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
 import io.github.aicyi.test.util.RandomGenerator;
@@ -39,7 +39,7 @@ public class JwtTokenManagerTest extends BaseLoggerTest {
                 .multiTokenAllowed(true)
                 .build();
 
-        tokenManager = new JwtTokenManager<>(config, JacksonHelper.getType(User.class));
+        tokenManager = new JwtTokenManager<>(config, JacksonHelper.getType(UserBean.class));
     }
 
     @Test

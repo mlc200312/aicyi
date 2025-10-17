@@ -24,6 +24,7 @@
         <module>aicyi-midware-kit</module>
         <module>aicyi-midware-message</module>
         <module>aicyi-midware-mybatis-flex</module>
+        <module>aicyi-midware-mybatis-plus</module>
         <module>aicyi-midware-rabbitmq</module>
         <module>aicyi-midware-redis</module>
     </modules>

@@ -5,7 +5,7 @@ import io.github.aicyi.commons.util.EasyExcelUtils;
 import io.github.aicyi.commons.util.Maps;
 import io.github.aicyi.commons.util.json.JsonUtils;
 import io.github.aicyi.commons.util.mapper.MapperUtils;
-import io.github.aicyi.example.domain.Student;
+import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.example.dto.StudentResp;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
@@ -15,7 +15,6 @@ import lombok.SneakyThrows;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -75,7 +74,7 @@ public class EasyExcelUtilsTest extends BaseLoggerTest {
     @SneakyThrows
     @Test
     public void exportToBytesTest() {
-        List<Student> studentList = DataSource.getStudentList();
+        List<StudentBean> studentList = DataSource.getStudentList();
         List<StudentResp> respList = MapperUtils.INSTANCE.mapAsList(studentList, StudentResp.class);
         Path path = Paths.get("excel_001.xlsx");
         byte[] bytes = EasyExcelUtils.exportToBytes("12123", respList, StudentResp.class);
@@ -91,7 +90,7 @@ public class EasyExcelUtilsTest extends BaseLoggerTest {
 
     @Test
     public void exportToFileTest() {
-        List<Student> studentList = DataSource.getStudentList();
+        List<StudentBean> studentList = DataSource.getStudentList();
         List<StudentResp> respList = MapperUtils.INSTANCE.mapAsList(studentList, StudentResp.class);
         String path = "excel_002.xlsx";
         EasyExcelUtils.exportToFile(path, "123", respList, StudentResp.class);

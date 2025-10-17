@@ -11,10 +11,10 @@ import java.util.Date;
  **/
 public class DateTimeUtils {
     // 日期格式
-    private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final String DATE_TIME_PATTERN = DEFAULT_PATTERN;
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final String ISO_DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String DATE_PATTERN = "yyyy-MM-dd";
+    private static final String DEFAULT_PATTERN = DATE_TIME_PATTERN;
 
     /**
      * String 转换为 LocalDateTime

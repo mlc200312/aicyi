@@ -37,7 +37,7 @@ public class Example extends BaseBean implements BoBean {
     private Season season;
     private Week week;
     private List<Long> idList;
-    private User user;
-    private Student student;
+    private UserBean user;
+    private StudentBean student;
     private String nothing;
 }

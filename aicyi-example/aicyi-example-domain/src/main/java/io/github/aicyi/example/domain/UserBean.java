@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @FieldNameConstants
-public class User extends UserInfo implements BoBean {
+public class UserBean extends UserInfo implements BoBean {
     private Long id;
     private Integer age;
     private String idCard;
