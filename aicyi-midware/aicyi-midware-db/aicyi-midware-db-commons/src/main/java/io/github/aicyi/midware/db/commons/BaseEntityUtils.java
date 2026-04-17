@@ -1,4 +1,4 @@
-package io.github.aicyi.example.domain.util;
+package io.github.aicyi.midware.db.commons;
 
 import io.github.aicyi.commons.lang.BaseEntity;
 import io.github.aicyi.commons.lang.type.BooleanType;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * @description 业务描述
  * @date 18:18
  **/
-public class EntityUtils {
+public class BaseEntityUtils {
 
     public static void setDefaultValue(BaseEntity baseEntity) {
         setDefaultValues(baseEntity, new String[]{"id", "deleted", "version", "createTime", "updateTime"}, new Object[]{IdGenerator.generateId(), BooleanType.FALSE, 0, LocalDateTime.now(), LocalDateTime.now()});

@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.mybatisflex.typehandler;
+package io.github.aicyi.midware.db.commons.typehandler;
 
 import io.github.aicyi.commons.lang.StringEnumType;
 import io.github.aicyi.commons.logging.Logger;

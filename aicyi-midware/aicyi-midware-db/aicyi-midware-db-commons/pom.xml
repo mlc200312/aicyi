@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.aicyi.midware</groupId>
-    <artifactId>aicyi-midware-mybatis-plus</artifactId>
+    <artifactId>aicyi-midware-db-commons</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi midware mybatis plus</name>
-    <description>aicyi midware mybatis plus</description>
+    <name>aicyi midware db commons</name>
+    <description>aicyi midware db commons</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>
-        <artifactId>aicyi-midware</artifactId>
+        <artifactId>aicyi-midware-db</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -23,10 +23,19 @@
             <groupId>io.github.aicyi.commons</groupId>
             <artifactId>commons-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
         </dependency>
+
+        <!-- MyBatis + Spring Boot Starter -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.3.1</version> <!-- 支持Java 8的最新版本 -->
+        </dependency>
+
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
