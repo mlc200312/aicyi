@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.autoconfigure.sms;
+package io.github.aicyi.midware.kit.sms;
 
 import io.github.aicyi.commons.core.exception.MessageSendException;
 import com.twilio.Twilio;
