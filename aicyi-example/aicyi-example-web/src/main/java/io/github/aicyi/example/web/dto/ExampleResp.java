@@ -1,4 +1,4 @@
-package io.github.aicyi.example.dto;
+package io.github.aicyi.example.web.dto;
 
 import io.github.aicyi.commons.lang.DtoBean;
 import io.github.aicyi.commons.lang.BaseBean;

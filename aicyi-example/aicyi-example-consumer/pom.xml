@@ -9,8 +9,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi consumer</name>
-    <description>aicyi consumer</description>
+    <name>aicyi example consumer</name>
+    <description>aicyi example consumer</description>
 
     <parent>
         <groupId>io.github.aicyi.example</groupId>
@@ -21,8 +21,13 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.example</groupId>
-            <artifactId>aicyi-test</artifactId>
+            <artifactId>aicyi-example-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
 

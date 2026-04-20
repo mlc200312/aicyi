@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class StudentQuery extends BaseBean implements BoBean {
+    private Long userIdEq;
     private GradeType gradeTypeEq;
     private LocalDateTime registerTimeStart;
     private LocalDateTime registerTimeEnd;

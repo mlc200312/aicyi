@@ -2,7 +2,7 @@ package io.github.aicyi.example.boot.message;
 
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.domain.UserBean;
-import io.github.aicyi.example.channel.MessageChannels;
+import io.github.aicyi.example.service.channel.MessageChannels;
 import io.github.aicyi.midware.rabbitmq.MessageSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;

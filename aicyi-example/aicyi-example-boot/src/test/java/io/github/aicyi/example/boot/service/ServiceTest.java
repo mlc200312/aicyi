@@ -28,8 +28,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -46,75 +49,53 @@ public class ServiceTest extends BaseLoggerTest {
     private StudentService studentService;
 
     private String testMobile;
-    private User user;
-    private Student student;
+    private StudentBean studentBean;
 
     @Before
     public void testBefore() {
         testMobile = "15902571792";
-        UserBean userBean = DataSource.getUser();
-        user = MapperUtils.INSTANCE.map(userBean, User.class);
-        user.setMobile(testMobile);
-        user.setIdCard("1f0a9a831f9e6ec3817d77e5fd2ca3bb");
-        user.setBirthday(DateTimeUtils.toLDateTime("2025-10-11 00:00:00.000").toLocalDate());
-
-        student = new Student();
-        student.setUserId(user.getId());
-        student.setScore(DataSource.randomBigDecimal());
-        student.setGradeType(RandomGenerator.randomEnum(GradeType.class));
-        student.setRegisterTime(LocalDateTime.now());
+        studentBean = DataSource.getStudent();
+        studentBean.setMobile(testMobile);
+        studentBean.setIdCard("1f0a9a831f9e6ec3817d77e5fd2ca3bb");
+        studentBean.setBirthday(DateTimeUtils.toLDateTime("2025-10-11 00:00:00.000").toLocalDate());
     }
 
 
     @Test
     @Override
     public void test() {
-        userService.save(user);
-        student.setUserId(user.getId());
-        studentService.register(student);
-
-        user = userService.getById(user.getId());
-        student = studentService.getById(student.getId());
+        studentService.register(studentBean);
+        Student student = studentService.getByMobile(studentBean.getMobile());
+        User user = userService.getById(student.getUserId());
 
         log("test", user, student);
     }
 
     @Test
     public void test0() {
-        List<StudentBean> studentList = DataSource.getStudentList();
-        studentList.forEach(item -> {
-            User newUser = MapperUtils.INSTANCE.map(item, User.class);
-            userService.save(newUser);
-            Student newStudent = MapperUtils.INSTANCE.map(item, Student.class, FieldMapBuilder.create().ignore("userId").build());
-            newStudent.setUserId(item.getId());
-            studentService.register(newStudent);
-
-            log("test0", item, newStudent);
-        });
+        List<StudentBean> studentBeanList = DataSource.getStudentList();
+        studentBeanList.forEach(item -> studentService.register(item));
     }
 
     @Test
     public void test1() {
-        StudentQuery query = new StudentQuery();
-        query.setRegisterTimeStart(DateTimeUtils.toLDateTime("2020-10-01 00:00:00.000"));
-        query.setRegisterTimeEnd(DateTimeUtils.toLDateTime("2026-11-01 23:59:59.999"));
+        Student student = studentService.getByMobile(testMobile);
+        studentService.delete(student.getId());
 
-        Pageable pageable = PageUtils.createPageable(1, 10, Sort.by(Sort.Order.desc("update_time"), Sort.Order.asc("id")));
-        Page<Student> studentPage = studentService.pagedList(pageable, query);
-        List<Student> content = studentPage.getContent();
-
-        Student first = null;
-        if (CollectionUtils.isNotEmpty(content)) {
-            first = content.get(0);
-
-            studentService.delete(first.getId());
-        }
-
-        log("test1", first);
+        log("test1", student);
     }
 
     @Test
     public void test2() {
+        Student student = studentService.getByMobile(testMobile);
+        if (Objects.nonNull(student)) {
+            student.setScore(new BigDecimal(100));
+            studentService.update(student);
+        }
+    }
+
+    @Test
+    public void test3() {
         UserQuery query = new UserQuery();
         query.setMobileEq(testMobile);
         query.setIdCardEq("1f0a9a831f9e6ec3817d77e5fd2ca3bb");
@@ -124,11 +105,11 @@ public class ServiceTest extends BaseLoggerTest {
         Pageable pageable = PageUtils.createPageable(1, 10, Sort.by(Sort.Order.desc("update_time"), Sort.Order.asc("id")));
         List<User> list = userService.list(pageable, query);
 
-        log("test2", list);
+        log("test3", list);
     }
 
     @Test
-    public void test3() {
+    public void test30() {
         UserQuery query = new UserQuery();
         query.setBirthdayStart(DateTimeUtils.toLDateTime("2024-10-01 00:00:00.000").toLocalDate());
         query.setBirthdayEnd(DateTimeUtils.toLDateTime("2026-11-01 00:00:00.000").toLocalDate());
@@ -136,6 +117,6 @@ public class ServiceTest extends BaseLoggerTest {
         Pageable pageable = PageUtils.createPageable(1, 10, Sort.by(Sort.Order.desc("update_time"), Sort.Order.asc("id")));
         Page<User> pageResult = userService.pagedList(pageable, query);
 
-        log("test3", pageResult.getContent(), pageResult.getTotalPages());
+        log("test30", pageResult.getContent(), pageResult.getTotalPages());
     }
 }

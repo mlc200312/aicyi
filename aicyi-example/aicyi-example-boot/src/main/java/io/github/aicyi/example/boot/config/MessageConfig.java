@@ -1,6 +1,6 @@
 package io.github.aicyi.example.boot.config;
 
-import io.github.aicyi.example.channel.MessageChannels;
+import io.github.aicyi.example.service.channel.MessageChannels;
 import io.github.aicyi.midware.rabbitmq.*;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.function.StreamBridge;

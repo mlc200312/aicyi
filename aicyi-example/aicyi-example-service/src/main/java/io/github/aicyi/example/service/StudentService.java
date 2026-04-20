@@ -1,5 +1,6 @@
 package io.github.aicyi.example.service;
 
+import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.example.domain.StudentQuery;
 import io.github.aicyi.example.domain.entity.base.Student;
 import org.springframework.data.domain.Page;
@@ -14,13 +15,17 @@ import java.util.List;
  **/
 public interface StudentService {
 
-    void register(Student student);
+    void register(StudentBean studentBean);
+
+    void delete(Long id);
+
+    void update(Student student);
 
     Student getById(Long id);
+
+    Student getByMobile(String mobile);
 
     List<Student> list(StudentQuery query);
 
     Page<Student> pagedList(Pageable pageable, StudentQuery query);
-
-    void delete(Long id);
 }
