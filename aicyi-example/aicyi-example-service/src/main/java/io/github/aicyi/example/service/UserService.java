@@ -20,5 +20,7 @@ public interface UserService {
 
     List<User> list(UserQuery query);
 
-    Page<User> pagingList(Pageable pageable, UserQuery query);
+    List<User> list(Pageable pageable, UserQuery query);
+
+    Page<User> pagedList(Pageable pageable, UserQuery query);
 }

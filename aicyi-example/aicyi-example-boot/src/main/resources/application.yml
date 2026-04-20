@@ -34,4 +34,5 @@ spring:
 
 mybatis:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: io.github.aicyi.midware.db.commons.ibatis.IbatisLogger

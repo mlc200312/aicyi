@@ -6,8 +6,8 @@ import io.github.aicyi.commons.lang.EnumType;
 import io.github.aicyi.commons.lang.StringEnumType;
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.midware.mybatisflex.typehandler.GenericEnumTypeHandler;
-import io.github.aicyi.midware.mybatisflex.typehandler.GenericStringEnumTypeHandler;
+import io.github.aicyi.midware.db.commons.typehandler.GenericEnumTypeHandler;
+import io.github.aicyi.midware.db.commons.typehandler.GenericStringEnumTypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
 import org.reflections.Reflections;
@@ -62,10 +62,9 @@ public class DataSourceConfig {
 //            typeHandlerRegistry.register(GenderType.class, new GenericEnumTypeHandler(GenderType.class));
 
             // 注册所有枚举
-            registerAllEnumTypeHandlers(
-                    typeHandlerRegistry
-                    , "io.github.aicyi.commons.lang.type"
-                    , "io.github.aicyi.example.domain.type"
+            registerAllEnumTypeHandlers(typeHandlerRegistry,
+                    "io.github.aicyi.commons.lang.type",
+                    "io.github.aicyi.example.domain.type"
             );
         };
     }

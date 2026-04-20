@@ -3,6 +3,7 @@ package io.github.aicyi.example.domain.entity.base;
 import io.github.aicyi.commons.lang.BaseEntity;
 import io.github.aicyi.commons.lang.type.BooleanType;
 import io.github.aicyi.example.domain.type.GenderType;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

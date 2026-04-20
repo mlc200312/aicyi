@@ -20,38 +20,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-autoconfigure</artifactId>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>commons-lang</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
         <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-kit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-message</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-mybatis-flex</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-rabbitmq</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-redis</artifactId>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>commons-util</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

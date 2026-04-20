@@ -1,12 +1,13 @@
 package io.github.aicyi.example.domain;
 
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.lang.DoBean;
+import io.github.aicyi.commons.lang.BoBean;
 import io.github.aicyi.example.domain.type.GradeType;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author Mr.Min
@@ -15,8 +16,8 @@ import java.time.LocalDate;
  **/
 @Getter
 @Setter
-public class StudentQuery extends BaseBean implements DoBean {
+public class StudentQuery extends BaseBean implements BoBean {
     private GradeType gradeTypeEq;
-    private LocalDate registerTimeStart;
-    private LocalDate registerTimeEnd;
+    private LocalDateTime registerTimeStart;
+    private LocalDateTime registerTimeEnd;
 }

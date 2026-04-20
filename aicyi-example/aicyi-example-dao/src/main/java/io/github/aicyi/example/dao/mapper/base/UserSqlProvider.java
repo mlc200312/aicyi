@@ -4,8 +4,10 @@ import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.domain.entity.base.UserExample.Criteria;
 import io.github.aicyi.example.domain.entity.base.UserExample.Criterion;
 import io.github.aicyi.example.domain.entity.base.UserExample;
+
 import java.util.List;
 import java.util.Map;
+
 import org.apache.ibatis.jdbc.SQL;
 
 public class UserSqlProvider {
@@ -27,47 +29,47 @@ public class UserSqlProvider {
     public String insertSelective(User record) {
         SQL sql = new SQL();
         sql.INSERT_INTO("t_user");
-        
+
         if (record.getId() != null) {
             sql.VALUES("id", "#{id,jdbcType=BIGINT}");
         }
-        
+
         if (record.getAge() != null) {
             sql.VALUES("age", "#{age,jdbcType=INTEGER}");
         }
-        
+
         if (record.getIdCard() != null) {
             sql.VALUES("id_card", "#{idCard,jdbcType=VARCHAR}");
         }
-        
+
         if (record.getMobile() != null) {
             sql.VALUES("mobile", "#{mobile,jdbcType=VARCHAR}");
         }
-        
+
         if (record.getGenderType() != null) {
             sql.VALUES("gender_type", "#{genderType,jdbcType=TINYINT}");
         }
-        
+
         if (record.getBirthday() != null) {
             sql.VALUES("birthday", "#{birthday,jdbcType=TIMESTAMP}");
         }
-        
+
         if (record.getDeleted() != null) {
             sql.VALUES("deleted", "#{deleted,jdbcType=TINYINT}");
         }
-        
+
         if (record.getVersion() != null) {
             sql.VALUES("version", "#{version,jdbcType=INTEGER}");
         }
-        
+
         if (record.getCreateTime() != null) {
             sql.VALUES("create_time", "#{createTime,jdbcType=TIMESTAMP}");
         }
-        
+
         if (record.getUpdateTime() != null) {
             sql.VALUES("update_time", "#{updateTime,jdbcType=TIMESTAMP}");
         }
-        
+
         return sql.toString();
     }
 
@@ -89,61 +91,61 @@ public class UserSqlProvider {
         sql.SELECT("update_time");
         sql.FROM("t_user");
         applyWhere(sql, example, false);
-        
+
         if (example != null && example.getOrderByClause() != null) {
             sql.ORDER_BY(example.getOrderByClause());
         }
-        
+
         return sql.toString();
     }
 
     public String updateByExampleSelective(Map<String, Object> parameter) {
         User record = (User) parameter.get("record");
         UserExample example = (UserExample) parameter.get("example");
-        
+
         SQL sql = new SQL();
         sql.UPDATE("t_user");
-        
+
         if (record.getId() != null) {
             sql.SET("id = #{record.id,jdbcType=BIGINT}");
         }
-        
+
         if (record.getAge() != null) {
             sql.SET("age = #{record.age,jdbcType=INTEGER}");
         }
-        
+
         if (record.getIdCard() != null) {
             sql.SET("id_card = #{record.idCard,jdbcType=VARCHAR}");
         }
-        
+
         if (record.getMobile() != null) {
             sql.SET("mobile = #{record.mobile,jdbcType=VARCHAR}");
         }
-        
+
         if (record.getGenderType() != null) {
             sql.SET("gender_type = #{record.genderType,jdbcType=TINYINT}");
         }
-        
+
         if (record.getBirthday() != null) {
             sql.SET("birthday = #{record.birthday,jdbcType=TIMESTAMP}");
         }
-        
+
         if (record.getDeleted() != null) {
             sql.SET("deleted = #{record.deleted,jdbcType=TINYINT}");
         }
-        
+
         if (record.getVersion() != null) {
             sql.SET("version = #{record.version,jdbcType=INTEGER}");
         }
-        
+
         if (record.getCreateTime() != null) {
             sql.SET("create_time = #{record.createTime,jdbcType=TIMESTAMP}");
         }
-        
+
         if (record.getUpdateTime() != null) {
             sql.SET("update_time = #{record.updateTime,jdbcType=TIMESTAMP}");
         }
-        
+
         applyWhere(sql, example, true);
         return sql.toString();
     }
@@ -151,7 +153,7 @@ public class UserSqlProvider {
     public String updateByExample(Map<String, Object> parameter) {
         SQL sql = new SQL();
         sql.UPDATE("t_user");
-        
+
         sql.SET("id = #{record.id,jdbcType=BIGINT}");
         sql.SET("age = #{record.age,jdbcType=INTEGER}");
         sql.SET("id_card = #{record.idCard,jdbcType=VARCHAR}");
@@ -162,7 +164,7 @@ public class UserSqlProvider {
         sql.SET("version = #{record.version,jdbcType=INTEGER}");
         sql.SET("create_time = #{record.createTime,jdbcType=TIMESTAMP}");
         sql.SET("update_time = #{record.updateTime,jdbcType=TIMESTAMP}");
-        
+
         UserExample example = (UserExample) parameter.get("example");
         applyWhere(sql, example, true);
         return sql.toString();
@@ -171,45 +173,45 @@ public class UserSqlProvider {
     public String updateByPrimaryKeySelective(User record) {
         SQL sql = new SQL();
         sql.UPDATE("t_user");
-        
+
         if (record.getAge() != null) {
             sql.SET("age = #{age,jdbcType=INTEGER}");
         }
-        
+
         if (record.getIdCard() != null) {
             sql.SET("id_card = #{idCard,jdbcType=VARCHAR}");
         }
-        
+
         if (record.getMobile() != null) {
             sql.SET("mobile = #{mobile,jdbcType=VARCHAR}");
         }
-        
+
         if (record.getGenderType() != null) {
             sql.SET("gender_type = #{genderType,jdbcType=TINYINT}");
         }
-        
+
         if (record.getBirthday() != null) {
             sql.SET("birthday = #{birthday,jdbcType=TIMESTAMP}");
         }
-        
+
         if (record.getDeleted() != null) {
             sql.SET("deleted = #{deleted,jdbcType=TINYINT}");
         }
-        
+
         if (record.getVersion() != null) {
             sql.SET("version = #{version,jdbcType=INTEGER}");
         }
-        
+
         if (record.getCreateTime() != null) {
             sql.SET("create_time = #{createTime,jdbcType=TIMESTAMP}");
         }
-        
+
         if (record.getUpdateTime() != null) {
             sql.SET("update_time = #{updateTime,jdbcType=TIMESTAMP}");
         }
-        
+
         sql.WHERE("id = #{id,jdbcType=BIGINT}");
-        
+
         return sql.toString();
     }
 
@@ -217,7 +219,7 @@ public class UserSqlProvider {
         if (example == null) {
             return;
         }
-        
+
         String parmPhrase1;
         String parmPhrase1_th;
         String parmPhrase2;
@@ -239,7 +241,7 @@ public class UserSqlProvider {
             parmPhrase3 = "#{oredCriteria[%d].allCriteria[%d].value[%d]}";
             parmPhrase3_th = "#{oredCriteria[%d].allCriteria[%d].value[%d],typeHandler=%s}";
         }
-        
+
         StringBuilder sb = new StringBuilder();
         List<Criteria> oredCriteria = example.getOredCriteria();
         boolean firstCriteria = true;
@@ -251,7 +253,7 @@ public class UserSqlProvider {
                 } else {
                     sb.append(" or ");
                 }
-                
+
                 sb.append('(');
                 List<Criterion> criterions = criteria.getAllCriteria();
                 boolean firstCriterion = true;
@@ -262,14 +264,14 @@ public class UserSqlProvider {
                     } else {
                         sb.append(" and ");
                     }
-                    
+
                     if (criterion.isNoValue()) {
                         sb.append(criterion.getCondition());
                     } else if (criterion.isSingleValue()) {
                         if (criterion.getTypeHandler() == null) {
                             sb.append(String.format(parmPhrase1, criterion.getCondition(), i, j));
                         } else {
-                            sb.append(String.format(parmPhrase1_th, criterion.getCondition(), i, j,criterion.getTypeHandler()));
+                            sb.append(String.format(parmPhrase1_th, criterion.getCondition(), i, j, criterion.getTypeHandler()));
                         }
                     } else if (criterion.isBetweenValue()) {
                         if (criterion.getTypeHandler() == null) {
@@ -300,7 +302,7 @@ public class UserSqlProvider {
                 sb.append(')');
             }
         }
-        
+
         if (sb.length() > 0) {
             sql.WHERE(sb.toString());
         }

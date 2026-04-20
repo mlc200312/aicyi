@@ -1,5 +1,7 @@
 package io.github.aicyi.example.service.impl;
 
+import com.github.pagehelper.ISelect;
+import com.github.pagehelper.PageHelper;
 import io.github.aicyi.commons.lang.type.BooleanType;
 import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.example.dao.mapper.base.UserMapper;
@@ -7,13 +9,15 @@ import io.github.aicyi.example.domain.UserQuery;
 import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.domain.entity.base.UserExample;
 import io.github.aicyi.example.service.UserService;
+import io.github.aicyi.midware.db.commons.BaseEntityUtils;
+import io.github.aicyi.midware.db.commons.PageUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -30,11 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(User user) {
-        user.setId(IdGenerator.generateId());
-        user.setDeleted(BooleanType.FALSE);
-        user.setVersion(0);
-        user.setCreateTime(LocalDateTime.now());
-        user.setUpdateTime(LocalDateTime.now());
+        BaseEntityUtils.setDefaultValue(user);
         userMapper.insertSelective(user);
     }
 
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     public List<User> list(UserQuery query) {
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
-        if (query == null) {
+        if (Objects.isNull(query)) {
             return Collections.emptyList();
         }
         if (StringUtils.isNotBlank(query.getMobileEq())) {
@@ -66,7 +66,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> pagingList(Pageable pageable, UserQuery query) {
-        return null;
+    public List<User> list(Pageable pageable, UserQuery query) {
+        Page<User> page = PageUtils.createPage(pageable, () -> list(query), false);
+        return page.getContent();
+    }
+
+    @Override
+    public Page<User> pagedList(Pageable pageable, UserQuery query) {
+        return PageUtils.createPage(pageable, () -> list(query));
     }
 }
