@@ -44,14 +44,14 @@ public class FieldMapBuilder {
     /**
      * 构建最终结果（自动剔除忽略字段）
      */
-    public FieldBuildConfig build() {
+    public FieldMapConfig build() {
         Map<String, String> finalMap = new LinkedHashMap<>(fieldMap);
 
         for (String ignoreField : ignoreFields) {
             finalMap.remove(ignoreField);
         }
 
-        return new FieldBuildConfig(finalMap, new ArrayList<>(ignoreFields)
+        return new FieldMapConfig(finalMap, new ArrayList<>(ignoreFields)
         );
     }
 
@@ -67,12 +67,12 @@ public class FieldMapBuilder {
      * @description 字段构建结果
      * @date 2026/4/20
      **/
-    public static class FieldBuildConfig {
+    public static class FieldMapConfig {
 
         private final Map<String, String> fieldMap;
         private final List<String> ignoreFields;
 
-        public FieldBuildConfig(Map<String, String> fieldMap, List<String> ignoreFields) {
+        public FieldMapConfig(Map<String, String> fieldMap, List<String> ignoreFields) {
             this.fieldMap = Collections.unmodifiableMap(fieldMap);
             this.ignoreFields = Collections.unmodifiableList(ignoreFields);
         }

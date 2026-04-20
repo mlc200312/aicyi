@@ -20,7 +20,7 @@ public class SecretKeyUtils {
      * @param secretKey
      * @return
      */
-    public static String secretKeyToString(SecretKey secretKey) {
+    public static String secretKey2Str(SecretKey secretKey) {
         byte[] encodedKey = secretKey.getEncoded();
         return Base64.getEncoder().encodeToString(encodedKey);
     }

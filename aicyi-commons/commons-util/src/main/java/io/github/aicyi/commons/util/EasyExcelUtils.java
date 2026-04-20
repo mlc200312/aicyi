@@ -103,13 +103,15 @@ public class EasyExcelUtils {
                 Integer sheetNo = entry.getKey();
                 Class<?> clazz = entry.getValue();
                 List<?> batch = new ArrayList<>();
-                ExcelListener listener = new ExcelListener() {
-                    @Override
-                    protected void processBatch(List batchData) {
-                        batch.addAll(batchData);
-                    }
-                };
-                ReadSheet readSheet = EasyExcel.readSheet(sheetNo).head(clazz).registerReadListener(listener).build();
+                ReadSheet readSheet = EasyExcel
+                        .readSheet(sheetNo)
+                        .head(clazz)
+                        .registerReadListener(new ExcelListener() {
+                            @Override
+                            protected void processBatch(List batchData) {
+                                batch.addAll(batchData);
+                            }
+                        }).build();
                 excelReader.read(readSheet);
                 result.put(sheetNo, batch);
             }
