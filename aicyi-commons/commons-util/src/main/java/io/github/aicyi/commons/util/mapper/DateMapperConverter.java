@@ -20,7 +20,7 @@ public class DateMapperConverter extends BidirectionalConverter<Date, String> {
     }
 
     @Override
-    public Date convertFrom(String dateStr, Type<Date> date, MappingContext mappingContext) {
+    public Date convertFrom(String dateStr, Type<Date> type, MappingContext mappingContext) {
         return DateUtils.parseDate(dateStr);
     }
 

@@ -6,18 +6,19 @@ package io.github.aicyi.commons.lang;
  * @date 21:34
  **/
 public class Response implements IResponse {
-
-    private boolean status = true;
+    private boolean status;
     private String code;
     private String message;
 
+    public Response() {
+    }
+
     // 私有构造函数
-    private Response(Builder builder) {
+    public Response(Builder builder) {
         this.status = builder.status;
         this.code = builder.code;
         this.message = builder.message;
     }
-
 
     @Override
     public boolean getStatus() {

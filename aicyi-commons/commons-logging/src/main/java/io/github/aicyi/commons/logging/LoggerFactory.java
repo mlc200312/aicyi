@@ -38,4 +38,8 @@ public class LoggerFactory {
     public static Logger getLogger(final Class<?> clazz) {
         return new CommonLogger(clazz);
     }
+
+    public static Logger getLogger(String name) {
+        return new CommonLogger(name);
+    }
 }

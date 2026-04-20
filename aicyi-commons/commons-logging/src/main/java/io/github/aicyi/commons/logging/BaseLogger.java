@@ -41,6 +41,17 @@ public abstract class BaseLogger implements Logger {
      */
     protected abstract String formatMessage(String format, Object... args);
 
+
+    @Override
+    public boolean isDebugEnabled() {
+        return getLogger().isDebugEnabled();
+    }
+
+    @Override
+    public boolean isTraceEnabled() {
+        return getLogger().isTraceEnabled();
+    }
+
     @Override
     public void trace(Object obj) {
         org.slf4j.Logger logger = getLogger();

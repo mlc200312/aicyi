@@ -70,31 +70,48 @@ public enum MapperUtils {
     /**
      * 映射实体（自定义配置）
      *
-     * @param destType  映射类对象
-     * @param src       数据（对象）
-     * @param configMap 自定义配置
+     * @param destType 映射类对象
+     * @param src      数据（对象）
+     * @param config   自定义配置
      * @return 映射类对象
      */
-    public <D, T> D map(T src, Class<D> destType, Map<String, String> configMap) {
-        MapperFacade mapperFacade = this.getMapperFacade(src.getClass(), destType, configMap);
+    public <D, T> D map(T src, Class<D> destType, FieldMapBuilder.FieldBuildConfig config) {
+        MapperFacade mapperFacade = this.getMapperFacade(src.getClass(), destType, config.getFieldMap(), config.getIgnoreFields());
         return mapperFacade.map(src, destType);
+    }
+
+    /**
+     * 拷贝对象
+     *
+     * @param src
+     * @param dest
+     * @param config
+     * @param <S>
+     * @param <D>
+     * @return
+     */
+    public <S, D> D map(S src, D dest, FieldMapBuilder.FieldBuildConfig config) {
+        MapperFacade mapperFacade = this.getMapperFacade(src.getClass(), dest.getClass(), config.getFieldMap(), config.getIgnoreFields());
+        mapperFacade.map(src, dest);
+        return dest;
     }
 
     /**
      * 获取自定义映射
      *
-     * @param destType  映射类
-     * @param srcType   数据映射类
-     * @param configMap 自定义配置
+     * @param destType 映射类
+     * @param srcType  数据映射类
+     * @param fieldMap 自定义配置
      * @return 映射类对象
      */
-    private <S, D> MapperFacade getMapperFacade(Class<S> srcType, Class<D> destType, Map<String, String> configMap) {
+    public <S, D> MapperFacade getMapperFacade(Class<S> srcType, Class<D> destType, Map<String, String> fieldMap, List<String> ignoreFields) {
         String mapKey = srcType.getCanonicalName() + "_" + destType.getCanonicalName();
         MapperFacade mapperFacade = CACHE_MAPPER_FACADE_MAP.get(mapKey);
         if (Objects.isNull(mapperFacade)) {
             MapperFactory factory = createMapperFactory();
             ClassMapBuilder classMapBuilder = factory.classMap(srcType, destType);
-            configMap.forEach(classMapBuilder::field);
+            fieldMap.forEach(classMapBuilder::field);
+            ignoreFields.forEach(classMapBuilder::exclude);
             classMapBuilder.byDefault().register();
             mapperFacade = factory.getMapperFacade();
             CACHE_MAPPER_FACADE_MAP.put(mapKey, mapperFacade);
@@ -107,7 +124,7 @@ public enum MapperUtils {
      *
      * @return
      */
-    private MapperFactory createMapperFactory() {
+    public MapperFactory createMapperFactory() {
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder()
                 //useAutoMapping 控制是否启用 Orika 的自动字段映射机制，当设置为 true 时（默认值），Orika 会自动尝试匹配源对象和目标对象的同名属性。
                 .useAutoMapping(true)
@@ -118,7 +135,9 @@ public enum MapperUtils {
         mapperFactory.getConverterFactory().registerConverter(new EnumTypeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new StringEnumTypeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new TimestampMapperConverter());
+        mapperFactory.getConverterFactory().registerConverter(new Timestamp2LocalDateTimeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new DateMapperConverter());
+        mapperFactory.getConverterFactory().registerConverter(new Date2LocalDateTimeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new LocalDateMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new LocalDateTimeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new JsonMapperConverter());

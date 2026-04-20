@@ -8,6 +8,20 @@ package io.github.aicyi.commons.logging;
 public interface Logger {
 
     /**
+     * 是否启用了调试
+     *
+     * @return
+     */
+    boolean isDebugEnabled();
+
+    /**
+     * 是否启用了跟踪
+     *
+     * @return
+     */
+    boolean isTraceEnabled();
+
+    /**
      * 跟踪
      *
      * @param obj

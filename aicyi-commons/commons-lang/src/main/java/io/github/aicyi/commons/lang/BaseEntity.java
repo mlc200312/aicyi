@@ -5,5 +5,5 @@ package io.github.aicyi.commons.lang;
  * @description 业务描述
  * @date 2025/9/29
  **/
-public abstract class BaseEntity extends BaseBean {
+public abstract class BaseEntity extends BaseBean implements DoBean {
 }
