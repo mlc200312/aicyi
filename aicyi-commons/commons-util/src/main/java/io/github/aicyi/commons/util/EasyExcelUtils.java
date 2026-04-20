@@ -127,7 +127,6 @@ public class EasyExcelUtils {
      */
     public static <T> byte[] exportToBytes(String sheetName, List<T> data, Class<T> clazz) {
         HorizontalCellStyleStrategy cellStyle = createCellStyle();
-
         return exportToBytes(sheetName, data, clazz, cellStyle);
     }
 
@@ -164,7 +163,6 @@ public class EasyExcelUtils {
      */
     public static <T> void exportToFile(String filePath, String sheetName, List<T> data, Class<T> clazz) {
         HorizontalCellStyleStrategy cellStyle = createCellStyle();
-
         exportToFile(filePath, sheetName, data, clazz, cellStyle);
     }
 
@@ -197,7 +195,6 @@ public class EasyExcelUtils {
      */
     public static <T> void exportToResponse(HttpServletResponse response, String fileName, String sheetName, List<T> data, Class<T> clazz) throws IOException {
         HorizontalCellStyleStrategy cellStyle = createCellStyle();
-
         exportToResponse(response, fileName, sheetName, data, clazz, cellStyle);
     }
 
@@ -212,7 +209,6 @@ public class EasyExcelUtils {
      */
     public static <T> void exportToResponse(HttpServletResponse response, String fileName, String sheetName, List<T> data, Class<T> clazz, WriteHandler writeHandler) throws IOException {
         setResponse(response, fileName);
-
         ExcelWriterSheetBuilder sheetBuilder = EasyExcel.write(response.getOutputStream(), clazz)
                 .sheet(1, sheetName);
         if (writeHandler != null) {
