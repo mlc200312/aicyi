@@ -13,5 +13,5 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Documented
 @Import({ResponseBodyResultAdvice.class})
-public @interface EnableWebAction {
+public @interface EnableRestApi {
 }

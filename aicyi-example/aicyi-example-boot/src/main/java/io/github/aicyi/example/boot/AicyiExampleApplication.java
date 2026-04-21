@@ -1,6 +1,6 @@
 package io.github.aicyi.example.boot;
 
-import io.github.aicyi.midware.web.EnableWebAction;
+import io.github.aicyi.midware.web.EnableRestApi;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication(scanBasePackages = {"io.github.aicyi.example"})
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableConfigurationProperties
-@EnableWebAction
+@EnableRestApi
 @MapperScan(basePackages = {"io.github.aicyi.example.dao.mapper"})
 public class AicyiExampleApplication {
 
