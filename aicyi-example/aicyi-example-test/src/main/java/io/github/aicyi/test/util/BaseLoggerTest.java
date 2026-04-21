@@ -21,5 +21,7 @@ public abstract class BaseLoggerTest {
         LOGGER.info(sb);
     }
 
+    public abstract void beforeTest();
+
     public abstract void test();
 }

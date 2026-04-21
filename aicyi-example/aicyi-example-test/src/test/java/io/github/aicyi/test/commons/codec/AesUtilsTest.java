@@ -12,6 +12,11 @@ import org.junit.Test;
  **/
 public class AesUtilsTest extends BaseLoggerTest {
 
+    @Override
+    public void beforeTest() {
+
+    }
+
     @SneakyThrows
     @Test
     public void test() {
@@ -22,7 +27,6 @@ public class AesUtilsTest extends BaseLoggerTest {
         String encrypt = AesUtils.aesEncrypt(content, KEY);
         // AES解密
         String decrypt = AesUtils.aesDecrypt(encrypt, KEY);
-
         assert decrypt.equals(content);
 
         log("test", content, KEY, encrypt, decrypt);

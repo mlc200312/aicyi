@@ -16,6 +16,10 @@ import java.nio.file.Paths;
  **/
 public class CaptchaUtilsTest extends BaseLoggerTest {
 
+    @Override
+    public void beforeTest() {
+    }
+
     @Test
     @Override
     public void test() {
@@ -28,7 +32,6 @@ public class CaptchaUtilsTest extends BaseLoggerTest {
 
             BufferedImage image2 = CaptchaUtils.generateImage("2 + 4 = ?");
             ImageIO.write(image2, "png", Paths.get("captcha2.png").toFile());
-
         } catch (IOException e) {
             e.printStackTrace();
         }

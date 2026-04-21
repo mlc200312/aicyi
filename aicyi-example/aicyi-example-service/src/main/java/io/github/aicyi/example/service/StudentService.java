@@ -21,7 +21,7 @@ public interface StudentService {
 
     void update(Student student);
 
-    Student getById(Long id);
+    StudentBean getById(Long id);
 
     Student getByMobile(String mobile);
 

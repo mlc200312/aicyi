@@ -21,7 +21,7 @@ import java.util.Set;
 
 /**
  * @author Mr.Min
- * @description 数据源配置
+ * @description 数据源相关配置
  * @date 2020-05-11
  **/
 @Configuration
@@ -57,15 +57,11 @@ public class DataSourceConfig {
     public ConfigurationCustomizer mybatisConfigurationCustomizer() {
         return configuration -> {
             TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
-
             // 注册所有实现了EnumType接口的枚举处理器
 //            typeHandlerRegistry.register(GenderType.class, new GenericEnumTypeHandler(GenderType.class));
-
             // 注册所有枚举
             registerAllEnumTypeHandlers(typeHandlerRegistry,
-                    "io.github.aicyi.commons.lang.type",
-                    "io.github.aicyi.example.domain.type"
-            );
+                    "io.github.aicyi.commons.lang.type", "io.github.aicyi.example.domain.type");
         };
     }
 

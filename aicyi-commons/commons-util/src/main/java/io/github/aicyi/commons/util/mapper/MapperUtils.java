@@ -11,145 +11,120 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Mr.Min
- * @description 映射工具类
- * @date 2025/8/8
+ * @description Mapper工具类
+ * @date 2026/4/21
  **/
 public enum MapperUtils {
 
     INSTANCE;
 
-    /**
-     * 默认字段实例
-     */
-    private static final MapperFacade MAPPER_FACADE = INSTANCE.createMapperFactory().getMapperFacade();
+    private static final MapperFacade DEFAULT_MAPPER = INSTANCE.createMapperFactory().getMapperFacade();
 
-    /**
-     * 默认字段实例集合
-     */
-    private static Map<String, MapperFacade> CACHE_MAPPER_FACADE_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, MapperFacade> CACHE = new ConcurrentHashMap<>();
 
-    /**
-     * 映射实体（默认字段）
-     *
-     * @param destType 映射类对象
-     * @param src      数据（对象）
-     * @return 映射类对象
-     */
     public <S, D> D map(S src, Class<D> destType) {
-        return MAPPER_FACADE.map(src, destType);
+        return src == null ? null : DEFAULT_MAPPER.map(src, destType);
     }
 
-    /**
-     * 映射实体（自定义配置）
-     *
-     * @param src
-     * @param destType
-     * @param config
-     * @param <D>
-     * @param <T>
-     * @return
-     */
-    public <D, T> D map(T src, Class<D> destType, FieldMapBuilder.FieldMapConfig config) {
-        MapperFacade mapperFacade = this.getMapperFacade(src.getClass(), destType, config.getFieldMap(), config.getIgnoreFields());
-        return mapperFacade.map(src, destType);
-    }
-
-    /**
-     * 映射集合（默认字段）
-     *
-     * @param destType 映射类对象
-     * @param src      数据（集合）
-     * @return 映射类对象
-     */
-    public <S, D> List<D> mapAsList(Collection<S> src, Class<D> destType) {
-        return CollectionUtils.isEmpty(src) ? Collections.emptyList() : MAPPER_FACADE.mapAsList(src, destType);
-    }
-
-    /**
-     * 映射集合（自定义配置）
-     *
-     * @param src
-     * @param destType
-     * @param config
-     * @param <S>
-     * @param <D>
-     * @return
-     */
-    public <S, D> List<D> mapAsList(Collection<S> src, Class<D> destType, FieldMapBuilder.FieldMapConfig config) {
-        MapperFacade mapperFacade = this.getMapperFacade(src.getClass(), destType, config.getFieldMap(), config.getIgnoreFields());
-        return mapperFacade.mapAsList(src, destType);
-    }
-
-    /**
-     * 拷贝对象（默认字段）
-     *
-     * @param src
-     * @param dest
-     * @param <S>
-     * @param <D>
-     * @return
-     */
     public <S, D> D map(S src, D dest) {
-        MAPPER_FACADE.map(src, dest);
+        if (src == null || dest == null) {
+            return dest;
+        }
+        DEFAULT_MAPPER.map(src, dest);
         return dest;
     }
 
-    /**
-     * 拷贝对象（自定义配置）
-     *
-     * @param src
-     * @param dest
-     * @param config
-     * @param <S>
-     * @param <D>
-     * @return
-     */
+    public <S, D> List<D> mapAsList(Collection<S> src, Class<D> destType) {
+        return CollectionUtils.isEmpty(src)
+                ? Collections.emptyList()
+                : DEFAULT_MAPPER.mapAsList(src, destType);
+    }
+
+    public <S, D> D map(S src, Class<D> destType, FieldMapBuilder.FieldMapConfig config) {
+        if (src == null) {
+            return null;
+        }
+        MapperFacade mapperFacade = getMapperFacade(
+                src.getClass(),
+                destType,
+                config
+        );
+        return mapperFacade.map(src, destType);
+    }
+
     public <S, D> D map(S src, D dest, FieldMapBuilder.FieldMapConfig config) {
-        MapperFacade mapperFacade = this.getMapperFacade(src.getClass(), dest.getClass(), config.getFieldMap(), config.getIgnoreFields());
+        if (src == null || dest == null) {
+            return dest;
+        }
+        MapperFacade mapperFacade = getMapperFacade(
+                src.getClass(),
+                dest.getClass(),
+                config
+        );
         mapperFacade.map(src, dest);
         return dest;
     }
 
-    /**
-     * 获取自定义映射
-     *
-     * @param destType     映射类
-     * @param srcType      数据映射类
-     * @param fieldMap     自定义配置
-     * @param ignoreFields 忽略字段
-     * @return 映射类对象
-     */
-    public <S, D> MapperFacade getMapperFacade(Class<S> srcType, Class<D> destType, Map<String, String> fieldMap, List<String> ignoreFields) {
-        String mapKey = srcType.getCanonicalName() + "_" + destType.getCanonicalName();
-        MapperFacade mapperFacade = CACHE_MAPPER_FACADE_MAP.get(mapKey);
-        if (Objects.isNull(mapperFacade)) {
-            MapperFactory factory = createMapperFactory();
-            ClassMapBuilder classMapBuilder = factory.classMap(srcType, destType);
-            fieldMap.forEach(classMapBuilder::field);
-            ignoreFields.forEach(classMapBuilder::exclude);
-            classMapBuilder.byDefault().register();
-            mapperFacade = factory.getMapperFacade();
-            CACHE_MAPPER_FACADE_MAP.put(mapKey, mapperFacade);
+    public <S, D> List<D> mapAsList(Collection<S> src, Class<D> destType, FieldMapBuilder.FieldMapConfig config) {
+        if (CollectionUtils.isEmpty(src)) {
+            return Collections.emptyList();
         }
-        return mapperFacade;
+
+        Class<?> srcType = src.iterator().next().getClass();
+        MapperFacade mapperFacade = getMapperFacade(srcType, destType, config);
+        return mapperFacade.mapAsList(src, destType);
     }
 
-    /**
-     * 构建默认 mapperFactory
-     *
-     * @return
-     */
+    private <S, D> MapperFacade getMapperFacade(
+            Class<S> srcType,
+            Class<D> destType,
+            FieldMapBuilder.FieldMapConfig config) {
+
+        String cacheKey = buildCacheKey(srcType, destType, config);
+
+        return CACHE.computeIfAbsent(cacheKey,
+                key -> buildMapperFacade(srcType, destType, config));
+    }
+
+    private <S, D> MapperFacade buildMapperFacade(
+            Class<S> srcType,
+            Class<D> destType,
+            FieldMapBuilder.FieldMapConfig config) {
+
+        MapperFactory factory = createMapperFactory();
+
+        ClassMapBuilder<S, D> classMapBuilder = factory.classMap(srcType, destType);
+
+        Optional.ofNullable(config.getFieldMap())
+                .orElse(Collections.emptyMap())
+                .forEach(classMapBuilder::field);
+
+        Optional.ofNullable(config.getIgnoreFields())
+                .orElse(Collections.emptyList())
+                .forEach(classMapBuilder::exclude);
+
+        classMapBuilder.byDefault().register();
+
+        return factory.getMapperFacade();
+    }
+
+    private String buildCacheKey(
+            Class<?> srcType,
+            Class<?> destType,
+            FieldMapBuilder.FieldMapConfig config) {
+        return srcType.getName() + "->" + destType.getName() + "|" + Objects.hash(config.getFieldMap(), config.getIgnoreFields());
+    }
+
     private MapperFactory createMapperFactory() {
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder()
-                //useAutoMapping 控制是否启用 Orika 的自动字段映射机制，当设置为 true 时（默认值），Orika 会自动尝试匹配源对象和目标对象的同名属性。
                 .useAutoMapping(true)
-                //mapNulls 控制是否将源对象的 null 值映射到目标对象，当设置为 true 时，源字段为 null 会覆盖目标字段的现有值。
                 .mapNulls(true)
                 .build();
-        // 注册自定义转换器
+
         mapperFactory.getConverterFactory().registerConverter(new EnumTypeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new StringEnumTypeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new TimestampMapperConverter());
@@ -161,6 +136,7 @@ public enum MapperUtils {
         mapperFactory.getConverterFactory().registerConverter(new JsonMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new PassThroughConverter(LocalDate.class));
         mapperFactory.getConverterFactory().registerConverter(new PassThroughConverter(LocalDateTime.class));
+
         return mapperFactory;
     }
 }

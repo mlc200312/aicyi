@@ -14,6 +14,11 @@ import java.util.Set;
  **/
 public class IdGeneratorTest extends BaseLoggerTest {
 
+    @Override
+    public void beforeTest() {
+
+    }
+
     @Test
     public void test() {
         Set<Long> idSet = new HashSet<>();
@@ -22,7 +27,6 @@ public class IdGeneratorTest extends BaseLoggerTest {
             idSet.add(id);
             System.out.println(id);
         }
-
         assert idSet.size() == 50;
     }
 
@@ -34,7 +38,6 @@ public class IdGeneratorTest extends BaseLoggerTest {
             uuidSet.add(uuid);
             System.out.println(uuid);
         }
-
         assert uuidSet.size() == 50;
     }
 }

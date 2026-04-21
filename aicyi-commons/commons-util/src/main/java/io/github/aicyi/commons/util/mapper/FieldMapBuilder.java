@@ -1,5 +1,6 @@
 package io.github.aicyi.commons.util.mapper;
 
+import io.github.aicyi.commons.util.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -51,8 +52,7 @@ public class FieldMapBuilder {
             finalMap.remove(ignoreField);
         }
 
-        return new FieldMapConfig(finalMap, new ArrayList<>(ignoreFields)
-        );
+        return new FieldMapConfig(finalMap, new ArrayList<>(ignoreFields));
     }
 
     /**
@@ -83,6 +83,15 @@ public class FieldMapBuilder {
 
         public List<String> getIgnoreFields() {
             return ignoreFields;
+        }
+
+        /**
+         * 反转fieldMap
+         */
+        public FieldMapConfig reverse() {
+            Map<String, String> reverseMap = MapUtils.reverse(fieldMap);
+
+            return new FieldMapConfig(reverseMap, new ArrayList<>(ignoreFields));
         }
     }
 }

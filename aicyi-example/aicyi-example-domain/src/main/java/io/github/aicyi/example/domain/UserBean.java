@@ -3,7 +3,6 @@ package io.github.aicyi.example.domain;
 import io.github.aicyi.commons.lang.BoBean;
 import io.github.aicyi.commons.lang.UserInfo;
 import io.github.aicyi.example.domain.type.GenderType;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
@@ -24,6 +23,5 @@ public class UserBean extends UserInfo implements BoBean {
     private String idCard;
     private String mobile;
     private GenderType genderType;
-    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate birthday;
 }

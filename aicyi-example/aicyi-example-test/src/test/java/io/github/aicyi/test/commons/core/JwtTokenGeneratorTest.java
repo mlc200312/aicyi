@@ -27,7 +27,8 @@ public class JwtTokenGeneratorTest extends BaseLoggerTest {
     private String token;
 
     @Before
-    public void before() {
+    @Override
+    public void beforeTest() {
         userId = IdGenerator.generateId() + "";
         tokenGenerator = new JwtTokenGenerator(Keys.secretKeyFor(SignatureAlgorithm.HS256), "test");
         expiredToken = tokenGenerator.generateToken(userId, new HashMap<>(), -1 * 3600 * 1000, TimeUnit.MILLISECONDS);
@@ -48,7 +49,6 @@ public class JwtTokenGeneratorTest extends BaseLoggerTest {
         String getId = tokenGenerator.getId(token).orElse(null);
         Date date = tokenGenerator.getExpiration(token).get();
         String getUserId = MapUtils.getString(claims, "userId");
-
         assert !verifyToken0 && verifyToken1 && getUserId.equals(userId);
 
         log("test", token, verifyToken0, verifyToken1, claims, getId, DateUtils.formatDate(date), getUserId, getUserId.equals(userId));

@@ -13,12 +13,16 @@ import javax.crypto.SecretKey;
  **/
 public class SecretKeyUtilsTest extends BaseLoggerTest {
 
+    @Override
+    public void beforeTest() {
+
+    }
+
     @Test
     public void test() {
         String randomKey = SecretKeyUtils.secretKey2Str(SecretKeyUtils.randomSecretKey());
         SecretKey secretKey = SecretKeyUtils.toHmacSHA256SecretKey(randomKey);
         String secretKey2Str = SecretKeyUtils.secretKey2Str(secretKey);
-
         assert randomKey.equals(secretKey2Str);
 
         log("test", randomKey, secretKey2Str);

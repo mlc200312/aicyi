@@ -15,6 +15,11 @@ import java.awt.*;
  **/
 public class QRCodeGeneratorTest extends BaseLoggerTest {
 
+    @Override
+    public void beforeTest() {
+
+    }
+
     @Test
     @SneakyThrows
     @Override

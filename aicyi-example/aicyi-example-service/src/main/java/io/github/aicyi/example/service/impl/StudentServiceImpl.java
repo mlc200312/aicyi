@@ -74,8 +74,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student getById(Long id) {
-        return studentMapper.selectByPrimaryKey(id);
+    public StudentBean getById(Long id) {
+        Student student = studentMapper.selectByPrimaryKey(id);
+        User user = userService.getById(student.getUserId());
+        MapperUtils instance = MapperUtils.INSTANCE;
+        StudentBean studentBean = instance.map(student, StudentBean.class, FieldMapBuilder.create()
+                .ignore("userId")
+                .build());
+        instance.map(user, studentBean);
+        return studentBean;
     }
 
     @Override

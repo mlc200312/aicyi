@@ -1,7 +1,7 @@
 package io.github.aicyi.test.commons.util;
 
 import io.github.aicyi.commons.util.JaxbUtils;
-import io.github.aicyi.example.domain.Message;
+import io.github.aicyi.test.domin.Message;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
 import lombok.SneakyThrows;
@@ -20,7 +20,8 @@ public class JaxbUtilsTest extends BaseLoggerTest {
     private String xml;
 
     @Before
-    public void before() {
+    @Override
+    public void beforeTest() {
         message = DataSource.getMessage();
         xml = DataSource.getMessageXml();
     }

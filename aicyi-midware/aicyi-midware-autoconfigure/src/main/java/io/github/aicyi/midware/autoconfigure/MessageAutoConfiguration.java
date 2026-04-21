@@ -3,7 +3,7 @@ package io.github.aicyi.midware.autoconfigure;
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.core.message.*;
-import io.github.aicyi.midware.kit.sms.TwilioSmsManager;
+import io.github.aicyi.midware.web.TwilioSmsManager;
 import io.github.aicyi.midware.message.mail.*;
 import io.github.aicyi.midware.message.sms.SmsManager;
 import io.github.aicyi.midware.message.sms.SmsMessageSender;

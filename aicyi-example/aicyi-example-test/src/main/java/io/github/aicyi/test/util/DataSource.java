@@ -1,11 +1,11 @@
 package io.github.aicyi.test.util;
 
 import io.github.aicyi.commons.lang.type.BooleanType;
-import io.github.aicyi.commons.util.DateTimeUtils;
-import io.github.aicyi.commons.util.DateUtils;
+import io.github.aicyi.commons.util.mapper.FieldMapBuilder;
 import io.github.aicyi.commons.util.mapper.MapperUtils;
-import io.github.aicyi.example.domain.Example;
-import io.github.aicyi.example.domain.Message;
+import io.github.aicyi.test.domin.Example;
+import io.github.aicyi.test.domin.ExampleBean;
+import io.github.aicyi.test.domin.Message;
 import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.domain.type.GradeType;
@@ -27,7 +27,6 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -83,9 +82,16 @@ public class DataSource {
         student.setGradeType(RandomGenerator.randomEnum(GradeType.class));
         student.setScore(randomBigDecimal().doubleValue());
         student.setRegisterTime(LocalDateTime.now());
-        student.setCreateTime(new Date());
-        student.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        student.setCreateTime(LocalDateTime.now());
+        student.setUpdateTime(LocalDateTime.now());
         return student;
+    }
+
+    public static StudentResp getStudentResp() {
+        return MapperUtils.INSTANCE.map(getStudent(), StudentResp.class, FieldMapBuilder.create()
+                .add("username", "userName")
+                .add("score", "score0")
+                .build());
     }
 
     public static List<StudentBean> getStudentList() {
@@ -96,39 +102,12 @@ public class DataSource {
         return list;
     }
 
-    public static Map<Long, StudentBean> getStudentMap() {
-        Map<Long, StudentBean> map = new HashMap<>(MAX_NUM);
-        for (int i = 0; i < MAX_NUM; i++) {
-            StudentBean data = getStudent();
-            map.put(data.getId(), data);
-        }
-        return map;
-    }
-
-    public static StudentResp getStudentResp() {
-        StudentResp resp = new StudentResp();
-        resp.setGradeType(RandomGenerator.randomEnum(GradeType.class).getCode());
-        resp.setScore0(randomBigDecimal().doubleValue() + "");
-        resp.setRegisterTime(DateTimeUtils.formatLDateTime(LocalDateTime.now()));
-        resp.setCreateTime(DateUtils.formatDate(new Date()));
-        resp.setUpdateTime(System.currentTimeMillis() + "");
-
-        resp.setId(IdGenerator.generateId() + "");
-        resp.setAge(RandomUtils.nextInt(0, 100));
-        resp.setIdCard(IdGenerator.generateV7Id());
-        resp.setUserName(RandomGenerator.generateFullName());
-        resp.setMobile(RandomGenerator.generatePhoneNum());
-        resp.setGenderType(RandomUtils.nextInt(1, 2));
-        resp.setBirthday(LocalDate.now().format(DateTimeFormatter.ofPattern(DateTimeUtils.DATE_PATTERN)));
-        return resp;
-    }
-
     public static Example getEmptyData() {
         return new Example();
     }
 
-    public static Example getExample() {
-        Example example = new Example();
+    public static ExampleBean getExample() {
+        ExampleBean example = new ExampleBean();
         example.setId(IdGenerator.generateId());
         example.setIdx(RandomUtils.nextInt(1, 99));
         example.setStatus(RandomGenerator.randomEnum(BooleanType.class));
@@ -147,18 +126,29 @@ public class DataSource {
         return example;
     }
 
-    public static List<Example> getExampleList() {
-        List<Example> list = new ArrayList<>();
+    public static ExampleResp getExampleResp() {
+        ExampleResp resp = MapperUtils.INSTANCE.map(getExample(), ExampleResp.class, FieldMapBuilder.create()
+                .add("id", "uuid")
+                .ignore("user")
+                .ignore("student")
+                .build());
+        resp.setUser(getUserJson());
+        resp.setStudent(getStudentResp());
+        return resp;
+    }
+
+    public static List<ExampleBean> getExampleList() {
+        List<ExampleBean> list = new ArrayList<>();
         for (int i = 0; i < MAX_NUM; i++) {
             list.add(getExample());
         }
         return list;
     }
 
-    public static Map<Long, Example> getExampleMap() {
-        Map<Long, Example> map = new HashMap<>(MAX_NUM);
+    public static Map<Long, ExampleBean> getExampleMap() {
+        Map<Long, ExampleBean> map = new HashMap<>(MAX_NUM);
         for (int i = 0; i < MAX_NUM; i++) {
-            Example data = getExample();
+            ExampleBean data = getExample();
             map.put(data.getId(), data);
         }
         return map;
@@ -174,26 +164,6 @@ public class DataSource {
 
     public static String getExampleMapJson() {
         return JsonUtils.getInstance().toJson(getExampleMap());
-    }
-
-    public static ExampleResp getExampleResp() {
-        ExampleResp resp = new ExampleResp();
-        resp.setUuid(IdGenerator.generateId() + "");
-        resp.setIdx(RandomUtils.nextInt(1, 99));
-        resp.setStatus(RandomUtils.nextInt(0, 1));
-        resp.setAmount(randomBigDecimal().toString());
-        resp.setScore(randomBigDecimal().toString());
-        resp.setDate(DateUtils.formatDate(new Date()));
-        resp.setLocalDate(LocalDate.now().format(DateTimeFormatter.ofPattern(DateTimeUtils.DATE_PATTERN)));
-        resp.setDateTime(DateTimeUtils.formatLDateTime(LocalDateTime.now()));
-        resp.setTimestamp(System.currentTimeMillis() + "");
-        resp.setSeason(RandomGenerator.randomEnum(Season.class).getCode());
-        resp.setWeek(RandomGenerator.randomEnum(Week.class).getCode());
-        resp.setIdList(Arrays.asList("1", "2", "3"));
-        resp.setUser(getUserJson());
-        resp.setStudent(getStudentResp());
-        resp.setNothing("nothing");
-        return resp;
     }
 
     public static AicyiFactory getFactory(AicyiFactory.Robot robot) {

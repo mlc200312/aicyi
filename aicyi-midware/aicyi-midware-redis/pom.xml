@@ -20,11 +20,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-core</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>

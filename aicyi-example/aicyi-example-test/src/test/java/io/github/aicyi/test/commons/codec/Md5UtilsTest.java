@@ -12,13 +12,17 @@ import org.junit.Test;
  **/
 public class Md5UtilsTest extends BaseLoggerTest {
 
+    @Override
+    public void beforeTest() {
+
+    }
+
     @Test
     public void test() {
         // 测试数据
         String data = "test 123";
         String md5 = Md5Utils.md5(data);
         String generateMd5 = MessageDigestUtils.generateMd5(data);
-
         assert md5.equals(generateMd5);
 
         log("test", md5);

@@ -11,7 +11,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 /**
  * @author Mr.Min
- * @description Redis 配置
+ * @description Redis相关配置
  * @date 12:02
  **/
 @Configuration

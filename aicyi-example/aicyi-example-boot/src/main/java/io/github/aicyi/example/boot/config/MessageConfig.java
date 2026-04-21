@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Mr.Min
- * @description 消息配置
+ * @description MQ消息相关配置
  * @date 15:43
  **/
 @Configuration

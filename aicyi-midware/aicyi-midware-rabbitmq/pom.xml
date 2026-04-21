@@ -19,12 +19,6 @@
     </parent>
 
     <dependencies>
-        <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
         <!-- Spring Cloud Stream 核心 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

@@ -2,6 +2,7 @@ package io.github.aicyi.example.web.dto;
 
 import io.github.aicyi.commons.lang.DtoBean;
 import io.github.aicyi.commons.lang.BaseBean;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import lombok.Setter;
  **/
 @Getter
 @Setter
+@ApiModel("登陆响应参数")
 public class StudentResp extends BaseBean implements DtoBean {
     private String id;
     private Integer age;

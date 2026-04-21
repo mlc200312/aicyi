@@ -7,7 +7,8 @@ import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.commons.util.json.JacksonConverter;
 import io.github.aicyi.commons.util.json.JacksonHelper;
 import io.github.aicyi.commons.util.json.JsonUtils;
-import io.github.aicyi.example.domain.Example;
+import io.github.aicyi.test.domin.Example;
+import io.github.aicyi.test.domin.ExampleBean;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
 import lombok.Getter;
@@ -39,7 +40,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
     @Test
     public void test() {
         JsonConverter instance = JsonUtils.getInstance();
-        List<Example> exampleList = DataSource.getExampleList();
+        List<ExampleBean> exampleList = DataSource.getExampleList();
         String json = instance.toJson(a);
         String json1 = instance.toJson(aList);
         String json2 = instance.toJson(aMap);
@@ -53,12 +54,10 @@ public class JsonUtilsTest extends BaseLoggerTest {
         JsonConverter instance = JsonUtils.getInstance();
         String json = DataSource.getExampleJson();
         Object parse = instance.parse(json);
-
         assert parse instanceof Map;
 
         Type type = instance.constructType(Example.class);
         Example parse1 = instance.parse(json, type);
-
         assert parse1 != null;
 
         log("parseJson", parse, parse1);
@@ -69,7 +68,6 @@ public class JsonUtilsTest extends BaseLoggerTest {
         JacksonConverter instance = JacksonConverter.DEFAULT_SIMPLE_CONVERTER;
         String json = "{\"id\":613294732759531520,\"age\":0,\"idCard\":\"1f07da341eb26024b3f927826ef0e6e2\",\"mobile\":\"13010496590\",\"genderType\":\"WOMAN\",\"birthday\":\"2025-08-20\",\"userId\":\"610780341698822144\",\"username\":\"邓纨仪\",\"deviceId\":\"1f07da341ee56475b3f927826ef0e6e2\",\"isMasterDevice\":false}";
         UserInfo parse = instance.parse(json, JacksonHelper.getType(UserInfo.class));
-
         assert parse != null;
 
         log("parseJson2", parse);
@@ -80,12 +78,10 @@ public class JsonUtilsTest extends BaseLoggerTest {
         JsonConverter instance = JsonUtils.getInstance();
         String json = DataSource.getExampleListJson();
         List<Example> exampleList = instance.parseList(json);
-
         assert exampleList != null;
 
         Type type = instance.constructType(Example.class);
         List<Example> exampleList1 = instance.parseList(json, type);
-
         assert exampleList1 != null;
 
         log("parseList", exampleList, exampleList1);
@@ -96,17 +92,14 @@ public class JsonUtilsTest extends BaseLoggerTest {
         JsonConverter instance = JsonUtils.getInstance();
         String json = DataSource.getExampleMapJson();
         Map<Object, Object> exampleMap = instance.parseMap(json);
-
         assert exampleMap != null;
 
         Map<String, Example> exampleMap1 = instance.parseMap(json, Example.class);
-
         assert exampleMap1 != null;
 
         Type ktype = instance.constructType(Long.class);
         Type vtype = instance.constructType(Example.class);
         Map<Long, Example> exampleMap2 = instance.parseMap(json, ktype, vtype);
-
         assert exampleMap2 != null;
 
         log("parseMap", exampleMap, exampleMap1, exampleMap2);
@@ -119,7 +112,6 @@ public class JsonUtilsTest extends BaseLoggerTest {
         boolean emptyJSON1 = instance.isEmptyJSON("{}");
         boolean emptyJSON2 = instance.isEmptyJSON("[]");
         boolean emptyJSON3 = instance.isEmptyJSON("123");
-
         assert emptyJSON && emptyJSON1 && emptyJSON2 && !emptyJSON3;
 
         log("isEmptyJsonTest", emptyJSON, emptyJSON1, emptyJSON2, emptyJSON3);

@@ -29,7 +29,8 @@ public class JwtTokenManagerTest extends BaseLoggerTest {
     private TokenManager<String, UserInfo> tokenManager;
 
     @Before
-    public void before() {
+    @Override
+    public void beforeTest() {
         userInfo = DataSource.getUser();
         userInfo.setUserId("610780341698822144");
         userInfo.setMasterDevice(false);
@@ -51,25 +52,20 @@ public class JwtTokenManagerTest extends BaseLoggerTest {
         claims.put("testMobile", mobile);
         String token = tokenManager.createToken(userInfo, claims, 1, TimeUnit.HOURS);
         Long tokenExpire = tokenManager.getTokenExpire(token, TimeUnit.MINUTES).get();
-
         assert tokenExpire <= config.getDefaultExpire(TimeUnit.MINUTES);
 
         boolean validateToken = tokenManager.validateToken(token);
-
         assert validateToken == true;
 
         String refreshToken = tokenManager.refreshToken(token).get();
         UserInfo parsedUserInfo = tokenManager.parseUserInfo(refreshToken).get();
         Object getMobile = tokenManager.parseClaim(refreshToken, "testMobile").get();
-
         assert getMobile.equals(mobile);
 
         Long refreshTokenExpire = tokenManager.getTokenExpire(refreshToken, TimeUnit.MINUTES).get();
-
         assert refreshTokenExpire <= config.getRefreshWindow(TimeUnit.MINUTES);
 
         Set<String> userTokens = tokenManager.getUserTokens(userInfo);
-
         assert userTokens.size() == 0;
 
         log("test", token, tokenExpire, validateToken, refreshToken, parsedUserInfo, getMobile, refreshTokenExpire, userTokens);

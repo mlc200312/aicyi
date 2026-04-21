@@ -26,7 +26,22 @@
         <module>aicyi-midware-db</module>
         <module>aicyi-midware-rabbitmq</module>
         <module>aicyi-midware-redis</module>
+        <module>aicyi-midware-web</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>commons-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>commons-util</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>
@@ -43,11 +58,6 @@
             <dependency>
                 <groupId>io.github.aicyi.midware</groupId>
                 <artifactId>aicyi-midware-message</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.aicyi.midware</groupId>
-                <artifactId>aicyi-midware-mybatis-flex</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>

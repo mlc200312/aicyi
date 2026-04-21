@@ -34,7 +34,6 @@ public class RsaUtilsTest extends BaseLoggerTest {
         // 解密
         String decrypt = RsaUtils.decrypt(encrypt, privateKey);
         String str2 = "RSA decoded: " + decrypt;
-
         assert text.equals(decrypt);
 
         log("test", str, str2);
@@ -47,7 +46,6 @@ public class RsaUtilsTest extends BaseLoggerTest {
         String sign = RsaUtils.sign(signContent, privateKey);
         //验签
         boolean verify = RsaUtils.verify(signContent, sign, publicKey);
-
         assert verify;
 
         log("signTest", sign, verify);
