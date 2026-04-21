@@ -30,7 +30,8 @@ public class RedisSnowflakeIdGeneratorTest extends BaseLoggerTest {
     private RedisTemplate<String, String> stringRedisTemplate;
 
     @Before
-    public void before() {
+    @Override
+    public void beforeTest() {
         this.stringRedisTemplate = new EnhancedRedisTemplateFactory(redisConnectionFactory).getStringTemplate();
     }
 
@@ -38,11 +39,8 @@ public class RedisSnowflakeIdGeneratorTest extends BaseLoggerTest {
     @Test
     public void test() {
         IdGenerator idGenerator = new RedisSnowflakeIdGenerator(stringRedisTemplate);
-
         for (int i = 0; i < 50; i++) {
-
             long id = idGenerator.nextId();
-
             System.out.println(id);
         }
     }

@@ -51,15 +51,16 @@ public class ServiceTest extends BaseLoggerTest {
     private String testMobile;
     private StudentBean studentBean;
 
+
     @Before
-    public void testBefore() {
+    @Override
+    public void beforeTest() {
         testMobile = "15902571792";
         studentBean = DataSource.getStudent();
         studentBean.setMobile(testMobile);
         studentBean.setIdCard("1f0a9a831f9e6ec3817d77e5fd2ca3bb");
         studentBean.setBirthday(DateTimeUtils.toLDateTime("2025-10-11 00:00:00.000").toLocalDate());
     }
-
 
     @Test
     @Override
@@ -68,7 +69,7 @@ public class ServiceTest extends BaseLoggerTest {
         Student student = studentService.getByMobile(studentBean.getMobile());
         User user = userService.getById(student.getUserId());
 
-        log("test", user, student);
+        log(user, student);
     }
 
     @Test
@@ -82,7 +83,7 @@ public class ServiceTest extends BaseLoggerTest {
         Student student = studentService.getByMobile(testMobile);
         studentService.delete(student.getId());
 
-        log("test1", student);
+        log(student);
     }
 
     @Test
@@ -105,7 +106,7 @@ public class ServiceTest extends BaseLoggerTest {
         Pageable pageable = PageUtils.createPageable(1, 10, Sort.by(Sort.Order.desc("update_time"), Sort.Order.asc("id")));
         List<User> list = userService.list(pageable, query);
 
-        log("test3", list);
+        log(list);
     }
 
     @Test
@@ -117,6 +118,6 @@ public class ServiceTest extends BaseLoggerTest {
         Pageable pageable = PageUtils.createPageable(1, 10, Sort.by(Sort.Order.desc("update_time"), Sort.Order.asc("id")));
         Page<User> pageResult = userService.pagedList(pageable, query);
 
-        log("test30", pageResult.getContent(), pageResult.getTotalPages());
+        log(pageResult.getContent(), pageResult.getTotalPages());
     }
 }

@@ -34,6 +34,11 @@ public class MessageSenderTest extends BaseLoggerTest {
     @Autowired
     private MessageSender messageSender;
 
+    @Override
+    public void beforeTest() {
+
+    }
+
     @Test
     @Override
     public void test() {
@@ -43,44 +48,44 @@ public class MessageSenderTest extends BaseLoggerTest {
         // 方式一
         boolean send2 = messageSender.send(MessageChannels.OUTPUT, DataSource.getUser());
 
-        log("test", send, send2);
+        log(send, send2);
     }
 
     @Test
-    public void sendDelayedTest() {
+    public void test2() {
         boolean send = messageSender.sendDelayed(MessageChannels.DELAYED_OUTPUT, DataSource.getUser(), 10 * 1000);
 
-        log("sendDelayedTest", send);
+        log(send);
     }
 
     @Test
-    public void sendDirectTest() {
+    public void test3() {
         boolean send = messageSender.send(MessageChannels.DIRECT_OUTPUT, DataSource.getUser());
 
-        log("sendDirectTest", send);
+        log(send);
     }
 
     @Test
-    public void sendTopicOrderCreatedTest() {
+    public void test4() {
         Map<String, Object> properties = Maps.of("routingKey", (Object) "order.created").build();
         boolean send = messageSender.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
 
-        log("sendTopicOrderCreatedTest", send);
+        log(send);
     }
 
     @Test
-    public void sendTopicOrderPaidTest() {
+    public void test5() {
         Map<String, Object> properties = Maps.of("routingKey", (Object) "order.paid").build();
         boolean send = messageSender.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
 
-        log("sendTopicOrderPaidTest", send);
+        log(send);
     }
 
     @Test
-    public void sendTopicSystemLogTest() {
+    public void test6() {
         Map<String, Object> properties = Maps.of("routingKey", (Object) "system.log").build();
         boolean send = messageSender.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
 
-        log("sendTopicSystemLogTest", send);
+        log(send);
     }
 }

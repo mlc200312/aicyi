@@ -28,7 +28,8 @@ public class DistributedLockTest extends BaseLoggerTest {
     private Queue<DistributedLock> list = new LinkedList<>();
 
     @Before
-    public void before() {
+    @Override
+    public void beforeTest() {
         for (int i = 0; i < LOCK; i++) {
             list.add(new RedissonDistributedLock("myLock:" + i, redissonClient));
         }

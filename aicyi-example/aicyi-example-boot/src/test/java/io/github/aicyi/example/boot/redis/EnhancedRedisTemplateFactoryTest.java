@@ -3,6 +3,7 @@ package io.github.aicyi.example.boot.redis;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.commons.util.json.JacksonHelper;
 import io.github.aicyi.test.domin.Example;
+import io.github.aicyi.test.domin.ExampleBean;
 import io.github.aicyi.test.domin.Message;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
@@ -33,12 +34,13 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
     private EnhancedRedisTemplateFactory enhancedRedisTemplateFactory;
 
     private RedisTemplate<String, String> stringTemplate;
-    private RedisTemplate<String, Example> exampleRedisTemplate;
+    private RedisTemplate<String, ExampleBean> exampleRedisTemplate;
 
     @Before
-    public void before() {
+    @Override
+    public void beforeTest() {
         stringTemplate = enhancedRedisTemplateFactory.getStringTemplate();
-        exampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(JacksonHelper.getType(Example.class));
+        exampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(JacksonHelper.getType(ExampleBean.class));
     }
 
     @Test
@@ -46,38 +48,34 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         BoundValueOperations<String, String> stringRedisTemplate = stringTemplate.boundValueOps("stringRedisTemplateTest");
         stringRedisTemplate.set("stringRedisTemplateTest");
         String value = stringRedisTemplate.get();
-
         assert value.equals("stringRedisTemplateTest");
 
         BoundValueOperations<String, String> intRedisTemplate = stringTemplate.boundValueOps("intRedisTemplateTest");
         intRedisTemplate.set("999999");
         intRedisTemplate.increment();
         String value2 = intRedisTemplate.get();
-
         assert value2.equals("1000000");
 
-        log("test", value, value2);
+        log(value, value2);
     }
 
     @Test
     public void jsonRedisTemplateTest() {
-        BoundValueOperations<String, Example> redisTemplateTest = exampleRedisTemplate.boundValueOps("jsonRedisTemplateTest");
+        BoundValueOperations<String, ExampleBean> redisTemplateTest = exampleRedisTemplate.boundValueOps("jsonRedisTemplateTest");
         redisTemplateTest.set(DataSource.getExample());
-        Example example = redisTemplateTest.get();
+        ExampleBean example = redisTemplateTest.get();
         String exampleStr = stringTemplate.opsForValue().get("jsonRedisTemplateTest");
-
         assert example != null;
 
         JavaType exampleType = JacksonHelper.getParametricType(List.class, JacksonHelper.getType(Example.class));
-        RedisTemplate<String, List<Example>> listRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(exampleType);
-        BoundValueOperations<String, List<Example>> jsonListRedisTemplateTest = listRedisTemplate.boundValueOps("jsonListRedisTemplateTest");
+        RedisTemplate<String, List<ExampleBean>> listRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(exampleType);
+        BoundValueOperations<String, List<ExampleBean>> jsonListRedisTemplateTest = listRedisTemplate.boundValueOps("jsonListRedisTemplateTest");
         jsonListRedisTemplateTest.set(DataSource.getExampleList());
-        List<Example> exampleList = jsonListRedisTemplateTest.get();
+        List<ExampleBean> exampleList = jsonListRedisTemplateTest.get();
         String exampleListStr = stringTemplate.opsForValue().get("jsonListRedisTemplateTest");
-
         assert CollectionUtils.isNotEmpty(exampleList) && exampleList.size() == DataSource.MAX_NUM;
 
-        log("jsonRedisTemplateTest", example, exampleStr, exampleList, exampleListStr);
+        log(example, exampleStr, exampleList, exampleListStr);
     }
 
     @Test
@@ -88,10 +86,9 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         jsonStrRedisTemplateTest.set("jsonStrRedisTemplateTest");
         String value = jsonStrRedisTemplateTest.get();
         String valueStr = stringTemplate.opsForValue().get("jsonStrRedisTemplateTest");
-
         assert value.equals("jsonStrRedisTemplateTest");
 
-        log("jsonStrRedisTemplateTest", value, valueStr);
+        log(value, valueStr);
     }
 
     @Test
@@ -103,10 +100,9 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         Integer value = jsonIntRedisTemplateTest.get();
         jsonIntRedisTemplateTest.increment();
         String valueStr = stringTemplate.opsForValue().get("jsonIntRedisTemplateTest");
-
         assert value.equals(999999);
 
-        log("jsonIntRedisTemplate", value, valueStr);
+        log(value, valueStr);
     }
 
     @Test
@@ -116,10 +112,9 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         objectJdkRedisTemplateTest.set(DataSource.getExample());
         Object value = objectJdkRedisTemplateTest.get();
         String valueStr = stringTemplate.opsForValue().get("objectJdkRedisTemplateTest");
+        assert value instanceof ExampleBean && value != null;
 
-        assert value instanceof Example && value != null;
-
-        log("objectJdkRedisTemplateTest", value, valueStr);
+        log(value, valueStr);
     }
 
 
@@ -130,10 +125,9 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         objectXmlRedisTemplateTest.set(DataSource.getMessage());
         Message value = objectXmlRedisTemplateTest.get();
         String valueStr = stringTemplate.opsForValue().get("objectXmlRedisTemplateTest");
-
         assert value != null && value instanceof Message;
 
-        log("objectXmlRedisTemplateTest", value, valueStr);
+        log(value, valueStr);
     }
 
     @Test
@@ -143,10 +137,9 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         objectJsonRedisTemplateTest.set(DataSource.getExample());
         Object value = objectJsonRedisTemplateTest.get();
         String valueStr = stringTemplate.opsForValue().get("objectJsonRedisTemplateTest");
-
         assert value != null;
 
-        log("objectJsonRedisTemplateTest", value, valueStr);
+        log(value, valueStr);
     }
 
     @Test
@@ -156,10 +149,9 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         objectStrJsonRedisTemplateTest.set("objectStrJsonRedisTemplateTest");
         Object value = objectStrJsonRedisTemplateTest.get();
         String valueStr = stringTemplate.opsForValue().get("objectStrJsonRedisTemplateTest");
-
         assert value instanceof String;
 
-        log("objectStrJsonRedisTemplateTest", value, valueStr);
+        log(value, valueStr);
     }
 
     @Test
@@ -170,10 +162,9 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         Object value = objectNumJsonRedisTemplateTest.get();
         objectNumJsonRedisTemplateTest.increment(0.0001);
         String valueStr = stringTemplate.opsForValue().get("objectNumJsonRedisTemplateTest");
-
         assert value instanceof Double && ((Double) value).doubleValue() == 9.9999;
 
-        log("objectNumJsonRedisTemplateTest", value, valueStr);
+        log(value, valueStr);
     }
 
     @Test
@@ -183,10 +174,9 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         objectStrTypRedisTemplateTest.set("objectStrTypRedisTemplateTest");
         Object value = objectStrTypRedisTemplateTest.get();
         String valueStr = stringTemplate.opsForValue().get("objectStrTypRedisTemplateTest");
-
         assert value.equals("objectStrTypRedisTemplateTest");
 
-        log("objectStrTypRedisTemplateTest", value, valueStr);
+        log(value, valueStr);
     }
 
     @Test
@@ -197,7 +187,6 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         Object value = objectNumTypRedisTemplateTest.get();
         objectNumTypRedisTemplateTest.increment();
         String valueStr = stringTemplate.opsForValue().get("objectNumTypRedisTemplateTest");
-
         assert value.equals("999999");
 
         BoundValueOperations<String, Object> objectDoubleTypRedisTemplateTest = genericTemplate.boundValueOps("objectDoubleTypRedisTemplateTest");
@@ -205,9 +194,8 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         Object value2 = objectDoubleTypRedisTemplateTest.get();
         objectDoubleTypRedisTemplateTest.increment(0.0001);
         String valueStr2 = stringTemplate.opsForValue().get("objectDoubleTypRedisTemplateTest");
-
         assert value2.equals("9.9999");
 
-        log("objectPrimitiveTypRedisTemplateTest", value, valueStr, value2, valueStr2);
+        log(value, valueStr, value2, valueStr2);
     }
 }

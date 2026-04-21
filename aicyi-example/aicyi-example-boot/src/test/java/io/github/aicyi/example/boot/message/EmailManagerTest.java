@@ -41,7 +41,8 @@ public class EmailManagerTest extends BaseLoggerTest {
     private TemplateEngine templateEngine;
 
     @Before
-    public void before() {
+    @Override
+    public void beforeTest() {
         toList = Arrays.asList("15910436675@163.com", "mlc200312@163.com");
 
         // 创建模拟的TemplateEngine
@@ -54,28 +55,26 @@ public class EmailManagerTest extends BaseLoggerTest {
     public void test() {
         String htmlContent = "<html><body><h1>Hello World!</h1><p>这是一封HTML邮件</p></body></html>";
         boolean isSend = emailManager.sendHtmlEmail(toList, "这是一个Html", htmlContent);
-
         assert isSend;
 
-        log("test", isSend);
+        log(isSend);
     }
 
     @SneakyThrows
     @Test
-    public void sendEmailWithAttachmentTest() {
+    public void test2() {
         boolean connection = emailManager.testConnection();
         Attachment attachment = new Attachment();
         attachment.setName("test.xlsx");
         String absolutePath = new File("").getAbsoluteFile().getParentFile().getPath();
-        File file = new File(absolutePath + "/aicyi-test/src/test/resources/test/bank_insert.xlsx");
+        File file = new File(absolutePath + "/aicyi-example-test/src/test/resources/test/bank_insert.xlsx");
         attachment.setFile(file);
         attachment.setContentType("xlsx");
         List<Attachment> attachmentList = Arrays.asList(attachment);
         boolean isSend = emailManager.sendEmailWithAttachment(toList, "附件", "测试带附件的邮件", attachmentList);
-
         assert connection && isSend;
 
-        log("test2", connection, isSend);
+        log(connection, isSend);
     }
 
     @SneakyThrows
@@ -104,22 +103,19 @@ public class EmailManagerTest extends BaseLoggerTest {
         // 模拟模板引擎返回内容
         String expectedHtml = "<html><body>...</body></html>";
         when(templateEngine.process(eq(templateName), eq(variables))).thenReturn(expectedHtml);
-
         // 执行测试
         boolean isSend = emailManager.sendTemplateEmail(toList, subject, templateName, variables);
-
         assert isSend;
 
-        log("test3", isSend);
+        log(isSend);
     }
 
     @SneakyThrows
     @Test
     public void test4() {
         CompletableFuture<Boolean> async = emailManager.sendEmailAsync(toList, "异步短信", "测试异步发送短信");
-
         assert async.get();
 
-        log("test4", async.get());
+        log(async.get());
     }
 }
