@@ -12,9 +12,9 @@ import io.github.aicyi.commons.logging.LoggerFactory;
 public abstract class BaseLoggerTest {
     protected static final Logger LOGGER = LoggerFactory.getLogger(BaseLoggerTest.class);
 
-    public void log(String opt, Object... os) {
+    public void log(Object... os) {
         int i = 0;
-        StringBuilder sb = new StringBuilder(String.format("\n %s execute %s，输出的结果 : \n", this.getClass().getName(), opt));
+        StringBuilder sb = new StringBuilder(String.format("\n %s execute %s，输出的结果 : \n", this.getClass().getName(), "test"));
         for (Object o : os) {
             sb.append(++i).append("、").append(o).append("\n");
         }

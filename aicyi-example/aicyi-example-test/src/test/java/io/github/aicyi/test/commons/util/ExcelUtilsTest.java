@@ -81,7 +81,6 @@ public class ExcelUtilsTest extends BaseLoggerTest {
             Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
         }
         List<StudentExcel> readStudentExcelList = ExcelUtils.readFromBytes(bytes, StudentExcel.class);
-
         assert readStudentExcelList != null && readStudentExcelList.size() == 3;
 
         log("exportToBytesTest", readStudentExcelList);
