@@ -43,6 +43,18 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 业务异常处理
+     *
+     * @param ex the target exception
+     * @return
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public final Response<Void> handleBusinessException(UnauthorizedException ex) {
+        LOGGER.error(ex, "handleException cause: {}", ex.getMessage());
+        return Response.failure(ex.getCodeAsString(), ex.getMessage());
+    }
+
+    /**
      * 参数异常处理
      *
      * @param ex the target exception

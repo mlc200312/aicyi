@@ -1,8 +1,8 @@
 package io.github.aicyi.test.commons.util;
 
+import io.github.aicyi.commons.lang.JWTInfo;
 import io.github.aicyi.commons.lang.JsonConverter;
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.lang.UserInfo;
 import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.commons.util.json.JacksonConverter;
 import io.github.aicyi.commons.util.json.JacksonHelper;
@@ -67,7 +67,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
     public void parseJson2() {
         JacksonConverter instance = JacksonConverter.DEFAULT_SIMPLE_CONVERTER;
         String json = "{\"id\":613294732759531520,\"age\":0,\"idCard\":\"1f07da341eb26024b3f927826ef0e6e2\",\"mobile\":\"13010496590\",\"genderType\":\"WOMAN\",\"birthday\":\"2025-08-20\",\"userId\":\"610780341698822144\",\"username\":\"邓纨仪\",\"deviceId\":\"1f07da341ee56475b3f927826ef0e6e2\",\"isMasterDevice\":false}";
-        UserInfo parse = instance.parse(json, JacksonHelper.getType(UserInfo.class));
+        JWTInfo parse = instance.parse(json, JacksonHelper.getType(JWTInfo.class));
         assert parse != null;
 
         log("parseJson2", parse);

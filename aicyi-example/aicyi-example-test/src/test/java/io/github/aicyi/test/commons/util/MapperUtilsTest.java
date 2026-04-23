@@ -37,7 +37,7 @@ public class MapperUtilsTest extends BaseLoggerTest {
         assert example != null;
 
         ExampleResp exampleResp = MapperUtils.INSTANCE.map(exampleBean, ExampleResp.class, config);
-        assert exampleResp != null && exampleResp.getStudent() != null && exampleResp.getStudent().getUserName().equals(example.getStudent().getUsername());
+        assert exampleResp != null && exampleResp.getStudent() != null && Double.valueOf(exampleResp.getStudent().getScore0()) == example.getScore();
 
         log("test", example, exampleResp);
     }
@@ -49,7 +49,7 @@ public class MapperUtilsTest extends BaseLoggerTest {
         assert exampleBean != null;
 
         Example example = MapperUtils.INSTANCE.map(exampleResp, Example.class, config.reverse());
-        assert example != null && example.getStudent() != null && example.getStudent().getUsername().equals(exampleResp.getStudent().getUserName());
+        assert example != null && example.getStudent() != null && example.getStudent().getScore() == Double.valueOf(exampleResp.getStudent().getScore0());
 
         log("test", exampleBean, example);
     }

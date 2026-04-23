@@ -15,7 +15,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
  * @date 12:02
  **/
 @Configuration
-public class RedisConfig {
+public class RedisConfiguration {
 
     @Bean
     public EnhancedRedisTemplateFactory getEnhancedRedisTemplateFactory(RedisConnectionFactory redisConnectionFactory) {

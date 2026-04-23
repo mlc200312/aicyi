@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 @EnableBinding(MessageChannels.MessageOutput.class)
-public class MessageConfig {
+public class MessageConfiguration {
 
     @Bean
     public MessageSender messageSender(StreamBridge streamBridge) {

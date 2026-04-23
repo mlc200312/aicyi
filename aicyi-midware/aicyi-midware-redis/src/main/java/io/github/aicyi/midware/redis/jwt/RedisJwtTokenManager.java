@@ -1,10 +1,10 @@
 package io.github.aicyi.midware.redis.jwt;
 
+import io.github.aicyi.commons.lang.JWTInfo;
 import io.github.aicyi.commons.lang.JsonConverter;
 import io.github.aicyi.commons.core.token.DefaultTokenManager;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.core.token.TokenManager;
-import io.github.aicyi.commons.lang.UserInfo;
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.core.jwt.JwtTokenGenerator;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @description Redis+Jwt Token管理实现
  * @date 15:48
  **/
-public class RedisJwtTokenManager<U extends UserInfo> extends DefaultTokenManager<U> implements TokenManager<String, U> {
+public class RedisJwtTokenManager<U extends JWTInfo> extends DefaultTokenManager<U> implements TokenManager<String, U> {
 
     // 日志
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisJwtTokenManager.class);
@@ -55,54 +55,43 @@ public class RedisJwtTokenManager<U extends UserInfo> extends DefaultTokenManage
     }
 
     public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory) {
-        this(tokenConfig, redisConnectionFactory, JacksonHelper.getType(UserInfo.class));
+        this(tokenConfig, redisConnectionFactory, JacksonHelper.getType(JWTInfo.class));
     }
 
-
     @Override
-    public String createToken(U userInfo, Map<String, Object> claims, long timeout, TimeUnit unit) {
-        Assert.notNull(userInfo, "userInfo");
-        Assert.notNull(userInfo.getUserId(), "userInfo.userId");
-        Assert.notNull(userInfo.getDeviceId(), "userInfo.deviceId");
-
+    public String createToken(U jwtInfo, Map<String, Object> claims, long timeout, TimeUnit unit) {
+        Assert.notNull(jwtInfo, "jwtInfo");
+        Assert.notNull(jwtInfo.getId(), "jwtInfo.id");
+        Assert.notNull(jwtInfo.getDeviceId(), "jwtInfo.deviceId");
         // 允许创建多Token
         if (config.isMultiTokenAllowed()) {
-
             // 获取Token列表
-            Set<String> userTokens = getUserTokens(userInfo);
-            if (userInfo.isMasterDevice()) {
-
+            Set<String> userTokens = getUserTokens(jwtInfo);
+            if (jwtInfo.isMainDevice()) {
                 // 踢出主设备
                 invalidateOneToken(userTokens, true);
             }
-
             // 如果已存在Token数大于最大Token数，踢出其中一个Token
             if (userTokens.size() >= config.getMultiTokenCount()) {
-
                 // 保留最新Token，踢出其中一个Token
                 invalidateOneToken(userTokens, false);
             }
         } else {
-
             // 使用户的所有Token失效
-            invalidateAllTokens(userInfo);
+            invalidateAllTokens(jwtInfo);
         }
-
         // 自定义声明和默认声明组合
         Map<String, Object> enhancedClaims = new HashMap<>(claims);
-        String json = jsonConverter.toJson(userInfo);
+        String json = jsonConverter.toJson(jwtInfo);
         Map<String, Object> addClaims = jsonConverter.parseMap(json, Object.class);
         enhancedClaims.putAll(addClaims);
-
         // 生成Token
-        String id = userInfo.getUserId() + ":" + userInfo.getDeviceId();
+        String id = jwtInfo.getId() + ":" + jwtInfo.getDeviceId();
         String token = tokenGenerator.generateToken(id, enhancedClaims, timeout, unit);
-
         // 存储用户Token
-        String hashKey = buildTokenKey(userInfo);
-        opsForHash.put(hashKey, userInfo.getDeviceId(), token);
-        redisCacheManager.put(id, userInfo, timeout, unit);
-
+        String hashKey = buildTokenKey(jwtInfo);
+        opsForHash.put(hashKey, jwtInfo.getDeviceId(), token);
+        redisCacheManager.put(id, jwtInfo, timeout, unit);
         return token;
     }
 
@@ -117,7 +106,7 @@ public class RedisJwtTokenManager<U extends UserInfo> extends DefaultTokenManage
     }
 
     @Override
-    public Optional<U> parseUserInfo(String token) {
+    public Optional<U> parseJwtInfo(String token) {
         Optional<String> opt = tokenGenerator.getId(token);
         if (opt.isPresent()) {
             String id = opt.get();
@@ -161,12 +150,12 @@ public class RedisJwtTokenManager<U extends UserInfo> extends DefaultTokenManage
         Optional<String> opt = tokenGenerator.getId(token);
         if (opt.isPresent()) {
             // 解析Token并获取用户
-            Optional<U> parseUserInfo = parseUserInfo(token);
+            Optional<U> parseUserInfo = parseJwtInfo(token);
             if (parseUserInfo.isPresent()) {
                 U userInfo = parseUserInfo.get();
                 String hashKey = buildTokenKey(userInfo);
                 opsForHash.delete(hashKey, userInfo.getDeviceId());
-                LOGGER.info("ID：{} username：{} deviceId【{}】 token invalidated.", userInfo.getUserId(), userInfo.getUsername(), userInfo.getDeviceId());
+                LOGGER.info("id：{} uniqueName：{} deviceId【{}】 token invalidated.", userInfo.getId(), userInfo.getUniqueName(), userInfo.getDeviceId());
             }
             String id = opt.get();
             redisCacheManager.remove(id);
@@ -177,13 +166,12 @@ public class RedisJwtTokenManager<U extends UserInfo> extends DefaultTokenManage
     public void invalidateAllTokens(U userInfo) {
         // 获取用户所有的Token
         Set<String> userTokens = getUserTokens(userInfo);
-
         // 使Token失效
         userTokens.forEach(this::invalidateToken);
     }
 
     private String buildTokenKey(U userInfo) {
-        return redisCacheManager.getCacheName() + ":" + USER_TOKENS_PREFIX + ":" + userInfo.getUserId();
+        return redisCacheManager.getCacheName() + ":" + USER_TOKENS_PREFIX + ":" + userInfo.getId();
     }
 
     /**
@@ -196,10 +184,10 @@ public class RedisJwtTokenManager<U extends UserInfo> extends DefaultTokenManage
         Iterator<String> iterator = userTokens.iterator();
         while (iterator.hasNext()) {
             String token = iterator.next();
-            Optional<U> parseUserInfo = parseUserInfo(token);
+            Optional<U> parseUserInfo = parseJwtInfo(token);
             if (parseUserInfo.isPresent()) {
                 U userInfo = parseUserInfo.get();
-                if (isMasterDevice == userInfo.isMasterDevice()) {
+                if (isMasterDevice == userInfo.isMainDevice()) {
                     invalidateToken(token);
                     iterator.remove();
                     break;

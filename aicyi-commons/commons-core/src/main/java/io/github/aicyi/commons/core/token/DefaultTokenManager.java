@@ -47,7 +47,6 @@ public abstract class DefaultTokenManager<U> implements TokenManager<String, U> 
         if (!validateToken(token)) {
             return Optional.empty();
         }
-
         // 解析原Token中的声明
         return tokenGenerator.parseToken(token);
     }
@@ -68,17 +67,13 @@ public abstract class DefaultTokenManager<U> implements TokenManager<String, U> 
         if (!validateToken(token)) {
             return Optional.empty();
         }
-
         // 解析Token并获取用户信息
-        Optional<U> userInfo = parseUserInfo(token);
+        Optional<U> userInfo = parseJwtInfo(token);
         if (userInfo.isPresent()) {
-
             // 解析原Token中的声明
             Map<String, Object> claims = parseToken(token).get();
-
             // 使原Token失效
             invalidateToken(token);
-
             // 创建新Token
             String newToken = createToken(userInfo.get(), claims, config.getRefreshWindow(TimeUnit.SECONDS), TimeUnit.SECONDS);
             return Optional.of(newToken);
@@ -93,7 +88,6 @@ public abstract class DefaultTokenManager<U> implements TokenManager<String, U> 
         if (expiration.isPresent()) {
             Date now = new Date();
             Date date = expiration.get();
-
             // 获取Token剩余有效期
             return date.after(now) ? Optional.of(unit.convert(date.getTime() - now.getTime(), TimeUnit.MILLISECONDS)) : Optional.empty();
         }

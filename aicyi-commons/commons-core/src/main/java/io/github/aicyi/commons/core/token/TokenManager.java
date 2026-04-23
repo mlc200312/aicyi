@@ -66,7 +66,7 @@ public interface TokenManager<T, U> {
      * @param token Token
      * @return 用户信息
      */
-    Optional<U> parseUserInfo(T token);
+    Optional<U> parseJwtInfo(T token);
 
     /**
      * 从Token中解析声明

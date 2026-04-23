@@ -25,7 +25,7 @@ import java.util.Set;
  * @date 2020-05-11
  **/
 @Configuration
-public class DataSourceConfig {
+public class DataSourceConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericEnumTypeHandler.class);
 

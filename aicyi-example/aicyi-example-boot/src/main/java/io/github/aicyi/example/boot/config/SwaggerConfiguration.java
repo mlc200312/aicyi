@@ -22,7 +22,7 @@ import springfox.documentation.spring.web.plugins.Docket;
  **/
 @EnableOpenApi//@EnableOpenApi用于开启Swagger在 Spring Boot，可放在启动类上，也可放在这里
 @Configuration
-public class SwaggerConfig {
+public class SwaggerConfiguration {
 
     @Value("${server.port:80}")
     private String serverPort;
@@ -36,7 +36,7 @@ public class SwaggerConfig {
                 .version("1.0")
                 .build();
         String ipAddress = SystemUtils.getIpAddress();
-        LoggerFactory.getLogger(WebConfig.class).info("Swagger url 'http://{}:{}/api-doc.html'!", ipAddress, serverPort);
+        LoggerFactory.getLogger(WebConfiguration.class).info("Swagger url 'http://{}:{}/api-doc.html'!", ipAddress, serverPort);
         return (new Docket(DocumentationType.OAS_30))
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo)

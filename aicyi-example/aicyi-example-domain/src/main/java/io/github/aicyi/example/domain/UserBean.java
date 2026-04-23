@@ -1,7 +1,7 @@
 package io.github.aicyi.example.domain;
 
+import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.lang.BoBean;
-import io.github.aicyi.commons.lang.UserInfo;
 import io.github.aicyi.example.domain.type.GenderType;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @FieldNameConstants
-public class UserBean extends UserInfo implements BoBean {
+public class UserBean extends BaseBean implements BoBean {
     private Long id;
     private Integer age;
     private String idCard;

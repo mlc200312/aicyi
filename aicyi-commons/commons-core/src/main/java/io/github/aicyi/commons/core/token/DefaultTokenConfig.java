@@ -47,9 +47,7 @@ public class DefaultTokenConfig implements TokenConfig {
      * @param multiTokenAllowed 是否允许多Token
      */
     public DefaultTokenConfig(String issuer, String signingKey, boolean multiTokenAllowed) {
-        this(issuer, signingKey, multiTokenAllowed, DEFAULT_MULTI_TOKEN_COUNT,
-                DEFAULT_EXPIRE_TIME, DEFAULT_EXPIRE_UNIT,
-                DEFAULT_REFRESH_WINDOW, DEFAULT_REFRESH_UNIT);
+        this(issuer, signingKey, multiTokenAllowed, DEFAULT_MULTI_TOKEN_COUNT, DEFAULT_EXPIRE_TIME, DEFAULT_EXPIRE_UNIT, DEFAULT_REFRESH_WINDOW, DEFAULT_REFRESH_UNIT);
     }
 
     /**

@@ -58,15 +58,11 @@ public class DataSource {
 
     public static UserBean getUser() {
         UserBean user = new UserBean();
-        user.setUserId(IdGenerator.generateV7Id());
-        user.setDeviceId(IdGenerator.generateV7Id());
-        user.setUsername(RandomGenerator.generateFullName());
-        user.setMasterDevice(false);
+        user.setId(IdGenerator.generateId());
 
         user.setId(IdGenerator.generateId());
         user.setAge(RandomUtils.nextInt(0, 100));
         user.setIdCard(IdGenerator.generateV7Id());
-        user.setUsername(RandomGenerator.generateFullName());
         user.setMobile(RandomGenerator.generatePhoneNum());
         user.setGenderType(RandomGenerator.randomEnum(GenderType.class));
         user.setBirthday(LocalDate.now());
@@ -89,7 +85,7 @@ public class DataSource {
 
     public static StudentResp getStudentResp() {
         return MapperUtils.INSTANCE.map(getStudent(), StudentResp.class, FieldMapBuilder.create()
-                .add("username", "userName")
+
                 .add("score", "score0")
                 .build());
     }

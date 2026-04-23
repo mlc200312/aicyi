@@ -2,8 +2,8 @@ package io.github.aicyi.commons.core.jwt;
 
 import io.github.aicyi.commons.core.token.DefaultTokenManager;
 import io.github.aicyi.commons.core.token.TokenConfig;
+import io.github.aicyi.commons.lang.JWTInfo;
 import io.github.aicyi.commons.lang.JsonConverter;
-import io.github.aicyi.commons.lang.UserInfo;
 import io.github.aicyi.commons.util.json.JacksonConverter;
 
 import java.lang.reflect.Type;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @description Jwt令牌管理类
  * @date 15:42
  **/
-public class JwtTokenManager<U extends UserInfo> extends DefaultTokenManager<U> {
+public class JwtTokenManager<U extends JWTInfo> extends DefaultTokenManager<U> {
 
     private final JsonConverter jsonConverter;
     private final Type type;
@@ -41,7 +41,7 @@ public class JwtTokenManager<U extends UserInfo> extends DefaultTokenManager<U> 
     }
 
     @Override
-    public Optional<U> parseUserInfo(String token) {
+    public Optional<U> parseJwtInfo(String token) {
         // 解析原Token中的声明
         Optional<Map<String, Object>> claims = parseToken(token);
 

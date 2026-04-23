@@ -11,6 +11,7 @@ import io.github.aicyi.example.web.dto.StudentReq;
 import io.github.aicyi.example.web.dto.StudentResp;
 import io.github.aicyi.example.service.StudentService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,23 +34,35 @@ public class StudentController {
     private StudentService studentService;
 
     @ApiOperation(value = "查询学生", notes = "查询学生")
+    @ApiImplicitParam(
+            name = "Authorization",
+            value = "令牌",
+            required = true,
+            paramType = "header",
+            dataTypeClass = String.class
+    )
     @RequestMapping(value = "/get-by-id", method = RequestMethod.GET)
     public IResponse<StudentResp> getById(@RequestParam String id) {
         StudentBean bean = studentService.getById(Long.valueOf(id));
         StudentResp resp = MapperUtils.INSTANCE.map(bean, StudentResp.class, FieldMapBuilder.create()
-                .add("username", "userName")
                 .add("score", "score0")
                 .build());
         return Response.success(resp);
     }
 
     @ApiOperation(value = "分页查询学生", notes = "分页查询学生")
+    @ApiImplicitParam(
+            name = "Authorization",
+            value = "令牌",
+            required = true,
+            paramType = "header",
+            dataTypeClass = String.class
+    )
     @RequestMapping(value = "/paged-list", method = RequestMethod.GET)
     public IResponse<PageResponse<StudentResp>> pagedList(@Validated @ModelAttribute StudentReq req) {
         StudentQuery query = MapperUtils.INSTANCE.map(req, StudentQuery.class);
         Page<StudentBean> page = studentService.pagedList(query);
         List<StudentResp> respList = MapperUtils.INSTANCE.mapAsList(page.getContent(), StudentResp.class, FieldMapBuilder.create()
-                .add("username", "userName")
                 .add("score", "score0")
                 .build());
         return Response.success(PageResponse.build(respList, page));
