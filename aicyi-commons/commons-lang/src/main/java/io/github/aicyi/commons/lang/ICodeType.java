@@ -2,22 +2,22 @@ package io.github.aicyi.commons.lang;
 
 /**
  * @author Mr.Min
- * @description 枚举接口
- * @date 10:24
+ * @description 业务描述
+ * @date 11:01
  **/
-public interface IEnumType<C> {
+public interface ICodeType<C> {
 
     /**
-     * 枚举代码
+     * 错误码
      *
      * @return
      */
     C getCode();
 
     /**
-     * 描述
+     * 错误信息
      *
      * @return
      */
-    String getDescription();
+    String getMessage();
 }

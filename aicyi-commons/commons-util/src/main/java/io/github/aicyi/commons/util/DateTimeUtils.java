@@ -1,8 +1,11 @@
 package io.github.aicyi.commons.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -23,6 +26,9 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDateTime toLDateTime(String dateTime, String pattern) {
+        if (StringUtils.isBlank(dateTime)) {
+            return null;
+        }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
         LocalDateTime localDateTime = LocalDateTime.parse(dateTime, dateTimeFormatter);
         return localDateTime;
@@ -55,6 +61,9 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDateTime toLDateTime(Date date) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 
@@ -65,6 +74,9 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDateTime toLDateTime(LocalDate date) {
+        if (Objects.isNull(date)) {
+            return null;
+        }
         return LocalDateTime.of(date, LocalTime.parse("00:00:00"));
     }
 
@@ -76,6 +88,9 @@ public class DateTimeUtils {
      * @return
      */
     public static String formatLDateTime(LocalDateTime dateTime, String pattern) {
+        if (Objects.isNull(dateTime)) {
+            return null;
+        }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
         return dateTimeFormatter.format(dateTime);
     }
@@ -87,8 +102,7 @@ public class DateTimeUtils {
      * @return
      */
     public static String formatLDateTime(LocalDateTime dateTime) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DEFAULT_PATTERN);
-        return dateTimeFormatter.format(dateTime);
+        return formatLDateTime(dateTime, DEFAULT_PATTERN);
     }
 
     /**
@@ -97,7 +111,10 @@ public class DateTimeUtils {
      * @param dateTime
      * @return
      */
-    public static long toLong(LocalDateTime dateTime) {
+    public static Long toLong(LocalDateTime dateTime) {
+        if (Objects.isNull(dateTime)) {
+            return null;
+        }
         return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
@@ -108,6 +125,9 @@ public class DateTimeUtils {
      * @return
      */
     public static Date toDate(LocalDateTime dateTime) {
+        if (Objects.isNull(dateTime)) {
+            return null;
+        }
         return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

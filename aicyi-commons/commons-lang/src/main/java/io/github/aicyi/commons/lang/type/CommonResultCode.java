@@ -1,12 +1,13 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.commons.lang.type;
+
+import io.github.aicyi.commons.lang.IResultCode;
 
 /**
  * @author Mr.Min
- * @description 异常错误类
+ * @description 公共异常错误码枚举
  * @date 2026/4/21
  **/
-public enum ResultCode {
-
+public enum CommonResultCode implements IResultCode {
     SUCCESS(0, "Success"),
 
     BUSINESS_ERROR(20001, "Business Error"),
@@ -20,15 +21,17 @@ public enum ResultCode {
     private final Integer code;
     private final String message;
 
-    ResultCode(Integer code, String message) {
+    CommonResultCode(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
 
+    @Override
     public Integer getCode() {
         return code;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }

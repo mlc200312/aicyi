@@ -127,6 +127,7 @@ public enum MapperUtils {
 
         mapperFactory.getConverterFactory().registerConverter(new EnumTypeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new StringEnumTypeMapperConverter());
+        mapperFactory.getConverterFactory().registerConverter(new String2LongMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new TimestampMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new Timestamp2LocalDateTimeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new DateMapperConverter());

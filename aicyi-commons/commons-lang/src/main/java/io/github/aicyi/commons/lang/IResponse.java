@@ -5,7 +5,14 @@ package io.github.aicyi.commons.lang;
  * @description Web层通用响应接口
  * @date 21:31
  **/
-public interface IResponse {
+public interface IResponse<D> extends IResult<String, D> {
+
+    /**
+     * 时间戳
+     *
+     * @return
+     */
+    Long getTimestamp();
 
     /**
      * 状态
@@ -13,18 +20,4 @@ public interface IResponse {
      * @return
      */
     boolean getStatus();
-
-    /**
-     * 返回码
-     *
-     * @return
-     */
-    String getCode();
-
-    /**
-     * 返回描述
-     *
-     * @return
-     */
-    String getMessage();
 }

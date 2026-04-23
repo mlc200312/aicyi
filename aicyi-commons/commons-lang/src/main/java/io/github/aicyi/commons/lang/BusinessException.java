@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.commons.lang;
 
 /**
  * @author Mr.Min
@@ -9,7 +9,7 @@ public class BusinessException extends RuntimeException {
 
     private final Integer code;
 
-    public BusinessException(ResultCode resultCode) {
+    public BusinessException(IResultCode resultCode) {
         super(resultCode.getMessage());
         this.code = resultCode.getCode();
     }
@@ -21,5 +21,9 @@ public class BusinessException extends RuntimeException {
 
     public Integer getCode() {
         return code;
+    }
+
+    public String getCodeAsString() {
+        return String.valueOf(code);
     }
 }
