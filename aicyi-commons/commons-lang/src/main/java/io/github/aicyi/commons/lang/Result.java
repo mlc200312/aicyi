@@ -27,14 +27,26 @@ public class Result<D> extends BaseBean implements IResult<Integer, D> {
         return code;
     }
 
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
     @Override
     public String getMessage() {
         return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     @Override
     public D getData() {
         return data;
+    }
+
+    public void setData(D data) {
+        this.data = data;
     }
 
     public static <T> Result<T> success(T data) {
