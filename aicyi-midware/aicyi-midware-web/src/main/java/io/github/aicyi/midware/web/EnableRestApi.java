@@ -12,6 +12,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
-@Import({ResponseBodyResultAdvice.class})
+@Import({GlobalExceptionHandler.class})
 public @interface EnableRestApi {
 }

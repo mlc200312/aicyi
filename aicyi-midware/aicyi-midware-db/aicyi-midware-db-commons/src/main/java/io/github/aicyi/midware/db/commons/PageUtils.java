@@ -2,11 +2,14 @@ package io.github.aicyi.midware.db.commons;
 
 import com.github.pagehelper.ISelect;
 import com.github.pagehelper.PageHelper;
+import io.github.aicyi.commons.lang.PageParam;
 import org.springframework.data.domain.*;
+
+import java.util.List;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 分页工具类
  * @date 09:52
  **/
 public class PageUtils {
@@ -16,22 +19,35 @@ public class PageUtils {
     }
 
     public static Pageable createPageable(int page, int size) {
-        return createPageable(page - 1, size, Sort.unsorted());
+        return createPageable(page, size, Sort.unsorted());
     }
 
     public static Pageable first(int size) {
-        return createPageable(0, size);
+        return createPageable(1, size);
     }
 
-    public static <T> Page<T> createPage(Pageable pageable, ISelect select, boolean count) {
-        com.github.pagehelper.Page<T> page = PageHelper.startPage(pageable.getPageNumber() + 1, pageable.getPageSize(), count);
-        String[] array = pageable.getSort().stream().map(order -> order.getProperty() + " " + order.getDirection().name()).toArray(String[]::new);
-        page.setOrderBy(String.join(",", array));
+    public static <T> Page<T> getPage(Pageable pageable, ISelect select, boolean count) {
+        int pageNum = pageable.getPageNumber() + 1;
+        int pageSize = pageable.getPageSize();
+        com.github.pagehelper.Page<T> page = PageHelper.startPage(pageNum, pageSize, count);
+        String orderBy = String.join(",",
+                pageable.getSort()
+                        .stream()
+                        .map(order -> order.getProperty() + " " + order.getDirection().name())
+                        .toArray(String[]::new));
+        page.setOrderBy(orderBy);
         com.github.pagehelper.Page<T> selectPage = page.doSelectPage(select);
         return new PageImpl<>(selectPage.getResult(), pageable, selectPage.getTotal());
     }
 
-    public static <T> Page<T> createPage(Pageable pageable, ISelect select) {
-        return createPage(pageable, select, true);
+    public static <T> Page<T> getPage(PageParam pageParam, ISelect select) {
+        Pageable pageable = createPageable(pageParam.getPage(), pageParam.getSize());
+        return getPage(pageable, select, true);
+    }
+
+    public static <T> List<T> getList(PageParam pageParam, ISelect select) {
+        Pageable pageable = createPageable(pageParam.getPage(), pageParam.getSize());
+        Page<T> page = getPage(pageable, select, false);
+        return page.getContent();
     }
 }
