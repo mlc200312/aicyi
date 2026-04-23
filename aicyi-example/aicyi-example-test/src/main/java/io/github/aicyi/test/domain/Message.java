@@ -1,4 +1,4 @@
-package io.github.aicyi.test.domin;
+package io.github.aicyi.test.domain;
 
 import io.github.aicyi.commons.lang.BoBean;
 import io.github.aicyi.commons.lang.BaseBean;

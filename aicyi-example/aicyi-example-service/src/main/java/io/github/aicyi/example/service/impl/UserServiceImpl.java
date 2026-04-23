@@ -1,9 +1,5 @@
 package io.github.aicyi.example.service.impl;
 
-import com.github.pagehelper.ISelect;
-import com.github.pagehelper.PageHelper;
-import io.github.aicyi.commons.lang.type.BooleanType;
-import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.example.dao.mapper.base.UserMapper;
 import io.github.aicyi.example.domain.UserQuery;
 import io.github.aicyi.example.domain.entity.base.User;
@@ -11,10 +7,10 @@ import io.github.aicyi.example.domain.entity.base.UserExample;
 import io.github.aicyi.example.service.UserService;
 import io.github.aicyi.midware.db.commons.BaseEntityUtils;
 import io.github.aicyi.midware.db.commons.PageUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -62,17 +58,20 @@ public class UserServiceImpl implements UserService {
         if (Objects.nonNull(query.getBirthdayEnd())) {
             criteria.andBirthdayLessThanOrEqualTo(query.getBirthdayEnd());
         }
+        if (CollectionUtils.isNotEmpty(query.getIdListIn())) {
+            criteria.andIdIn(query.getIdListIn());
+        }
         return userMapper.selectByExample(userExample);
     }
 
     @Override
     public List<User> list(Pageable pageable, UserQuery query) {
-        Page<User> page = PageUtils.createPage(pageable, () -> list(query), false);
+        Page<User> page = PageUtils.getPage(pageable, () -> list(query), false);
         return page.getContent();
     }
 
     @Override
     public Page<User> pagedList(Pageable pageable, UserQuery query) {
-        return PageUtils.createPage(pageable, () -> list(query));
+        return PageUtils.getPage(query, () -> list(query));
     }
 }

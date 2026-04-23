@@ -9,8 +9,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi boot</name>
-    <description>aicyi boot</description>
+    <name>aicyi example boot</name>
+    <description>aicyi example boot</description>
 
     <parent>
         <groupId>io.github.aicyi.example</groupId>

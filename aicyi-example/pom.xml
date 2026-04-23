@@ -63,4 +63,44 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-autoconfigure</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-db-commons</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-kit</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-message</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-rabbitmq</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-redis</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-web</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

@@ -9,8 +9,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi service</name>
-    <description>aicyi service</description>
+    <name>aicyi example service</name>
+    <description>aicyi example service</description>
 
     <parent>
         <groupId>io.github.aicyi.example</groupId>
@@ -28,31 +28,26 @@
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-autoconfigure</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-kit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-message</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-rabbitmq</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-redis</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

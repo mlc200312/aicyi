@@ -27,5 +27,5 @@ public interface StudentService {
 
     List<Student> list(StudentQuery query);
 
-    Page<Student> pagedList(Pageable pageable, StudentQuery query);
+    Page<StudentBean> pagedList(StudentQuery query);
 }

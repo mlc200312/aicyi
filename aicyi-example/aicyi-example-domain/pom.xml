@@ -9,8 +9,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi domain</name>
-    <description>aicyi domain</description>
+    <name>aicyi example domain</name>
+    <description>aicyi example domain</description>
 
     <parent>
         <groupId>io.github.aicyi.example</groupId>

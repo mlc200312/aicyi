@@ -9,8 +9,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi dao</name>
-    <description>aicyi dao</description>
+    <name>aicyi example dao</name>
+    <description>aicyi example dao</description>
 
     <parent>
         <groupId>io.github.aicyi.example</groupId>
@@ -28,7 +28,6 @@
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-db-commons</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

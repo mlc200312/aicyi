@@ -1,4 +1,4 @@
-package io.github.aicyi.test.domin;
+package io.github.aicyi.test.domain;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;

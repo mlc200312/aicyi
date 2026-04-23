@@ -1,7 +1,8 @@
-package io.github.aicyi.example.web.dto;
+package io.github.aicyi.test.dto;
 
 import io.github.aicyi.commons.lang.DtoBean;
 import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.example.web.dto.StudentResp;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;

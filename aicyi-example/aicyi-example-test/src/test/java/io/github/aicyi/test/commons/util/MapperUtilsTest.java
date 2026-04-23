@@ -1,8 +1,8 @@
 package io.github.aicyi.test.commons.util;
 
-import io.github.aicyi.test.domin.Example;
-import io.github.aicyi.example.web.dto.ExampleResp;
-import io.github.aicyi.test.domin.ExampleBean;
+import io.github.aicyi.test.domain.Example;
+import io.github.aicyi.test.dto.ExampleResp;
+import io.github.aicyi.test.domain.ExampleBean;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
 import io.github.aicyi.commons.util.mapper.*;

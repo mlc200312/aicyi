@@ -9,8 +9,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi web</name>
-    <description>aicyi web</description>
+    <name>aicyi example web</name>
+    <description>aicyi example web</description>
 
     <parent>
         <groupId>io.github.aicyi.example</groupId>
@@ -28,17 +28,6 @@
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-web</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
 </project>

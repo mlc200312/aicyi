@@ -1,7 +1,7 @@
 package io.github.aicyi.example.consumer.config;
 
 import io.github.aicyi.commons.core.exception.MessageSendException;
-import io.github.aicyi.commons.lang.Response;
+import io.github.aicyi.midware.web.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.MessageHandlingException;
@@ -13,20 +13,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class MessagingExceptionHandler {
 
     @ExceptionHandler(MessageSendException.class)
-    public ResponseEntity<Response> handleMessageSendException(MessageSendException e) {
-        Response response = Response.builder().withError("MESSAGE_SEND_FAILURE", e.getMessage()).build();
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
+    public ResponseEntity<Response<Void>> handleMessageSendException(MessageSendException e) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(Response.failure("MESSAGE_SEND_FAILURE", e.getMessage()));
     }
 
     @ExceptionHandler(MessageConversionException.class)
-    public ResponseEntity<Response> handleMessageConversionException(MessageConversionException e) {
-        Response response = Response.builder().withError("MESSAGE_CONVERSION_FAILURE", e.getMessage()).build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ResponseEntity<Response<Void>> handleMessageConversionException(MessageConversionException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.failure("MESSAGE_CONVERSION_FAILURE", e.getMessage()));
     }
 
     @ExceptionHandler(MessageHandlingException.class)
-    public ResponseEntity<Response> handleMessageHandlingException(MessageHandlingException e) {
-        Response response = Response.builder().withError("MESSAGE_HANDLING_FAILURE", e.getMessage()).build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ResponseEntity<Response<Void>> handleMessageHandlingException(MessageHandlingException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.failure("MESSAGE_HANDLING_FAILURE", e.getMessage()));
     }
 }

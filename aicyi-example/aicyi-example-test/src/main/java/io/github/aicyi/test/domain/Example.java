@@ -1,7 +1,7 @@
-package io.github.aicyi.test.domin;
+package io.github.aicyi.test.domain;
 
-import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.lang.BoBean;
+import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.lang.type.BooleanType;
 import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.example.domain.UserBean;
@@ -26,7 +26,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldNameConstants
-public class ExampleBean extends BaseBean implements BoBean {
+public class Example extends BaseBean implements BoBean {
     private Long id;
     private Integer idx;
     private BooleanType status;
