@@ -3,7 +3,7 @@ package io.github.aicyi.example.boot.config;
 import io.github.aicyi.commons.core.token.DefaultTokenConfig;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.core.token.TokenManager;
-import io.github.aicyi.commons.lang.JWTInfo;
+import io.github.aicyi.commons.lang.IJWTInfo;
 import io.github.aicyi.midware.redis.jwt.RedisJwtTokenManager;
 import io.github.aicyi.midware.web.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +32,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(getAuthInterceptor(getTokenManager())).excludePathPatterns("/webjars/**", "/v2/api-docs");
+        registry.addInterceptor(getAuthInterceptor(getStringIJWTInfoTokenManager())).excludePathPatterns("/webjars/**", "/v2/api-docs");
     }
 
     @Override
@@ -45,16 +45,16 @@ public class WebConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public TokenManager<String, JWTInfo> getTokenManager() {
+    public TokenManager<String, IJWTInfo> getStringIJWTInfoTokenManager() {
         TokenConfig tokenConfig = DefaultTokenConfig.builder()
                 .signingKey("LcR6QUhqWrDqK1InQDKlpZuKx6X/ZgEISdFpKwO3i/E=")
                 .multiTokenAllowed(true)
                 .build();
-        return new RedisJwtTokenManager<>(tokenConfig, redisConnectionFactory);
+        return new RedisJwtTokenManager(tokenConfig, redisConnectionFactory);
     }
 
     @Bean
-    public AuthInterceptor getAuthInterceptor(TokenManager<String, JWTInfo> tokenManager) {
+    public AuthInterceptor getAuthInterceptor(TokenManager<String, IJWTInfo> tokenManager) {
         return new AuthInterceptor(tokenManager);
     }
 

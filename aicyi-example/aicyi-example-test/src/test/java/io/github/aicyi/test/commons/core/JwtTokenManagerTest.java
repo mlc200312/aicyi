@@ -4,7 +4,7 @@ import io.github.aicyi.commons.core.jwt.JwtTokenManager;
 import io.github.aicyi.commons.core.token.DefaultTokenConfig;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.core.token.TokenManager;
-import io.github.aicyi.commons.lang.JWTInfo;
+import io.github.aicyi.commons.core.jwt.JWTInfo;
 import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.commons.util.json.JacksonHelper;
 import io.github.aicyi.example.domain.UserBean;

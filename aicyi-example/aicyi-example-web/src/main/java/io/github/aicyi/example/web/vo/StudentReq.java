@@ -1,5 +1,6 @@
-package io.github.aicyi.example.web.dto;
+package io.github.aicyi.example.web.vo;
 
+import io.github.aicyi.commons.lang.VoBean;
 import io.github.aicyi.midware.web.PageRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +19,7 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @ApiModel("学生对象请求参数")
-public class StudentReq extends PageRequest {
+public class StudentReq extends PageRequest implements VoBean {
     @ApiModelProperty("用户ID")
     private String userIdEq;
     @ApiModelProperty("班级")

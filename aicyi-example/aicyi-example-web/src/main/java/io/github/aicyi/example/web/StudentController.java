@@ -7,8 +7,8 @@ import io.github.aicyi.midware.web.Response;
 import io.github.aicyi.commons.util.mapper.FieldMapBuilder;
 import io.github.aicyi.commons.util.mapper.MapperUtils;
 import io.github.aicyi.example.domain.StudentBean;
-import io.github.aicyi.example.web.dto.StudentReq;
-import io.github.aicyi.example.web.dto.StudentResp;
+import io.github.aicyi.example.web.vo.StudentReq;
+import io.github.aicyi.example.web.vo.StudentResp;
 import io.github.aicyi.example.service.StudentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 学生控制器
  * @date 15:45
  **/
 @Api(value = "学生控制器", tags = {"学生控制器"})

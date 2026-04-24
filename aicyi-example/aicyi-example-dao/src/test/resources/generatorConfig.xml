@@ -5,10 +5,9 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-    <properties resource="generatorConfig.properties" url=""/>
+    <properties resource="generatorConfig.properties"/>
 
     <context id="MysqlTables" targetRuntime="MyBatis3">
-
         <!-- 插件 -->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
 
@@ -34,16 +33,9 @@
         <javaModelGenerator targetPackage="io.github.aicyi.example.domain.entity.base"
                             targetProject="${generated.domain.dir}src/main/java">
             <property name="enableSubPackages" value="true"/>
-            <property name="exampleTargetPackage" value="io.github.aicyi.example.domain.example"/>
             <property name="exampleTargetProject" value="${generated.domain.dir}src/main/java"/>
             <property name="rootClass" value="io.github.aicyi.commons.lang.BaseEntity"/>
         </javaModelGenerator>
-
-        <!--&lt;!&ndash; 生成的映射文件包名和位置 &ndash;&gt;-->
-        <!--<sqlMapGenerator targetPackage="resources"-->
-        <!--targetProject="${generated.mapper.dir}src/main">-->
-        <!--<property name="enableSubPackages" value="true"/>-->
-        <!--</sqlMapGenerator>-->
 
         <!-- 生成DAO的包名和位置 -->
         <javaClientGenerator type="ANNOTATEDMAPPER" targetPackage="io.github.aicyi.example.dao.mapper.base"

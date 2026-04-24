@@ -18,6 +18,8 @@ public interface UserService {
 
     User getById(Long id);
 
+    User getByUsername(String username);
+
     List<User> list(UserQuery query);
 
     List<User> list(Pageable pageable, UserQuery query);

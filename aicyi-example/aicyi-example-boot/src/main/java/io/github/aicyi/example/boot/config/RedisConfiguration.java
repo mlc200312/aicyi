@@ -1,6 +1,8 @@
 package io.github.aicyi.example.boot.config;
 
+import io.github.aicyi.commons.core.cache.StringCacheManager;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
+import io.github.aicyi.midware.redis.cache.StringRedisCacheManager;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -35,5 +37,10 @@ public class RedisConfiguration {
                 .setConnectTimeout(10000) // 连接超时时间(毫秒)
                 .setTimeout(3000); // 命令等待超时时间(毫秒)
         return Redisson.create(config);
+    }
+
+    @Bean
+    public StringCacheManager getStringCacheManager(RedisConnectionFactory redisConnectionFactory) {
+        return new StringRedisCacheManager(redisConnectionFactory, "aicyi");
     }
 }

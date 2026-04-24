@@ -19,7 +19,7 @@ import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.commons.util.json.JsonUtils;
 import io.github.aicyi.example.domain.type.GenderType;
 import io.github.aicyi.test.dto.ExampleResp;
-import io.github.aicyi.example.web.dto.StudentResp;
+import io.github.aicyi.example.web.vo.StudentResp;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.math.BigDecimal;

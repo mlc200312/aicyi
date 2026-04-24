@@ -1,6 +1,5 @@
 package io.github.aicyi.example.domain.type;
 
-import io.github.aicyi.commons.lang.ICodeType;
 import io.github.aicyi.commons.lang.IResultCode;
 
 /**

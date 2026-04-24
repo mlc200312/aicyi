@@ -40,6 +40,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getByUsername(String username) {
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andUsernameEqualTo(username);
+        List<User> userList = userMapper.selectByExample(userExample);
+        if (CollectionUtils.isEmpty(userList)) {
+            return null;
+        }
+        return CollectionUtils.extractSingleton(userList);
+    }
+
+    @Override
     public List<User> list(UserQuery query) {
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();

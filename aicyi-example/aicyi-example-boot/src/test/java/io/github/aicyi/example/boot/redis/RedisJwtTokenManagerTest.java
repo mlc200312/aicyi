@@ -1,6 +1,6 @@
 package io.github.aicyi.example.boot.redis;
 
-import io.github.aicyi.commons.lang.JWTInfo;
+import io.github.aicyi.commons.core.jwt.JWTInfo;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.core.token.TokenManager;
@@ -9,7 +9,6 @@ import io.github.aicyi.commons.util.json.JacksonHelper;
 import io.github.aicyi.commons.core.token.DefaultTokenConfig;
 import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.test.util.BaseLoggerTest;
-import io.github.aicyi.test.util.DataSource;
 import io.github.aicyi.test.util.RandomGenerator;
 import io.github.aicyi.midware.redis.jwt.RedisJwtTokenManager;
 import org.junit.Before;

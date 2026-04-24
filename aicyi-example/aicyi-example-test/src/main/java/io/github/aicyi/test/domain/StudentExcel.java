@@ -3,8 +3,7 @@ package io.github.aicyi.test.domain;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
-import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.lang.DtoBean;
+import io.github.aicyi.commons.lang.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +16,7 @@ import lombok.Setter;
 @Setter
 @ContentRowHeight(20)
 @ColumnWidth(40)
-public class StudentExcel extends BaseBean implements DtoBean {
+public class StudentExcel extends BaseBean implements BoBean {
     @ExcelProperty("主键")
     @ColumnWidth // 自动列宽
     private String id;

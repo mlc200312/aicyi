@@ -3,7 +3,6 @@ package io.github.aicyi.example.domain.entity.base;
 import io.github.aicyi.commons.lang.BaseEntity;
 import io.github.aicyi.commons.lang.type.BooleanType;
 import io.github.aicyi.example.domain.type.GenderType;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,9 +17,29 @@ public class User extends BaseEntity implements Serializable {
     private Long id;
 
     /**
-     * 年龄:age
+     * 用户名:username
      */
-    private Integer age;
+    private String username;
+
+    /**
+     * 用户名密码:password
+     */
+    private String password;
+
+    /**
+     * 手机号:mobile
+     */
+    private String mobile;
+
+    /**
+     * 邮箱地址:email
+     */
+    private String email;
+
+    /**
+     * 用户昵称:nickname
+     */
+    private String nickname;
 
     /**
      * 身份证:id_card
@@ -28,9 +47,9 @@ public class User extends BaseEntity implements Serializable {
     private String idCard;
 
     /**
-     * 手机号:mobile
+     * 年龄:age
      */
-    private String mobile;
+    private Integer age;
 
     /**
      * 性别，1:男；2：女；:gender_type
@@ -72,12 +91,44 @@ public class User extends BaseEntity implements Serializable {
         this.id = id;
     }
 
-    public Integer getAge() {
-        return age;
+    public String getUsername() {
+        return username;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getIdCard() {
@@ -88,12 +139,12 @@ public class User extends BaseEntity implements Serializable {
         this.idCard = idCard;
     }
 
-    public String getMobile() {
-        return mobile;
+    public Integer getAge() {
+        return age;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public GenderType getGenderType() {

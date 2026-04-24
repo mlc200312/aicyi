@@ -1,6 +1,6 @@
 package io.github.aicyi.test.commons.util;
 
-import io.github.aicyi.commons.lang.JWTInfo;
+import io.github.aicyi.commons.core.jwt.JWTInfo;
 import io.github.aicyi.commons.lang.JsonConverter;
 import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.util.id.IdGenerator;

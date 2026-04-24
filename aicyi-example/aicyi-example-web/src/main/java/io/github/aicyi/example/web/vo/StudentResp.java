@@ -1,7 +1,7 @@
-package io.github.aicyi.example.web.dto;
+package io.github.aicyi.example.web.vo;
 
-import io.github.aicyi.commons.lang.DtoBean;
 import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.VoBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel("学生对象响应参数")
-public class StudentResp extends BaseBean implements DtoBean {
+public class StudentResp extends BaseBean implements VoBean {
     @ApiModelProperty("主键ID")
     private String id;
     @ApiModelProperty("年龄")
