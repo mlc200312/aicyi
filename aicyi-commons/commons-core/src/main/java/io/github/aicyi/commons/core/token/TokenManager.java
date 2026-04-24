@@ -6,51 +6,49 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 通用Token管理接口
- *
  * @author Mr.Min
- * @description 业务描述
+ * @description 通用Token管理接口
  * @date 2025/8/12
  **/
-public interface TokenManager<T, U> {
+public interface TokenManager<T, V> {
 
     /**
      * 创建Token
      *
-     * @param userInfo 用户信息
+     * @param value 用户信息
      * @return 生成的Token
      */
-    T createToken(U userInfo);
+    T createToken(V value);
 
     /**
      * 创建Token并设置过期时间
      *
-     * @param userInfo 用户信息
-     * @param timeout  过期时间
-     * @param unit     时间单位
+     * @param value   用户信息
+     * @param timeout 过期时间
+     * @param unit    时间单位
      * @return 生成的Token
      */
-    T createToken(U userInfo, long timeout, TimeUnit unit);
+    T createToken(V value, long timeout, TimeUnit unit);
 
     /**
      * 创建Token并添加自定义声明
      *
-     * @param userInfo 用户信息
-     * @param claims   自定义声明
+     * @param value  用户信息
+     * @param claims 自定义声明
      * @return 生成的Token
      */
-    T createToken(U userInfo, Map<String, Object> claims);
+    T createToken(V value, Map<String, Object> claims);
 
     /**
      * 创建Token（完整参数）
      *
-     * @param userInfo 用户信息
-     * @param claims   自定义声明
-     * @param timeout  过期时间
-     * @param unit     时间单位
+     * @param value   用户信息
+     * @param claims  自定义声明
+     * @param timeout 过期时间
+     * @param unit    时间单位
      * @return 生成的Token
      */
-    T createToken(U userInfo, Map<String, Object> claims, long timeout, TimeUnit unit);
+    T createToken(V value, Map<String, Object> claims, long timeout, TimeUnit unit);
 
     /**
      * 验证Token有效性
@@ -66,7 +64,7 @@ public interface TokenManager<T, U> {
      * @param token Token
      * @return 用户信息
      */
-    Optional<U> parseJwtInfo(T token);
+    Optional<V> parseJwtInfo(T token);
 
     /**
      * 从Token中解析声明
@@ -105,10 +103,10 @@ public interface TokenManager<T, U> {
     /**
      * 获取用户的所有有效Token
      *
-     * @param userInfo 用户信息
+     * @param value 用户信息
      * @return Token集合
      */
-    Set<T> getUserTokens(U userInfo);
+    Set<T> getUserTokens(V value);
 
     /**
      * 使Token失效
@@ -120,7 +118,7 @@ public interface TokenManager<T, U> {
     /**
      * 使某用户的所有Token失效
      *
-     * @param userInfo 用户信息
+     * @param value 用户信息
      */
-    void invalidateAllTokens(U userInfo);
+    void invalidateAllTokens(V value);
 }

@@ -16,6 +16,7 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
     private String deviceId;
     private boolean isMainDevice;
 
+
     public JWTInfo() {
     }
 

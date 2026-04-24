@@ -7,10 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 默认Token管理实现
  * @date 18:20
  **/
-public abstract class DefaultTokenManager<U> implements TokenManager<String, U> {
+public abstract class DefaultTokenManager<V> implements TokenManager<String, V> {
 
     protected final TokenConfig config;
     protected final TokenGenerator<String> tokenGenerator;
@@ -21,18 +21,18 @@ public abstract class DefaultTokenManager<U> implements TokenManager<String, U> 
     }
 
     @Override
-    public String createToken(U userInfo) {
-        return createToken(userInfo, config.getDefaultExpire(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
+    public String createToken(V value) {
+        return createToken(value, config.getDefaultExpire(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public String createToken(U userInfo, long timeout, TimeUnit unit) {
-        return createToken(userInfo, new HashMap<>(), timeout, unit);
+    public String createToken(V value, long timeout, TimeUnit unit) {
+        return createToken(value, new HashMap<>(), timeout, unit);
     }
 
     @Override
-    public String createToken(U userInfo, Map<String, Object> claims) {
-        return createToken(userInfo, claims, config.getDefaultExpire(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
+    public String createToken(V value, Map<String, Object> claims) {
+        return createToken(value, claims, config.getDefaultExpire(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class DefaultTokenManager<U> implements TokenManager<String, U> 
             return Optional.empty();
         }
         // 解析Token并获取用户信息
-        Optional<U> userInfo = parseJwtInfo(token);
+        Optional<V> userInfo = parseJwtInfo(token);
         if (userInfo.isPresent()) {
             // 解析原Token中的声明
             Map<String, Object> claims = parseToken(token).get();

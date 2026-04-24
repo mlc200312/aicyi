@@ -2,6 +2,7 @@ package io.github.aicyi.commons.core.jwt;
 
 import io.github.aicyi.commons.core.token.DefaultTokenManager;
 import io.github.aicyi.commons.core.token.TokenConfig;
+import io.github.aicyi.commons.lang.IJWTInfo;
 import io.github.aicyi.commons.lang.JsonConverter;
 import io.github.aicyi.commons.util.json.JacksonConverter;
 
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @description Jwt令牌管理类
  * @date 15:42
  **/
-public class JwtTokenManager<U extends JWTInfo> extends DefaultTokenManager<U> {
+public class JwtTokenManager<V extends IJWTInfo> extends DefaultTokenManager<V> implements IJwtTokenManager<V> {
 
     private final JsonConverter jsonConverter;
     private final Type type;
@@ -30,9 +31,9 @@ public class JwtTokenManager<U extends JWTInfo> extends DefaultTokenManager<U> {
     }
 
     @Override
-    public String createToken(U userInfo, Map<String, Object> claims, long timeout, TimeUnit unit) {
+    public String createToken(V value, Map<String, Object> claims, long timeout, TimeUnit unit) {
         Map<String, Object> enhancedClaims = new HashMap<>(claims);
-        String json = jsonConverter.toJson(userInfo);
+        String json = jsonConverter.toJson(value);
         Map<String, Object> addClaims = jsonConverter.parseMap(json, Object.class);
         enhancedClaims.putAll(addClaims);
 
@@ -40,7 +41,7 @@ public class JwtTokenManager<U extends JWTInfo> extends DefaultTokenManager<U> {
     }
 
     @Override
-    public Optional<U> parseJwtInfo(String token) {
+    public Optional<V> parseJwtInfo(String token) {
         // 解析原Token中的声明
         Optional<Map<String, Object>> claims = parseToken(token);
 
@@ -54,7 +55,7 @@ public class JwtTokenManager<U extends JWTInfo> extends DefaultTokenManager<U> {
     }
 
     @Override
-    public Set<String> getUserTokens(U userInfo) {
+    public Set<String> getUserTokens(V value) {
         return Collections.emptySet();
     }
 
@@ -63,6 +64,6 @@ public class JwtTokenManager<U extends JWTInfo> extends DefaultTokenManager<U> {
     }
 
     @Override
-    public void invalidateAllTokens(U userInfo) {
+    public void invalidateAllTokens(V value) {
     }
 }

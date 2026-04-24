@@ -29,14 +29,14 @@ public interface IJWTInfo {
     String getTokenId();
 
     /**
-     * 设备ID
+     * 获取设备ID
      *
      * @return
      */
     String getDeviceId();
 
     /**
-     * 是否为主设备
+     * 是否是主设备
      *
      * @return
      */
