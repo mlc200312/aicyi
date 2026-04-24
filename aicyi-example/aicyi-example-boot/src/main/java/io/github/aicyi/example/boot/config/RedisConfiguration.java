@@ -1,8 +1,15 @@
 package io.github.aicyi.example.boot.config;
 
 import io.github.aicyi.commons.core.cache.StringCacheManager;
+import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
+import io.github.aicyi.commons.core.token.DefaultTokenConfig;
+import io.github.aicyi.commons.core.token.TokenConfig;
+import io.github.aicyi.commons.lang.IJWTInfo;
+import io.github.aicyi.commons.util.json.JacksonHelper;
+import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.cache.StringRedisCacheManager;
+import io.github.aicyi.midware.redis.jwt.RedisJwtTokenManager;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -42,5 +49,14 @@ public class RedisConfiguration {
     @Bean
     public StringCacheManager getStringCacheManager(RedisConnectionFactory redisConnectionFactory) {
         return new StringRedisCacheManager(redisConnectionFactory, "aicyi");
+    }
+
+    @Bean
+    public IJwtTokenManager<IJWTInfo> getJwtInfoTokenManager(RedisConnectionFactory redisConnectionFactory) {
+        TokenConfig tokenConfig = DefaultTokenConfig.builder()
+                .signingKey("LcR6QUhqWrDqK1InQDKlpZuKx6X/ZgEISdFpKwO3i/E=")
+                .multiTokenAllowed(true)
+                .build();
+        return new RedisJwtTokenManager(tokenConfig, redisConnectionFactory, JacksonHelper.getType(UserInfo.class));
     }
 }

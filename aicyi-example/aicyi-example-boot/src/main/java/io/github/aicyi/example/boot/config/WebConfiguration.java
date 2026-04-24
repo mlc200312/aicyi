@@ -1,14 +1,11 @@
 package io.github.aicyi.example.boot.config;
 
-import io.github.aicyi.commons.core.token.DefaultTokenConfig;
-import io.github.aicyi.commons.core.token.TokenConfig;
+import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
 import io.github.aicyi.commons.core.token.TokenManager;
 import io.github.aicyi.commons.lang.IJWTInfo;
-import io.github.aicyi.midware.redis.jwt.RedisJwtTokenManager;
 import io.github.aicyi.midware.web.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -24,15 +21,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-    private final RedisConnectionFactory redisConnectionFactory;
+    private final IJwtTokenManager<IJWTInfo> jwtTokenManager;
 
-    public WebConfiguration(RedisConnectionFactory redisConnectionFactory) {
-        this.redisConnectionFactory = redisConnectionFactory;
+    public WebConfiguration(IJwtTokenManager<IJWTInfo> jwtTokenManager) {
+        this.jwtTokenManager = jwtTokenManager;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(getAuthInterceptor(getStringIJWTInfoTokenManager())).excludePathPatterns("/webjars/**", "/v2/api-docs");
+        registry.addInterceptor(getAuthInterceptor(jwtTokenManager)).excludePathPatterns("/webjars/**", "/v2/api-docs");
     }
 
     @Override
@@ -42,15 +39,6 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/webjars/");
         registry.addResourceHandler("/api-doc.html")
                 .addResourceLocations("classpath:/api-doc.html");
-    }
-
-    @Bean
-    public TokenManager<String, IJWTInfo> getStringIJWTInfoTokenManager() {
-        TokenConfig tokenConfig = DefaultTokenConfig.builder()
-                .signingKey("LcR6QUhqWrDqK1InQDKlpZuKx6X/ZgEISdFpKwO3i/E=")
-                .multiTokenAllowed(true)
-                .build();
-        return new RedisJwtTokenManager(tokenConfig, redisConnectionFactory);
     }
 
     @Bean

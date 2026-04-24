@@ -1,16 +1,15 @@
 package io.github.aicyi.example.service.impl;
 
 import io.github.aicyi.commons.core.cache.StringCacheManager;
-import io.github.aicyi.commons.core.token.TokenManager;
+import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
 import io.github.aicyi.commons.lang.BusinessException;
 import io.github.aicyi.commons.lang.IJWTInfo;
-import io.github.aicyi.commons.core.jwt.JWTInfo;
 import io.github.aicyi.commons.lang.UnauthorizedException;
-import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.commons.util.mapper.MapperUtils;
 import io.github.aicyi.example.domain.LoginParam;
 import io.github.aicyi.example.domain.LoginResult;
 import io.github.aicyi.example.domain.RegisterParam;
+import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.example.domain.constants.Constants;
 import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.service.AuthService;
@@ -32,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private TokenManager<String, IJWTInfo> stringIJWTInfoTokenManager;
+    private IJwtTokenManager<IJWTInfo> jwtInfoTokenManager;
     @Autowired
     private StringCacheManager stringCacheManager;
     @Autowired
@@ -56,8 +55,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 生成token
         if (Objects.nonNull(user)) {
-            IJWTInfo jwtInfo = new JWTInfo(String.valueOf(user.getId()), user.getUsername(), IdGenerator.generateV7Id(), true);
-            String token = stringIJWTInfoTokenManager.createToken(jwtInfo);
+            String token = jwtInfoTokenManager.createToken(UserInfo.of(user));
             LoginResult result = new LoginResult();
             result.setUserId(user.getId());
             result.setAccessToken(token);
