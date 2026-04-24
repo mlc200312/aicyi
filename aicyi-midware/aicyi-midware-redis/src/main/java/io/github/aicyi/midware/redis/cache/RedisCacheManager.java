@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.redis.cache;
 
 import io.github.aicyi.commons.core.cache.CacheConfig;
-import io.github.aicyi.commons.core.cache.StringCacheManager;
+import io.github.aicyi.commons.core.cache.CacheManager;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
  * @description Redis缓存
  * @date 12:08
  **/
-public class RedisCacheManager<T> implements StringCacheManager<T> {
+public class RedisCacheManager<T> implements CacheManager<String, T> {
 
     private final RedisTemplate<String, T> redisTemplate;
     private final CacheConfig cacheConfig;

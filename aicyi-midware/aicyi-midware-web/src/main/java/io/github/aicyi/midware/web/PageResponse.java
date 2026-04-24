@@ -1,7 +1,6 @@
 package io.github.aicyi.midware.web;
 
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.lang.DtoBean;
 import io.swagger.annotations.ApiModel;
 import org.springframework.data.domain.Page;
 
@@ -13,7 +12,7 @@ import java.util.List;
  * @date 14:24
  **/
 @ApiModel("分页响应对象")
-public class PageResponse<E> extends BaseBean implements DtoBean {
+public class PageResponse<E> extends BaseBean {
     /**
      * 当前页数据列表
      */

@@ -1,7 +1,6 @@
 package io.github.aicyi.midware.web;
 
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.lang.DtoBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -14,7 +13,7 @@ import javax.validation.constraints.Positive;
  * @date 15:12
  **/
 @ApiModel("分页请求对象")
-public class PageRequest extends BaseBean implements DtoBean {
+public class PageRequest extends BaseBean {
     /**
      * 当前页码
      */

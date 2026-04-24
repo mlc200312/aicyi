@@ -1,7 +1,8 @@
 package io.github.aicyi.midware.web;
 
 import io.github.aicyi.commons.core.token.TokenManager;
-import io.github.aicyi.commons.lang.JWTInfo;
+import io.github.aicyi.commons.lang.IJWTInfo;
+import io.github.aicyi.commons.lang.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,9 +19,9 @@ import java.util.Optional;
  **/
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private TokenManager<String, JWTInfo> tokenManager;
+    private TokenManager<String, IJWTInfo> tokenManager;
 
-    public AuthInterceptor(TokenManager<String, JWTInfo> tokenManager) {
+    public AuthInterceptor(TokenManager<String, IJWTInfo> tokenManager) {
         this.tokenManager = tokenManager;
     }
 
@@ -41,7 +42,14 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         // 否则必须带 token
         String authorization = request.getHeader("Authorization");
-        Optional<JWTInfo> jwtInfo = tokenManager.parseJwtInfo(authorization);
+
+        if (!authorization.startsWith("Bearer")) {
+            throw new UnauthorizedException();
+        }
+
+        String token = authorization.replace("Bearer ", "");
+
+        Optional<IJWTInfo> jwtInfo = tokenManager.parseJwtInfo(token);
 
         if (!jwtInfo.isPresent()) {
             throw new UnauthorizedException();
