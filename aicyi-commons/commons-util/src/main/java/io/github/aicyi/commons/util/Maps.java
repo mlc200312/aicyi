@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Map 构造器
- */
+ * @author Mr.Min
+ * @description Map 构造器
+ * @date 2026/4/24
+ **/
 public final class Maps {
     private Maps() {
     }

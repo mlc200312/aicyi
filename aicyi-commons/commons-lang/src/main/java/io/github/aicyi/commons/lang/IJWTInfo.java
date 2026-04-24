@@ -2,7 +2,7 @@ package io.github.aicyi.commons.lang;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description Jwt信息统一接口
  * @date 15:54
  **/
 public interface IJWTInfo {

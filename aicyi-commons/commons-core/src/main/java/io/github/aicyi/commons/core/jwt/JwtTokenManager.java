@@ -2,7 +2,6 @@ package io.github.aicyi.commons.core.jwt;
 
 import io.github.aicyi.commons.core.token.DefaultTokenManager;
 import io.github.aicyi.commons.core.token.TokenConfig;
-import io.github.aicyi.commons.lang.JWTInfo;
 import io.github.aicyi.commons.lang.JsonConverter;
 import io.github.aicyi.commons.util.json.JacksonConverter;
 

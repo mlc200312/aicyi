@@ -1,8 +1,12 @@
-package io.github.aicyi.commons.lang;
+package io.github.aicyi.commons.core.jwt;
+
+import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.IJWTInfo;
+import io.github.aicyi.commons.util.id.IdGenerator;
 
 /**
  * @author Mr.Min
- * @description 通用用户信息
+ * @description Jwt信息
  * @date 10:41
  **/
 public class JWTInfo extends BaseBean implements IJWTInfo {
@@ -13,6 +17,22 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
     private boolean isMainDevice;
 
     public JWTInfo() {
+    }
+
+    public JWTInfo(String id, String uniqueName, String deviceId) {
+        this.id = id;
+        this.uniqueName = uniqueName;
+        this.tokenId = IdGenerator.generateV7Id();
+        this.deviceId = deviceId;
+        this.isMainDevice = true;
+    }
+
+    public JWTInfo(String id, String uniqueName, String deviceId, boolean isMainDevice) {
+        this.id = id;
+        this.uniqueName = uniqueName;
+        this.tokenId = IdGenerator.generateV7Id();
+        this.deviceId = deviceId;
+        this.isMainDevice = isMainDevice;
     }
 
     @Override

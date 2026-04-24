@@ -1,6 +1,5 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.commons.lang;
 
-import io.github.aicyi.commons.lang.BaseException;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 
 /**
@@ -12,5 +11,9 @@ public class UnauthorizedException extends BaseException {
 
     public UnauthorizedException() {
         super(CommonResultCode.UNAUTHORIZED);
+    }
+
+    public UnauthorizedException(String message) {
+        super(CommonResultCode.UNAUTHORIZED.getCode(), message);
     }
 }

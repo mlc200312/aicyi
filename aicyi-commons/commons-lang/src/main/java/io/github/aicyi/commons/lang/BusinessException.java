@@ -1,5 +1,7 @@
 package io.github.aicyi.commons.lang;
 
+import io.github.aicyi.commons.lang.type.CommonResultCode;
+
 /**
  * @author Mr.Min
  * @description 业务异常类
@@ -13,5 +15,9 @@ public class BusinessException extends BaseException {
 
     public BusinessException(Integer code, String message) {
         super(code, message);
+    }
+
+    public BusinessException(String message) {
+        super(CommonResultCode.BUSINESS_ERROR.getCode(), message);
     }
 }

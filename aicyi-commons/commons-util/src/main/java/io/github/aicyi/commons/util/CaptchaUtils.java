@@ -33,7 +33,7 @@ public class CaptchaUtils {
      * @param length 验证码长度
      * @return 验证码字符串
      */
-    public static String generateCode(int length) {
+    public static String randomCode(int length) {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -47,8 +47,8 @@ public class CaptchaUtils {
      *
      * @return 验证码字符串
      */
-    public static String generateCode() {
-        return generateCode(DEFAULT_LENGTH);
+    public static String randomCode() {
+        return randomCode(DEFAULT_LENGTH);
     }
 
     /**
@@ -123,11 +123,11 @@ public class CaptchaUtils {
     /**
      * 生成验证码并输出到响应流
      *
-     * @param response HttpServletResponse
+     * @param response
+     * @param code
      * @throws IOException
      */
-    public static void outputToResponse(HttpServletResponse response) throws IOException {
-        String code = generateCode();
+    public static void outputToResponse(HttpServletResponse response, String code) throws IOException {
         BufferedImage image = generateImage(code);
 
         response.setContentType("image/jpeg");
