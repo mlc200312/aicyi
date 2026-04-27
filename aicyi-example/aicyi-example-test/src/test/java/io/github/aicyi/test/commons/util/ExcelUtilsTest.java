@@ -37,42 +37,42 @@ public class ExcelUtilsTest extends BaseLoggerTest {
         List<BankExcel> bankExcelList = ExcelUtils.readExcel("src/test/resources/test/bank_insert.xlsx", BankExcel.class);
         assert bankExcelList != null && bankExcelList.size() == 15;
 
-        log("test", bankExcelList);
+        log(bankExcelList);
     }
 
     @Test
-    public void readExcelWithListenerTest() {
+    public void test1() {
         int batchSize = 4;
         ExcelUtils.readExcelWithListener("src/test/resources/test/bank_insert.xlsx", BankExcel.class, new ExcelUtils.ExcelListener<BankExcel>(batchSize) {
             @Override
             protected void processBatch(List<BankExcel> batchData) {
 
-                log("readExcelWithListenerTest", batchData);
+                log(batchData);
             }
         });
     }
 
     @Test
-    public void readExcelInBatchesTest() {
+    public void test2() {
         Iterable<List<BankExcel>> iterable = ExcelUtils.readExcelInBatches("src/test/resources/test/bank_insert.xlsx", BankExcel.class);
         List<BankExcel> next = iterable.iterator().next();
         assert next != null && next.size() == 15;
 
-        log("readExcelInBatchesTest", next);
+        log(next);
     }
 
     @Test
-    public void readMultiSheetExcelTest() {
+    public void test3() {
         Map<Integer, Class<?>> classMap = Maps.of(0, BankExcel.class).and(1, BankExcel.class).and(2, BankExcel.class).build();
         Map<Integer, List<?>> map = ExcelUtils.readMultiSheetExcel("src/test/resources/test/bank_insert.xlsx", classMap);
         assert map != null && map.keySet().size() == 3;
 
-        log("readMultiSheetExcelTest", JsonUtils.getInstance().toJson(map));
+        log(JsonUtils.getInstance().toJson(map));
     }
 
     @SneakyThrows
     @Test
-    public void exportToBytesTest() {
+    public void test4() {
         List<StudentBean> studentList = DataSource.getStudentList();
         List<StudentExcel> studentExcelList = MapperUtils.INSTANCE.mapAsList(studentList, StudentExcel.class);
         Path path = Paths.get("excel_001.xlsx");
@@ -83,11 +83,11 @@ public class ExcelUtilsTest extends BaseLoggerTest {
         List<StudentExcel> readStudentExcelList = ExcelUtils.readFromBytes(bytes, StudentExcel.class);
         assert readStudentExcelList != null && readStudentExcelList.size() == 3;
 
-        log("exportToBytesTest", readStudentExcelList);
+        log(readStudentExcelList);
     }
 
     @Test
-    public void exportToFileTest() {
+    public void test5() {
         List<StudentBean> studentList = DataSource.getStudentList();
         List<StudentExcel> studentExcelList = MapperUtils.INSTANCE.mapAsList(studentList, StudentExcel.class);
         String path = "excel_002.xlsx";

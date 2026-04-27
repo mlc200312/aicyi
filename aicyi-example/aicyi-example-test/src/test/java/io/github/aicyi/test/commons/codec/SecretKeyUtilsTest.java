@@ -1,7 +1,9 @@
 package io.github.aicyi.test.commons.codec;
 
-import io.github.aicyi.commons.core.jwt.SecretKeyUtils;
+import io.github.aicyi.commons.codec.SecretKeyUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.junit.Test;
 
 import javax.crypto.SecretKey;
@@ -20,11 +22,17 @@ public class SecretKeyUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test() {
-        String randomKey = SecretKeyUtils.secretKey2Str(SecretKeyUtils.randomSecretKey());
-        SecretKey secretKey = SecretKeyUtils.toHmacSHA256SecretKey(randomKey);
-        String secretKey2Str = SecretKeyUtils.secretKey2Str(secretKey);
-        assert randomKey.equals(secretKey2Str);
+        SecretKey secretKeyFor = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-        log("test", randomKey, secretKey2Str);
+//        String base64Key = IdGenerator.generateV7Id();
+
+//        SecretKey secretKeyFor = SecretKeyUtils.toHmacSHA256SecretKey(base64Key);
+
+        String secretKey2String = SecretKeyUtils.asString(secretKeyFor);
+        SecretKey secretKey = SecretKeyUtils.toSecretKeyForHmacSHA256(secretKey2String);
+        String secretKey2Str = SecretKeyUtils.asString(secretKey);
+        assert secretKey2String.equals(secretKey2Str);
+
+        log(secretKey2String, secretKey2Str);
     }
 }

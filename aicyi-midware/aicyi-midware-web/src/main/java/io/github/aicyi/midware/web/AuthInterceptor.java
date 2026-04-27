@@ -2,7 +2,7 @@ package io.github.aicyi.midware.web;
 
 import io.github.aicyi.commons.core.token.TokenManager;
 import io.github.aicyi.commons.lang.IJWTInfo;
-import io.github.aicyi.commons.lang.UnauthorizedException;
+import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;

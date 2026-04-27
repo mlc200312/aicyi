@@ -27,6 +27,18 @@
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
             <artifactId>commons-logging</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -34,10 +46,14 @@
             <artifactId>commons-collections4</artifactId>
         </dependency>
 
-        <!-- UUID -->
         <dependency>
-            <groupId>com.github.f4b6a3</groupId>
-            <artifactId>uuid-creator</artifactId>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
         </dependency>
 
         <!-- Jackson 依赖 -->
@@ -63,23 +79,8 @@
         <!-- Jackson 依赖 End -->
 
         <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
         </dependency>
 
         <dependency>
@@ -87,22 +88,22 @@
             <artifactId>easyexcel</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- ZXing核心库 -->
+        <!-- zxing 核心库 -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
         </dependency>
 
-        <!-- ZXing J2SE扩展 -->
+        <!-- zxing J2SE扩展 -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
+        </dependency>
+
+        <!-- uuid -->
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>uuid-creator</artifactId>
         </dependency>
     </dependencies>
 </project>

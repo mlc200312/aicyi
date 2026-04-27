@@ -29,6 +29,6 @@ public class AesUtilsTest extends BaseLoggerTest {
         String decrypt = AesUtils.aesDecrypt(encrypt, KEY);
         assert decrypt.equals(content);
 
-        log("test", content, KEY, encrypt, decrypt);
+        log(content, KEY, encrypt, decrypt);
     }
 }

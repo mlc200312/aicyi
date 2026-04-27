@@ -46,11 +46,11 @@ public class JsonUtilsTest extends BaseLoggerTest {
         String json2 = instance.toJson(aMap);
         String json3 = instance.toJson(exampleList);
 
-        log("test", json, json1, json2, json3);
+        log(json, json1, json2, json3);
     }
 
     @Test
-    public void parseJson() {
+    public void test2() {
         JsonConverter instance = JsonUtils.getInstance();
         String json = DataSource.getExampleJson();
         Object parse = instance.parse(json);
@@ -60,21 +60,21 @@ public class JsonUtilsTest extends BaseLoggerTest {
         Example parse1 = instance.parse(json, type);
         assert parse1 != null;
 
-        log("parseJson", parse, parse1);
+        log(parse, parse1);
     }
 
     @Test
-    public void parseJson2() {
+    public void test3() {
         JacksonConverter instance = JacksonConverter.DEFAULT_SIMPLE_CONVERTER;
         String json = "{\"id\":613294732759531520,\"age\":0,\"idCard\":\"1f07da341eb26024b3f927826ef0e6e2\",\"mobile\":\"13010496590\",\"genderType\":\"WOMAN\",\"birthday\":\"2025-08-20\",\"userId\":\"610780341698822144\",\"username\":\"邓纨仪\",\"deviceId\":\"1f07da341ee56475b3f927826ef0e6e2\",\"isMasterDevice\":false}";
         JWTInfo parse = instance.parse(json, JacksonHelper.getType(JWTInfo.class));
         assert parse != null;
 
-        log("parseJson2", parse);
+        log(parse);
     }
 
     @Test
-    public void parseList() {
+    public void test4() {
         JsonConverter instance = JsonUtils.getInstance();
         String json = DataSource.getExampleListJson();
         List<Example> exampleList = instance.parseList(json);
@@ -84,11 +84,11 @@ public class JsonUtilsTest extends BaseLoggerTest {
         List<Example> exampleList1 = instance.parseList(json, type);
         assert exampleList1 != null;
 
-        log("parseList", exampleList, exampleList1);
+        log(exampleList, exampleList1);
     }
 
     @Test
-    public void parseMap() {
+    public void test5() {
         JsonConverter instance = JsonUtils.getInstance();
         String json = DataSource.getExampleMapJson();
         Map<Object, Object> exampleMap = instance.parseMap(json);
@@ -102,11 +102,11 @@ public class JsonUtilsTest extends BaseLoggerTest {
         Map<Long, Example> exampleMap2 = instance.parseMap(json, ktype, vtype);
         assert exampleMap2 != null;
 
-        log("parseMap", exampleMap, exampleMap1, exampleMap2);
+        log(exampleMap, exampleMap1, exampleMap2);
     }
 
     @Test
-    public void isEmptyJsonTest() {
+    public void test6() {
         JsonConverter instance = JsonUtils.getInstance();
         boolean emptyJSON = instance.isEmptyJSON("");
         boolean emptyJSON1 = instance.isEmptyJSON("{}");
@@ -114,7 +114,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
         boolean emptyJSON3 = instance.isEmptyJSON("123");
         assert emptyJSON && emptyJSON1 && emptyJSON2 && !emptyJSON3;
 
-        log("isEmptyJsonTest", emptyJSON, emptyJSON1, emptyJSON2, emptyJSON3);
+        log(emptyJSON, emptyJSON1, emptyJSON2, emptyJSON3);
     }
 
     @Getter

@@ -68,14 +68,14 @@ public abstract class DefaultTokenManager<V> implements TokenManager<String, V> 
             return Optional.empty();
         }
         // 解析Token并获取用户信息
-        Optional<V> userInfo = parseJwtInfo(token);
-        if (userInfo.isPresent()) {
+        Optional<V> parseJwtInfo = parseJwtInfo(token);
+        if (parseJwtInfo.isPresent()) {
             // 解析原Token中的声明
             Map<String, Object> claims = parseToken(token).get();
             // 使原Token失效
             invalidateToken(token);
             // 创建新Token
-            String newToken = createToken(userInfo.get(), claims, config.getRefreshWindow(TimeUnit.SECONDS), TimeUnit.SECONDS);
+            String newToken = createToken(parseJwtInfo.get(), claims, config.getRefreshWindow(TimeUnit.SECONDS), TimeUnit.SECONDS);
             return Optional.of(newToken);
         }
         return Optional.empty();

@@ -82,8 +82,8 @@ public class AesUtils {
      * @return 加密后的byte[]
      */
     private static byte[] aesEncryptToBytes(String content, String encryptKey) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance(ALGORITHM);
-        kgen.init(KEY_LENGTH);
+        KeyGenerator instance = KeyGenerator.getInstance(ALGORITHM);
+        instance.init(KEY_LENGTH);
         Cipher cipher = Cipher.getInstance(ALGORITHM_STR);
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptKey.getBytes(), ALGORITHM));
         return cipher.doFinal(content.getBytes(CHARSET));
@@ -97,8 +97,8 @@ public class AesUtils {
      * @return 解密后的String
      */
     private static String aesDecryptByBytes(byte[] encryptBytes, String decryptKey) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance(ALGORITHM);
-        kgen.init(KEY_LENGTH);
+        KeyGenerator instance = KeyGenerator.getInstance(ALGORITHM);
+        instance.init(KEY_LENGTH);
         Cipher cipher = Cipher.getInstance(ALGORITHM_STR);
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(decryptKey.getBytes(), ALGORITHM));
         byte[] decryptBytes = cipher.doFinal(encryptBytes);

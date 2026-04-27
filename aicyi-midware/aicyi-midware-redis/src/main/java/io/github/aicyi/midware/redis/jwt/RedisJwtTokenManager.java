@@ -55,6 +55,10 @@ public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManage
         this(tokenConfig, redisConnectionFactory, JacksonConverter.DEFAULT_SIMPLE_CONVERTER, javaType);
     }
 
+    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, Class<V> clazz) {
+        this(tokenConfig, redisConnectionFactory, JacksonConverter.DEFAULT_SIMPLE_CONVERTER, JacksonHelper.getType(clazz));
+    }
+
     public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory) {
         this(tokenConfig, redisConnectionFactory, JacksonHelper.getType(JWTInfo.class));
     }
@@ -111,8 +115,8 @@ public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManage
         Optional<String> opt = tokenGenerator.getId(token);
         if (opt.isPresent()) {
             String id = opt.get();
-            V userInfo = redisCacheManager.get(id);
-            return Optional.ofNullable(userInfo);
+            V jwtInfo = redisCacheManager.get(id);
+            return Optional.ofNullable(jwtInfo);
         }
         return Optional.empty();
     }
@@ -151,12 +155,12 @@ public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManage
         Optional<String> opt = tokenGenerator.getId(token);
         if (opt.isPresent()) {
             // 解析Token并获取用户
-            Optional<V> parseUserInfo = parseJwtInfo(token);
-            if (parseUserInfo.isPresent()) {
-                V userInfo = parseUserInfo.get();
-                String hashKey = buildTokenKey(userInfo);
-                opsForHash.delete(hashKey, userInfo.getDeviceId());
-                LOGGER.info("id：{} uniqueName：{} deviceId【{}】 token invalidated.", userInfo.getId(), userInfo.getUniqueName(), userInfo.getDeviceId());
+            Optional<V> parseJwtInfo = parseJwtInfo(token);
+            if (parseJwtInfo.isPresent()) {
+                V jwtInfo = parseJwtInfo.get();
+                String hashKey = buildTokenKey(jwtInfo);
+                opsForHash.delete(hashKey, jwtInfo.getDeviceId());
+                LOGGER.info("id：{} uniqueName：{} deviceId【{}】 token invalidated.", jwtInfo.getId(), jwtInfo.getUniqueName(), jwtInfo.getDeviceId());
             }
             String id = opt.get();
             redisCacheManager.remove(id);
@@ -171,8 +175,8 @@ public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManage
         userTokens.forEach(this::invalidateToken);
     }
 
-    private String buildTokenKey(V userInfo) {
-        return redisCacheManager.getCacheName() + ":" + USER_TOKENS_PREFIX + ":" + userInfo.getId();
+    private String buildTokenKey(V jwtInfo) {
+        return redisCacheManager.getCacheName() + ":" + USER_TOKENS_PREFIX + ":" + jwtInfo.getId();
     }
 
     /**
@@ -185,10 +189,10 @@ public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManage
         Iterator<String> iterator = userTokens.iterator();
         while (iterator.hasNext()) {
             String token = iterator.next();
-            Optional<V> parseUserInfo = parseJwtInfo(token);
-            if (parseUserInfo.isPresent()) {
-                V userInfo = parseUserInfo.get();
-                if (isMasterDevice == userInfo.isMainDevice()) {
+            Optional<V> parseJwtInfo = parseJwtInfo(token);
+            if (parseJwtInfo.isPresent()) {
+                V jwtInfo = parseJwtInfo.get();
+                if (isMasterDevice == jwtInfo.isMainDevice()) {
                     invalidateToken(token);
                     iterator.remove();
                     break;

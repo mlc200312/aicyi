@@ -31,7 +31,7 @@ public class IdGeneratorTest extends BaseLoggerTest {
     }
 
     @Test
-    public void newV7IdTest() {
+    public void test2() {
         Set<String> uuidSet = new HashSet<>();
         for (int i = 0; i < 50; i++) {
             String uuid = IdGenerator.generateV7Id();

@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.lang;
+package io.github.aicyi.commons.lang.exception;
 
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 

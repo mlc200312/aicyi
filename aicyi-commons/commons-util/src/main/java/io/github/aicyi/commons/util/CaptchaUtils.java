@@ -1,7 +1,6 @@
 package io.github.aicyi.commons.util;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -118,24 +117,6 @@ public class CaptchaUtils {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(image, format, outputStream);
         return outputStream.toByteArray();
-    }
-
-    /**
-     * 生成验证码并输出到响应流
-     *
-     * @param response
-     * @param code
-     * @throws IOException
-     */
-    public static void outputToResponse(HttpServletResponse response, String code) throws IOException {
-        BufferedImage image = generateImage(code);
-
-        response.setContentType("image/jpeg");
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expires", 0);
-
-        writeToStream(image, response.getOutputStream(), "jpeg");
     }
 
     /**

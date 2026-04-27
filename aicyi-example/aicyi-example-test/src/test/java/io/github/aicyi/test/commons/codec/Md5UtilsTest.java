@@ -25,6 +25,6 @@ public class Md5UtilsTest extends BaseLoggerTest {
         String generateMd5 = MessageDigestUtils.generateMd5(data);
         assert md5.equals(generateMd5);
 
-        log("test", md5);
+        log(md5);
     }
 }

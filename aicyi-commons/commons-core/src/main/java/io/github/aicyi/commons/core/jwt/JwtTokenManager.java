@@ -36,7 +36,6 @@ public class JwtTokenManager<V extends IJWTInfo> extends DefaultTokenManager<V> 
         String json = jsonConverter.toJson(value);
         Map<String, Object> addClaims = jsonConverter.parseMap(json, Object.class);
         enhancedClaims.putAll(addClaims);
-
         return tokenGenerator.generateToken(enhancedClaims, timeout, unit);
     }
 
@@ -44,11 +43,8 @@ public class JwtTokenManager<V extends IJWTInfo> extends DefaultTokenManager<V> 
     public Optional<V> parseJwtInfo(String token) {
         // 解析原Token中的声明
         Optional<Map<String, Object>> claims = parseToken(token);
-
         if (claims.isPresent()) {
-
             String json = jsonConverter.toJson(claims.get());
-
             return Optional.ofNullable(jsonConverter.parse(json, type));
         }
         return Optional.empty();

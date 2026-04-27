@@ -1,6 +1,6 @@
 package io.github.aicyi.example.service.impl;
 
-import io.github.aicyi.commons.lang.BusinessException;
+import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.util.NumberUtils;
 import io.github.aicyi.commons.util.mapper.FieldMapBuilder;
 import io.github.aicyi.commons.util.mapper.MapperUtils;

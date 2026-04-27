@@ -1,7 +1,4 @@
-package io.github.aicyi.commons.core.jwt;
-
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+package io.github.aicyi.commons.codec;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -20,9 +17,9 @@ public class SecretKeyUtils {
      * @param secretKey
      * @return
      */
-    public static String secretKey2Str(SecretKey secretKey) {
-        byte[] encodedKey = secretKey.getEncoded();
-        return Base64.getEncoder().encodeToString(encodedKey);
+    public static String asString(SecretKey secretKey) {
+        byte[] encoded = secretKey.getEncoded();
+        return Base64.getEncoder().encodeToString(encoded);
     }
 
     /**
@@ -34,7 +31,6 @@ public class SecretKeyUtils {
     public static SecretKey toSecretKey(String base64Key, String algorithm) {
         // 解码Base64字符串
         byte[] keyBytes = Base64.getDecoder().decode(base64Key);
-
         // 创建SecretKeySpec对象，指定算法为HmacSHA256
         return new SecretKeySpec(keyBytes, algorithm);
     }
@@ -45,16 +41,7 @@ public class SecretKeyUtils {
      * @param base64Key
      * @return
      */
-    public static SecretKey toHmacSHA256SecretKey(String base64Key) {
+    public static SecretKey toSecretKeyForHmacSHA256(String base64Key) {
         return toSecretKey(base64Key, "HmacSHA256");
-    }
-
-    /**
-     * 随机生成Key
-     *
-     * @return
-     */
-    public static SecretKey randomSecretKey() {
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
     }
 }

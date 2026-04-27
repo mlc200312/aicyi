@@ -21,13 +21,13 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-logging</artifactId>
-            <scope>provided</scope>
+            <artifactId>commons-lang</artifactId>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-util</artifactId>
+            <artifactId>commons-logging</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

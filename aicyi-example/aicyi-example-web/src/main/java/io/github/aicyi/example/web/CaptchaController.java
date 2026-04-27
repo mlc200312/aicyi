@@ -13,8 +13,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +52,14 @@ public class CaptchaController {
     public void show(HttpServletResponse response, @PathVariable String uuid) {
         String code = stringCacheManager.get(Constants.getCaptchaKey(uuid));
         try {
-            CaptchaUtils.outputToResponse(response, code);
+            BufferedImage image = CaptchaUtils.generateImage(code);
+
+            response.setContentType("image/jpeg");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setDateHeader("Expires", 0);
+
+            ImageIO.write(image, "png", response.getOutputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

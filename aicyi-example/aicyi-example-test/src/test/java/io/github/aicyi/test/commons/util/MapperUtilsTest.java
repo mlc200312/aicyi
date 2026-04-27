@@ -24,7 +24,6 @@ public class MapperUtilsTest extends BaseLoggerTest {
         config = FieldMapBuilder.create()
                 .add(Example.Fields.id, ExampleResp.Fields.uuid)
                 .add("student.score", "student.score0")
-                .add("student.username", "student.userName")
                 .ignore("nothing")
                 .build();
     }
@@ -37,9 +36,11 @@ public class MapperUtilsTest extends BaseLoggerTest {
         assert example != null;
 
         ExampleResp exampleResp = MapperUtils.INSTANCE.map(exampleBean, ExampleResp.class, config);
-        assert exampleResp != null && exampleResp.getStudent() != null && Double.valueOf(exampleResp.getStudent().getScore0()) == example.getScore();
+        assert exampleResp != null && exampleResp.getStudent() != null;
+        Double score0 = Double.valueOf(exampleResp.getStudent().getScore0());
+        assert score0.equals(example.getStudent().getScore());
 
-        log("test", example, exampleResp);
+        log(example, exampleResp);
     }
 
     @Test
@@ -49,9 +50,11 @@ public class MapperUtilsTest extends BaseLoggerTest {
         assert exampleBean != null;
 
         Example example = MapperUtils.INSTANCE.map(exampleResp, Example.class, config.reverse());
-        assert example != null && example.getStudent() != null && example.getStudent().getScore() == Double.valueOf(exampleResp.getStudent().getScore0());
+        assert example != null && example.getStudent() != null;
+        Double score0 = Double.valueOf(exampleResp.getStudent().getScore0());
+        assert score0.equals(example.getStudent().getScore());
 
-        log("test", exampleBean, example);
+        log(exampleBean, example);
     }
 
     @Test
@@ -63,6 +66,6 @@ public class MapperUtilsTest extends BaseLoggerTest {
         List<ExampleResp> exampleRespList = MapperUtils.INSTANCE.mapAsList(exampleBeanList, ExampleResp.class, config);
         assert exampleRespList != null;
 
-        log("test", exampleList, exampleRespList);
+        log(exampleList, exampleRespList);
     }
 }

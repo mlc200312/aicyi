@@ -36,11 +36,11 @@ public class RsaUtilsTest extends BaseLoggerTest {
         String str2 = "RSA decoded: " + decrypt;
         assert text.equals(decrypt);
 
-        log("test", str, str2);
+        log(str, str2);
     }
 
     @Test
-    public void signTest() throws Exception {
+    public void test1() throws Exception {
         //签名
         String signContent = "test rsa sign";
         String sign = RsaUtils.sign(signContent, privateKey);
@@ -48,6 +48,6 @@ public class RsaUtilsTest extends BaseLoggerTest {
         boolean verify = RsaUtils.verify(signContent, sign, publicKey);
         assert verify;
 
-        log("signTest", sign, verify);
+        log(sign, verify);
     }
 }

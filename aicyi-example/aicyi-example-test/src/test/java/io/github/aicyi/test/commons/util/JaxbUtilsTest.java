@@ -31,13 +31,13 @@ public class JaxbUtilsTest extends BaseLoggerTest {
     public void test() {
         String xml = JaxbUtils.bean2Xml(message);
 
-        log("test", xml);
+        log(xml);
     }
 
     @Test
-    public void xml2BeanTest() throws JAXBException {
+    public void test2() throws JAXBException {
         Message message = JaxbUtils.xml2Bean(xml, Message.class);
 
-        log("xml2Bean", message);
+        log(message);
     }
 }

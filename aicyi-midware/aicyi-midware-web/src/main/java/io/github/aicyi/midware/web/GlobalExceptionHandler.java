@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.web;
 
-import io.github.aicyi.commons.lang.BusinessException;
-import io.github.aicyi.commons.lang.UnauthorizedException;
+import io.github.aicyi.commons.lang.exception.BusinessException;
+import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;

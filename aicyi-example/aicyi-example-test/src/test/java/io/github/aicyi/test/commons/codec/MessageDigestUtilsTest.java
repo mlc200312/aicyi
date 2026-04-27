@@ -26,6 +26,6 @@ public class MessageDigestUtilsTest extends BaseLoggerTest {
         String generateSha256 = MessageDigestUtils.generateSha256(data);
         assert generateMd5.equals(Md5Utils.md5(data));
 
-        log("test", generateMd5, generateSha1, generateSha256);
+        log(generateMd5, generateSha1, generateSha256);
     }
 }

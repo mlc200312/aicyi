@@ -25,6 +25,6 @@ public class BeanCglibCopierTest extends BaseLoggerTest {
         Example example = BeanCglibCopier.copy(DataSource.getExample(), Example.class);
         assert example != null && example.getId() != null;
 
-        log("test", example);
+        log(example);
     }
 }

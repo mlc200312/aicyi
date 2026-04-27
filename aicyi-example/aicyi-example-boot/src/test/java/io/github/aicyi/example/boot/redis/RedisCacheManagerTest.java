@@ -1,5 +1,6 @@
 package io.github.aicyi.example.boot.redis;
 
+import io.github.aicyi.commons.core.cache.CacheManager;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.commons.core.cache.CacheConfig;
 import io.github.aicyi.commons.core.cache.StringCacheManager;
@@ -29,7 +30,7 @@ public class RedisCacheManagerTest extends BaseLoggerTest {
 
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
-    private StringCacheManager<Object> redisCacheManager;
+    private CacheManager<String, Object> redisCacheManager;
 
     @Before
     @Override

@@ -4,6 +4,11 @@ import org.apache.commons.collections4.SetUtils;
 
 import java.util.Set;
 
+/**
+ * @author Mr.Min
+ * @description 类型工具类
+ * @date 2026/4/27
+ **/
 public class TypeUtils {
 
     private static final Set<Class<?>> PRIMITIVE_TYPES = SetUtils.hashSet(

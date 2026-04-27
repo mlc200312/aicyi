@@ -217,8 +217,7 @@ public class ExcelUtils {
      */
     public static <T> void exportToResponse(HttpServletResponse response, String fileName, String sheetName, List<T> data, Class<T> clazz, WriteHandler writeHandler) throws IOException {
         setResponse(response, fileName);
-        ExcelWriterSheetBuilder sheetBuilder = EasyExcel.write(response.getOutputStream(), clazz)
-                .sheet(1, sheetName);
+        ExcelWriterSheetBuilder sheetBuilder = EasyExcel.write(response.getOutputStream(), clazz).sheet(1, sheetName);
         if (writeHandler != null) {
             sheetBuilder.registerWriteHandler(writeHandler);
         }

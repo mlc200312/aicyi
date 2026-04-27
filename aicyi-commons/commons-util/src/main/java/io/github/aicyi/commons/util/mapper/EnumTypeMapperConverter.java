@@ -12,7 +12,6 @@ import ma.glasnost.orika.metadata.Type;
  **/
 public class EnumTypeMapperConverter extends BidirectionalConverter<EnumType, Integer> {
 
-
     @Override
     public Integer convertTo(EnumType enumType, Type<Integer> type, MappingContext mappingContext) {
         return enumType.getCode();
