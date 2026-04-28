@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.util.mapper;
+package io.github.aicyi.commons.util.orikamapper;
 
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;

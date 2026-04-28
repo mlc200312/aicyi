@@ -1,11 +1,11 @@
 package io.github.aicyi.example.web;
 
 import io.github.aicyi.commons.lang.IResponse;
+import io.github.aicyi.commons.lang.SmartMapper;
 import io.github.aicyi.example.domain.StudentQuery;
+import io.github.aicyi.example.web.vo.AddStudentReq;
 import io.github.aicyi.midware.web.PageResponse;
 import io.github.aicyi.midware.web.Response;
-import io.github.aicyi.commons.util.mapper.FieldMapBuilder;
-import io.github.aicyi.commons.util.mapper.MapperUtils;
 import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.example.web.vo.StudentReq;
 import io.github.aicyi.example.web.vo.StudentResp;
@@ -31,6 +31,8 @@ import java.util.List;
 public class StudentController {
 
     @Autowired
+    private SmartMapper smartMapper;
+    @Autowired
     private StudentService studentService;
 
     @ApiOperation(value = "查询学生", notes = "查询学生")
@@ -44,9 +46,22 @@ public class StudentController {
     @RequestMapping(value = "/get-by-id", method = RequestMethod.GET)
     public IResponse<StudentResp> getById(@RequestParam String id) {
         StudentBean bean = studentService.getById(Long.valueOf(id));
-        StudentResp resp = MapperUtils.INSTANCE.map(bean, StudentResp.class, FieldMapBuilder.create()
-                .add("score", "score0")
-                .build());
+        StudentResp resp = smartMapper.map(bean, StudentResp.class);
+        return Response.success(resp);
+    }
+
+    @ApiOperation(value = "按手机号查询学生", notes = "按手机号查询学生")
+    @ApiImplicitParam(
+            name = "Authorization",
+            value = "令牌",
+            required = true,
+            paramType = "header",
+            dataTypeClass = String.class
+    )
+    @RequestMapping(value = "/get-by-mobile", method = RequestMethod.GET)
+    public IResponse<StudentResp> getByMobile(@RequestParam String mobile) {
+        StudentBean bean = studentService.getByMobile(mobile);
+        StudentResp resp = smartMapper.map(bean, StudentResp.class);
         return Response.success(resp);
     }
 
@@ -60,11 +75,24 @@ public class StudentController {
     )
     @RequestMapping(value = "/paged-list", method = RequestMethod.GET)
     public IResponse<PageResponse<StudentResp>> pagedList(@Validated @ModelAttribute StudentReq req) {
-        StudentQuery query = MapperUtils.INSTANCE.map(req, StudentQuery.class);
+        StudentQuery query = smartMapper.map(req, StudentQuery.class);
         Page<StudentBean> page = studentService.pagedList(query);
-        List<StudentResp> respList = MapperUtils.INSTANCE.mapAsList(page.getContent(), StudentResp.class, FieldMapBuilder.create()
-                .add("score", "score0")
-                .build());
+        List<StudentResp> respList = smartMapper.mapAsList(page.getContent(), StudentResp.class);
         return Response.success(PageResponse.build(respList, page));
+    }
+
+    @ApiOperation(value = "新增学生请求参数", notes = "新增学生请求参数")
+    @ApiImplicitParam(
+            name = "Authorization",
+            value = "令牌",
+            required = true,
+            paramType = "header",
+            dataTypeClass = String.class
+    )
+    @RequestMapping(value = "/add-student", method = RequestMethod.POST)
+    public IResponse<Void> addStudent(@RequestBody AddStudentReq req) {
+        StudentBean bean = smartMapper.map(req, StudentBean.class);
+        studentService.add(bean);
+        return Response.success();
     }
 }

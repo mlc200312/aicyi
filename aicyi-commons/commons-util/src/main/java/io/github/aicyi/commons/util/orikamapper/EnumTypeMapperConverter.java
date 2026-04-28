@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.util.mapper;
+package io.github.aicyi.commons.util.orikamapper;
 
 import io.github.aicyi.commons.lang.EnumType;
 import ma.glasnost.orika.MappingContext;

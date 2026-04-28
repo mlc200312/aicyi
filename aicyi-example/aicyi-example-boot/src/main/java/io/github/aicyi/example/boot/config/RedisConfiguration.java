@@ -5,7 +5,7 @@ import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
 import io.github.aicyi.commons.core.token.DefaultTokenConfig;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.lang.IJWTInfo;
-import io.github.aicyi.commons.util.json.JacksonHelper;
+import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.cache.StringRedisCacheManager;
@@ -57,6 +57,6 @@ public class RedisConfiguration {
                 .signingKey("LcR6QUhqWrDqK1InQDKlpZuKx6X/ZgEISdFpKwO3i/E=")
                 .multiTokenAllowed(true)
                 .build();
-        return new RedisJwtTokenManager(tokenConfig, redisConnectionFactory, JacksonHelper.getType(UserInfo.class));
+        return new RedisJwtTokenManager(tokenConfig, redisConnectionFactory, JacksonTypeFactory.typeOf(UserInfo.class));
     }
 }

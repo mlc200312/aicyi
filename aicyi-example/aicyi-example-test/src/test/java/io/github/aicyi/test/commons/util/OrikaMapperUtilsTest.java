@@ -5,7 +5,7 @@ import io.github.aicyi.test.dto.ExampleResp;
 import io.github.aicyi.test.domain.ExampleBean;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
-import io.github.aicyi.commons.util.mapper.*;
+import io.github.aicyi.commons.util.orikamapper.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,27 +16,26 @@ import java.util.List;
  * @description 业务描述
  * @date 10:54
  **/
-public class MapperUtilsTest extends BaseLoggerTest {
-    private FieldMapBuilder.FieldMapConfig config;
+public class OrikaMapperUtilsTest extends BaseLoggerTest {
+    private OrikaMapperRegistry.MappingConfig mappingConfig;
 
     @Before
     public void beforeTest() {
-        config = FieldMapBuilder.create()
-                .add(Example.Fields.id, ExampleResp.Fields.uuid)
-                .add("student.score", "student.score0")
-                .ignore("nothing")
-                .build();
+        mappingConfig = OrikaMapperRegistry.config()
+                .map(Example.Fields.id, ExampleResp.Fields.uuid)
+                .map("student.score", "student.score0")
+                .ignore("nothing");
     }
 
     @Test
     @Override
     public void test() {
         ExampleBean exampleBean = DataSource.getExample();
-        Example example = MapperUtils.INSTANCE.map(exampleBean, Example.class);
+        Example example = OrikaMapperRegistry.INSTANCE.map(exampleBean, Example.class);
         assert example != null;
 
-        ExampleResp exampleResp = MapperUtils.INSTANCE.map(exampleBean, ExampleResp.class, config);
-        assert exampleResp != null && exampleResp.getStudent() != null;
+        ExampleResp exampleResp = OrikaMapperRegistry.INSTANCE.map(exampleBean, ExampleResp.class, mappingConfig);
+        assert exampleResp != null && exampleResp.getStudent() != null && exampleResp.getStudent().getScore0() != null;
         Double score0 = Double.valueOf(exampleResp.getStudent().getScore0());
         assert score0.equals(example.getStudent().getScore());
 
@@ -46,10 +45,10 @@ public class MapperUtilsTest extends BaseLoggerTest {
     @Test
     public void test2() {
         ExampleResp exampleResp = DataSource.getExampleResp();
-        ExampleBean exampleBean = MapperUtils.INSTANCE.map(exampleResp, ExampleBean.class);
+        ExampleBean exampleBean = OrikaMapperRegistry.INSTANCE.map(exampleResp, ExampleBean.class, mappingConfig.reversed());
         assert exampleBean != null;
 
-        Example example = MapperUtils.INSTANCE.map(exampleResp, Example.class, config.reverse());
+        Example example = OrikaMapperRegistry.INSTANCE.map(exampleResp, Example.class, mappingConfig.reversed());
         assert example != null && example.getStudent() != null;
         Double score0 = Double.valueOf(exampleResp.getStudent().getScore0());
         assert score0.equals(example.getStudent().getScore());
@@ -60,10 +59,10 @@ public class MapperUtilsTest extends BaseLoggerTest {
     @Test
     public void test3() {
         List<ExampleBean> exampleBeanList = DataSource.getExampleList();
-        List<Example> exampleList = MapperUtils.INSTANCE.mapAsList(exampleBeanList, Example.class);
+        List<Example> exampleList = OrikaMapperRegistry.INSTANCE.mapAsList(exampleBeanList, Example.class);
         assert exampleList != null;
 
-        List<ExampleResp> exampleRespList = MapperUtils.INSTANCE.mapAsList(exampleBeanList, ExampleResp.class, config);
+        List<ExampleResp> exampleRespList = OrikaMapperRegistry.INSTANCE.mapAsList(exampleBeanList, ExampleResp.class, mappingConfig);
         assert exampleRespList != null;
 
         log(exampleList, exampleRespList);

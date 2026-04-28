@@ -1,9 +1,9 @@
 package io.github.aicyi.test.commons.util;
 
 import io.github.aicyi.commons.util.ExcelUtils;
+import io.github.aicyi.commons.util.MapperUtils;
 import io.github.aicyi.commons.util.Maps;
-import io.github.aicyi.commons.util.json.JsonUtils;
-import io.github.aicyi.commons.util.mapper.MapperUtils;
+import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.test.domain.BankExcel;
 import io.github.aicyi.test.domain.StudentExcel;
@@ -74,7 +74,7 @@ public class ExcelUtilsTest extends BaseLoggerTest {
     @Test
     public void test4() {
         List<StudentBean> studentList = DataSource.getStudentList();
-        List<StudentExcel> studentExcelList = MapperUtils.INSTANCE.mapAsList(studentList, StudentExcel.class);
+        List<StudentExcel> studentExcelList = MapperUtils.getInstance().mapAsList(studentList, StudentExcel.class);
         Path path = Paths.get("excel_001.xlsx");
         byte[] bytes = ExcelUtils.exportToBytes("12123", studentExcelList, StudentExcel.class);
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes)) {
@@ -89,7 +89,7 @@ public class ExcelUtilsTest extends BaseLoggerTest {
     @Test
     public void test5() {
         List<StudentBean> studentList = DataSource.getStudentList();
-        List<StudentExcel> studentExcelList = MapperUtils.INSTANCE.mapAsList(studentList, StudentExcel.class);
+        List<StudentExcel> studentExcelList = MapperUtils.getInstance().mapAsList(studentList, StudentExcel.class);
         String path = "excel_002.xlsx";
         ExcelUtils.exportToFile(path, "123", studentExcelList, StudentExcel.class);
     }

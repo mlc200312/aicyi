@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.redis;
 
-import io.github.aicyi.commons.util.json.JacksonConverter;
+import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
 import com.fasterxml.jackson.databind.JavaType;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,15 +15,15 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 public class EnhancedRedisTemplateFactory {
 
     private final RedisConnectionFactory redisConnectionFactory;
-    private final JacksonConverter jacksonConverter;
+    private final JacksonJsonMapper jacksonJsonMapper;
 
-    public EnhancedRedisTemplateFactory(RedisConnectionFactory redisConnectionFactory, JacksonConverter jacksonConverter) {
+    public EnhancedRedisTemplateFactory(RedisConnectionFactory redisConnectionFactory, JacksonJsonMapper jacksonJsonMapper) {
         this.redisConnectionFactory = redisConnectionFactory;
-        this.jacksonConverter = jacksonConverter;
+        this.jacksonJsonMapper = jacksonJsonMapper;
     }
 
     public EnhancedRedisTemplateFactory(RedisConnectionFactory redisConnectionFactory) {
-        this(redisConnectionFactory, JacksonConverter.DEFAULT_SIMPLE_CONVERTER);
+        this(redisConnectionFactory, JacksonJsonMapper.DEFAULT);
     }
 
     public RedisConnectionFactory getRedisConnectionFactory() {
@@ -56,7 +56,7 @@ public class EnhancedRedisTemplateFactory {
         template.setHashKeySerializer(new StringRedisSerializer());
 
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(javaType);
-        jackson2JsonRedisSerializer.setObjectMapper(jacksonConverter);
+        jackson2JsonRedisSerializer.setObjectMapper(jacksonJsonMapper.getObjectMapper());
 
         // 值使用Jackson序列化
         template.setValueSerializer(jackson2JsonRedisSerializer);
@@ -141,7 +141,7 @@ public class EnhancedRedisTemplateFactory {
                 template.setHashValueSerializer(new JdkSerializationRedisSerializer());
                 break;
             case JSON:
-                GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(jacksonConverter);
+                GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(jacksonJsonMapper.getObjectMapper());
                 template.setValueSerializer(genericJackson2JsonRedisSerializer);
                 template.setHashValueSerializer(genericJackson2JsonRedisSerializer);
                 break;

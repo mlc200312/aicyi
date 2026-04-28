@@ -3,8 +3,8 @@ package io.github.aicyi.commons.core.jwt;
 import io.github.aicyi.commons.core.token.DefaultTokenManager;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.lang.IJWTInfo;
-import io.github.aicyi.commons.lang.JsonConverter;
-import io.github.aicyi.commons.util.json.JacksonConverter;
+import io.github.aicyi.commons.lang.JsonMapper;
+import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -17,24 +17,24 @@ import java.util.concurrent.TimeUnit;
  **/
 public class JwtTokenManager<V extends IJWTInfo> extends DefaultTokenManager<V> implements IJwtTokenManager<V> {
 
-    private final JsonConverter jsonConverter;
+    private final JsonMapper jsonMapper;
     private final Type type;
 
-    public JwtTokenManager(TokenConfig tokenConfig, JsonConverter jsonConverter, Type type) {
+    public JwtTokenManager(TokenConfig tokenConfig, JsonMapper jsonMapper, Type type) {
         super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
-        this.jsonConverter = jsonConverter;
+        this.jsonMapper = jsonMapper;
         this.type = type;
     }
 
     public JwtTokenManager(TokenConfig tokenConfig, Type type) {
-        this(tokenConfig, JacksonConverter.DEFAULT_SIMPLE_CONVERTER, type);
+        this(tokenConfig, JacksonJsonMapper.DEFAULT, type);
     }
 
     @Override
     public String createToken(V value, Map<String, Object> claims, long timeout, TimeUnit unit) {
         Map<String, Object> enhancedClaims = new HashMap<>(claims);
-        String json = jsonConverter.toJson(value);
-        Map<String, Object> addClaims = jsonConverter.parseMap(json, Object.class);
+        String json = jsonMapper.toJson(value);
+        Map<String, Object> addClaims = jsonMapper.parseMap(json, Object.class);
         enhancedClaims.putAll(addClaims);
         return tokenGenerator.generateToken(enhancedClaims, timeout, unit);
     }
@@ -44,8 +44,8 @@ public class JwtTokenManager<V extends IJWTInfo> extends DefaultTokenManager<V> 
         // 解析原Token中的声明
         Optional<Map<String, Object>> claims = parseToken(token);
         if (claims.isPresent()) {
-            String json = jsonConverter.toJson(claims.get());
-            return Optional.ofNullable(jsonConverter.parse(json, type));
+            String json = jsonMapper.toJson(claims.get());
+            return Optional.ofNullable(jsonMapper.parse(json, type));
         }
         return Optional.empty();
     }

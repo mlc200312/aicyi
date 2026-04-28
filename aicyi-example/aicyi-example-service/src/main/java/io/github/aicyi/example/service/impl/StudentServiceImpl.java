@@ -1,9 +1,8 @@
 package io.github.aicyi.example.service.impl;
 
+import io.github.aicyi.commons.lang.SmartMapper;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.util.NumberUtils;
-import io.github.aicyi.commons.util.mapper.FieldMapBuilder;
-import io.github.aicyi.commons.util.mapper.MapperUtils;
 import io.github.aicyi.example.dao.mapper.StudentCustomMapper;
 import io.github.aicyi.example.dao.mapper.base.StudentMapper;
 import io.github.aicyi.example.domain.StudentBean;
@@ -23,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +36,9 @@ import java.util.stream.Collectors;
  **/
 @Service
 public class StudentServiceImpl implements StudentService {
+
+    @Autowired
+    private SmartMapper smartMapper;
     @Autowired
     private StudentMapper studentMapper;
     @Autowired
@@ -45,23 +48,23 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public void register(StudentBean studentBean) {
-        FieldMapBuilder.FieldMapConfig config = FieldMapBuilder.create().ignore("userId").build();
-
+    public void add(StudentBean bean) {
         UserQuery userQuery = new UserQuery();
-        userQuery.setMobileEq(studentBean.getMobile());
+        userQuery.setMobileEq(bean.getMobile());
+        userQuery.setIdCardEq(bean.getIdCard());
         List<User> list = userService.list(userQuery);
 
         User newUser;
         if (CollectionUtils.isEmpty(list)) {
-            newUser = MapperUtils.INSTANCE.map(studentBean, User.class, config);
+            newUser = smartMapper.map(bean, User.class);
             userService.save(newUser);
         } else {
             newUser = list.get(0);
         }
 
-        Student newStudent = MapperUtils.INSTANCE.map(studentBean, Student.class, config);
+        Student newStudent = smartMapper.map(bean, Student.class);
         newStudent.setUserId(newUser.getId());
+        newStudent.setRegisterTime(LocalDateTime.now());
         BaseEntityUtils.setDefaultValue(newStudent);
         studentMapper.insertSelective(newStudent);
     }
@@ -72,7 +75,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void update(Student student) {
+    public void update(StudentBean bean) {
+        Student student = smartMapper.map(bean, Student.class);
         studentMapper.updateByPrimaryKeySelective(student);
     }
 
@@ -87,35 +91,40 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student getByMobile(String mobile) {
-        return studentCustomMapper.selectByMobile(mobile);
+    public StudentBean getByMobile(String mobile) {
+        Student student = studentCustomMapper.selectByMobile(mobile);
+        if (Objects.isNull(student)) {
+            throw new BusinessException(ExampleResultCode.OBJECT_NOT_FOUND);
+        }
+        User user = userService.getById(student.getUserId());
+        return createStudentBean(student, user);
     }
 
     @Override
-    public List<Student> list(StudentQuery studentQuery) {
+    public List<Student> list(StudentQuery query) {
         StudentExample studentExample = new StudentExample();
         StudentExample.Criteria criteria = studentExample.createCriteria();
-        if (Objects.isNull(studentQuery)) {
+        if (Objects.isNull(query)) {
             return Collections.emptyList();
         }
-        if (NumberUtils.isPositive(studentQuery.getUserIdEq())) {
-            criteria.andUserIdEqualTo(studentQuery.getUserIdEq());
+        if (NumberUtils.isPositive(query.getUserIdEq())) {
+            criteria.andUserIdEqualTo(query.getUserIdEq());
         }
-        if (Objects.nonNull(studentQuery.getGradeTypeEq())) {
-            criteria.andGradeTypeEqualTo(studentQuery.getGradeTypeEq());
+        if (Objects.nonNull(query.getGradeTypeEq())) {
+            criteria.andGradeTypeEqualTo(query.getGradeTypeEq());
         }
-        if (Objects.nonNull(studentQuery.getRegisterTimeStart())) {
-            criteria.andRegisterTimeGreaterThan(studentQuery.getRegisterTimeStart());
+        if (Objects.nonNull(query.getRegisterTimeStart())) {
+            criteria.andRegisterTimeGreaterThan(query.getRegisterTimeStart());
         }
-        if (Objects.nonNull(studentQuery.getRegisterTimeEnd())) {
-            criteria.andRegisterTimeLessThanOrEqualTo(studentQuery.getRegisterTimeEnd());
+        if (Objects.nonNull(query.getRegisterTimeEnd())) {
+            criteria.andRegisterTimeLessThanOrEqualTo(query.getRegisterTimeEnd());
         }
         return studentMapper.selectByExample(studentExample);
     }
 
     @Override
-    public Page<StudentBean> pagedList(StudentQuery studentQuery) {
-        Page<Student> page = PageUtils.getPage(studentQuery, () -> list(studentQuery));
+    public Page<StudentBean> pagedList(StudentQuery query) {
+        Page<Student> page = PageUtils.getPage(query, () -> list(query));
         List<Student> studentList = page.getContent();
         if (CollectionUtils.isNotEmpty(studentList)) {
             UserQuery userQuery = new UserQuery();
@@ -129,11 +138,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private StudentBean createStudentBean(Student student, User user) {
-        MapperUtils instance = MapperUtils.INSTANCE;
-        StudentBean studentBean = instance.map(student, StudentBean.class, FieldMapBuilder.create()
-                .ignore("userId")
-                .build());
-        instance.map(user, studentBean);
+        StudentBean studentBean = smartMapper.map(student, StudentBean.class);
+        smartMapper.map(user, studentBean);
         return studentBean;
     }
 }

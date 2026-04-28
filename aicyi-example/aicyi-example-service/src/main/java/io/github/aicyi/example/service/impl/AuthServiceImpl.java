@@ -2,10 +2,10 @@ package io.github.aicyi.example.service.impl;
 
 import io.github.aicyi.commons.core.cache.StringCacheManager;
 import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
+import io.github.aicyi.commons.lang.SmartMapper;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
-import io.github.aicyi.commons.util.mapper.MapperUtils;
 import io.github.aicyi.example.domain.LoginParam;
 import io.github.aicyi.example.domain.LoginResult;
 import io.github.aicyi.example.domain.RegisterParam;
@@ -29,6 +29,8 @@ import java.util.Objects;
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
+    private SmartMapper smartMapper;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private IJwtTokenManager<IJWTInfo> jwtInfoTokenManager;
@@ -39,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(RegisterParam param) {
-        User user = MapperUtils.INSTANCE.map(param, User.class);
+        User user = smartMapper.map(param, User.class);
         user.setPassword(passwordEncoder.encode(param.getPassword()));
         userService.save(user);
     }

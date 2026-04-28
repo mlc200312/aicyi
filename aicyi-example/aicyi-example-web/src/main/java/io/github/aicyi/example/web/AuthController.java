@@ -1,7 +1,7 @@
 package io.github.aicyi.example.web;
 
 import io.github.aicyi.commons.lang.IResponse;
-import io.github.aicyi.commons.util.mapper.MapperUtils;
+import io.github.aicyi.commons.lang.SmartMapper;
 import io.github.aicyi.example.domain.LoginParam;
 import io.github.aicyi.example.domain.LoginResult;
 import io.github.aicyi.example.domain.RegisterParam;
@@ -28,12 +28,14 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     @Autowired
+    private SmartMapper smartMapper;
+    @Autowired
     private AuthService authService;
 
     @ApiOperation(value = "注册", notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public IResponse<Void> register(@RequestBody RegisterReq req) {
-        RegisterParam param = MapperUtils.INSTANCE.map(req, RegisterParam.class);
+        RegisterParam param = smartMapper.map(req, RegisterParam.class);
         authService.register(param);
         return Response.success();
     }
@@ -41,9 +43,9 @@ public class AuthController {
     @ApiOperation(value = "登录", notes = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public IResponse<LoginResp> login(@RequestBody LoginReq req) {
-        LoginParam param = MapperUtils.INSTANCE.map(req, LoginParam.class);
+        LoginParam param = smartMapper.map(req, LoginParam.class);
         LoginResult result = authService.login(param);
-        LoginResp resp = MapperUtils.INSTANCE.map(result, LoginResp.class);
+        LoginResp resp = smartMapper.map(result, LoginResp.class);
         return Response.success(resp);
     }
 }

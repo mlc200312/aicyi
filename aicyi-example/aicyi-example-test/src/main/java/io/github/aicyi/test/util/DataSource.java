@@ -1,8 +1,8 @@
 package io.github.aicyi.test.util;
 
 import io.github.aicyi.commons.lang.type.BooleanType;
-import io.github.aicyi.commons.util.mapper.FieldMapBuilder;
-import io.github.aicyi.commons.util.mapper.MapperUtils;
+import io.github.aicyi.commons.util.MapperUtils;
+import io.github.aicyi.commons.util.orikamapper.OrikaMapperRegistry;
 import io.github.aicyi.test.domain.Example;
 import io.github.aicyi.test.domain.ExampleBean;
 import io.github.aicyi.test.domain.Message;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import io.github.aicyi.commons.util.id.IdGenerator;
-import io.github.aicyi.commons.util.json.JsonUtils;
+import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.example.domain.type.GenderType;
 import io.github.aicyi.test.dto.ExampleResp;
 import io.github.aicyi.example.web.vo.StudentResp;
@@ -59,8 +59,7 @@ public class DataSource {
     public static UserBean getUser() {
         UserBean user = new UserBean();
         user.setId(IdGenerator.generateId());
-
-        user.setId(IdGenerator.generateId());
+        user.setUserName(RandomGenerator.generateFullName());
         user.setAge(RandomUtils.nextInt(0, 100));
         user.setIdCard(IdGenerator.generateV7Id());
         user.setMobile(RandomGenerator.generatePhoneNum());
@@ -74,9 +73,10 @@ public class DataSource {
     }
 
     public static StudentBean getStudent() {
-        StudentBean student = MapperUtils.INSTANCE.map(getUser(), StudentBean.class);
-        student.setGradeType(RandomGenerator.randomEnum(GradeType.class));
+        StudentBean student = MapperUtils.getInstance().map(getUser(), StudentBean.class);
+        student.setStudentId(IdGenerator.generateId());
         student.setScore(randomBigDecimal().doubleValue());
+        student.setGradeType(RandomGenerator.randomEnum(GradeType.class));
         student.setRegisterTime(LocalDateTime.now());
         student.setCreateTime(LocalDateTime.now());
         student.setUpdateTime(LocalDateTime.now());
@@ -84,10 +84,9 @@ public class DataSource {
     }
 
     public static StudentResp getStudentResp() {
-        return MapperUtils.INSTANCE.map(getStudent(), StudentResp.class, FieldMapBuilder.create()
-
-                .add("score", "score0")
-                .build());
+        return OrikaMapperRegistry.INSTANCE.map(getStudent(), StudentResp.class,
+                OrikaMapperRegistry.config()
+                        .map("score", "score0"));
     }
 
     public static List<StudentBean> getStudentList() {
@@ -116,18 +115,22 @@ public class DataSource {
         example.setSeason(RandomGenerator.randomEnum(Season.class));
         example.setWeek(RandomGenerator.randomEnum(Week.class));
         example.setIdList(Arrays.asList(1L, 2L, 3L));
-        example.setUser(getUser());
-        example.setStudent(getStudent());
+        UserBean user = getUser();
+        StudentBean student = getStudent();
+        StudentBean newStudent = MapperUtils.getInstance().map(user, student);
+        example.setUser(user);
+        example.setStudent(newStudent);
         example.setNothing("nothing");
         return example;
     }
 
     public static ExampleResp getExampleResp() {
-        ExampleResp resp = MapperUtils.INSTANCE.map(getExample(), ExampleResp.class, FieldMapBuilder.create()
-                .add("id", "uuid")
-                .ignore("user")
-                .ignore("student")
-                .build());
+        ExampleResp resp = OrikaMapperRegistry.INSTANCE.map(getExample(), ExampleResp.class,
+                OrikaMapperRegistry.config()
+                        .map("id", "uuid")
+                        .ignore("user")
+                        .ignore("student")
+        );
         resp.setUser(getUserJson());
         resp.setStudent(getStudentResp());
         return resp;

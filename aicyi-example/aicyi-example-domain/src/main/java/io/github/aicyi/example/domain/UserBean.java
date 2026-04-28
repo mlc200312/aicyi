@@ -19,6 +19,7 @@ import java.time.LocalDate;
 @FieldNameConstants
 public class UserBean extends BaseBean implements BoBean {
     private Long id;
+    private String userName;
     private Integer age;
     private String idCard;
     private String mobile;

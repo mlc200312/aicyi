@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @FieldNameConstants
 public class StudentBean extends UserBean {
+    private Long studentId;
     private Double score;
     private GradeType gradeType;
     private LocalDateTime registerTime;

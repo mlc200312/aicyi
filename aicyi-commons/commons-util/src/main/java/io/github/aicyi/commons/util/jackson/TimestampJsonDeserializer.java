@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.util.json;
+package io.github.aicyi.commons.util.jackson;
 
 import io.github.aicyi.commons.util.DateTimeUtils;
 import com.fasterxml.jackson.core.JsonParser;

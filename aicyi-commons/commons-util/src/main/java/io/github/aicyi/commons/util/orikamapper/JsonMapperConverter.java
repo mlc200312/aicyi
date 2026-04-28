@@ -1,7 +1,7 @@
-package io.github.aicyi.commons.util.mapper;
+package io.github.aicyi.commons.util.orikamapper;
 
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.util.json.JsonUtils;
+import io.github.aicyi.commons.util.JsonUtils;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;

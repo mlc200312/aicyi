@@ -49,11 +49,11 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String token = authorization.replace("Bearer ", "");
 
-        Optional<IJWTInfo> jwtInfo = tokenManager.parseJwtInfo(token);
-
-        if (!jwtInfo.isPresent()) {
+        if (!tokenManager.validateToken(token)) {
             throw new UnauthorizedException();
         }
+
+        Optional<IJWTInfo> jwtInfo = tokenManager.parseJwtInfo(token);
 
         CurrentContextHolder.setUserId(jwtInfo.get().getId());
         CurrentContextHolder.setUsername(jwtInfo.get().getUniqueName());

@@ -1,12 +1,12 @@
 package io.github.aicyi.test.commons.util;
 
 import io.github.aicyi.commons.core.jwt.JWTInfo;
-import io.github.aicyi.commons.lang.JsonConverter;
+import io.github.aicyi.commons.lang.JsonMapper;
 import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.util.id.IdGenerator;
-import io.github.aicyi.commons.util.json.JacksonConverter;
-import io.github.aicyi.commons.util.json.JacksonHelper;
-import io.github.aicyi.commons.util.json.JsonUtils;
+import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
+import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
+import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.test.domain.Example;
 import io.github.aicyi.test.domain.ExampleBean;
 import io.github.aicyi.test.util.BaseLoggerTest;
@@ -39,7 +39,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test() {
-        JsonConverter instance = JsonUtils.getInstance();
+        JsonMapper instance = JsonUtils.getInstance();
         List<ExampleBean> exampleList = DataSource.getExampleList();
         String json = instance.toJson(a);
         String json1 = instance.toJson(aList);
@@ -51,7 +51,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test2() {
-        JsonConverter instance = JsonUtils.getInstance();
+        JsonMapper instance = JsonUtils.getInstance();
         String json = DataSource.getExampleJson();
         Object parse = instance.parse(json);
         assert parse instanceof Map;
@@ -65,9 +65,9 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test3() {
-        JacksonConverter instance = JacksonConverter.DEFAULT_SIMPLE_CONVERTER;
+        JacksonJsonMapper instance = JacksonJsonMapper.DEFAULT;
         String json = "{\"id\":613294732759531520,\"age\":0,\"idCard\":\"1f07da341eb26024b3f927826ef0e6e2\",\"mobile\":\"13010496590\",\"genderType\":\"WOMAN\",\"birthday\":\"2025-08-20\",\"userId\":\"610780341698822144\",\"username\":\"邓纨仪\",\"deviceId\":\"1f07da341ee56475b3f927826ef0e6e2\",\"isMasterDevice\":false}";
-        JWTInfo parse = instance.parse(json, JacksonHelper.getType(JWTInfo.class));
+        JWTInfo parse = instance.parse(json, JacksonTypeFactory.typeOf(JWTInfo.class));
         assert parse != null;
 
         log(parse);
@@ -75,7 +75,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test4() {
-        JsonConverter instance = JsonUtils.getInstance();
+        JsonMapper instance = JsonUtils.getInstance();
         String json = DataSource.getExampleListJson();
         List<Example> exampleList = instance.parseList(json);
         assert exampleList != null;
@@ -89,7 +89,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test5() {
-        JsonConverter instance = JsonUtils.getInstance();
+        JsonMapper instance = JsonUtils.getInstance();
         String json = DataSource.getExampleMapJson();
         Map<Object, Object> exampleMap = instance.parseMap(json);
         assert exampleMap != null;
@@ -107,7 +107,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test6() {
-        JsonConverter instance = JsonUtils.getInstance();
+        JsonMapper instance = JsonUtils.getInstance();
         boolean emptyJSON = instance.isEmptyJSON("");
         boolean emptyJSON1 = instance.isEmptyJSON("{}");
         boolean emptyJSON2 = instance.isEmptyJSON("[]");

@@ -1,7 +1,7 @@
 package io.github.aicyi.example.boot.redis;
 
 import io.github.aicyi.example.boot.AicyiExampleApplication;
-import io.github.aicyi.commons.util.json.JacksonHelper;
+import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.test.domain.Example;
 import io.github.aicyi.test.domain.ExampleBean;
 import io.github.aicyi.test.domain.Message;
@@ -40,7 +40,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
     @Override
     public void beforeTest() {
         stringTemplate = enhancedRedisTemplateFactory.getStringTemplate();
-        exampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(JacksonHelper.getType(ExampleBean.class));
+        exampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(JacksonTypeFactory.typeOf(ExampleBean.class));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         String exampleStr = stringTemplate.opsForValue().get("jsonRedisTemplateTest");
         assert example != null;
 
-        JavaType exampleType = JacksonHelper.getParametricType(List.class, JacksonHelper.getType(Example.class));
+        JavaType exampleType = JacksonTypeFactory.parametricTypeOf(List.class, JacksonTypeFactory.typeOf(Example.class));
         RedisTemplate<String, List<ExampleBean>> listRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(exampleType);
         BoundValueOperations<String, List<ExampleBean>> jsonListRedisTemplateTest = listRedisTemplate.boundValueOps("jsonListRedisTemplateTest");
         jsonListRedisTemplateTest.set(DataSource.getExampleList());
@@ -80,7 +80,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     @Test
     public void jsonStrRedisTemplateTest() {
-        JavaType stringType = JacksonHelper.getType(String.class);
+        JavaType stringType = JacksonTypeFactory.typeOf(String.class);
         RedisTemplate<String, String> redisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(stringType);
         BoundValueOperations<String, String> jsonStrRedisTemplateTest = redisTemplate.boundValueOps("jsonStrRedisTemplateTest");
         jsonStrRedisTemplateTest.set("jsonStrRedisTemplateTest");
@@ -93,7 +93,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     @Test
     public void jsonIntRedisTemplateTest() {
-        JavaType intType = JacksonHelper.getType(Integer.class);
+        JavaType intType = JacksonTypeFactory.typeOf(Integer.class);
         RedisTemplate<String, Integer> redisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(intType);
         BoundValueOperations<String, Integer> jsonIntRedisTemplateTest = redisTemplate.boundValueOps("jsonIntRedisTemplateTest");
         jsonIntRedisTemplateTest.set(999999);

@@ -1,23 +1,15 @@
 package io.github.aicyi.example.boot.service;
 
 import io.github.aicyi.commons.util.DateTimeUtils;
-import io.github.aicyi.commons.util.mapper.FieldMapBuilder;
-import io.github.aicyi.commons.util.mapper.MapperUtils;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.domain.StudentBean;
-import io.github.aicyi.example.domain.StudentQuery;
-import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.domain.UserQuery;
-import io.github.aicyi.example.domain.entity.base.Student;
 import io.github.aicyi.example.domain.entity.base.User;
-import io.github.aicyi.example.domain.type.GradeType;
 import io.github.aicyi.example.service.StudentService;
 import io.github.aicyi.example.service.UserService;
 import io.github.aicyi.midware.db.commons.PageUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
-import io.github.aicyi.test.util.RandomGenerator;
-import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,7 +45,7 @@ public class ServiceTest extends BaseLoggerTest {
     @Before
     @Override
     public void beforeTest() {
-        testMobile = "15902571792";
+        testMobile = "15910436675";
         studentBean = DataSource.getStudent();
         studentBean.setMobile(testMobile);
         studentBean.setIdCard("1f0a9a831f9e6ec3817d77e5fd2ca3bb");
@@ -65,9 +55,9 @@ public class ServiceTest extends BaseLoggerTest {
     @Test
     @Override
     public void test() {
-        studentService.register(studentBean);
-        Student student = studentService.getByMobile(studentBean.getMobile());
-        User user = userService.getById(student.getUserId());
+        studentService.add(studentBean);
+        StudentBean student = studentService.getByMobile(studentBean.getMobile());
+        User user = userService.getById(student.getId());
 
         log(user, student);
     }
@@ -75,12 +65,12 @@ public class ServiceTest extends BaseLoggerTest {
     @Test
     public void test0() {
         List<StudentBean> studentBeanList = DataSource.getStudentList();
-        studentBeanList.forEach(item -> studentService.register(item));
+        studentBeanList.forEach(item -> studentService.add(item));
     }
 
     @Test
     public void test1() {
-        Student student = studentService.getByMobile(testMobile);
+        StudentBean student = studentService.getByMobile(testMobile);
         studentService.delete(student.getId());
 
         log(student);
@@ -88,9 +78,9 @@ public class ServiceTest extends BaseLoggerTest {
 
     @Test
     public void test2() {
-        Student student = studentService.getByMobile(testMobile);
+        StudentBean student = studentService.getByMobile(testMobile);
         if (Objects.nonNull(student)) {
-            student.setScore(new BigDecimal(100));
+            student.setScore(new BigDecimal(100).doubleValue());
             studentService.update(student);
         }
     }

@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.util.mapper;
+package io.github.aicyi.commons.util.orikamapper;
 
 import io.github.aicyi.commons.lang.StringEnumType;
 import ma.glasnost.orika.MappingContext;
@@ -20,7 +20,7 @@ public class StringEnumTypeMapperConverter extends BidirectionalConverter<String
     @Override
     public StringEnumType convertFrom(String code, Type<StringEnumType> type, MappingContext mappingContext) {
         for (StringEnumType enumConstant : type.getRawType().getEnumConstants()) {
-            if (enumConstant.getCode() == code) {
+            if (enumConstant.getCode().equals(code)) {
                 return enumConstant;
             }
         }
