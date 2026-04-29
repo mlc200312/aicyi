@@ -1,5 +1,6 @@
 package io.github.aicyi.example.boot.config;
 
+import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.SystemUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 public class SwaggerConfiguration {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebConfiguration.class);
+
     @Value("${server.port:80}")
     private String serverPort;
 
@@ -36,7 +39,7 @@ public class SwaggerConfiguration {
                 .version("1.0")
                 .build();
         String ipAddress = SystemUtils.getIpAddress();
-        LoggerFactory.getLogger(WebConfiguration.class).info("Swagger url 'http://{}:{}/api-doc.html'!", ipAddress, serverPort);
+        LOGGER.info("Swagger url 'http://{}:{}/api-doc.html'!", ipAddress, serverPort);
         return (new Docket(DocumentationType.OAS_30))
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo)
@@ -46,37 +49,4 @@ public class SwaggerConfiguration {
                 .paths(PathSelectors.any())
                 .build();
     }
-
-//    @Bean
-//    public static BeanPostProcessor springfoxHandlerProviderBeanPostProcessor() {
-//        return new BeanPostProcessor() {
-//
-//            @Override
-//            public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-//                if (bean instanceof WebMvcRequestHandlerProvider || bean instanceof WebFluxRequestHandlerProvider) {
-//                    customizeSpringfoxHandlerMappings(getHandlerMappings(bean));
-//                }
-//                return bean;
-//            }
-//
-//            private <T extends RequestMappingInfoHandlerMapping> void customizeSpringfoxHandlerMappings(List<T> mappings) {
-//                List<T> copy = mappings.stream()
-//                        .filter(mapping -> mapping.getPatternParser() == null)
-//                        .collect(Collectors.toList());
-//                mappings.clear();
-//                mappings.addAll(copy);
-//            }
-//
-//            private List<RequestMappingInfoHandlerMapping> getHandlerMappings(Object bean) {
-//                try {
-//                    Field field = ReflectionUtils.findField(bean.getClass(), "handlerMappings");
-//                    Assert.notNull(field, "field");
-//                    field.setAccessible(true);
-//                    return (List<RequestMappingInfoHandlerMapping>) field.get(bean);
-//                } catch (IllegalArgumentException | IllegalAccessException e) {
-//                    throw new IllegalStateException(e);
-//                }
-//            }
-//        };
-//    }
 }

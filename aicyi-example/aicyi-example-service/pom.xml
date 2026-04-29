@@ -37,11 +37,6 @@
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-message</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-rabbitmq</artifactId>
         </dependency>
 

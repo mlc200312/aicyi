@@ -3,6 +3,7 @@ package io.github.aicyi.example.service;
 import io.github.aicyi.example.domain.LoginParam;
 import io.github.aicyi.example.domain.LoginResult;
 import io.github.aicyi.example.domain.RegisterParam;
+import io.github.aicyi.example.domain.UpdatePasswordParam;
 
 /**
  * @author Mr.Min
@@ -25,4 +26,11 @@ public interface AuthService {
      * @return
      */
     LoginResult login(LoginParam param);
+
+    /**
+     * 修改密码
+     *
+     * @param param
+     */
+    void updatePassword(UpdatePasswordParam param);
 }

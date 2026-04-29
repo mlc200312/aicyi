@@ -1,7 +1,7 @@
 package io.github.aicyi.test.commons.util;
 
 import io.github.aicyi.commons.core.jwt.JWTInfo;
-import io.github.aicyi.commons.lang.JsonMapper;
+import io.github.aicyi.commons.lang.SmartJsonMapper;
 import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.util.id.IdGenerator;
 import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
@@ -39,7 +39,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test() {
-        JsonMapper instance = JsonUtils.getInstance();
+        SmartJsonMapper instance = JsonUtils.getInstance();
         List<ExampleBean> exampleList = DataSource.getExampleList();
         String json = instance.toJson(a);
         String json1 = instance.toJson(aList);
@@ -51,7 +51,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test2() {
-        JsonMapper instance = JsonUtils.getInstance();
+        SmartJsonMapper instance = JsonUtils.getInstance();
         String json = DataSource.getExampleJson();
         Object parse = instance.parse(json);
         assert parse instanceof Map;
@@ -75,7 +75,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test4() {
-        JsonMapper instance = JsonUtils.getInstance();
+        SmartJsonMapper instance = JsonUtils.getInstance();
         String json = DataSource.getExampleListJson();
         List<Example> exampleList = instance.parseList(json);
         assert exampleList != null;
@@ -89,7 +89,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test5() {
-        JsonMapper instance = JsonUtils.getInstance();
+        SmartJsonMapper instance = JsonUtils.getInstance();
         String json = DataSource.getExampleMapJson();
         Map<Object, Object> exampleMap = instance.parseMap(json);
         assert exampleMap != null;
@@ -107,7 +107,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test6() {
-        JsonMapper instance = JsonUtils.getInstance();
+        SmartJsonMapper instance = JsonUtils.getInstance();
         boolean emptyJSON = instance.isEmptyJSON("");
         boolean emptyJSON1 = instance.isEmptyJSON("{}");
         boolean emptyJSON2 = instance.isEmptyJSON("[]");

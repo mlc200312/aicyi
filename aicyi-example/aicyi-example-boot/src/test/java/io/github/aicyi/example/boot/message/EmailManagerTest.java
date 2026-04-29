@@ -56,8 +56,6 @@ public class EmailManagerTest extends BaseLoggerTest {
         String htmlContent = "<html><body><h1>Hello World!</h1><p>这是一封HTML邮件</p></body></html>";
         boolean isSend = emailManager.sendHtmlEmail(toList, "这是一个Html", htmlContent);
         assert isSend;
-
-        log(isSend);
     }
 
     @SneakyThrows
@@ -73,8 +71,6 @@ public class EmailManagerTest extends BaseLoggerTest {
         List<Attachment> attachmentList = Arrays.asList(attachment);
         boolean isSend = emailManager.sendEmailWithAttachment(toList, "附件", "测试带附件的邮件", attachmentList);
         assert connection && isSend;
-
-        log(connection, isSend);
     }
 
     @SneakyThrows
@@ -106,8 +102,6 @@ public class EmailManagerTest extends BaseLoggerTest {
         // 执行测试
         boolean isSend = emailManager.sendTemplateEmail(toList, subject, templateName, variables);
         assert isSend;
-
-        log(isSend);
     }
 
     @SneakyThrows

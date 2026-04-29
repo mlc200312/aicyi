@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 public class ManagerConfiguration {
-
     @Bean
     public SmartMapper smartMapper() {
         OrikaMapper orikaMapper = new OrikaMapper();

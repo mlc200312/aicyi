@@ -92,7 +92,6 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
             @Override
             public void onComplete(SendResult result) {
                 log("短信发送完成：" + result);
-
                 countDownLatch.countDown();
             }
 

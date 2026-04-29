@@ -25,7 +25,7 @@ public class CaptchaUtilsTest extends BaseLoggerTest {
     public void test() {
         try {
             // 生成验证码
-            String code = CaptchaUtils.randomCode(4);
+            String code = CaptchaUtils.randomCaptcha(4);
             BufferedImage image = CaptchaUtils.generateImage(code);
             ImageIO.write(image, "png", Paths.get("captcha.png").toFile());
             System.out.println("验证码生成成功: " + code);

@@ -3,7 +3,7 @@ package io.github.aicyi.example.boot.message;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.service.channel.MessageChannels;
-import io.github.aicyi.midware.rabbitmq.MessageSender;
+import io.github.aicyi.midware.rabbitmq.MqManager;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
 import io.jsonwebtoken.lang.Maps;
@@ -26,13 +26,13 @@ import java.util.Map;
  **/
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = AicyiExampleApplication.class)
-public class MessageSenderTest extends BaseLoggerTest {
+public class MqManagerTest extends BaseLoggerTest {
 
     @Autowired(required = false)
     @Qualifier(MessageChannels.OUTPUT)
     private MessageChannel messageChannel;
     @Autowired
-    private MessageSender messageSender;
+    private MqManager mqManager;
 
     @Override
     public void beforeTest() {
@@ -46,21 +46,21 @@ public class MessageSenderTest extends BaseLoggerTest {
         Message<UserBean> message = MessageBuilder.withPayload(DataSource.getUser()).build();
         boolean send = messageChannel.send(message);
         // 方式一
-        boolean send2 = messageSender.send(MessageChannels.OUTPUT, DataSource.getUser());
+        boolean send2 = mqManager.send(MessageChannels.OUTPUT, DataSource.getUser());
 
         log(send, send2);
     }
 
     @Test
     public void test2() {
-        boolean send = messageSender.sendDelayed(MessageChannels.DELAYED_OUTPUT, DataSource.getUser(), 10 * 1000);
+        boolean send = mqManager.sendDelayed(MessageChannels.DELAYED_OUTPUT, DataSource.getUser(), 10 * 1000);
 
         log(send);
     }
 
     @Test
     public void test3() {
-        boolean send = messageSender.send(MessageChannels.DIRECT_OUTPUT, DataSource.getUser());
+        boolean send = mqManager.send(MessageChannels.DIRECT_OUTPUT, DataSource.getUser());
 
         log(send);
     }
@@ -68,7 +68,7 @@ public class MessageSenderTest extends BaseLoggerTest {
     @Test
     public void test4() {
         Map<String, Object> properties = Maps.of("routingKey", (Object) "order.created").build();
-        boolean send = messageSender.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
+        boolean send = mqManager.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
 
         log(send);
     }
@@ -76,7 +76,7 @@ public class MessageSenderTest extends BaseLoggerTest {
     @Test
     public void test5() {
         Map<String, Object> properties = Maps.of("routingKey", (Object) "order.paid").build();
-        boolean send = messageSender.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
+        boolean send = mqManager.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
 
         log(send);
     }
@@ -84,7 +84,7 @@ public class MessageSenderTest extends BaseLoggerTest {
     @Test
     public void test6() {
         Map<String, Object> properties = Maps.of("routingKey", (Object) "system.log").build();
-        boolean send = messageSender.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
+        boolean send = mqManager.send(MessageChannels.TOPIC_OUTPUT, DataSource.getUser(), properties);
 
         log(send);
     }

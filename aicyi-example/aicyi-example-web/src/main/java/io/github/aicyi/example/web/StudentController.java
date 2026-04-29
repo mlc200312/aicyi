@@ -25,6 +25,7 @@ import java.util.List;
  * @description 学生控制器
  * @date 15:45
  **/
+@Validated
 @Api(value = "学生控制器", tags = {"学生控制器"})
 @RestController
 @RequestMapping("/student")
@@ -81,7 +82,7 @@ public class StudentController {
         return Response.success(PageResponse.build(respList, page));
     }
 
-    @ApiOperation(value = "新增学生请求参数", notes = "新增学生请求参数")
+    @ApiOperation(value = "新增学生", notes = "新增学生")
     @ApiImplicitParam(
             name = "Authorization",
             value = "令牌",
@@ -90,7 +91,7 @@ public class StudentController {
             dataTypeClass = String.class
     )
     @RequestMapping(value = "/add-student", method = RequestMethod.POST)
-    public IResponse<Void> addStudent(@RequestBody AddStudentReq req) {
+    public IResponse<Void> addStudent(@Validated @RequestBody AddStudentReq req) {
         StudentBean bean = smartMapper.map(req, StudentBean.class);
         studentService.add(bean);
         return Response.success();

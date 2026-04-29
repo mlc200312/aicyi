@@ -19,5 +19,9 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-message</artifactId>
+        </dependency>
     </dependencies>
 </project>

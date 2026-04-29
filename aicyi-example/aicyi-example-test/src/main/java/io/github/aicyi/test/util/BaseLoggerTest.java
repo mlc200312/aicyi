@@ -10,6 +10,7 @@ import io.github.aicyi.commons.logging.LoggerFactory;
  * @date 2020-04-20
  **/
 public abstract class BaseLoggerTest {
+
     protected static final Logger LOGGER = LoggerFactory.getLogger(BaseLoggerTest.class);
 
     public void log(Object... os) {

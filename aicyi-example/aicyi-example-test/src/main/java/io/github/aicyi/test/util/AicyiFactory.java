@@ -17,8 +17,11 @@ import java.util.concurrent.TimeUnit;
  * @date 2019-06-13
  **/
 public class AicyiFactory extends ThreadFactory {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AicyiFactory.class);
+
     private static final ThreadLocal<Long> TIME_THREAD_LOCAL = new ThreadLocal<>();
+
     public static int PRODUCT_COUNT = 0;
 
     private String name;
