@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.aicyi.commons.lang.EnumType;
-import io.github.aicyi.commons.lang.JsonMapper;
+import io.github.aicyi.commons.lang.SmartJsonMapper;
 import io.github.aicyi.commons.lang.StringEnumType;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.util.TimeZone;
  * @description 默认的JSON映射器
  * @date 2019-05-22
  */
-public final class JacksonJsonMapper implements JsonMapper {
+public final class JacksonJsonMapper implements SmartJsonMapper {
 
     public static final JacksonJsonMapper DEFAULT = new JacksonJsonMapper().enableLenientMode();
 

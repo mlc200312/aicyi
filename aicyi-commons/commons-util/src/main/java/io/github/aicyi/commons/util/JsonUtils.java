@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.util;
 
-import io.github.aicyi.commons.lang.JsonMapper;
+import io.github.aicyi.commons.lang.SmartJsonMapper;
 import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
 
 /**
@@ -14,10 +14,10 @@ public class JsonUtils {
     }
 
     private static class SingletonInner {
-        private static final JsonMapper INSTANCE = new JacksonJsonMapper();
+        private static final SmartJsonMapper INSTANCE = JacksonJsonMapper.DEFAULT;
     }
 
-    public static JsonMapper getInstance() {
+    public static SmartJsonMapper getInstance() {
         return SingletonInner.INSTANCE;
     }
 }

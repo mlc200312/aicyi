@@ -12,7 +12,7 @@ import java.util.Map;
  * @description 统一的 Json 接口定义
  * @date 2019-05-22
  **/
-public interface JsonMapper {
+public interface SmartJsonMapper {
     String EMPTY_ARRAY = "[]", EMPTY_OBJECT = "{}";
 
     /**

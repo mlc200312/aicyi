@@ -3,7 +3,7 @@ package io.github.aicyi.commons.core.jwt;
 import io.github.aicyi.commons.core.token.DefaultTokenManager;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.lang.IJWTInfo;
-import io.github.aicyi.commons.lang.JsonMapper;
+import io.github.aicyi.commons.lang.SmartJsonMapper;
 import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
 
 import java.lang.reflect.Type;
@@ -17,10 +17,10 @@ import java.util.concurrent.TimeUnit;
  **/
 public class JwtTokenManager<V extends IJWTInfo> extends DefaultTokenManager<V> implements IJwtTokenManager<V> {
 
-    private final JsonMapper jsonMapper;
+    private final SmartJsonMapper jsonMapper;
     private final Type type;
 
-    public JwtTokenManager(TokenConfig tokenConfig, JsonMapper jsonMapper, Type type) {
+    public JwtTokenManager(TokenConfig tokenConfig, SmartJsonMapper jsonMapper, Type type) {
         super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
         this.jsonMapper = jsonMapper;
         this.type = type;

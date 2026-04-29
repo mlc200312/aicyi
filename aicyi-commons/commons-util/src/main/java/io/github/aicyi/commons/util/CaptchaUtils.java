@@ -32,7 +32,7 @@ public class CaptchaUtils {
      * @param length 验证码长度
      * @return 验证码字符串
      */
-    public static String randomCode(int length) {
+    public static String randomCaptcha(int length) {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -46,8 +46,8 @@ public class CaptchaUtils {
      *
      * @return 验证码字符串
      */
-    public static String randomCode() {
-        return randomCode(DEFAULT_LENGTH);
+    public static String randomCaptcha() {
+        return randomCaptcha(DEFAULT_LENGTH);
     }
 
     /**
