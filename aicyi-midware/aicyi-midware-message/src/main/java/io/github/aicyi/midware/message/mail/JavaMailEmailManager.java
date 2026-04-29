@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
  **/
 public class JavaMailEmailManager implements EmailManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(JavaMailEmailManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JavaMailEmailManager.class);
 
     private final EmailConfig emailConfig;
     private final Session session;
@@ -79,12 +79,12 @@ public class JavaMailEmailManager implements EmailManager {
 
             Transport.send(messageHelper.getMimeMessage());
 
-            logger.info("邮件发送成功 - 收件人: {}, 主题: {}", toList, subject);
+            LOGGER.info("邮件发送成功 - 收件人: {}, 主题: {}", toList, subject);
 
             return true;
         } catch (Exception e) {
 
-            logger.error(e, "发送邮件失败 - 收件人: {}, 主题: {}", toList, subject);
+            LOGGER.error(e, "发送邮件失败 - 收件人: {}, 主题: {}", toList, subject);
 
             throw new MessageSendException("发送邮件失败:" + e.getMessage(), e);
         }
@@ -108,7 +108,7 @@ public class JavaMailEmailManager implements EmailManager {
     @Override
     public boolean sendTemplateEmail(List<String> toList, String subject, String templateName, Map<String, Object> templateVariables) {
         if (templateEngine == null) {
-            logger.error("未配置模板引擎，无法发送模板邮件");
+            LOGGER.error("未配置模板引擎，无法发送模板邮件");
             return false;
         }
 
@@ -117,7 +117,7 @@ public class JavaMailEmailManager implements EmailManager {
             String content = templateEngine.process(templateName, templateVariables);
             return sendHtmlEmail(toList, subject, content);
         } catch (Exception e) {
-            logger.error(e, "发送模板邮件失败 - 收件人: {}, 模板: {}", toList, templateName);
+            LOGGER.error(e, "发送模板邮件失败 - 收件人: {}, 模板: {}", toList, templateName);
             return false;
         }
     }
@@ -135,7 +135,7 @@ public class JavaMailEmailManager implements EmailManager {
             transport.close();
             return true;
         } catch (Exception e) {
-            logger.error("邮件服务器连接测试失败", e);
+            LOGGER.error("邮件服务器连接测试失败", e);
             return false;
         }
     }
@@ -150,7 +150,7 @@ public class JavaMailEmailManager implements EmailManager {
             try {
                 messageHelper.setFrom(emailConfig.getFromAddress(), emailConfig.getFromName());
             } catch (UnsupportedEncodingException e) {
-                logger.error(e, "set from address error");
+                LOGGER.error(e, "set from address error");
                 throw new RuntimeException(e);
             }
         } else {

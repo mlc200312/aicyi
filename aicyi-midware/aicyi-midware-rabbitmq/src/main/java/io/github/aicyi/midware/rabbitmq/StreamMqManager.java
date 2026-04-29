@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  **/
 public class StreamMqManager implements MqManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(StreamMqManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StreamMqManager.class);
 
     private final StreamBridge streamBridge;
 
@@ -42,7 +42,7 @@ public class StreamMqManager implements MqManager {
 
             return streamBridge.send(destination, springMessage);
         } catch (Exception e) {
-            logger.error(e, "发送MQ消息失败 - destination: {}, properties: {}", destination, properties);
+            LOGGER.error(e, "发送MQ消息失败 - destination: {}, properties: {}", destination, properties);
             throw new MessageSendException("发送MQ消息失败:" + e.getMessage(), e);
         }
     }
