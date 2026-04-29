@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.midware.kit;
 
 import io.github.aicyi.commons.core.exception.MessageSendException;
 import com.twilio.Twilio;
@@ -7,6 +7,7 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;
 import com.twilio.type.PhoneNumber;
 import io.github.aicyi.midware.message.sms.AbstractSmsManager;
+import io.github.aicyi.midware.message.sms.SmsProperties;
 
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -19,6 +20,14 @@ import java.util.concurrent.Executors;
 public class TwilioSmsManager extends AbstractSmsManager {
 
     private final String twilioNumber;
+
+    public TwilioSmsManager(SmsProperties smsProperties, Map<String, String> template) {
+        super(Executors.newFixedThreadPool(5), template);
+        this.twilioNumber = smsProperties.getFrom();
+
+        // 初始化Twilio客户端
+        Twilio.init(smsProperties.getUsername(), smsProperties.getPassword());
+    }
 
     public TwilioSmsManager(String accountSid, String authToken, String twilioNumber, Map<String, String> template) {
         super(Executors.newFixedThreadPool(5), template);

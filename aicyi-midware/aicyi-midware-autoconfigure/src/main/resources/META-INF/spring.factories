@@ -1,3 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.github.aicyi.midware.autoconfigure.MessageAutoConfiguration
+io.github.aicyi.midware.autoconfigure.MessageAutoConfiguration\
+,io.github.aicyi.midware.autoconfigure.SpringAutoConfiguration

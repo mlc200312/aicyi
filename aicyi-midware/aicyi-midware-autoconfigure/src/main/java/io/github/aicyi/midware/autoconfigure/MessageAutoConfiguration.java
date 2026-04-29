@@ -3,11 +3,12 @@ package io.github.aicyi.midware.autoconfigure;
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.core.message.*;
-import io.github.aicyi.midware.web.TwilioSmsManager;
+import io.github.aicyi.midware.kit.TwilioSmsManager;
 import io.github.aicyi.midware.message.mail.*;
 import io.github.aicyi.midware.message.sms.SmsManager;
 import io.github.aicyi.midware.message.sms.SmsMessageSender;
-import io.github.aicyi.midware.rabbitmq.MessageSender;
+import io.github.aicyi.midware.message.sms.SmsProperties;
+import io.github.aicyi.midware.rabbitmq.MqManager;
 import io.github.aicyi.midware.rabbitmq.MqMessageSender;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description Message配置自动注入
  * @date 18:10
  **/
 @EnableConfigurationProperties({SmsProperties.class, MailProperties.class})
@@ -63,12 +64,12 @@ public class MessageAutoConfiguration implements InitializingBean {
     @ConditionalOnMissingBean(UnifiedMessageManager.class)
     public UnifiedMessageManager unifiedMessageManager(@Autowired(required = false) EmailManager emailManager,
                                                        @Autowired(required = false) SmsManager smsManager,
-                                                       @Autowired(required = false) MessageSender messageSender
+                                                       @Autowired(required = false) MqManager mqManager
     ) {
         MessageSenderFactory factory = new DefaultMessageSenderFactory();
         Optional.ofNullable(emailManager).ifPresent(item -> factory.registerSender(MessageType.EMAIL, new EmailMessageSender(emailManager)));
         Optional.ofNullable(smsManager).ifPresent(item -> factory.registerSender(MessageType.SMS, new SmsMessageSender(smsManager)));
-        Optional.ofNullable(messageSender).ifPresent(item -> factory.registerSender(MessageType.MQ, new MqMessageSender(messageSender)));
+        Optional.ofNullable(mqManager).ifPresent(item -> factory.registerSender(MessageType.MQ, new MqMessageSender(mqManager)));
 
         // 创建统一消息服务
         return new DefaultUnifiedMessageManager(factory);

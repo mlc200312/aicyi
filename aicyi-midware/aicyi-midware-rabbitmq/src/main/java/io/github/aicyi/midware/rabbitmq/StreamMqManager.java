@@ -1,10 +1,6 @@
 package io.github.aicyi.midware.rabbitmq;
 
 import io.github.aicyi.commons.core.exception.MessageSendException;
-import io.github.aicyi.commons.core.message.AbstractMessageSender;
-import io.github.aicyi.commons.core.message.MessageContent;
-import io.github.aicyi.commons.core.message.MessageType;
-import io.github.aicyi.commons.core.message.SendResult;
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.Maps;
@@ -13,7 +9,6 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,13 +18,13 @@ import java.util.stream.Collectors;
  * @description Spring Cloud Stream 实现
  * @date 2025/9/10
  **/
-public class StreamMessageSender implements MessageSender {
+public class StreamMqManager implements MqManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(StreamMessageSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(StreamMqManager.class);
 
     private final StreamBridge streamBridge;
 
-    public StreamMessageSender(StreamBridge streamBridge) {
+    public StreamMqManager(StreamBridge streamBridge) {
         this.streamBridge = streamBridge;
     }
 

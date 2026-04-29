@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.autoconfigure;
+package io.github.aicyi.midware.message.sms;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

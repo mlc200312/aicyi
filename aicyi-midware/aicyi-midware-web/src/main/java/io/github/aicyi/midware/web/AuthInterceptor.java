@@ -4,6 +4,7 @@ import io.github.aicyi.commons.core.token.TokenManager;
 import io.github.aicyi.commons.lang.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -43,7 +44,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         // 否则必须带 token
         String authorization = request.getHeader("Authorization");
 
-        if (!authorization.startsWith("Bearer")) {
+        if (StringUtils.isBlank(authorization) || !authorization.startsWith("Bearer")) {
             throw new UnauthorizedException();
         }
 

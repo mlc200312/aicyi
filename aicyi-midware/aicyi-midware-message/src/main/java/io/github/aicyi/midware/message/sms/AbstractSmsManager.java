@@ -28,7 +28,7 @@ public abstract class AbstractSmsManager implements SmsManager {
 
     @Override
     public boolean sendTemplateSms(String number, String templateId, Map<String, String> templateParams, String signName) {
-        if (templateParams.containsKey(templateId)) {
+        if (template.containsKey(templateId)) {
             String content = template.get(templateId);
             return sendTextSms(number, content, signName);
         }

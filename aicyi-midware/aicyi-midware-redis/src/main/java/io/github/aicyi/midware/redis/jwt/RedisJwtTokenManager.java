@@ -3,7 +3,7 @@ package io.github.aicyi.midware.redis.jwt;
 import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
 import io.github.aicyi.commons.core.jwt.JWTInfo;
 import io.github.aicyi.commons.lang.IJWTInfo;
-import io.github.aicyi.commons.lang.JsonMapper;
+import io.github.aicyi.commons.lang.SmartJsonMapper;
 import io.github.aicyi.commons.core.token.DefaultTokenManager;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.logging.Logger;
@@ -39,7 +39,7 @@ public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManage
     private final RedisTemplate<String, String> stringRedisTemplate;
     private final HashOperations<String, String, String> opsForHash;
     private final RedisCacheManager<V> redisCacheManager;
-    private final JsonMapper jsonMapper;
+    private final SmartJsonMapper jsonMapper;
 
     public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JacksonJsonMapper jsonConverter, JavaType javaType) {
         super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));

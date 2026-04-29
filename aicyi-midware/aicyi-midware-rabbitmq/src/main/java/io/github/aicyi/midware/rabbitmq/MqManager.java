@@ -8,7 +8,7 @@ import java.util.Map;
  * @description 消息发送接口
  * @date 2025/9/10
  **/
-public interface MessageSender {
+public interface MqManager {
     /**
      * 发送消息
      *
