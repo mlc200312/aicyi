@@ -5,7 +5,7 @@ package io.github.aicyi.midware.message.mail;
  * @description 邮件配置类
  * @date 2025/8/25
  **/
-public class EmailConfig {
+public class MailConfig {
     private String host;
     private int port = 25;
     private String username;

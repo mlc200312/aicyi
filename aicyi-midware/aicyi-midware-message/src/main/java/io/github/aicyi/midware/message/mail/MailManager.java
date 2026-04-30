@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.mail;
 
-import io.github.aicyi.commons.core.exception.MessageSendException;
+import io.github.aicyi.commons.core.message.MessageSendException;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
  * @description 邮件发送服务
  * @date 2025/8/25
  **/
-public interface EmailManager {
+public interface MailManager {
     /**
      * 发送邮件（完整参数）
      *

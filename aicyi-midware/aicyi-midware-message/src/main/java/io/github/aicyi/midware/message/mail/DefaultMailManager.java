@@ -2,7 +2,7 @@ package io.github.aicyi.midware.message.mail;
 
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.core.exception.MessageSendException;
+import io.github.aicyi.commons.core.message.MessageSendException;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.*;
@@ -17,45 +17,45 @@ import java.util.concurrent.CompletableFuture;
  * @description 基于JavaMail的EmailManager实现
  * @date 2025/8/25
  **/
-public class JavaMailEmailManager implements EmailManager {
+public class DefaultMailManager implements MailManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JavaMailEmailManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMailManager.class);
 
-    private final EmailConfig emailConfig;
+    private final MailConfig mailConfig;
     private final Session session;
     private final TemplateEngine templateEngine; // 可选，用于模板渲染
 
-    public JavaMailEmailManager(EmailConfig emailConfig) {
-        this(emailConfig, new FreeMarkerTemplateEngine());
+    public DefaultMailManager(MailConfig mailConfig) {
+        this(mailConfig, new FreeMarkerTemplateEngine());
     }
 
-    public JavaMailEmailManager(EmailConfig emailConfig, TemplateEngine templateEngine) {
-        this.emailConfig = emailConfig;
+    public DefaultMailManager(MailConfig mailConfig, TemplateEngine templateEngine) {
+        this.mailConfig = mailConfig;
         this.templateEngine = templateEngine;
         this.session = createSession();
     }
 
     private Session createSession() {
         Properties props = new Properties();
-        props.put("mail.smtp.host", emailConfig.getHost());
-        props.put("mail.smtp.port", emailConfig.getPort());
+        props.put("mail.smtp.host", mailConfig.getHost());
+        props.put("mail.smtp.port", mailConfig.getPort());
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.connectiontimeout", emailConfig.getConnectionTimeout());
-        props.put("mail.smtp.timeout", emailConfig.getTimeout());
+        props.put("mail.smtp.connectiontimeout", mailConfig.getConnectionTimeout());
+        props.put("mail.smtp.timeout", mailConfig.getTimeout());
 
-        if (emailConfig.isSslEnabled()) {
+        if (mailConfig.isSslEnabled()) {
             props.put("mail.smtp.ssl.enable", "true");
             props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         }
 
-        if (emailConfig.isTlsEnabled()) {
+        if (mailConfig.isTlsEnabled()) {
             props.put("mail.smtp.starttls.enable", "true");
         }
 
         return Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailConfig.getUsername(), emailConfig.getPassword());
+                return new PasswordAuthentication(mailConfig.getUsername(), mailConfig.getPassword());
             }
         });
     }
@@ -131,7 +131,7 @@ public class JavaMailEmailManager implements EmailManager {
     public boolean testConnection() {
         try {
             Transport transport = session.getTransport("smtp");
-            transport.connect(emailConfig.getHost(), emailConfig.getPort(), emailConfig.getUsername(), emailConfig.getPassword());
+            transport.connect(mailConfig.getHost(), mailConfig.getPort(), mailConfig.getUsername(), mailConfig.getPassword());
             transport.close();
             return true;
         } catch (Exception e) {
@@ -143,18 +143,18 @@ public class JavaMailEmailManager implements EmailManager {
     private MimeMessageHelper createMimeMessageHelper(List<String> toList, List<String> ccList, String subject) throws MessagingException {
         MimeMessage message = new MimeMessage(session);
 
-        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, emailConfig.getCharset());
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, mailConfig.getCharset());
 
         // 设置发件人
-        if (emailConfig.getFromName() != null) {
+        if (mailConfig.getFromName() != null) {
             try {
-                messageHelper.setFrom(emailConfig.getFromAddress(), emailConfig.getFromName());
+                messageHelper.setFrom(mailConfig.getFromAddress(), mailConfig.getFromName());
             } catch (UnsupportedEncodingException e) {
                 LOGGER.error(e, "set from address error");
                 throw new RuntimeException(e);
             }
         } else {
-            messageHelper.setFrom(emailConfig.getFromAddress());
+            messageHelper.setFrom(mailConfig.getFromAddress());
         }
 
         // 设置收件人

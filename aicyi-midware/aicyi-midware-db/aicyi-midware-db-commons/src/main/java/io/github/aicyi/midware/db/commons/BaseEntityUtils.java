@@ -3,7 +3,7 @@ package io.github.aicyi.midware.db.commons;
 import io.github.aicyi.commons.lang.BaseEntity;
 import io.github.aicyi.commons.lang.type.BooleanType;
 import io.github.aicyi.commons.util.ReflectionUtils;
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class BaseEntityUtils {
 
     public static void setDefaultValue(BaseEntity baseEntity) {
-        setDefaultValues(baseEntity, new String[]{"id", "deleted", "version", "createTime", "updateTime"}, new Object[]{IdGenerator.generateId(), BooleanType.FALSE, 0, LocalDateTime.now(), LocalDateTime.now()});
+        setDefaultValues(baseEntity, new String[]{"id", "deleted", "version", "createTime", "updateTime"}, new Object[]{IdUtils.generateId(), BooleanType.FALSE, 0, LocalDateTime.now(), LocalDateTime.now()});
     }
 
     private static <T> void setDefaultValues(T entity, String[] fields, Object[] value) {

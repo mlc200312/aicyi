@@ -1,7 +1,8 @@
 package io.github.aicyi.midware.message.sms;
 
-import io.github.aicyi.commons.core.exception.MessageSendException;
+import io.github.aicyi.commons.core.message.MessageSendException;
 
+import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -27,10 +28,10 @@ public abstract class AbstractSmsManager implements SmsManager {
     }
 
     @Override
-    public boolean sendTemplateSms(String number, String templateId, Map<String, String> templateParams, String signName) {
+    public boolean sendTemplateSms(String phoneNumber, String templateId, Map<String, String> templateParams, String signName) {
         if (template.containsKey(templateId)) {
             String content = template.get(templateId);
-            return sendTextSms(number, content, signName);
+            return sendTextSms(phoneNumber, content, signName);
         }
         throw new MessageSendException("NOT_FOUND_TEMPLATE", "模版不存在");
     }
@@ -54,6 +55,7 @@ public abstract class AbstractSmsManager implements SmsManager {
     /**
      * 关闭线程池资源
      */
+    @PreDestroy
     public void shutdown() {
         executorService.shutdown();
     }

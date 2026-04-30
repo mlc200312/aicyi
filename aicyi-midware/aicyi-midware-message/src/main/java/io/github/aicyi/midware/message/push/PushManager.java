@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.push;
 
-import io.github.aicyi.commons.core.exception.MessageSendException;
+import io.github.aicyi.commons.core.message.MessageSendException;
 
 import java.util.List;
 import java.util.Map;

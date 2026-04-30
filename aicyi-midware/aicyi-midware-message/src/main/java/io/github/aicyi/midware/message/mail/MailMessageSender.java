@@ -4,22 +4,22 @@ import io.github.aicyi.commons.core.message.AbstractMessageSender;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageType;
 import io.github.aicyi.commons.core.message.SendResult;
-import io.github.aicyi.commons.core.exception.MessageSendException;
+import io.github.aicyi.commons.core.message.MessageSendException;
 
 /**
  * @author Mr.Min
  * @description Email发送器实现
  * @date 2025/8/25
  **/
-public class EmailMessageSender extends AbstractMessageSender {
-    private final EmailManager emailManager;
+public class MailMessageSender extends AbstractMessageSender {
+    private final MailManager mailManager;
 
-    public EmailMessageSender(EmailManager emailManager) {
-        this.emailManager = emailManager;
+    public MailMessageSender(MailManager mailManager) {
+        this.mailManager = mailManager;
     }
 
-    public EmailManager getEmailManager() {
-        return emailManager;
+    public MailManager getEmailManager() {
+        return mailManager;
     }
 
     @Override
@@ -29,14 +29,14 @@ public class EmailMessageSender extends AbstractMessageSender {
 
     @Override
     protected SendResult doSend(MessageContent content) throws MessageSendException {
-        if (!(content instanceof EmailMessage)) {
+        if (!(content instanceof MailMessage)) {
             throw new IllegalArgumentException("不支持的消息类型");
         }
 
-        EmailMessage message = (EmailMessage) content;
+        MailMessage message = (MailMessage) content;
         // 调用实际的邮件发送服务
 
-        emailManager.sendEmail(message.getToList(), message.getCcList(), message.getSubject(), message.getContent(), message.isHtml(), message.getAttachments());
+        mailManager.sendEmail(message.getToList(), message.getCcList(), message.getSubject(), message.getContent(), message.isHtml(), message.getAttachments());
 
         return SendResult.success(message.getMessageId(), message.getBusinessId());
     }

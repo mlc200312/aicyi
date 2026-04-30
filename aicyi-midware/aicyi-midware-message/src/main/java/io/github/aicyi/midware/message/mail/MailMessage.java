@@ -11,7 +11,7 @@ import java.util.List;
  * @description 邮件消息
  * @date 2025/8/25
  **/
-public class EmailMessage extends AbstractMessage<String> {
+public class MailMessage extends AbstractMessage<String> {
     private final String subject;
     private final List<String> toList;
     private final List<String> ccList;
@@ -19,7 +19,7 @@ public class EmailMessage extends AbstractMessage<String> {
     private final boolean html;
 
     // 私有构造函数，只能通过Builder创建
-    private EmailMessage(Builder builder) {
+    private MailMessage(Builder builder) {
         super(builder.content, MessageType.EMAIL);
         this.subject = builder.subject;
         this.toList = builder.toList;
@@ -136,7 +136,7 @@ public class EmailMessage extends AbstractMessage<String> {
          *
          * @throws IllegalArgumentException 如果必需字段缺失
          */
-        public EmailMessage build() {
+        public MailMessage build() {
             // 验证必需字段
             if (content == null || content.trim().isEmpty()) {
                 throw new IllegalArgumentException("邮件内容不能为空");
@@ -148,14 +148,14 @@ public class EmailMessage extends AbstractMessage<String> {
                 throw new IllegalArgumentException("收件人列表不能为空");
             }
 
-            return new EmailMessage(this);
+            return new MailMessage(this);
         }
 
         /**
          * 快速构建方法（跳过验证，用于某些特殊场景）
          */
-        public EmailMessage buildUnsafe() {
-            return new EmailMessage(this);
+        public MailMessage buildUnsafe() {
+            return new MailMessage(this);
         }
     }
 
@@ -169,7 +169,7 @@ public class EmailMessage extends AbstractMessage<String> {
     /**
      * 快速创建方法
      */
-    public static EmailMessage of(String content, String subject, String to) {
+    public static MailMessage of(String content, String subject, String to) {
         return builder()
                 .content(content)
                 .subject(subject)

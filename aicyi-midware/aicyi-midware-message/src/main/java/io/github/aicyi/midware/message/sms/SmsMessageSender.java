@@ -4,7 +4,7 @@ import io.github.aicyi.commons.core.message.AbstractMessageSender;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageType;
 import io.github.aicyi.commons.core.message.SendResult;
-import io.github.aicyi.commons.core.exception.MessageSendException;
+import io.github.aicyi.commons.core.message.MessageSendException;
 
 /**
  * @author Mr.Min

@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.kit;
 
-import io.github.aicyi.commons.core.exception.MessageSendException;
+import io.github.aicyi.commons.core.message.MessageSendException;
 import com.twilio.Twilio;
 import com.twilio.exception.ApiException;
 import com.twilio.rest.api.v2010.account.Message;
@@ -41,7 +41,7 @@ public class TwilioSmsManager extends AbstractSmsManager {
     public boolean sendTextSms(String number, String content, String signName) {
         try {
             Message twilioMessage = new MessageCreator(
-                    new PhoneNumber(number),
+                    new PhoneNumber("+86" + number),
                     new PhoneNumber(twilioNumber),
                     content
             ).create();
