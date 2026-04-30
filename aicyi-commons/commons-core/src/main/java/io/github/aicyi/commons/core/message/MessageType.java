@@ -6,7 +6,7 @@ package io.github.aicyi.commons.core.message;
  * @date 2025/8/25
  **/
 public enum MessageType {
-    EMAIL,
+    MAIL,
     SMS,
     PUSH,
     MQ,

@@ -62,7 +62,7 @@ public class SpringEnvironmentHelper implements InitializingBean {
      */
     public static List<String> getList(String key) {
         String value = getString(key);
-        if (StringUtils.isBlank(value)) {
+        if (value == null || value.trim().isEmpty()) {
             return Collections.emptyList();
         }
         return Arrays.stream(value.split(","))
@@ -78,7 +78,7 @@ public class SpringEnvironmentHelper implements InitializingBean {
      */
     public static Map<String, Object> getMap(String key) {
         String json = getString(key);
-        if (StringUtils.isBlank(json)) {
+        if (json == null || json.trim().isEmpty()) {
             return Collections.emptyMap();
         }
         try {
@@ -95,7 +95,7 @@ public class SpringEnvironmentHelper implements InitializingBean {
      */
     public static <T> T getObject(String key, Class<T> clazz) {
         String json = getString(key);
-        if (StringUtils.isBlank(json)) {
+        if (json == null || json.trim().isEmpty()) {
             return null;
         }
         try {

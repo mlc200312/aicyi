@@ -51,7 +51,7 @@ public abstract class Assert {
     public static <T extends CharSequence> T notEmpty(T argument, String name) {
         if (argument == null) {
             throw new IllegalArgumentException(name + " may not be null");
-        } else if (StringUtils.isEmpty(argument)) {
+        } else if (argument == null || argument.length() == 0) {
             throw new IllegalArgumentException(name + " may not be empty");
         } else {
             return argument;
@@ -61,7 +61,7 @@ public abstract class Assert {
     public static <T extends CharSequence> T notBlank(T argument, String name) {
         if (argument == null) {
             throw new IllegalArgumentException(name + " may not be null");
-        } else if (StringUtils.isBlank(argument)) {
+        } else if (argument == null || argument.length() == 0) {
             throw new IllegalArgumentException(name + " may not be blank");
         } else {
             return argument;

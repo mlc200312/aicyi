@@ -19,6 +19,11 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-message</artifactId>
+        </dependency>
+
         <!-- Spring Cloud Stream 核心 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

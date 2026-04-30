@@ -1,4 +1,4 @@
-package io.github.aicyi.example.boot.config;
+package io.github.aicyi.example.consumer.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

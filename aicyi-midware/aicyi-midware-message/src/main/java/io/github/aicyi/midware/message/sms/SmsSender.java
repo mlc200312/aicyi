@@ -9,50 +9,50 @@ import java.util.concurrent.CompletableFuture;
  * @description 短信发送服务
  * @date 2025/8/25
  **/
-public interface SmsManager {
+public interface SmsSender {
     /**
      * 发送简单文本短信
      *
-     * @param number
-     * @param content
+     * @param phoneNumber
+     * @param messageContent
      * @param signName
      * @return
      * @
      */
-    boolean sendTextSms(String number, String content, String signName);
+    boolean send(String phoneNumber, String messageContent, String signName);
 
     /**
      * 发送模板短信
      *
-     * @param number
+     * @param phoneNumber
      * @param templateId
      * @param templateParams
      * @param signName
      * @return
      * @
      */
-    boolean sendTemplateSms(String number, String templateId, Map<String, String> templateParams, String signName);
+    boolean sendTemplate(String phoneNumber, String templateId, Map<String, String> templateParams, String signName);
 
     /**
      * 异步发送短信
      *
-     * @param numbers
-     * @param content
+     * @param phoneNumbers
+     * @param messageContent
      * @param signName
      * @return
      * @
      */
-    CompletableFuture<Boolean> sendTextSmsAsync(List<String> numbers, String content, String signName);
+    CompletableFuture<Boolean> sendAsync(List<String> phoneNumbers, String messageContent, String signName);
 
     /**
      * 异步发送短信
      *
-     * @param numbers
+     * @param phoneNumber
      * @param templateId
-     * @param templateParams
+     * @param templateVariables
      * @param signName
      * @return
      * @
      */
-    CompletableFuture<Boolean> sendTemplateSmsAsync(List<String> numbers, String templateId, Map<String, String> templateParams, String signName);
+    CompletableFuture<Boolean> sendTemplateAsync(List<String> phoneNumber, String templateId, Map<String, String> templateVariables, String signName);
 }

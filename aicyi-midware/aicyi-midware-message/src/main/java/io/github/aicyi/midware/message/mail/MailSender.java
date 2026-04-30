@@ -11,83 +11,83 @@ import java.util.concurrent.CompletableFuture;
  * @description 邮件发送服务
  * @date 2025/8/25
  **/
-public interface MailManager {
+public interface MailSender {
     /**
      * 发送邮件（完整参数）
      *
-     * @param toList
-     * @param ccList
+     * @param toRecipients
+     * @param ccRecipients
      * @param subject
-     * @param content
-     * @param isHtml
+     * @param body
+     * @param htmlFormat
      * @param attachments
      * @return
      * @throws MessageSendException
      */
-    boolean sendEmail(
-            List<String> toList,
-            List<String> ccList,
+    boolean send(
+            List<String> toRecipients,
+            List<String> ccRecipients,
             String subject,
-            String content,
-            boolean isHtml,
-            List<Attachment> attachments);
+            String body,
+            boolean htmlFormat,
+            List<MailAttachment> attachments);
 
     /**
      * 发送简单文本邮件
      *
-     * @param toList
+     * @param toRecipients
      * @param subject
-     * @param content
+     * @param body
      * @return
      * @throws MessageSendException
      */
-    boolean sendTextEmail(List<String> toList, String subject, String content);
+    boolean sendText(List<String> toRecipients, String subject, String body);
 
     /**
      * 发送HTML格式邮件
      *
-     * @param toList
+     * @param toRecipients
      * @param subject
-     * @param htmlContent
+     * @param html
      * @return
      * @throws MessageSendException
      */
-    boolean sendHtmlEmail(List<String> toList, String subject, String htmlContent);
+    boolean sendHtml(List<String> toRecipients, String subject, String html);
 
     /**
      * 发送带附件的邮件
      *
-     * @param toList
+     * @param toRecipients
      * @param subject
-     * @param content
+     * @param body
      * @param attachments
      * @return
      * @throws MessageSendException
      */
-    boolean sendEmailWithAttachment(List<String> toList, String subject, String content, List<Attachment> attachments);
+    boolean sendWithAttachment(List<String> toRecipients, String subject, String body, List<MailAttachment> attachments);
 
     /**
      * 发送模板邮件
      *
-     * @param toList
+     * @param toRecipients
      * @param subject
-     * @param templateName
+     * @param templateId
      * @param templateVariables
      * @return
      * @throws MessageSendException
      */
-    boolean sendTemplateEmail(List<String> toList, String subject, String templateName, Map<String, Object> templateVariables);
+    boolean sendTemplate(List<String> toRecipients, String subject, String templateId, Map<String, Object> templateVariables);
 
     /**
      * 异步发送邮件
      *
-     * @param toList
+     * @param toRecipients
      * @param subject
-     * @param content
+     * @param body
      * @return
      * @throws MessageSendException
      */
-    CompletableFuture<Boolean> sendEmailAsync(List<String> toList, String subject, String content);
+    CompletableFuture<Boolean> sendAsync(List<String> toRecipients, String subject, String body);
 
     /**
      * 测试邮件服务器连接

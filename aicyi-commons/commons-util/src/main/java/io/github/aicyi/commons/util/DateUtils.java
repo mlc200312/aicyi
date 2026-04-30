@@ -15,7 +15,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
     private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     public static Date parseDate(String date, String pattern) {
-        if (StringUtils.isBlank(date)) {
+        if (date == null || date.trim().isEmpty()) {
             return null;
         }
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);

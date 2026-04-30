@@ -91,7 +91,7 @@ public final class NumberUtils {
      * @return
      */
     public static boolean isNumeric(String str) {
-        if (str == null || StringUtils.isBlank(str)) {
+        if (str == null || str.trim().isEmpty()) {
             return false;
         }
 
@@ -121,7 +121,7 @@ public final class NumberUtils {
      * @return
      */
     public static int toInt(String value, int defaultValue) {
-        if (StringUtils.isBlank(value)) {
+        if (value == null || value.trim().isEmpty()) {
             return defaultValue;
         }
         return Integer.parseInt(value);

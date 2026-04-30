@@ -12,19 +12,14 @@ import io.github.aicyi.commons.core.message.MessageSendException;
  * @date 2025/8/25
  **/
 public class SmsMessageSender extends AbstractMessageSender {
-    private SmsManager smsManager; // 假设的邮件服务
+    private SmsSender smsSender; // 假设的邮件服务
 
-    public SmsMessageSender(SmsManager smsManager) {
-        this.smsManager = smsManager;
+    public SmsMessageSender(SmsSender smsSender) {
+        this.smsSender = smsSender;
     }
 
     @Override
-    public boolean supports(MessageType messageType) {
-        return MessageType.SMS.equals(messageType);
-    }
-
-    @Override
-    protected void validateContent(MessageContent content) {
+    protected void validate(MessageContent content) {
         if (!supports(content.getMessageType())) {
             throw new UnsupportedOperationException("不支持的消息类型");
         }
@@ -51,12 +46,17 @@ public class SmsMessageSender extends AbstractMessageSender {
         // 调用实际的短信发送服务
         message.getPhoneNumbers().forEach(number -> {
             if (message.isContentMessage()) {
-                smsManager.sendTextSms(number, message.getContent(), message.getSignName());
+                smsSender.send(number, message.getContent(), message.getSignName());
             } else {
-                smsManager.sendTemplateSms(number, message.getTemplateId(), message.getTemplateParams(), message.getSignName());
+                smsSender.sendTemplate(number, message.getTemplateId(), message.getTemplateParams(), message.getSignName());
             }
         });
 
         return SendResult.success(message.getMessageId(), message.getBusinessId());
+    }
+
+    @Override
+    public boolean supports(MessageType messageType) {
+        return MessageType.SMS.equals(messageType);
     }
 }

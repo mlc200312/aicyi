@@ -2,8 +2,8 @@ package io.github.aicyi.test.commons.core;
 
 import io.github.aicyi.commons.core.message.*;
 import io.github.aicyi.commons.util.id.IdUtils;
-import io.github.aicyi.midware.kit.TwilioSmsManager;
-import io.github.aicyi.midware.message.sms.SmsManager;
+import io.github.aicyi.midware.kit.TwilioSmsSender;
+import io.github.aicyi.midware.message.sms.SmsSender;
 import io.github.aicyi.midware.message.sms.SmsMessageSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.midware.message.sms.SmsMessage;
@@ -30,10 +30,10 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
     @Override
     public void beforeTest() {
 
-        SmsManager smsManager = new TwilioSmsManager("AC56dfa4c2d3284693ddebd2834b499486", "eaee6879fd36fbe39ed60c49cff457e0", "+19472182422", new HashMap<>());
+        SmsSender smsSender = new TwilioSmsSender("AC56dfa4c2d3284693ddebd2834b499486", "eaee6879fd36fbe39ed60c49cff457e0", "+19472182422", new HashMap<>());
 
         MessageSenderFactory factory = new DefaultMessageSenderFactory();
-        Optional.ofNullable(smsManager).ifPresent(item -> factory.registerSender(MessageType.SMS, new SmsMessageSender(smsManager)));
+        Optional.ofNullable(smsSender).ifPresent(item -> factory.registerSender(MessageType.SMS, new SmsMessageSender(smsSender)));
 
         // 创建统一消息服务
         unifiedMessageManager = new DefaultUnifiedMessageManager(factory);

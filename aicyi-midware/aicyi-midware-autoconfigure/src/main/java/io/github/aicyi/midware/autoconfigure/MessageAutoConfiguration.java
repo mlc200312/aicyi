@@ -4,12 +4,11 @@ import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.core.message.*;
 import io.github.aicyi.midware.message.mail.*;
-import io.github.aicyi.midware.message.sms.DefaultSmsManager;
-import io.github.aicyi.midware.message.sms.SmsManager;
-import io.github.aicyi.midware.message.sms.SmsMessageSender;
-import io.github.aicyi.midware.message.sms.SmsProperties;
-import io.github.aicyi.midware.rabbitmq.MqManager;
-import io.github.aicyi.midware.rabbitmq.MqMessageSender;
+import io.github.aicyi.midware.message.sms.*;
+import io.github.aicyi.midware.message.sms.DefaultSmsSender;
+import io.github.aicyi.midware.message.sms.SmsSender;
+import io.github.aicyi.midware.message.mq.MqSender;
+import io.github.aicyi.midware.message.mq.MqMessageSender;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -37,8 +36,8 @@ public class MessageAutoConfiguration implements InitializingBean {
     }
 
     @Bean
-    @ConditionalOnMissingBean(MailManager.class)
-    public MailManager emailManager() {
+    @ConditionalOnMissingBean(MailSender.class)
+    public MailSender emailManager() {
         MailConfig mailConfig = new MailConfig();
         mailConfig.setHost(mailProperties.getHost());
         mailConfig.setPort(mailProperties.getPort());
@@ -47,27 +46,27 @@ public class MessageAutoConfiguration implements InitializingBean {
         mailConfig.setFromAddress(mailProperties.getUsername());
         mailConfig.setFromName(mailProperties.getProperties().get("fromName"));
         mailConfig.setCharset(mailProperties.getDefaultEncoding().displayName());
-        MailManager mailManager = new DefaultMailManager(mailConfig, new FreeMarkerTemplateEngine());
-        return mailManager;
+        MailSender mailSender = new JavaMailSender(mailConfig, new FreeMarkerTemplateEngine());
+        return mailSender;
     }
 
     @Bean
-    @ConditionalOnMissingBean(SmsManager.class)
-    @ConditionalOnBean(MailManager.class)
+    @ConditionalOnMissingBean(SmsSender.class)
+    @ConditionalOnBean(MailSender.class)
     @ConditionalOnProperty(prefix = "aicyi.sms", name = "enabled", havingValue = "true")
-    public SmsManager smsManager(MailManager mailManager) {
-        return new DefaultSmsManager(mailManager);
+    public SmsSender smsManager(MailSender mailSender) {
+        return new DefaultSmsSender(mailSender);
     }
 
     @Bean
     @ConditionalOnMissingBean(UnifiedMessageManager.class)
-    public UnifiedMessageManager unifiedMessageManager(@Autowired(required = false) MailManager mailManager,
-                                                       @Autowired(required = false) SmsManager smsManager,
-                                                       @Autowired(required = false) MqManager mqManager) {
+    public UnifiedMessageManager unifiedMessageManager(@Autowired(required = false) MailSender mailSender,
+                                                       @Autowired(required = false) SmsSender smsSender,
+                                                       @Autowired(required = false) MqSender mqSender) {
         MessageSenderFactory factory = new DefaultMessageSenderFactory();
-        Optional.ofNullable(mailManager).ifPresent(item -> factory.registerSender(MessageType.EMAIL, new MailMessageSender(mailManager)));
-        Optional.ofNullable(smsManager).ifPresent(item -> factory.registerSender(MessageType.SMS, new SmsMessageSender(smsManager)));
-        Optional.ofNullable(mqManager).ifPresent(item -> factory.registerSender(MessageType.MQ, new MqMessageSender(mqManager)));
+        Optional.ofNullable(mailSender).ifPresent(item -> factory.registerSender(MessageType.MAIL, new MailMessageSender(mailSender)));
+        Optional.ofNullable(smsSender).ifPresent(item -> factory.registerSender(MessageType.SMS, new SmsMessageSender(smsSender)));
+        Optional.ofNullable(mqSender).ifPresent(item -> factory.registerSender(MessageType.MQ, new MqMessageSender(mqSender)));
 
         // 创建统一消息服务
         return new DefaultUnifiedMessageManager(factory);

@@ -17,7 +17,7 @@ public abstract class AbstractMessageSender implements MessageSender {
     @Override
     public SendResult send(MessageContent content) {
         try {
-            validateContent(content);
+            validate(content);
             return doSend(content);
         } catch (MessageSendException e) {
             LOGGER.error(e, "发送消息失败");
@@ -51,7 +51,7 @@ public abstract class AbstractMessageSender implements MessageSender {
      *
      * @param content
      */
-    protected void validateContent(MessageContent content) {
+    protected void validate(MessageContent content) {
         if (!supports(content.getMessageType())) {
             throw new UnsupportedOperationException("不支持的消息类型");
         }

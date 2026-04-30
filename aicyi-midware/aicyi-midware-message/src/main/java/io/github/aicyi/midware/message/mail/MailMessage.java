@@ -15,12 +15,12 @@ public class MailMessage extends AbstractMessage<String> {
     private final String subject;
     private final List<String> toList;
     private final List<String> ccList;
-    private final List<Attachment> attachments;
+    private final List<MailAttachment> attachments;
     private final boolean html;
 
     // 私有构造函数，只能通过Builder创建
     private MailMessage(Builder builder) {
-        super(builder.content, MessageType.EMAIL);
+        super(builder.content, MessageType.MAIL);
         this.subject = builder.subject;
         this.toList = builder.toList;
         this.ccList = builder.ccList;
@@ -41,7 +41,7 @@ public class MailMessage extends AbstractMessage<String> {
         return ccList;
     }
 
-    public List<Attachment> getAttachments() {
+    public List<MailAttachment> getAttachments() {
         return attachments;
     }
 
@@ -57,7 +57,7 @@ public class MailMessage extends AbstractMessage<String> {
         private String subject;
         private List<String> toList = new ArrayList<>();
         private List<String> ccList = new ArrayList<>();
-        private List<Attachment> attachments = new ArrayList<>();
+        private List<MailAttachment> attachments = new ArrayList<>();
         private boolean html = false;
 
         public Builder() {
@@ -102,14 +102,14 @@ public class MailMessage extends AbstractMessage<String> {
             return this;
         }
 
-        public Builder attachment(Attachment attachment) {
+        public Builder attachment(MailAttachment attachment) {
             if (attachment != null) {
                 this.attachments.add(attachment);
             }
             return this;
         }
 
-        public Builder attachments(List<Attachment> attachments) {
+        public Builder attachments(List<MailAttachment> attachments) {
             if (attachments != null) {
                 this.attachments.addAll(attachments);
             }
@@ -207,7 +207,7 @@ public class MailMessage extends AbstractMessage<String> {
     /**
      * 添加附件（构建后操作）
      */
-    public void addAttachment(Attachment attachment) {
+    public void addAttachment(MailAttachment attachment) {
         if (attachment != null) {
             attachments.add(attachment);
         }

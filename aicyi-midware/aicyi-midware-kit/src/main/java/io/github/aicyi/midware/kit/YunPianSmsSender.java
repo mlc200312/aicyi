@@ -3,7 +3,7 @@ package io.github.aicyi.midware.kit;
 import com.yunpian.sdk.YunpianClient;
 import com.yunpian.sdk.model.Result;
 import io.github.aicyi.commons.util.Maps;
-import io.github.aicyi.midware.message.sms.AbstractSmsManager;
+import io.github.aicyi.midware.message.sms.AbstractSmsSender;
 
 import javax.annotation.PreDestroy;
 import java.util.HashMap;
@@ -14,26 +14,26 @@ import java.util.Map;
  * @description YunPian短信服务
  * @date 18:14
  **/
-public class YunPianSmsManager extends AbstractSmsManager {
+public class YunPianSmsSender extends AbstractSmsSender {
 
     private YunpianClient client;
 
-    public YunPianSmsManager(String apikey, Map<String, String> template) {
+    public YunPianSmsSender(String apikey, Map<String, String> template) {
         super(template);
         this.client = new YunpianClient(apikey).init();
     }
 
-    public YunPianSmsManager(String apikey) {
+    public YunPianSmsSender(String apikey) {
         this(apikey, new HashMap<>());
     }
 
     @Override
-    public boolean sendTextSms(String phoneNumber, String content, String signName) {
+    public boolean send(String phoneNumber, String messageContent, String signName) {
 
         // 构建参数
         Map param = Maps
                 .of(YunpianClient.MOBILE, phoneNumber)
-                .and(YunpianClient.TEXT, content)
+                .and(YunpianClient.TEXT, messageContent)
                 .build();
 
         // 发送短信

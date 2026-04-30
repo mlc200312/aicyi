@@ -38,7 +38,7 @@ public class AesUtils {
      * @return 加密后的base 64 code
      */
     public static String aesEncrypt(String content, String encryptKey) throws Exception {
-        return StringUtils.isBlank(content) ? content : base64Encode(aesEncryptToBytes(content, encryptKey));
+        return content == null || content.trim().isEmpty() ? content : base64Encode(aesEncryptToBytes(content, encryptKey));
     }
 
 
@@ -50,7 +50,7 @@ public class AesUtils {
      * @return 解密后的string
      */
     public static String aesDecrypt(String encryptStr, String decryptKey) throws Exception {
-        return StringUtils.isBlank(encryptStr) ? encryptStr : aesDecryptByBytes(base64Decode(encryptStr), decryptKey);
+        return encryptStr == null || encryptStr.trim().isEmpty() ? encryptStr : aesDecryptByBytes(base64Decode(encryptStr), decryptKey);
     }
 
     /**

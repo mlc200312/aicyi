@@ -89,12 +89,13 @@ public class JaxbUtils {
      * @return
      */
     private static InputStream getXMLInputStream(String xml) {
-        if (StringUtils.isNotEmpty(xml)) {
-            try {
-                return new ByteArrayInputStream(xml.getBytes());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        if (xml == null || xml.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return new ByteArrayInputStream(xml.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

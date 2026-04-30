@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.rabbitmq;
+package io.github.aicyi.midware.message.mq;
 
 import io.github.aicyi.commons.core.message.AbstractMessage;
 import io.github.aicyi.commons.core.message.MessageType;
@@ -148,8 +148,7 @@ public class MqMessage extends AbstractMessage<Object> {
      * 验证消息基本信息是否完整
      */
     public boolean isValid() {
-        return getContent() != null &&
-                destination != null && !destination.trim().isEmpty();
+        return getContent() != null && destination != null && !destination.trim().isEmpty();
     }
 
     /**

@@ -3,6 +3,7 @@ package io.github.aicyi.example.consumer.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.aicyi.example.service.channel.MessageChannels;
+import org.springframework.amqp.core.*;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,8 @@ import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.util.MimeTypeUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -24,7 +27,7 @@ import java.io.IOException;
  **/
 @Configuration
 @EnableBinding(MessageChannels.MessageInput.class)
-public class MessageConfig {
+public class MessageConfiguration {
 
     @Bean
     public MessageConverter customMessageConverter(ObjectMapper objectMapper) {

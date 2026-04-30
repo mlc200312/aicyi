@@ -6,7 +6,7 @@ import com.twilio.exception.ApiException;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;
 import com.twilio.type.PhoneNumber;
-import io.github.aicyi.midware.message.sms.AbstractSmsManager;
+import io.github.aicyi.midware.message.sms.AbstractSmsSender;
 import io.github.aicyi.midware.message.sms.SmsProperties;
 
 import java.util.Map;
@@ -17,11 +17,11 @@ import java.util.concurrent.Executors;
  * @description Twilio短信服务
  * @date 18:18
  **/
-public class TwilioSmsManager extends AbstractSmsManager {
+public class TwilioSmsSender extends AbstractSmsSender {
 
     private final String twilioNumber;
 
-    public TwilioSmsManager(SmsProperties smsProperties, Map<String, String> template) {
+    public TwilioSmsSender(SmsProperties smsProperties, Map<String, String> template) {
         super(Executors.newFixedThreadPool(5), template);
         this.twilioNumber = smsProperties.getFrom();
 
@@ -29,7 +29,7 @@ public class TwilioSmsManager extends AbstractSmsManager {
         Twilio.init(smsProperties.getUsername(), smsProperties.getPassword());
     }
 
-    public TwilioSmsManager(String accountSid, String authToken, String twilioNumber, Map<String, String> template) {
+    public TwilioSmsSender(String accountSid, String authToken, String twilioNumber, Map<String, String> template) {
         super(Executors.newFixedThreadPool(5), template);
         this.twilioNumber = twilioNumber;
 
@@ -38,12 +38,12 @@ public class TwilioSmsManager extends AbstractSmsManager {
     }
 
     @Override
-    public boolean sendTextSms(String number, String content, String signName) {
+    public boolean send(String phoneNumber, String messageContent, String signName) {
         try {
             Message twilioMessage = new MessageCreator(
-                    new PhoneNumber("+86" + number),
+                    new PhoneNumber("+86" + phoneNumber),
                     new PhoneNumber(twilioNumber),
-                    content
+                    messageContent
             ).create();
 
             return twilioMessage.getErrorCode() == null;

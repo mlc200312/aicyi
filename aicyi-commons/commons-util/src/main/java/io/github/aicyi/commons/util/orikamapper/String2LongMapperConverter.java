@@ -16,7 +16,7 @@ public class String2LongMapperConverter extends BidirectionalConverter<String, L
 
     @Override
     public Long convertTo(String var1, Type<Long> type, MappingContext mappingContext) {
-        if (StringUtils.isBlank(var1)) {
+        if (var1 == null || var1.trim().isEmpty()) {
             return null;
         }
         return Long.parseLong(var1);

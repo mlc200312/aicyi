@@ -1,6 +1,7 @@
 package io.github.aicyi.example.boot.config;
 
 import io.github.aicyi.example.service.channel.MessageChannels;
+import io.github.aicyi.midware.message.mq.MqSender;
 import io.github.aicyi.midware.rabbitmq.*;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -17,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
 public class MessageConfiguration {
 
     @Bean
-    public MqManager mqManager(StreamBridge streamBridge) {
-        return new StreamMqManager(streamBridge);
+    public MqSender mqManager(StreamBridge streamBridge) {
+        return new StreamMqSender(streamBridge);
     }
 
 //    @Bean

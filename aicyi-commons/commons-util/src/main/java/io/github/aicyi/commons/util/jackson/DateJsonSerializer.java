@@ -30,7 +30,7 @@ public class DateJsonSerializer extends com.fasterxml.jackson.databind.JsonSeria
 
     @Override
     public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        if (StringUtils.isBlank(pattern)) {
+        if (pattern == null || pattern.trim().isEmpty()) {
             jsonGenerator.writeString(DateUtils.formatDate(date));
         } else {
             jsonGenerator.writeString(DateUtils.formatDate(date, pattern));

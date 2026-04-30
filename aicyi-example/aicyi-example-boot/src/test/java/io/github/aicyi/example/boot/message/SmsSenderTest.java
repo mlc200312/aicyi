@@ -1,7 +1,7 @@
 package io.github.aicyi.example.boot.message;
 
 import io.github.aicyi.example.boot.AicyiExampleApplication;
-import io.github.aicyi.midware.message.sms.SmsManager;
+import io.github.aicyi.midware.message.sms.SmsSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import lombok.SneakyThrows;
 import org.junit.Before;
@@ -22,10 +22,10 @@ import java.util.concurrent.CompletableFuture;
  **/
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = AicyiExampleApplication.class)
-public class SmsManagerTest extends BaseLoggerTest {
+public class SmsSenderTest extends BaseLoggerTest {
 
     @Autowired
-    private SmsManager smsManager;
+    private SmsSender smsSender;
 
     private List<String> numbers;
     private String content;
@@ -43,7 +43,7 @@ public class SmsManagerTest extends BaseLoggerTest {
     @Override
     public void test() {
 
-        boolean isTrue = smsManager.sendTextSms(numbers.get(0), content, signName);
+        boolean isTrue = smsSender.send(numbers.get(0), content, signName);
 
         log(isTrue);
     }
@@ -52,7 +52,7 @@ public class SmsManagerTest extends BaseLoggerTest {
     @Test
     public void test2() {
 
-        CompletableFuture<Boolean> async = smsManager.sendTextSmsAsync(numbers, content, signName);
+        CompletableFuture<Boolean> async = smsSender.sendAsync(numbers, content, signName);
 
         Boolean isTrue = async.get();
 
@@ -62,7 +62,7 @@ public class SmsManagerTest extends BaseLoggerTest {
     @Test
     public void test3() {
 
-        boolean isTrue = smsManager.sendTemplateSms(numbers.get(0), "SMS_168900000", null, signName);
+        boolean isTrue = smsSender.sendTemplate(numbers.get(0), "SMS_168900000", null, signName);
 
         log(isTrue);
     }
@@ -71,7 +71,7 @@ public class SmsManagerTest extends BaseLoggerTest {
     @Test
     public void test4() {
 
-        CompletableFuture<Boolean> async = smsManager.sendTemplateSmsAsync(numbers, "SMS_168900000", null, signName);
+        CompletableFuture<Boolean> async = smsSender.sendTemplateAsync(numbers, "SMS_168900000", null, signName);
 
         Boolean isTrue = async.get();
 

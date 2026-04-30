@@ -26,7 +26,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDateTime toLDateTime(String dateTime, String pattern) {
-        if (StringUtils.isBlank(dateTime)) {
+        if (dateTime == null || dateTime.trim().isEmpty()) {
             return null;
         }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);

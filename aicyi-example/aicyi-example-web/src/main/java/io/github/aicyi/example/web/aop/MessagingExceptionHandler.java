@@ -1,4 +1,4 @@
-package io.github.aicyi.example.consumer.config;
+package io.github.aicyi.example.web.aop;
 
 import io.github.aicyi.commons.core.message.MessageSendException;
 import io.github.aicyi.midware.web.Response;

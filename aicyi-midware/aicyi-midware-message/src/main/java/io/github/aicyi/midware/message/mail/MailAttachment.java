@@ -9,7 +9,7 @@ import java.io.File;
  * @description 邮件附件
  * @date 2025/8/25
  **/
-public class Attachment extends BaseBean {
+public class MailAttachment extends BaseBean {
     private String name; // 附件名称
     private File file; // 附件内容
     private String contentType; // 内容类型
