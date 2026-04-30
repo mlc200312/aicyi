@@ -2,7 +2,7 @@ package io.github.aicyi.commons.core.jwt;
 
 import io.github.aicyi.commons.lang.TokenGenerator;
 import io.github.aicyi.commons.util.Assert;
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
@@ -60,7 +60,7 @@ public class JwtTokenGenerator implements TokenGenerator<String> {
 
     @Override
     public String generateToken(Map<String, Object> claims) {
-        String id = IdGenerator.generateV7Id();
+        String id = IdUtils.generateV7Id();
         return generateToken(id, claims);
     }
 
@@ -85,7 +85,7 @@ public class JwtTokenGenerator implements TokenGenerator<String> {
 
     @Override
     public String generateToken(Map<String, Object> claims, long timeout, TimeUnit unit) {
-        String id = IdGenerator.generateV7Id();
+        String id = IdUtils.generateV7Id();
         return generateToken(id, claims, timeout, unit);
     }
 

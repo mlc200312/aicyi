@@ -1,7 +1,7 @@
 package io.github.aicyi.commons.core.message;
 
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public abstract class AbstractMessage<T> extends BaseBean implements MessageCont
     public AbstractMessage(T content, MessageType messageType) {
         this.content = content;
         this.messageType = messageType;
-        this.messageId = IdGenerator.generateV7Id();
+        this.messageId = IdUtils.generateV7Id();
         this.properties = new HashMap<>();
         this.timestamp = LocalDateTime.now();
     }

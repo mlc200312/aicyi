@@ -8,11 +8,11 @@ import com.github.f4b6a3.uuid.UuidCreator;
  * @description ID生成
  * @date 19:15
  **/
-public class IdGenerator {
+public class IdUtils {
 
     private static final Snowflake SNOWFLAKE = new Snowflake(0, 0);
 
-    private IdGenerator() {
+    private IdUtils() {
     }
 
     public static long generateId() {
