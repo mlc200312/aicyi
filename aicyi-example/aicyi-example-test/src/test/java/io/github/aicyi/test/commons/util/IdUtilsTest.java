@@ -1,6 +1,6 @@
 package io.github.aicyi.test.commons.util;
 
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import java.util.Set;
  * @description 业务描述
  * @date 18:37
  **/
-public class IdGeneratorTest extends BaseLoggerTest {
+public class IdUtilsTest extends BaseLoggerTest {
 
     @Override
     public void beforeTest() {
@@ -23,7 +23,7 @@ public class IdGeneratorTest extends BaseLoggerTest {
     public void test() {
         Set<Long> idSet = new HashSet<>();
         for (int i = 0; i < 50; i++) {
-            long id = IdGenerator.generateId();
+            long id = IdUtils.generateId();
             idSet.add(id);
             System.out.println(id);
         }
@@ -34,7 +34,7 @@ public class IdGeneratorTest extends BaseLoggerTest {
     public void test2() {
         Set<String> uuidSet = new HashSet<>();
         for (int i = 0; i < 50; i++) {
-            String uuid = IdGenerator.generateV7Id();
+            String uuid = IdUtils.generateV7Id();
             uuidSet.add(uuid);
             System.out.println(uuid);
         }

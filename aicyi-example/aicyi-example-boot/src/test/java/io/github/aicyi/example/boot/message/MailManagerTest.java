@@ -3,10 +3,10 @@ package io.github.aicyi.example.boot.message;
 import io.github.aicyi.commons.util.Maps;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.commons.util.DateTimeUtils;
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.midware.message.mail.Attachment;
-import io.github.aicyi.midware.message.mail.EmailManager;
+import io.github.aicyi.midware.message.mail.MailManager;
 import io.github.aicyi.midware.message.mail.TemplateEngine;
 import lombok.SneakyThrows;
 import org.junit.Before;
@@ -32,10 +32,10 @@ import static org.mockito.Mockito.when;
  **/
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = AicyiExampleApplication.class)
-public class EmailManagerTest extends BaseLoggerTest {
+public class MailManagerTest extends BaseLoggerTest {
 
     @Autowired
-    private EmailManager emailManager;
+    private MailManager mailManager;
 
     private List<String> toList;
     private TemplateEngine templateEngine;
@@ -54,14 +54,14 @@ public class EmailManagerTest extends BaseLoggerTest {
     @Override
     public void test() {
         String htmlContent = "<html><body><h1>Hello World!</h1><p>这是一封HTML邮件</p></body></html>";
-        boolean isSend = emailManager.sendHtmlEmail(toList, "这是一个Html", htmlContent);
+        boolean isSend = mailManager.sendHtmlEmail(toList, "这是一个Html", htmlContent);
         assert isSend;
     }
 
     @SneakyThrows
     @Test
     public void test2() {
-        boolean connection = emailManager.testConnection();
+        boolean connection = mailManager.testConnection();
         Attachment attachment = new Attachment();
         attachment.setName("test.xlsx");
         String absolutePath = new File("").getAbsoluteFile().getParentFile().getPath();
@@ -69,7 +69,7 @@ public class EmailManagerTest extends BaseLoggerTest {
         attachment.setFile(file);
         attachment.setContentType("xlsx");
         List<Attachment> attachmentList = Arrays.asList(attachment);
-        boolean isSend = emailManager.sendEmailWithAttachment(toList, "附件", "测试带附件的邮件", attachmentList);
+        boolean isSend = mailManager.sendEmailWithAttachment(toList, "附件", "测试带附件的邮件", attachmentList);
         assert connection && isSend;
     }
 
@@ -79,7 +79,7 @@ public class EmailManagerTest extends BaseLoggerTest {
         String subject = "复杂模板测试";
         String templateName = "order-confirmation.ftl";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("orderId", IdGenerator.generateId() + "");
+        variables.put("orderId", IdUtils.generateId() + "");
         variables.put("userName", "王五");
         variables.put("orderDate", DateTimeUtils.formatLDateTime(LocalDateTime.now(), DateTimeUtils.DATE_PATTERN));
         Map<String, Object> build1 = Maps.of("", new Object())
@@ -100,14 +100,14 @@ public class EmailManagerTest extends BaseLoggerTest {
         String expectedHtml = "<html><body>...</body></html>";
         when(templateEngine.process(eq(templateName), eq(variables))).thenReturn(expectedHtml);
         // 执行测试
-        boolean isSend = emailManager.sendTemplateEmail(toList, subject, templateName, variables);
+        boolean isSend = mailManager.sendTemplateEmail(toList, subject, templateName, variables);
         assert isSend;
     }
 
     @SneakyThrows
     @Test
     public void test4() {
-        CompletableFuture<Boolean> async = emailManager.sendEmailAsync(toList, "异步短信", "测试异步发送短信");
+        CompletableFuture<Boolean> async = mailManager.sendEmailAsync(toList, "异步短信", "测试异步发送短信");
         assert async.get();
 
         log(async.get());

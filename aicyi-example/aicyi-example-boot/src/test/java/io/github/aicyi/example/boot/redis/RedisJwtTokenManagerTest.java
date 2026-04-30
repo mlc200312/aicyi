@@ -4,7 +4,7 @@ import io.github.aicyi.commons.core.jwt.JWTInfo;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.core.token.TokenManager;
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.commons.core.token.DefaultTokenConfig;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.test.util.BaseLoggerTest;
@@ -56,7 +56,7 @@ public class RedisJwtTokenManagerTest extends BaseLoggerTest {
 
     @Test
     public void test() {
-        jwtInfo.setDeviceId(IdGenerator.generateV7Id());
+        jwtInfo.setDeviceId(IdUtils.generateV7Id());
         HashMap<String, Object> claims = new HashMap<>();
         String mobile = RandomGenerator.generatePhoneNum();
         claims.put("testMobile", mobile);

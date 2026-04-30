@@ -3,7 +3,7 @@ package io.github.aicyi.example.domain;
 import io.github.aicyi.commons.core.jwt.JWTInfo;
 import io.github.aicyi.commons.lang.IJWTInfo;
 import io.github.aicyi.commons.util.MapperUtils;
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.example.domain.entity.base.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +20,7 @@ public class UserInfo extends JWTInfo {
     private String mobile;
 
     public static UserInfo of(User user) {
-        IJWTInfo jwtInfo = new JWTInfo(String.valueOf(user.getId()), user.getUsername(), IdGenerator.generateV7Id());
+        IJWTInfo jwtInfo = new JWTInfo(String.valueOf(user.getId()), user.getUsername(), IdUtils.generateV7Id());
         UserInfo userInfo = MapperUtils.getInstance().map(jwtInfo, UserInfo.class);
         userInfo.setNickname(user.getNickname());
         userInfo.setMobile(user.getMobile());

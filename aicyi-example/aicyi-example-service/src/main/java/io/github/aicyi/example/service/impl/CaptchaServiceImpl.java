@@ -9,7 +9,7 @@ import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.CaptchaUtils;
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.example.domain.SendCaptchaParam;
 import io.github.aicyi.example.domain.constants.Constants;
 import io.github.aicyi.example.domain.entity.base.User;
@@ -48,7 +48,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     public String saveCaptcha() {
         // 生成验证码
         String captcha = CaptchaUtils.randomCaptcha();
-        String uuid = IdGenerator.generateV7Id();
+        String uuid = IdUtils.generateV7Id();
 
         // 缓存验证码
         String captchaKey = Constants.getCaptchaKey(uuid);
@@ -106,7 +106,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         // 生成验证码
         CaptchaType captchaType = param.getCaptchaType();
         String captcha = CaptchaUtils.randomCaptcha();
-        String uuid = IdGenerator.generateV7Id();
+        String uuid = IdUtils.generateV7Id();
 
         MessageContentParam messageContentParam = new MessageContentParam();
         messageContentParam.setCaptchaType(captchaType);

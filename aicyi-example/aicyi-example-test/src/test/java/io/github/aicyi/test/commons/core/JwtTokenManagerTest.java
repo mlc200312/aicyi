@@ -5,7 +5,7 @@ import io.github.aicyi.commons.core.token.DefaultTokenConfig;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.core.token.TokenManager;
 import io.github.aicyi.commons.core.jwt.JWTInfo;
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.test.util.BaseLoggerTest;
@@ -48,7 +48,7 @@ public class JwtTokenManagerTest extends BaseLoggerTest {
     @Test
     public void test() {
         userInfo.setId(null);
-        userInfo.setDeviceId(IdGenerator.generateV7Id());
+        userInfo.setDeviceId(IdUtils.generateV7Id());
         HashMap<String, Object> claims = new HashMap<>();
         String mobile = RandomGenerator.generatePhoneNum();
         claims.put("testMobile", mobile);

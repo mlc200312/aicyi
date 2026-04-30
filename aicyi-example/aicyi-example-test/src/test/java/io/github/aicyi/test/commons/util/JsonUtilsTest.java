@@ -3,7 +3,7 @@ package io.github.aicyi.test.commons.util;
 import io.github.aicyi.commons.core.jwt.JWTInfo;
 import io.github.aicyi.commons.lang.SmartJsonMapper;
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
 import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.commons.util.JsonUtils;
@@ -34,7 +34,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
         a = new A(new B(new C()));
         aList = Arrays.asList(a);
         aMap = new HashMap<>();
-        aMap.put(IdGenerator.generateV7Id(), a);
+        aMap.put(IdUtils.generateV7Id(), a);
     }
 
     @Test

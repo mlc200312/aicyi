@@ -15,7 +15,7 @@ import io.github.aicyi.example.domain.type.Season;
 import java.util.ArrayList;
 import java.util.Date;
 
-import io.github.aicyi.commons.util.id.IdGenerator;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.example.domain.type.GenderType;
 import io.github.aicyi.test.dto.ExampleResp;
@@ -48,20 +48,20 @@ public class DataSource {
         message.setCreateTime(System.currentTimeMillis());
         message.setMsgType("1");
         message.setContent(RandomGenerator.generatePhoneNum());
-        message.setMsgId(IdGenerator.generateId());
+        message.setMsgId(IdUtils.generateId());
         return message;
     }
 
     public static String getMessageXml() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<xml Content=\"" + RandomGenerator.generatePhoneNum() + "\" CreateTime=\"" + System.currentTimeMillis() + "\" FromUserName=\"" + RandomGenerator.generateFullName() + "\" MsgId=\"" + IdGenerator.generateId() + "\" MsgType=\"1\" ToUserName=\"" + RandomGenerator.generateFullName() + "\"/>";
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<xml Content=\"" + RandomGenerator.generatePhoneNum() + "\" CreateTime=\"" + System.currentTimeMillis() + "\" FromUserName=\"" + RandomGenerator.generateFullName() + "\" MsgId=\"" + IdUtils.generateId() + "\" MsgType=\"1\" ToUserName=\"" + RandomGenerator.generateFullName() + "\"/>";
     }
 
     public static UserBean getUser() {
         UserBean user = new UserBean();
-        user.setId(IdGenerator.generateId());
+        user.setId(IdUtils.generateId());
         user.setUserName(RandomGenerator.generateFullName());
         user.setAge(RandomUtils.nextInt(0, 100));
-        user.setIdCard(IdGenerator.generateV7Id());
+        user.setIdCard(IdUtils.generateV7Id());
         user.setMobile(RandomGenerator.generatePhoneNum());
         user.setGenderType(RandomGenerator.randomEnum(GenderType.class));
         user.setBirthday(LocalDate.now());
@@ -74,7 +74,7 @@ public class DataSource {
 
     public static StudentBean getStudent() {
         StudentBean student = MapperUtils.getInstance().map(getUser(), StudentBean.class);
-        student.setStudentId(IdGenerator.generateId());
+        student.setStudentId(IdUtils.generateId());
         student.setScore(randomBigDecimal().doubleValue());
         student.setGradeType(RandomGenerator.randomEnum(GradeType.class));
         student.setRegisterTime(LocalDateTime.now());
@@ -103,7 +103,7 @@ public class DataSource {
 
     public static ExampleBean getExample() {
         ExampleBean example = new ExampleBean();
-        example.setId(IdGenerator.generateId());
+        example.setId(IdUtils.generateId());
         example.setIdx(RandomUtils.nextInt(1, 99));
         example.setStatus(RandomGenerator.randomEnum(BooleanType.class));
         example.setAmount(randomBigDecimal());

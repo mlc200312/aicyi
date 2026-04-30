@@ -1,6 +1,6 @@
 package io.github.aicyi.example.consumer.config;
 
-import io.github.aicyi.commons.core.exception.MessageSendException;
+import io.github.aicyi.commons.core.message.MessageSendException;
 import io.github.aicyi.midware.web.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
