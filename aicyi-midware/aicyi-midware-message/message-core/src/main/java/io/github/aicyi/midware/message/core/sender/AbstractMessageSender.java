@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
  **/
 public abstract class AbstractMessageSender implements MessageSender {
 
-    protected Logger LOGGER = LoggerFactory.getLogger(getClass());
+    protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     @Override
     public MessageSendResult send(MessageContent content) {

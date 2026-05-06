@@ -14,10 +14,10 @@ import io.github.aicyi.midware.message.mail.model.MailMessage;
  * @date 2025/8/25
  **/
 public class EmailMessageSender extends AbstractMessageSender {
-    private final EmailSender EMailSender;
+    private final EmailSender emailSender;
 
-    public EmailMessageSender(EmailSender EMailSender) {
-        this.EMailSender = EMailSender;
+    public EmailMessageSender(EmailSender emailSender) {
+        this.emailSender = emailSender;
     }
 
 
@@ -47,7 +47,7 @@ public class EmailMessageSender extends AbstractMessageSender {
         MailMessage message = (MailMessage) content;
         // 调用实际的邮件发送服务
 
-        EMailSender.send(message.getToList(), message.getCcList(), message.getSubject(), message.getContent(), message.isHtml(), message.getAttachments());
+        emailSender.send(message.getToList(), message.getCcList(), message.getSubject(), message.getContent(), message.isHtml(), message.getAttachments());
 
         return MessageSendResult.success(message.getMessageId(), message.getBusinessId());
     }

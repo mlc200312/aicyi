@@ -45,12 +45,12 @@
             </dependency>
             <dependency>
                 <groupId>io.github.aicyi.midware</groupId>
-                <artifactId>aicyi-midware-db-commons</artifactId>
+                <artifactId>db-commons</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.github.aicyi.midware</groupId>
-                <artifactId>aicyi-midware-db-mybatisplus</artifactId>
+                <artifactId>db-mybatisplus</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>

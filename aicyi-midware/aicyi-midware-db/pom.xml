@@ -19,7 +19,7 @@
     </parent>
 
     <modules>
-        <module>aicyi-midware-db-commons</module>
-        <module>aicyi-midware-db-mybatisplus</module>
+        <module>db-commons</module>
+        <module>db-mybatisplus</module>
     </modules>
 </project>

@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.aicyi.midware</groupId>
-    <artifactId>aicyi-midware-db-mybatisplus</artifactId>
+    <artifactId>db-mybatisplus</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi midware db mybatisplus</name>
-    <description>aicyi midware db mybatisplus</description>
+    <name>db mybatisplus</name>
+    <description>db mybatisplus</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>
@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-db-commons</artifactId>
+            <artifactId>db-commons</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

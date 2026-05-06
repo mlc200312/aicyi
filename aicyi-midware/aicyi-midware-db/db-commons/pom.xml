@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.aicyi.midware</groupId>
-    <artifactId>aicyi-midware-db-commons</artifactId>
+    <artifactId>db-commons</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi midware db commons</name>
-    <description>aicyi midware db commons</description>
+    <name>db commons</name>
+    <description>db commons</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>

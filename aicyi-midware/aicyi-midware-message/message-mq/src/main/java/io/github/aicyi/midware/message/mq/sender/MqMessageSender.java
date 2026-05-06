@@ -44,13 +44,18 @@ public class MqMessageSender extends AbstractMessageSender {
 
         MqMessage message = (MqMessage) content;
 
+        boolean isSucc;
         // 调用实际的MQ发送服务
         if (message.isDelayed()) {
 
-            mqSender.sendDelayed(message.getDestination(), message.getContent(), message.getDelay());
+            isSucc = mqSender.sendDelayed(message.getDestination(), message.getContent(), message.getDelay());
         } else {
 
-            mqSender.send(message.getDestination(), message.getContent(), message.getProperties());
+            isSucc = mqSender.send(message.getDestination(), message.getContent(), message.getProperties());
+        }
+
+        if (!isSucc) {
+            throw new MessageSendException("UNKNOWN_ERROR", "发送MQ消息失败");
         }
 
         return MessageSendResult.success(message.getMessageId(), message.getBusinessId());

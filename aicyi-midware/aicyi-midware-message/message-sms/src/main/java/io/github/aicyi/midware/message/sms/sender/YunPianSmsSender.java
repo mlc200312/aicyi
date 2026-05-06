@@ -3,6 +3,7 @@ package io.github.aicyi.midware.message.sms.sender;
 import com.yunpian.sdk.YunpianClient;
 import com.yunpian.sdk.model.Result;
 import io.github.aicyi.commons.util.Maps;
+import io.github.aicyi.midware.message.core.exception.MessageSendException;
 
 import javax.annotation.PreDestroy;
 import java.util.HashMap;
@@ -38,7 +39,11 @@ public class YunPianSmsSender extends AbstractSmsSender {
         // 发送短信
         Result result = client.sms().single_send(param);
 
-        return result.isSucc();
+        if (!result.isSucc()) {
+            throw new MessageSendException("UNKNOWN_ERROR", "短信发送失败：" + result.getMsg());
+        }
+
+        return true;
     }
 
     @PreDestroy

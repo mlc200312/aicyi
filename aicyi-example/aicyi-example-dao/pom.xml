@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-db-commons</artifactId>
+            <artifactId>db-commons</artifactId>
         </dependency>
 
         <dependency>

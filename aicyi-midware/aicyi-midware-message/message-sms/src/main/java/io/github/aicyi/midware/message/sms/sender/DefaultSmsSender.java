@@ -3,9 +3,7 @@ package io.github.aicyi.midware.message.sms.sender;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.midware.message.sms.model.Carrier;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Mr.Min
@@ -14,20 +12,27 @@ import java.util.Map;
  **/
 public class DefaultSmsSender extends AbstractSmsSender {
 
-    private EmailSender EMailSender;
+    private EmailSender emailSender;
 
-    public DefaultSmsSender(EmailSender EMailSender, Map<String, String> template) {
+    public DefaultSmsSender(EmailSender emailSender, Map<String, String> template) {
         super(template);
-        this.EMailSender = EMailSender;
+        this.emailSender = emailSender;
     }
 
-    public DefaultSmsSender(EmailSender EMailSender) {
+    public DefaultSmsSender(EmailSender emailSender) {
         super(new HashMap<>());
-        this.EMailSender = EMailSender;
+        this.emailSender = emailSender;
     }
 
     @Override
     public boolean send(String phoneNumber, String messageContent, String signName) {
-        return EMailSender.sendText(Arrays.asList(phoneNumber + Carrier.CHINA_MOBILE.getGatewayDomain()), "Notification", messageContent);
+        Carrier[] values = Carrier.values();
+
+        List<String> phoneNumbers = new ArrayList<>();
+        for (Carrier carrier : values) {
+            phoneNumbers.add(phoneNumber + carrier.getGatewayDomain());
+        }
+
+        return emailSender.sendText(phoneNumbers, "Notification", messageContent);
     }
 }

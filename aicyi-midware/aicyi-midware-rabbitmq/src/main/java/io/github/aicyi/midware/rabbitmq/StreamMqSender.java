@@ -41,11 +41,17 @@ public class StreamMqSender implements MqSender {
                     .copyHeaders(headers)
                     .build();
 
-            return streamBridge.send(channel, springMessage);
+            boolean isSucc = streamBridge.send(channel, springMessage);
+
+            if (!isSucc) {
+                throw new MessageSendException("UNKNOWN_ERROR", "发送MQ消息失败");
+            }
+
         } catch (Exception e) {
             LOGGER.error(e, "发送MQ消息失败 - destination: {}, properties: {}", channel, headers);
             throw new MessageSendException("发送MQ消息失败:" + e.getMessage(), e);
         }
+        return true;
     }
 
     @Override
