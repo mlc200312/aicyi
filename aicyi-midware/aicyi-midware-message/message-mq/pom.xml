@@ -5,19 +5,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.aicyi.midware</groupId>
-    <artifactId>aicyi-midware-kit</artifactId>
+    <artifactId>message-mq</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi midware kit</name>
-    <description>aicyi midware kit</description>
+    <name>message rabbitmq</name>
+    <description>message rabbitmq</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>
-        <artifactId>aicyi-midware</artifactId>
+        <artifactId>aicyi-midware-message</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>message-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

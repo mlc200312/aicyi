@@ -1,10 +1,10 @@
 package io.github.aicyi.midware.rabbitmq;
 
-import io.github.aicyi.commons.core.message.MessageSendException;
+import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.Maps;
-import io.github.aicyi.midware.message.mq.MqSender;
+import io.github.aicyi.midware.message.mq.sender.MqSender;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;

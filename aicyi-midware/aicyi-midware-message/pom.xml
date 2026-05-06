@@ -8,7 +8,7 @@
     <artifactId>aicyi-midware-message</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>aicyi midware message</name>
     <description>aicyi midware message</description>
 
@@ -18,35 +18,11 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-        </dependency>
-
-        <!-- FreeMarker 模板引擎 -->
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!--其中spring-boot-configuration-processor的作用是编译时生成spring-configuration-metadata.json，此文件主要给IDE使用。如当配置此jar相关配置属性在application.yml，你可以用ctlr+鼠标左键点击属性名，IDE会跳转到你配置此属性的类中。-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>message-core</module>
+        <module>message-mail</module>
+        <module>message-mq</module>
+        <module>message-sms</module>
+        <module>message-spring-boot-starter</module>
+    </modules>
 </project>

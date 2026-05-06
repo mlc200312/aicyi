@@ -5,35 +5,54 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.aicyi.midware</groupId>
-    <artifactId>aicyi-midware-autoconfigure</artifactId>
+    <artifactId>message-spring-boot-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi midware autoconfigure</name>
-    <description>aicyi midware autoconfigure</description>
+    <name>message spring boot starter</name>
+    <description>message spring boot starter</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>
-        <artifactId>aicyi-midware</artifactId>
+        <artifactId>aicyi-midware-message</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>message-spring-boot-starter</artifactId>
+            <artifactId>message-mail</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-redis</artifactId>
+            <artifactId>message-mq</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>message-sms</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-rabbitmq</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-kit</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <optional>true</optional>
+            <artifactId>spring-boot-starter</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!--其中spring-boot-configuration-processor的作用是编译时生成spring-configuration-metadata.json，此文件主要给IDE使用。如当配置此jar相关配置属性在application.yml，你可以用ctlr+鼠标左键点击属性名，IDE会跳转到你配置此属性的类中。-->

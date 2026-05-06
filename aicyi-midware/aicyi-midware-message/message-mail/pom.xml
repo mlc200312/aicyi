@@ -5,41 +5,39 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.aicyi.midware</groupId>
-    <artifactId>aicyi-midware-rabbitmq</artifactId>
+    <artifactId>message-mail</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>aicyi midware rabbitmq</name>
-    <description>aicyi midware rabbitmq</description>
+    <name>message mail</name>
+    <description>message mail</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>
-        <artifactId>aicyi-midware</artifactId>
+        <artifactId>aicyi-midware-message</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>message-mq</artifactId>
+            <artifactId>message-core</artifactId>
         </dependency>
 
-        <!-- Spring Cloud Stream 核心 -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream</artifactId>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
         </dependency>
 
-        <!-- RabbitMQ Binder -->
+        <!-- FreeMarker 模板引擎 -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
         </dependency>
 
-        <!-- Spring Boot Starter for AMQP (可选，提供额外RabbitMQ支持) -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
         </dependency>
     </dependencies>
 </project>
