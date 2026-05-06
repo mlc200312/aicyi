@@ -1,7 +1,7 @@
 package io.github.aicyi.example.boot.message;
 
 import io.github.aicyi.example.boot.AicyiExampleApplication;
-import io.github.aicyi.midware.message.sms.SmsSender;
+import io.github.aicyi.midware.message.sms.sender.SmsSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import lombok.SneakyThrows;
 import org.junit.Before;

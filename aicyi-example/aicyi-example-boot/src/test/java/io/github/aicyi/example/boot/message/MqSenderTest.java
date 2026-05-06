@@ -3,7 +3,7 @@ package io.github.aicyi.example.boot.message;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.service.channel.MessageChannels;
-import io.github.aicyi.midware.message.mq.MqSender;
+import io.github.aicyi.midware.message.mq.sender.MqSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.DataSource;
 import io.jsonwebtoken.lang.Maps;
@@ -45,7 +45,6 @@ public class MqSenderTest extends BaseLoggerTest {
 
     @Override
     public void beforeTest() {
-
     }
 
     @Test

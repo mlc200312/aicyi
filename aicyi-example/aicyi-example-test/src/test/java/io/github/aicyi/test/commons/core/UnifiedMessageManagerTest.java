@@ -1,12 +1,18 @@
 package io.github.aicyi.test.commons.core;
 
-import io.github.aicyi.commons.core.message.*;
 import io.github.aicyi.commons.util.id.IdUtils;
-import io.github.aicyi.midware.kit.TwilioSmsSender;
-import io.github.aicyi.midware.message.sms.SmsSender;
-import io.github.aicyi.midware.message.sms.SmsMessageSender;
+import io.github.aicyi.midware.message.sms.sender.TwilioSmsSender;
+import io.github.aicyi.midware.message.core.model.MessageType;
+import io.github.aicyi.midware.message.core.model.MessageSendResult;
+import io.github.aicyi.midware.message.core.sender.DefaultUnifiedMessageManager;
+import io.github.aicyi.midware.message.core.sender.MessageSendCallback;
+import io.github.aicyi.midware.message.core.sender.MessageSenderFactory;
+import io.github.aicyi.midware.message.core.sender.UnifiedMessageManager;
+import io.github.aicyi.midware.message.factory.DefaultMessageSenderFactory;
+import io.github.aicyi.midware.message.sms.sender.SmsSender;
+import io.github.aicyi.midware.message.sms.sender.SmsMessageSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
-import io.github.aicyi.midware.message.sms.SmsMessage;
+import io.github.aicyi.midware.message.sms.model.SmsMessage;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +51,7 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
     public void test() {
         SmsMessage smsMessage = SmsMessage.withContent("TEST SEND SMS", Arrays.asList("15910436675"), "TEST");
         smsMessage.setBusinessId(IdUtils.generateV7Id());
-        SendResult result = unifiedMessageManager.send(smsMessage);
+        MessageSendResult result = unifiedMessageManager.send(smsMessage);
 
         log(result);
     }
@@ -56,9 +62,9 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
         SmsMessage smsMessage = SmsMessage.of("test_template", "+8615910436675", new HashMap<>(), "TEST");
-        unifiedMessageManager.sendAsync(smsMessage, new SendCallback() {
+        unifiedMessageManager.sendAsync(smsMessage, new MessageSendCallback() {
             @Override
-            public void onComplete(SendResult result) {
+            public void onComplete(MessageSendResult result) {
                 log("短信发送完成：" + result);
                 countDownLatch.countDown();
             }
