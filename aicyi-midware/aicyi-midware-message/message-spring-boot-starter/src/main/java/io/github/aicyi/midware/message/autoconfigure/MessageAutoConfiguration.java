@@ -16,6 +16,7 @@ import io.github.aicyi.midware.message.mq.sender.MqMessageSender;
 import io.github.aicyi.midware.message.sms.sender.SmsMessageSender;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ import java.util.Optional;
  * @description Message配置自动注入
  * @date 18:10
  **/
+@AutoConfiguration
 @EnableConfigurationProperties({MessageProperties.class})
 public class MessageAutoConfiguration implements InitializingBean {
 

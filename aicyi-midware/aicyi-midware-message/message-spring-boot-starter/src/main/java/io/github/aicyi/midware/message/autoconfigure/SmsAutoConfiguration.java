@@ -1,5 +1,7 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
+import io.github.aicyi.midware.message.core.template.TemplateProvider;
+import io.github.aicyi.midware.message.sms.template.TemplateRender;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.midware.message.sms.sender.TwilioSmsSender;
 import io.github.aicyi.midware.message.properties.MessageProperties;
@@ -7,11 +9,12 @@ import io.github.aicyi.midware.message.sms.sender.DefaultSmsSender;
 import io.github.aicyi.midware.message.sms.sender.SmsSender;
 import io.github.aicyi.midware.message.sms.sender.YunPianSmsSender;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
+@AutoConfiguration
 @ConditionalOnProperty(
         prefix = "aicyi.message.sms",
         name = "enabled",
@@ -20,8 +23,16 @@ public class SmsAutoConfiguration {
 
     private final EmailSender emailSender;
 
-    public SmsAutoConfiguration(@Autowired(required = false) EmailSender emailSender) {
+    private final TemplateRender templateRender;
+
+    private final TemplateProvider templateProvider;
+
+    public SmsAutoConfiguration(@Autowired(required = false) EmailSender emailSender,
+                                @Autowired(required = false) TemplateRender templateRender,
+                                @Autowired(required = false) TemplateProvider templateProvider) {
         this.emailSender = emailSender;
+        this.templateRender = templateRender;
+        this.templateProvider = templateProvider;
     }
 
     @Bean
@@ -30,9 +41,8 @@ public class SmsAutoConfiguration {
             prefix = "aicyi.message.sms",
             name = "provider",
             havingValue = "default")
-    @ConditionalOnBean(EmailSender.class)
     public SmsSender defaultSmsSender() {
-        return new DefaultSmsSender(emailSender);
+        return new DefaultSmsSender(emailSender, templateProvider);
     }
 
     @Bean
@@ -43,7 +53,7 @@ public class SmsAutoConfiguration {
             havingValue = "twilio")
     public SmsSender twilioSmsSender(MessageProperties messageProperties) {
         MessageProperties.SmsProperties smsProperties = messageProperties.getSms();
-        return new TwilioSmsSender(smsProperties.getUsername(), smsProperties.getPassword(), smsProperties.getFrom());
+        return new TwilioSmsSender(smsProperties.getUsername(), smsProperties.getPassword(), smsProperties.getFrom(), templateProvider);
     }
 
     @Bean

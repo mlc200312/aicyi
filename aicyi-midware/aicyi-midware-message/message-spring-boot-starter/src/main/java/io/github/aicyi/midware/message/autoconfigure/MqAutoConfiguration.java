@@ -4,6 +4,7 @@ import io.github.aicyi.midware.message.mq.sender.MqSender;
 import io.github.aicyi.midware.message.properties.MessageProperties;
 import io.github.aicyi.midware.rabbitmq.StreamMqSender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -11,6 +12,7 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@AutoConfiguration
 @ConditionalOnProperty(
         prefix = "aicyi.message.mq",
         name = "enabled",

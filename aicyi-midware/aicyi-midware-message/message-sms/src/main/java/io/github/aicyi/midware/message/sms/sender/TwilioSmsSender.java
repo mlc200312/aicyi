@@ -1,15 +1,13 @@
 package io.github.aicyi.midware.message.sms.sender;
 
+import io.github.aicyi.commons.lang.JsonCodec;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import com.twilio.Twilio;
 import com.twilio.exception.ApiException;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;
 import com.twilio.type.PhoneNumber;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executors;
+import io.github.aicyi.midware.message.core.template.TemplateProvider;
 
 /**
  * @author Mr.Min
@@ -20,16 +18,12 @@ public class TwilioSmsSender extends AbstractSmsSender {
 
     private final String twilioNumber;
 
-    public TwilioSmsSender(String accountSid, String authToken, String twilioNumber, Map<String, String> template) {
-        super(Executors.newFixedThreadPool(5), template);
+    public TwilioSmsSender(String accountSid, String authToken, String twilioNumber, TemplateProvider templateProvider) {
+        super(templateProvider);
         this.twilioNumber = twilioNumber;
 
         // 初始化Twilio客户端
         Twilio.init(accountSid, authToken);
-    }
-
-    public TwilioSmsSender(String accountSid, String authToken, String twilioNumber) {
-        this(accountSid, authToken, twilioNumber, new HashMap<>());
     }
 
     @Override

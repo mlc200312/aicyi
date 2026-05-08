@@ -15,11 +15,11 @@ public interface SmsSender {
      *
      * @param phoneNumber
      * @param messageContent
-     * @param signName
+     * @param sign
      * @return
      * @
      */
-    boolean send(String phoneNumber, String messageContent, String signName);
+    boolean send(String phoneNumber, String messageContent, String sign);
 
     /**
      * 发送模板短信
@@ -27,32 +27,30 @@ public interface SmsSender {
      * @param phoneNumber
      * @param templateId
      * @param templateParams
-     * @param signName
+     * @param sign
      * @return
-     * @
      */
-    boolean sendTemplate(String phoneNumber, String templateId, Map<String, String> templateParams, String signName);
+    boolean sendTemplate(String phoneNumber, String templateId, Map<String, String> templateParams, String sign);
 
     /**
      * 异步发送短信
      *
      * @param phoneNumbers
      * @param messageContent
-     * @param signName
+     * @param sign
      * @return
      * @
      */
-    CompletableFuture<Boolean> sendAsync(List<String> phoneNumbers, String messageContent, String signName);
+    CompletableFuture<Boolean> sendAsync(List<String> phoneNumbers, String messageContent, String sign);
 
     /**
      * 异步发送短信
      *
-     * @param phoneNumber
+     * @param phoneNumbers
      * @param templateId
-     * @param templateVariables
-     * @param signName
+     * @param templateParams
+     * @param sign
      * @return
-     * @
      */
-    CompletableFuture<Boolean> sendTemplateAsync(List<String> phoneNumber, String templateId, Map<String, String> templateVariables, String signName);
+    CompletableFuture<Boolean> sendTemplateAsync(List<String> phoneNumbers, String templateId, Map<String, String> templateParams, String sign);
 }

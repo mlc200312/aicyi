@@ -18,17 +18,13 @@ public class YunPianSmsSender extends AbstractSmsSender {
 
     private YunpianClient client;
 
-    public YunPianSmsSender(String apikey, Map<String, String> template) {
-        super(template);
+    public YunPianSmsSender(String apikey) {
+        super();
         this.client = new YunpianClient(apikey).init();
     }
 
-    public YunPianSmsSender(String apikey) {
-        this(apikey, new HashMap<>());
-    }
-
     @Override
-    public boolean send(String phoneNumber, String messageContent, String signName) {
+    public boolean send(String phoneNumber, String messageContent, String sign) {
 
         // 构建参数
         Map param = Maps

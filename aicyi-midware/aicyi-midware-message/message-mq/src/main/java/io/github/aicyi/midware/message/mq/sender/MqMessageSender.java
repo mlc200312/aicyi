@@ -38,9 +38,6 @@ public class MqMessageSender extends AbstractMessageSender {
 
     @Override
     protected MessageSendResult doSend(MessageContent content) throws MessageSendException {
-        if (!(content instanceof MqMessage)) {
-            throw new IllegalArgumentException("不支持的消息类型");
-        }
 
         MqMessage message = (MqMessage) content;
 

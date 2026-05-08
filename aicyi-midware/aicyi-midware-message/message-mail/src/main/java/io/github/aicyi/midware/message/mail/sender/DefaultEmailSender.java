@@ -7,7 +7,6 @@ import io.github.aicyi.midware.message.mail.model.MailAttachment;
 import io.github.aicyi.midware.message.mail.model.MailConfig;
 import io.github.aicyi.midware.message.mail.template.FreeMarkerTemplateEngine;
 import io.github.aicyi.midware.message.mail.template.TemplateEngine;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.*;
@@ -86,7 +85,7 @@ public class DefaultEmailSender implements EmailSender {
     }
 
     @Override
-    public boolean sendTemplate(List<String> toRecipients, String subject, String templateName, Map<String, Object> templateVariables) {
+    public boolean sendTemplate(List<String> toRecipients, String subject, String templateName, Map<String, Object> templateParams) {
         if (templateEngine == null) {
             LOGGER.error("未配置模板引擎，无法发送模板邮件");
             return false;
@@ -94,7 +93,7 @@ public class DefaultEmailSender implements EmailSender {
 
         try {
             // 渲染模板
-            String body = templateEngine.process(templateName, templateVariables);
+            String body = templateEngine.process(templateName, templateParams);
             return sendHtml(toRecipients, subject, body);
         } catch (Exception e) {
             LOGGER.error(e, "发送模板邮件失败 - 收件人: {}, 模板: {}", toRecipients, templateName);
@@ -166,7 +165,7 @@ public class DefaultEmailSender implements EmailSender {
         messageHelper.setTo(toRecipients.toArray(new String[toRecipients.size()]));
 
         // 设置抄送人
-        if (CollectionUtils.isNotEmpty(ccRecipients)) {
+        if (ccRecipients != null && !ccRecipients.isEmpty()) {
             messageHelper.setCc(ccRecipients.toArray(new String[ccRecipients.size()]));
         }
 

@@ -68,10 +68,10 @@ public interface EmailSender {
      * @param toRecipients
      * @param subject
      * @param templateId
-     * @param templateVariables
+     * @param templateParams
      * @return
      */
-    boolean sendTemplate(List<String> toRecipients, String subject, String templateId, Map<String, Object> templateVariables);
+    boolean sendTemplate(List<String> toRecipients, String subject, String templateId, Map<String, Object> templateParams);
 
     /**
      * 异步发送邮件

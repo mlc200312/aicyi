@@ -5,10 +5,12 @@ import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.midware.message.mail.template.FreeMarkerTemplateEngine;
 import io.github.aicyi.midware.message.mail.model.MailConfig;
 import io.github.aicyi.midware.message.properties.MessageProperties;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
+@AutoConfiguration
 @ConditionalOnProperty(
         prefix = "aicyi.message.email",
         name = "enabled",

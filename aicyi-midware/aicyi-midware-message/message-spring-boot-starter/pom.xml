@@ -21,6 +21,18 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>db-mybatisplus</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-kit</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
             <artifactId>message-mail</artifactId>
             <optional>true</optional>
         </dependency>
@@ -45,8 +57,13 @@
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-kit</artifactId>
+            <artifactId>aicyi-midware-redis</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
         </dependency>
 
         <dependency>

@@ -40,9 +40,6 @@ public class EmailMessageSender extends AbstractMessageSender {
 
     @Override
     protected MessageSendResult doSend(MessageContent content) throws MessageSendException {
-        if (!(content instanceof MailMessage)) {
-            throw new IllegalArgumentException("不支持的消息类型");
-        }
 
         MailMessage message = (MailMessage) content;
         // 调用实际的邮件发送服务

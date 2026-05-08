@@ -14,7 +14,7 @@ import io.github.aicyi.midware.message.sms.model.SmsMessage;
  * @date 2025/8/25
  **/
 public class SmsMessageSender extends AbstractMessageSender {
-    private SmsSender smsSender; // 假设的邮件服务
+    private final SmsSender smsSender; // 邮件服务
 
     public SmsMessageSender(SmsSender smsSender) {
         this.smsSender = smsSender;
@@ -39,18 +39,15 @@ public class SmsMessageSender extends AbstractMessageSender {
 
     @Override
     protected MessageSendResult doSend(MessageContent content) throws MessageSendException {
-        if (!(content instanceof SmsMessage)) {
-            throw new IllegalArgumentException("不支持的消息类型");
-        }
 
         SmsMessage message = (SmsMessage) content;
 
         // 调用实际的短信发送服务
         message.getPhoneNumbers().forEach(number -> {
             if (message.isContentMessage()) {
-                smsSender.send(number, message.getContent(), message.getSignName());
+                smsSender.send(number, message.getContent(), message.getSign());
             } else {
-                smsSender.sendTemplate(number, message.getTemplateId(), message.getTemplateParams(), message.getSignName());
+                smsSender.sendTemplate(number, message.getTemplateId(), message.getTemplateParams(), message.getSign());
             }
         });
 

@@ -83,7 +83,7 @@ public class RedisCacheManager<T> implements CacheManager<String, T> {
         List<T> values = redisTemplate.opsForValue().multiGet(keyList);
         return IntStream
                 .range(0, keys.size())
-                .filter(i -> Objects.nonNull(values.get(i)))
+                .filter(i -> values.get(i) != null)
                 .boxed()
                 .collect(Collectors.toMap(keyList::get, values::get));
     }

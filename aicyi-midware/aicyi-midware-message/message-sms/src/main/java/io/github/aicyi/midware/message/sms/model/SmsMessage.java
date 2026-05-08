@@ -17,7 +17,7 @@ public class SmsMessage extends AbstractMessage<String> {
     private final List<String> phoneNumbers; // 手机号列表
     private final String templateId; // 短信模板ID
     private final Map<String, String> templateParams; // 模板参数
-    private final String signName; // 短信签名
+    private final String sign; // 短信签名
 
     // 私有构造函数，只能通过Builder创建
     private SmsMessage(Builder builder) {
@@ -25,7 +25,7 @@ public class SmsMessage extends AbstractMessage<String> {
         this.phoneNumbers = builder.phoneNumbers;
         this.templateId = builder.templateId;
         this.templateParams = builder.templateParams;
-        this.signName = builder.signName;
+        this.sign = builder.sign;
     }
 
     // Getter 方法
@@ -41,8 +41,8 @@ public class SmsMessage extends AbstractMessage<String> {
         return templateParams;
     }
 
-    public String getSignName() {
-        return signName;
+    public String getSign() {
+        return sign;
     }
 
     /**
@@ -53,7 +53,7 @@ public class SmsMessage extends AbstractMessage<String> {
         private List<String> phoneNumbers = new ArrayList<>();
         private String templateId;
         private Map<String, String> templateParams = new HashMap<>();
-        private String signName;
+        private String sign;
 
         public Builder() {
             // 空构造
@@ -97,8 +97,8 @@ public class SmsMessage extends AbstractMessage<String> {
             return this;
         }
 
-        public Builder signName(String signName) {
-            this.signName = signName;
+        public Builder sign(String sign) {
+            this.sign = sign;
             return this;
         }
 
@@ -115,7 +115,7 @@ public class SmsMessage extends AbstractMessage<String> {
             if (content == null && (templateId == null || templateId.trim().isEmpty())) {
                 throw new IllegalArgumentException("短信内容或者短信模板ID不能为空");
             }
-            if (signName == null || signName.trim().isEmpty()) {
+            if (sign == null || sign.trim().isEmpty()) {
                 throw new IllegalArgumentException("短信签名不能为空");
             }
 
@@ -141,12 +141,12 @@ public class SmsMessage extends AbstractMessage<String> {
      * 快速创建方法（使用模板参数）
      */
     public static SmsMessage of(String templateId, List<String> phoneNumbers,
-                                Map<String, String> templateParams, String signName) {
+                                Map<String, String> templateParams, String sign) {
         return builder()
                 .templateId(templateId)
                 .phoneNumbers(phoneNumbers)
                 .templateParams(templateParams)
-                .signName(signName)
+                .sign(sign)
                 .build();
     }
 
@@ -154,34 +154,34 @@ public class SmsMessage extends AbstractMessage<String> {
      * 快速创建方法（单手机号）
      */
     public static SmsMessage of(String templateId, String phoneNumber,
-                                Map<String, String> templateParams, String signName) {
+                                Map<String, String> templateParams, String sign) {
         return builder()
                 .templateId(templateId)
                 .phoneNumber(phoneNumber)
                 .templateParams(templateParams)
-                .signName(signName)
+                .sign(sign)
                 .build();
     }
 
     /**
      * 快速创建方法（直接内容，不使用模板）
      */
-    public static SmsMessage withContent(String content, List<String> phoneNumbers, String signName) {
+    public static SmsMessage withContent(String content, List<String> phoneNumbers, String sign) {
         return builder()
                 .content(content)
                 .phoneNumbers(phoneNumbers)
-                .signName(signName)
+                .sign(sign)
                 .build();
     }
 
     /**
      * 快速创建方法（直接内容，不使用模板）
      */
-    public static SmsMessage withContent(String content, String phoneNumber, String signName) {
+    public static SmsMessage withContent(String content, String phoneNumber, String sign) {
         return builder()
                 .content(content)
                 .phoneNumber(phoneNumber)
-                .signName(signName)
+                .sign(sign)
                 .build();
     }
 
@@ -191,7 +191,7 @@ public class SmsMessage extends AbstractMessage<String> {
     public boolean isValid() {
         return !phoneNumbers.isEmpty() &&
                 (isTemplateMessage() || isContentMessage()) &&
-                signName != null && !signName.trim().isEmpty();
+                sign != null && !sign.trim().isEmpty();
     }
 
     /**

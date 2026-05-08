@@ -1,5 +1,6 @@
 package io.github.aicyi.midware.message.sms.sender;
 
+import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.midware.message.sms.model.Carrier;
 
@@ -14,18 +15,13 @@ public class DefaultSmsSender extends AbstractSmsSender {
 
     private EmailSender emailSender;
 
-    public DefaultSmsSender(EmailSender emailSender, Map<String, String> template) {
-        super(template);
-        this.emailSender = emailSender;
-    }
-
-    public DefaultSmsSender(EmailSender emailSender) {
-        super(new HashMap<>());
+    public DefaultSmsSender(EmailSender emailSender, TemplateProvider templateProvider) {
+        super(templateProvider);
         this.emailSender = emailSender;
     }
 
     @Override
-    public boolean send(String phoneNumber, String messageContent, String signName) {
+    public boolean send(String phoneNumber, String messageContent, String sign) {
         Carrier[] values = Carrier.values();
 
         List<String> phoneNumbers = new ArrayList<>();
