@@ -3,9 +3,6 @@ package io.github.aicyi.commons.util.orikamapper;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -24,7 +21,7 @@ public class String2LongMapperConverter extends BidirectionalConverter<String, L
 
     @Override
     public String convertFrom(Long var1, Type<String> type, MappingContext mappingContext) {
-        if (Objects.isNull(var1)) {
+        if (var1 == null) {
             return null;
         }
         return String.valueOf(var1);

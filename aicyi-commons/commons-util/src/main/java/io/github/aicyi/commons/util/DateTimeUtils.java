@@ -61,7 +61,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDateTime toLDateTime(Date date) {
-        if (Objects.isNull(date)) {
+        if (date == null) {
             return null;
         }
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
@@ -74,7 +74,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDateTime toLDateTime(LocalDate date) {
-        if (Objects.isNull(date)) {
+        if (date == null) {
             return null;
         }
         return LocalDateTime.of(date, LocalTime.parse("00:00:00"));
@@ -88,7 +88,7 @@ public class DateTimeUtils {
      * @return
      */
     public static String formatLDateTime(LocalDateTime dateTime, String pattern) {
-        if (Objects.isNull(dateTime)) {
+        if (dateTime == null) {
             return null;
         }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
@@ -112,7 +112,7 @@ public class DateTimeUtils {
      * @return
      */
     public static Long toLong(LocalDateTime dateTime) {
-        if (Objects.isNull(dateTime)) {
+        if (dateTime == null) {
             return null;
         }
         return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
@@ -125,7 +125,7 @@ public class DateTimeUtils {
      * @return
      */
     public static Date toDate(LocalDateTime dateTime) {
-        if (Objects.isNull(dateTime)) {
+        if (dateTime == null) {
             return null;
         }
         return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());

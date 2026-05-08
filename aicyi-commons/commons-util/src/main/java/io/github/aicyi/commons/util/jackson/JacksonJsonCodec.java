@@ -7,11 +7,10 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.aicyi.commons.lang.EnumType;
-import io.github.aicyi.commons.lang.SmartJsonMapper;
+import io.github.aicyi.commons.lang.JsonCodec;
 import io.github.aicyi.commons.lang.StringEnumType;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -23,17 +22,17 @@ import java.util.TimeZone;
  * @description 默认的JSON映射器
  * @date 2019-05-22
  */
-public final class JacksonJsonMapper implements SmartJsonMapper {
+public final class JacksonJsonCodec implements JsonCodec {
 
-    public static final JacksonJsonMapper DEFAULT = new JacksonJsonMapper().enableLenientMode();
+    public static final JacksonJsonCodec DEFAULT = new JacksonJsonCodec().enableLenientMode();
 
     private final ObjectMapper objectMapper;
 
-    public JacksonJsonMapper() {
+    public JacksonJsonCodec() {
         this(JsonInclude.Include.NON_NULL);
     }
 
-    public JacksonJsonMapper(JsonInclude.Include include) {
+    public JacksonJsonCodec(JsonInclude.Include include) {
         this.objectMapper = new ObjectMapper();
 
         objectMapper.setSerializationInclusion(include);
@@ -64,7 +63,7 @@ public final class JacksonJsonMapper implements SmartJsonMapper {
         );
     }
 
-    public JacksonJsonMapper enableLenientMode() {
+    public JacksonJsonCodec enableLenientMode() {
         objectMapper.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
         objectMapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES);
         objectMapper.enable(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
@@ -73,12 +72,12 @@ public final class JacksonJsonMapper implements SmartJsonMapper {
     }
 
     @Override
-    public <T extends Serializable> JavaType constructType(Class<T> clazz) {
-        return objectMapper.getTypeFactory().constructType(clazz);
+    public JavaType createType(Class<?> type) {
+        return objectMapper.getTypeFactory().constructType(type);
     }
 
     @Override
-    public JavaType constructParametricType(Class<?> rawType, Type... parameterTypes) {
+    public JavaType createParameterizedType(Class<?> rawType, Type... parameterTypes) {
         JavaType[] javaTypes = Arrays.stream(parameterTypes)
                 .map(type -> objectMapper.getTypeFactory().constructType(type))
                 .toArray(JavaType[]::new);
@@ -121,7 +120,7 @@ public final class JacksonJsonMapper implements SmartJsonMapper {
     }
 
     @Override
-    public <T> T parse(String json, Type type) {
+    public <T> T fromJson(String json, Type type) {
         return fromJson(json, objectMapper.getTypeFactory().constructType(type));
     }
 }

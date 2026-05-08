@@ -7,7 +7,6 @@ import ma.glasnost.orika.metadata.Type;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -18,7 +17,7 @@ public class Timestamp2LocalDateTimeMapperConverter extends BidirectionalConvert
 
     @Override
     public LocalDateTime convertTo(Timestamp timestamp, Type<LocalDateTime> type, MappingContext mappingContext) {
-        if (Objects.isNull(timestamp)) {
+        if (timestamp == null) {
             return null;
         }
         return timestamp.toLocalDateTime();
@@ -26,7 +25,7 @@ public class Timestamp2LocalDateTimeMapperConverter extends BidirectionalConvert
 
     @Override
     public Timestamp convertFrom(LocalDateTime dateTime, Type<Timestamp> type, MappingContext mappingContext) {
-        if (Objects.isNull(dateTime)) {
+        if (dateTime == null) {
             return null;
         }
         return new Timestamp(DateTimeUtils.toLong(dateTime));

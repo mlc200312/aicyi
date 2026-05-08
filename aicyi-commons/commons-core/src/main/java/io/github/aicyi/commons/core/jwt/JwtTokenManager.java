@@ -3,8 +3,8 @@ package io.github.aicyi.commons.core.jwt;
 import io.github.aicyi.commons.core.token.DefaultTokenManager;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.lang.IJWTInfo;
-import io.github.aicyi.commons.lang.SmartJsonMapper;
-import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
+import io.github.aicyi.commons.lang.JsonCodec;
+import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -17,24 +17,24 @@ import java.util.concurrent.TimeUnit;
  **/
 public class JwtTokenManager<V extends IJWTInfo> extends DefaultTokenManager<V> implements IJwtTokenManager<V> {
 
-    private final SmartJsonMapper jsonMapper;
+    private final JsonCodec jsonMapper;
     private final Type type;
 
-    public JwtTokenManager(TokenConfig tokenConfig, SmartJsonMapper jsonMapper, Type type) {
+    public JwtTokenManager(TokenConfig tokenConfig, JsonCodec jsonMapper, Type type) {
         super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
         this.jsonMapper = jsonMapper;
         this.type = type;
     }
 
     public JwtTokenManager(TokenConfig tokenConfig, Type type) {
-        this(tokenConfig, JacksonJsonMapper.DEFAULT, type);
+        this(tokenConfig, JacksonJsonCodec.DEFAULT, type);
     }
 
     @Override
     public String createToken(V value, Map<String, Object> claims, long timeout, TimeUnit unit) {
         Map<String, Object> enhancedClaims = new HashMap<>(claims);
         String json = jsonMapper.toJson(value);
-        Map<String, Object> addClaims = jsonMapper.parseMap(json, Object.class);
+        Map<String, Object> addClaims = jsonMapper.fromJsonMap(json, String.class, Object.class);
         enhancedClaims.putAll(addClaims);
         return tokenGenerator.generateToken(enhancedClaims, timeout, unit);
     }
@@ -45,7 +45,7 @@ public class JwtTokenManager<V extends IJWTInfo> extends DefaultTokenManager<V> 
         Optional<Map<String, Object>> claims = parseToken(token);
         if (claims.isPresent()) {
             String json = jsonMapper.toJson(claims.get());
-            return Optional.ofNullable(jsonMapper.parse(json, type));
+            return Optional.ofNullable(jsonMapper.fromJson(json, type));
         }
         return Optional.empty();
     }

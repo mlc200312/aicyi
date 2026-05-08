@@ -1,9 +1,8 @@
 package io.github.aicyi.commons.core.context;
 
-import io.github.aicyi.commons.lang.SmartJsonMapper;
-import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
+import io.github.aicyi.commons.lang.JsonCodec;
+import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.env.Environment;
 
@@ -18,17 +17,17 @@ import java.util.stream.Collectors;
 public class SpringEnvironmentHelper implements InitializingBean {
 
     private static SpringEnvironmentHelper INSTANCE;
-    private static final SmartJsonMapper JSON_MAPPER = JacksonJsonMapper.DEFAULT;
+    private static final JsonCodec JSON_MAPPER = JacksonJsonCodec.DEFAULT;
 
     private Environment environment;
-    private SmartJsonMapper jsonMapper;
+    private JsonCodec jsonMapper;
 
     public SpringEnvironmentHelper(Environment environment) {
         this.environment = environment;
         this.jsonMapper = JSON_MAPPER;
     }
 
-    public SpringEnvironmentHelper(Environment environment, SmartJsonMapper jsonMapper) {
+    public SpringEnvironmentHelper(Environment environment, JsonCodec jsonMapper) {
         this.environment = environment;
         this.jsonMapper = jsonMapper;
     }
@@ -82,7 +81,7 @@ public class SpringEnvironmentHelper implements InitializingBean {
             return Collections.emptyMap();
         }
         try {
-            return INSTANCE.jsonMapper.parseMap(json, Object.class);
+            return INSTANCE.jsonMapper.fromJsonMap(json, String.class, Object.class);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to parse map property: " + key, e);
         }
@@ -99,7 +98,7 @@ public class SpringEnvironmentHelper implements InitializingBean {
             return null;
         }
         try {
-            return INSTANCE.jsonMapper.parse(json, JacksonTypeFactory.typeOf(clazz));
+            return INSTANCE.jsonMapper.fromJson(json, JacksonTypeFactory.typeOf(clazz));
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to parse object property: " + key, e);
         }
@@ -157,7 +156,7 @@ public class SpringEnvironmentHelper implements InitializingBean {
      * 检查环境对象是否初始化，未初始化则抛出异常
      */
     private static void checkEnvironmentInitialized() {
-        if (Objects.isNull(SpringEnvironmentHelper.INSTANCE.environment)) {
+        if (SpringEnvironmentHelper.INSTANCE.environment == null) {
             throw new IllegalStateException("EnvironmentUtils 未完成初始化，请确认 Spring 容器已加载且 Environment 已注入");
         }
     }

@@ -1,7 +1,7 @@
 package io.github.aicyi.commons.util;
 
-import io.github.aicyi.commons.lang.SmartJsonMapper;
-import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
+import io.github.aicyi.commons.lang.JsonCodec;
+import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 
 /**
  * @author Mr.Min
@@ -14,10 +14,10 @@ public class JsonUtils {
     }
 
     private static class SingletonInner {
-        private static final SmartJsonMapper INSTANCE = JacksonJsonMapper.DEFAULT;
+        private static final JsonCodec INSTANCE = JacksonJsonCodec.DEFAULT;
     }
 
-    public static SmartJsonMapper getInstance() {
+    public static JsonCodec getInstance() {
         return SingletonInner.INSTANCE;
     }
 }

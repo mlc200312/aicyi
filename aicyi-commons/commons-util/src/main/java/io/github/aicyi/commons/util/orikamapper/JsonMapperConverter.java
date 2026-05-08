@@ -20,7 +20,7 @@ public class JsonMapperConverter extends BidirectionalConverter<BaseBean, String
 
     @Override
     public BaseBean convertFrom(String source, Type<BaseBean> type, MappingContext mappingContext) {
-        return JsonUtils.getInstance().parse(source, type);
+        return JsonUtils.getInstance().fromJson(source, type);
     }
 
     @Override

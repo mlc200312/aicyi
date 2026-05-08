@@ -7,7 +7,6 @@ import ma.glasnost.orika.metadata.Type;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -18,7 +17,7 @@ public class Date2LocalDateTimeMapperConverter extends BidirectionalConverter<Da
 
     @Override
     public LocalDateTime convertTo(Date date, Type<LocalDateTime> type, MappingContext mappingContext) {
-        if (Objects.isNull(date)) {
+        if (date == null) {
             return null;
         }
         return DateTimeUtils.toLDateTime(date);
@@ -26,7 +25,7 @@ public class Date2LocalDateTimeMapperConverter extends BidirectionalConverter<Da
 
     @Override
     public Date convertFrom(LocalDateTime dateTime, Type<Date> type, MappingContext mappingContext) {
-        if (Objects.isNull(dateTime)) {
+        if (dateTime == null) {
             return null;
         }
         return DateTimeUtils.toDate(dateTime);
