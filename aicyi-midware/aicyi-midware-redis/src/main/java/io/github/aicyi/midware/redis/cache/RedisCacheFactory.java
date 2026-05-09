@@ -1,8 +1,8 @@
 package io.github.aicyi.midware.redis.cache;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.aicyi.commons.core.cache.CacheConfig;
 import io.github.aicyi.commons.core.cache.CacheFactory;
-import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import com.fasterxml.jackson.databind.JavaType;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -17,12 +17,16 @@ public class RedisCacheFactory implements CacheFactory {
 
     private final EnhancedRedisTemplateFactory enhancedRedisTemplateFactory;
 
-    public RedisCacheFactory(RedisConnectionFactory redisConnectionFactory, JacksonJsonCodec jsonCodec) {
-        this.enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory, jsonCodec);
+    public RedisCacheFactory(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
+        this.enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory, objectMapper);
     }
 
     public RedisCacheFactory(RedisConnectionFactory redisConnectionFactory) {
         this.enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory);
+    }
+
+    public EnhancedRedisTemplateFactory getEnhancedRedisTemplateFactory() {
+        return enhancedRedisTemplateFactory;
     }
 
     @Override

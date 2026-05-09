@@ -20,7 +20,6 @@ public class EmailMessageSender extends AbstractMessageSender {
         this.emailSender = emailSender;
     }
 
-
     @Override
     protected void validate(MessageContent content) {
         if (!supports(content.getMessageType())) {
@@ -42,9 +41,15 @@ public class EmailMessageSender extends AbstractMessageSender {
     protected MessageSendResult doSend(MessageContent content) throws MessageSendException {
 
         MailMessage message = (MailMessage) content;
-        // 调用实际的邮件发送服务
 
-        emailSender.send(message.getToList(), message.getCcList(), message.getSubject(), message.getContent(), message.isHtml(), message.getAttachments());
+        // 调用实际的邮件发送服务
+        if (message.isContentMessage()) {
+
+            emailSender.send(message.getToList(), message.getCcList(), message.getSubject(), message.getContent(), message.isHtml(), message.getAttachments());
+        } else {
+
+            emailSender.sendTemplate(message);
+        }
 
         return MessageSendResult.success(message.getMessageId(), message.getBusinessId());
     }

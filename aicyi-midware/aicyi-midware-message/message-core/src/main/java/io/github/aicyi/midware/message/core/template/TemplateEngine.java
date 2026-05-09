@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.message.mail.template;
+package io.github.aicyi.midware.message.core.template;
 
 import java.util.Map;
 
@@ -11,10 +11,10 @@ public interface TemplateEngine {
     /**
      * 处理模版
      *
-     * @param templateName
-     * @param variables
+     * @param template
+     * @param templateParams
      * @return
      */
-    String process(String templateName, Map<String, Object> variables);
+    String process(String template, Map<String, Object> templateParams);
 }
 

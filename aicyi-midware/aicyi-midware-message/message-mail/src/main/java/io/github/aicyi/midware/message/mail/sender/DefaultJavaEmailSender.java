@@ -1,12 +1,16 @@
 package io.github.aicyi.midware.message.mail.sender;
 
-import io.github.aicyi.commons.logging.Logger;
-import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
+import io.github.aicyi.midware.message.core.model.MessageFormat;
+import io.github.aicyi.midware.message.core.model.TemplateEngineType;
+import io.github.aicyi.midware.message.core.template.AbstractTemplateSender;
+import io.github.aicyi.midware.message.core.model.MessageTemplate;
+import io.github.aicyi.midware.message.core.template.TemplateEngineFactory;
+import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.mail.model.MailAttachment;
 import io.github.aicyi.midware.message.mail.model.MailConfig;
-import io.github.aicyi.midware.message.mail.template.FreeMarkerTemplateEngine;
-import io.github.aicyi.midware.message.mail.template.TemplateEngine;
+import io.github.aicyi.midware.message.mail.model.MailMessage;
+import io.github.aicyi.midware.message.core.template.TemplateEngine;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.*;
@@ -18,29 +22,31 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Mr.Min
- * @description 基于JavaMail的EmailManager实现
+ * @description 邮件发送服务实现
  * @date 2025/8/25
  **/
-public class DefaultEmailSender implements EmailSender {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultEmailSender.class);
+public class DefaultJavaEmailSender extends AbstractTemplateSender<MailMessage> implements EmailSender {
 
     private final MailConfig mailConfig;
     private final Session session;
-    private final TemplateEngine templateEngine; // 可选，用于模板渲染
 
-    public DefaultEmailSender(MailConfig mailConfig) {
-        this(mailConfig, new FreeMarkerTemplateEngine());
-    }
-
-    public DefaultEmailSender(MailConfig mailConfig, TemplateEngine templateEngine) {
+    public DefaultJavaEmailSender(TemplateProvider templateProvider, TemplateEngineFactory factory, MailConfig mailConfig) {
+        super(templateProvider, factory);
         this.mailConfig = mailConfig;
-        this.templateEngine = templateEngine;
         this.session = createSession();
     }
 
+    public DefaultJavaEmailSender(MailConfig mailConfig) {
+        this(templateCode -> null, null, mailConfig);
+    }
+
     @Override
-    public boolean send(List<String> toRecipients, List<String> ccRecipients, String subject, String body, boolean htmlFormat, List<MailAttachment> attachments) throws MessageSendException {
+    public boolean send(List<String> toRecipients,
+                        List<String> ccRecipients,
+                        String subject,
+                        String body,
+                        boolean htmlFormat,
+                        List<MailAttachment> attachments) throws MessageSendException {
         try {
             MimeMessageHelper messageHelper = createMimeMessageHelper(toRecipients, ccRecipients, subject);
 
@@ -58,12 +64,12 @@ public class DefaultEmailSender implements EmailSender {
 
             Transport.send(messageHelper.getMimeMessage());
 
-            LOGGER.info("邮件发送成功 - 收件人: {}, 主题: {}", toRecipients, subject);
+            logger.info("邮件发送成功 - 收件人: {}, 主题: {}", toRecipients, subject);
 
             return true;
         } catch (Exception e) {
 
-            LOGGER.error(e, "发送邮件失败 - 收件人: {}, 主题: {}", toRecipients, subject);
+            logger.error(e, "发送邮件失败 - 收件人: {}, 主题: {}", toRecipients, subject);
 
             throw new MessageSendException("发送邮件失败:" + e.getMessage(), e);
         }
@@ -85,23 +91,6 @@ public class DefaultEmailSender implements EmailSender {
     }
 
     @Override
-    public boolean sendTemplate(List<String> toRecipients, String subject, String templateName, Map<String, Object> templateParams) {
-        if (templateEngine == null) {
-            LOGGER.error("未配置模板引擎，无法发送模板邮件");
-            return false;
-        }
-
-        try {
-            // 渲染模板
-            String body = templateEngine.process(templateName, templateParams);
-            return sendHtml(toRecipients, subject, body);
-        } catch (Exception e) {
-            LOGGER.error(e, "发送模板邮件失败 - 收件人: {}, 模板: {}", toRecipients, templateName);
-            return false;
-        }
-    }
-
-    @Override
     public CompletableFuture<Boolean> sendAsync(List<String> toRecipients, String subject, String body) {
         return CompletableFuture.supplyAsync(() -> sendText(toRecipients, subject, body));
     }
@@ -114,7 +103,7 @@ public class DefaultEmailSender implements EmailSender {
             transport.close();
             return true;
         } catch (Exception e) {
-            LOGGER.error("邮件服务器连接测试失败", e);
+            logger.error("邮件服务器连接测试失败", e);
             return false;
         }
     }
@@ -152,9 +141,13 @@ public class DefaultEmailSender implements EmailSender {
         // 设置发件人
         if (mailConfig.getFromName() != null) {
             try {
+
                 messageHelper.setFrom(mailConfig.getFromAddress(), mailConfig.getFromName());
+
             } catch (UnsupportedEncodingException e) {
-                LOGGER.error(e, "set from address error");
+
+                logger.error(e, "set from address error");
+
                 throw new RuntimeException(e);
             }
         } else {
@@ -166,6 +159,7 @@ public class DefaultEmailSender implements EmailSender {
 
         // 设置抄送人
         if (ccRecipients != null && !ccRecipients.isEmpty()) {
+
             messageHelper.setCc(ccRecipients.toArray(new String[ccRecipients.size()]));
         }
 
@@ -176,5 +170,30 @@ public class DefaultEmailSender implements EmailSender {
         messageHelper.setSentDate(new Date());
 
         return messageHelper;
+    }
+
+    @Override
+    protected boolean doSend(MessageTemplate template, MailMessage message) {
+
+        TemplateEngine templateEngine = getTemplateEngine(TemplateEngineType.valueOf(template.getEngineType()));
+
+        try {
+            // 渲染模板
+            String subject = templateEngine.process(template.getSubject(), message.getTemplateParams());
+
+            String content = templateEngine.process(template.getContent(), message.getTemplateParams());
+
+            if (MessageFormat.HTML.name().equalsIgnoreCase(template.getFormat())) {
+
+                return sendHtml(message.getToList(), subject, content);
+            }
+
+            return send(message.getToList(), message.getCcList(), subject, content, false, message.getAttachments());
+        } catch (MessageSendException e) {
+
+            logger.error(e, "发送模板邮件失败 - 收件人: {}, 模板: {}", message.getToList(), template);
+
+            return false;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package io.github.aicyi.midware.message.template.model;
 
 import io.github.aicyi.commons.lang.type.BooleanType;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -443,6 +444,76 @@ public class MessageTemplateExample {
 
         public Criteria andFormatNotBetween(String value1, String value2) {
             addCriterion("format not between", value1, value2, "format");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeIsNull() {
+            addCriterion("engine_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeIsNotNull() {
+            addCriterion("engine_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeEqualTo(String value) {
+            addCriterion("engine_type =", value, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeNotEqualTo(String value) {
+            addCriterion("engine_type <>", value, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeGreaterThan(String value) {
+            addCriterion("engine_type >", value, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("engine_type >=", value, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeLessThan(String value) {
+            addCriterion("engine_type <", value, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeLessThanOrEqualTo(String value) {
+            addCriterion("engine_type <=", value, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeLike(String value) {
+            addCriterion("engine_type like", value, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeNotLike(String value) {
+            addCriterion("engine_type not like", value, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeIn(List<String> values) {
+            addCriterion("engine_type in", values, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeNotIn(List<String> values) {
+            addCriterion("engine_type not in", values, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeBetween(String value1, String value2) {
+            addCriterion("engine_type between", value1, value2, "engineType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEngineTypeNotBetween(String value1, String value2) {
+            addCriterion("engine_type not between", value1, value2, "engineType");
             return (Criteria) this;
         }
 

@@ -2,7 +2,7 @@ package io.github.aicyi.midware.message.template.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import io.github.aicyi.midware.message.core.template.MessageTemplate;
+import io.github.aicyi.midware.message.core.model.MessageTemplate;
 
 import java.time.Duration;
 

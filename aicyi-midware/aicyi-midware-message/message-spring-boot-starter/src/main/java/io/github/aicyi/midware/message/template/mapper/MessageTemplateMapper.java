@@ -1,24 +1,14 @@
 package io.github.aicyi.midware.message.template.mapper;
 
-import java.util.List;
-
-import io.github.aicyi.midware.message.core.template.MessageTemplate;
+import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.message.template.model.MessageTemplateExample;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
+import java.util.List;
+
 public interface MessageTemplateMapper {
-    @SelectProvider(type=MessageTemplateSqlProvider.class, method="countByExample")
+    @SelectProvider(type= MessageTemplateSqlProvider.class, method="countByExample")
     long countByExample(MessageTemplateExample example);
 
     @DeleteProvider(type=MessageTemplateSqlProvider.class, method="deleteByExample")
@@ -33,20 +23,20 @@ public interface MessageTemplateMapper {
     @Insert({
         "insert into message_template (id, template_code, ",
         "template_name, message_type, ",
-        "format, subject, ",
-        "signature, variables, ",
-        "enabled, remark, ",
-        "deleted, version, ",
-        "create_time, update_time, ",
-        "content)",
+        "format, engine_type, ",
+        "subject, signature, ",
+        "variables, enabled, ",
+        "remark, deleted, ",
+        "version, create_time, ",
+        "update_time, content)",
         "values (#{id,jdbcType=BIGINT}, #{templateCode,jdbcType=VARCHAR}, ",
         "#{templateName,jdbcType=VARCHAR}, #{messageType,jdbcType=VARCHAR}, ",
-        "#{format,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, ",
-        "#{signature,jdbcType=VARCHAR}, #{variables,jdbcType=VARCHAR}, ",
-        "#{enabled,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, ",
-        "#{deleted,jdbcType=TINYINT}, #{version,jdbcType=INTEGER}, ",
-        "#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, ",
-        "#{content,jdbcType=LONGVARCHAR})"
+        "#{format,jdbcType=VARCHAR}, #{engineType,jdbcType=VARCHAR}, ",
+        "#{subject,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR}, ",
+        "#{variables,jdbcType=VARCHAR}, #{enabled,jdbcType=TINYINT}, ",
+        "#{remark,jdbcType=VARCHAR}, #{deleted,jdbcType=TINYINT}, ",
+        "#{version,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, ",
+        "#{updateTime,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})"
     })
     int insert(MessageTemplate record);
 
@@ -60,6 +50,7 @@ public interface MessageTemplateMapper {
         @Result(column="template_name", property="templateName", jdbcType=JdbcType.VARCHAR),
         @Result(column="message_type", property="messageType", jdbcType=JdbcType.VARCHAR),
         @Result(column="format", property="format", jdbcType=JdbcType.VARCHAR),
+        @Result(column="engine_type", property="engineType", jdbcType=JdbcType.VARCHAR),
         @Result(column="subject", property="subject", jdbcType=JdbcType.VARCHAR),
         @Result(column="signature", property="signature", jdbcType=JdbcType.VARCHAR),
         @Result(column="variables", property="variables", jdbcType=JdbcType.VARCHAR),
@@ -80,6 +71,7 @@ public interface MessageTemplateMapper {
         @Result(column="template_name", property="templateName", jdbcType=JdbcType.VARCHAR),
         @Result(column="message_type", property="messageType", jdbcType=JdbcType.VARCHAR),
         @Result(column="format", property="format", jdbcType=JdbcType.VARCHAR),
+        @Result(column="engine_type", property="engineType", jdbcType=JdbcType.VARCHAR),
         @Result(column="subject", property="subject", jdbcType=JdbcType.VARCHAR),
         @Result(column="signature", property="signature", jdbcType=JdbcType.VARCHAR),
         @Result(column="variables", property="variables", jdbcType=JdbcType.VARCHAR),
@@ -94,8 +86,9 @@ public interface MessageTemplateMapper {
 
     @Select({
         "select",
-        "id, template_code, template_name, message_type, format, subject, signature, ",
-        "variables, enabled, remark, deleted, version, create_time, update_time, content",
+        "id, template_code, template_name, message_type, format, engine_type, subject, ",
+        "signature, variables, enabled, remark, deleted, version, create_time, update_time, ",
+        "content",
         "from message_template",
         "where id = #{id,jdbcType=BIGINT}"
     })
@@ -105,6 +98,7 @@ public interface MessageTemplateMapper {
         @Result(column="template_name", property="templateName", jdbcType=JdbcType.VARCHAR),
         @Result(column="message_type", property="messageType", jdbcType=JdbcType.VARCHAR),
         @Result(column="format", property="format", jdbcType=JdbcType.VARCHAR),
+        @Result(column="engine_type", property="engineType", jdbcType=JdbcType.VARCHAR),
         @Result(column="subject", property="subject", jdbcType=JdbcType.VARCHAR),
         @Result(column="signature", property="signature", jdbcType=JdbcType.VARCHAR),
         @Result(column="variables", property="variables", jdbcType=JdbcType.VARCHAR),
@@ -136,6 +130,7 @@ public interface MessageTemplateMapper {
           "template_name = #{templateName,jdbcType=VARCHAR},",
           "message_type = #{messageType,jdbcType=VARCHAR},",
           "format = #{format,jdbcType=VARCHAR},",
+          "engine_type = #{engineType,jdbcType=VARCHAR},",
           "subject = #{subject,jdbcType=VARCHAR},",
           "signature = #{signature,jdbcType=VARCHAR},",
           "variables = #{variables,jdbcType=VARCHAR},",
@@ -156,6 +151,7 @@ public interface MessageTemplateMapper {
           "template_name = #{templateName,jdbcType=VARCHAR},",
           "message_type = #{messageType,jdbcType=VARCHAR},",
           "format = #{format,jdbcType=VARCHAR},",
+          "engine_type = #{engineType,jdbcType=VARCHAR},",
           "subject = #{subject,jdbcType=VARCHAR},",
           "signature = #{signature,jdbcType=VARCHAR},",
           "variables = #{variables,jdbcType=VARCHAR},",

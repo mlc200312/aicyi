@@ -3,7 +3,7 @@ package io.github.aicyi.midware.message.template.cache;
 import io.github.aicyi.commons.lang.type.BooleanType;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.template.mapper.MessageTemplateMapper;
-import io.github.aicyi.midware.message.core.template.MessageTemplate;
+import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.message.template.model.MessageTemplateExample;
 
 import java.util.List;

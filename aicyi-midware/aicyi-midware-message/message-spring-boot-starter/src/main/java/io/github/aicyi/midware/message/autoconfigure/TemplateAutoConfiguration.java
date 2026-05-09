@@ -2,14 +2,12 @@ package io.github.aicyi.midware.message.autoconfigure;
 
 import com.fasterxml.jackson.databind.JavaType;
 import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
-import io.github.aicyi.midware.message.core.template.MessageTemplate;
+import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
-import io.github.aicyi.midware.message.sms.template.TemplateRender;
 import io.github.aicyi.midware.message.template.cache.TemplateCacheManager;
 import io.github.aicyi.midware.message.template.cache.TemplateLocalCache;
 import io.github.aicyi.midware.message.template.cache.TemplateRedisCache;
 import io.github.aicyi.midware.message.template.mapper.MessageTemplateMapper;
-import io.github.aicyi.midware.message.sms.template.DefaultTemplateRender;
 import io.github.aicyi.midware.redis.cache.RedisCacheFactory;
 import io.github.aicyi.midware.redis.cache.RedisCacheManager;
 import org.mybatis.spring.annotation.MapperScan;
@@ -33,12 +31,6 @@ public class TemplateAutoConfiguration {
 
     public TemplateAutoConfiguration(@Autowired(required = false) RedisConnectionFactory redisConnectionFactory) {
         this.redisConnectionFactory = redisConnectionFactory;
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public TemplateRender templateRender() {
-        return new DefaultTemplateRender();
     }
 
     @Bean

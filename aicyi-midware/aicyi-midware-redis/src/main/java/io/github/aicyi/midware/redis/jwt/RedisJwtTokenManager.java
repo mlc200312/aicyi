@@ -41,14 +41,14 @@ public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManage
     private final RedisCacheManager<V> redisCacheManager;
     private final JsonCodec jsonMapper;
 
-    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JacksonJsonCodec jsonConverter, JavaType javaType) {
+    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JacksonJsonCodec jsonCodec, JavaType javaType) {
         super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
-        EnhancedRedisTemplateFactory enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory, jsonConverter);
-        RedisCacheFactory redisCacheFactory = new RedisCacheFactory(redisConnectionFactory, jsonConverter);
+        RedisCacheFactory redisCacheFactory = new RedisCacheFactory(redisConnectionFactory, jsonCodec.getObjectMapper());
+        EnhancedRedisTemplateFactory enhancedRedisTemplateFactory = redisCacheFactory.getEnhancedRedisTemplateFactory();
         this.stringRedisTemplate = enhancedRedisTemplateFactory.getStringTemplate();
-        this.opsForHash = this.stringRedisTemplate.opsForHash();
+        this.opsForHash = stringRedisTemplate.opsForHash();
         this.redisCacheManager = redisCacheFactory.createCache(javaType);
-        this.jsonMapper = jsonConverter;
+        this.jsonMapper = jsonCodec;
     }
 
     public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JavaType javaType) {

@@ -1,9 +1,10 @@
 package io.github.aicyi.midware.message.mail.sender;
 
+import io.github.aicyi.midware.message.core.template.TemplateSender;
 import io.github.aicyi.midware.message.mail.model.MailAttachment;
+import io.github.aicyi.midware.message.mail.model.MailMessage;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -11,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
  * @description 邮件发送服务
  * @date 2025/8/25
  **/
-public interface EmailSender {
+public interface EmailSender extends TemplateSender<MailMessage> {
     /**
      * 发送邮件（完整参数）
      *
@@ -61,17 +62,6 @@ public interface EmailSender {
      * @return
      */
     boolean sendWithAttachment(List<String> toRecipients, String subject, String body, List<MailAttachment> attachments);
-
-    /**
-     * 发送模板邮件
-     *
-     * @param toRecipients
-     * @param subject
-     * @param templateId
-     * @param templateParams
-     * @return
-     */
-    boolean sendTemplate(List<String> toRecipients, String subject, String templateId, Map<String, Object> templateParams);
 
     /**
      * 异步发送邮件

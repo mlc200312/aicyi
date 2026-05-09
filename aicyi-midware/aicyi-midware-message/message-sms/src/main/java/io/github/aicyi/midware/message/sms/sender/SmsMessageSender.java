@@ -43,13 +43,16 @@ public class SmsMessageSender extends AbstractMessageSender {
         SmsMessage message = (SmsMessage) content;
 
         // 调用实际的短信发送服务
-        message.getPhoneNumbers().forEach(number -> {
-            if (message.isContentMessage()) {
+        if (message.isContentMessage()) {
+
+            message.getPhoneNumbers().forEach(number -> {
+
                 smsSender.send(number, message.getContent(), message.getSign());
-            } else {
-                smsSender.sendTemplate(number, message.getTemplateId(), message.getTemplateParams(), message.getSign());
-            }
-        });
+            });
+        } else {
+
+            smsSender.sendTemplate(message);
+        }
 
         return MessageSendResult.success(message.getMessageId(), message.getBusinessId());
     }

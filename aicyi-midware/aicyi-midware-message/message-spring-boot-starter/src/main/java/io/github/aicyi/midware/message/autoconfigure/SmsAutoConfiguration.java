@@ -1,13 +1,16 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
+import io.github.aicyi.midware.message.core.model.TemplateEngineType;
+import io.github.aicyi.midware.message.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
-import io.github.aicyi.midware.message.sms.template.TemplateRender;
+import io.github.aicyi.midware.message.sms.template.DefaultSmsTemplateEngine;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.midware.message.sms.sender.TwilioSmsSender;
 import io.github.aicyi.midware.message.properties.MessageProperties;
 import io.github.aicyi.midware.message.sms.sender.DefaultSmsSender;
 import io.github.aicyi.midware.message.sms.sender.SmsSender;
 import io.github.aicyi.midware.message.sms.sender.YunPianSmsSender;
+import io.github.aicyi.midware.message.template.factory.DefaultTemplateEngineFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -23,15 +26,11 @@ public class SmsAutoConfiguration {
 
     private final EmailSender emailSender;
 
-    private final TemplateRender templateRender;
-
     private final TemplateProvider templateProvider;
 
     public SmsAutoConfiguration(@Autowired(required = false) EmailSender emailSender,
-                                @Autowired(required = false) TemplateRender templateRender,
                                 @Autowired(required = false) TemplateProvider templateProvider) {
         this.emailSender = emailSender;
-        this.templateRender = templateRender;
         this.templateProvider = templateProvider;
     }
 
@@ -42,7 +41,12 @@ public class SmsAutoConfiguration {
             name = "provider",
             havingValue = "default")
     public SmsSender defaultSmsSender() {
-        return new DefaultSmsSender(emailSender, templateProvider);
+
+        TemplateEngineFactory factory = new DefaultTemplateEngineFactory();
+
+        factory.register(TemplateEngineType.SIMPLE, new DefaultSmsTemplateEngine());
+
+        return new DefaultSmsSender(templateProvider, factory, emailSender);
     }
 
     @Bean
@@ -53,7 +57,12 @@ public class SmsAutoConfiguration {
             havingValue = "twilio")
     public SmsSender twilioSmsSender(MessageProperties messageProperties) {
         MessageProperties.SmsProperties smsProperties = messageProperties.getSms();
-        return new TwilioSmsSender(smsProperties.getUsername(), smsProperties.getPassword(), smsProperties.getFrom(), templateProvider);
+
+        TemplateEngineFactory factory = new DefaultTemplateEngineFactory();
+
+        factory.register(TemplateEngineType.SIMPLE, new DefaultSmsTemplateEngine());
+
+        return new TwilioSmsSender(smsProperties.getUsername(), smsProperties.getPassword(), smsProperties.getFrom(), templateProvider, factory);
     }
 
     @Bean
@@ -63,7 +72,9 @@ public class SmsAutoConfiguration {
             name = "provider",
             havingValue = "yunPian")
     public SmsSender yunPianSmsSender(MessageProperties messageProperties) {
+
         MessageProperties.SmsProperties smsProperties = messageProperties.getSms();
+
         return new YunPianSmsSender(smsProperties.getUsername());
     }
 }

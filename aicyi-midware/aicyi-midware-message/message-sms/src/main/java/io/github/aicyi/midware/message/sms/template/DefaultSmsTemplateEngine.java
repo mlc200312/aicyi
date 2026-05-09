@@ -1,5 +1,7 @@
 package io.github.aicyi.midware.message.sms.template;
 
+import io.github.aicyi.midware.message.core.template.TemplateEngine;
+
 import java.util.Map;
 
 /**
@@ -7,21 +9,17 @@ import java.util.Map;
  * @description 模版渲染管理器实现
  * @date 15:54
  **/
-public class DefaultTemplateRender implements TemplateRender {
+public class DefaultSmsTemplateEngine implements TemplateEngine {
 
     @Override
-    public String render(String content, Map<String, String> templateParams) {
-
-        String result = content;
-
-        for (Map.Entry<String, String> entry : templateParams.entrySet()) {
-
+    public String process(String template, Map<String, Object> templateParams) {
+        String result = template;
+        for (Map.Entry<String, Object> entry : templateParams.entrySet()) {
             result = result.replace(
                     "${" + entry.getKey() + "}",
                     String.valueOf(entry.getValue())
             );
         }
-
         return result;
     }
 }

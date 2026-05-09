@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.message.template.cache;
 
 
-import io.github.aicyi.midware.message.core.template.MessageTemplate;
+import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.redis.cache.RedisCacheManager;
 
 import java.util.concurrent.TimeUnit;

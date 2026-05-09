@@ -1,11 +1,11 @@
 package io.github.aicyi.midware.message.template.mapper;
 
-import java.util.List;
-import java.util.Map;
-
-import io.github.aicyi.midware.message.core.template.MessageTemplate;
+import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.message.template.model.MessageTemplateExample;
 import org.apache.ibatis.jdbc.SQL;
+
+import java.util.List;
+import java.util.Map;
 
 public class MessageTemplateSqlProvider {
 
@@ -26,67 +26,71 @@ public class MessageTemplateSqlProvider {
     public String insertSelective(MessageTemplate record) {
         SQL sql = new SQL();
         sql.INSERT_INTO("message_template");
-
+        
         if (record.getId() != null) {
             sql.VALUES("id", "#{id,jdbcType=BIGINT}");
         }
-
+        
         if (record.getTemplateCode() != null) {
             sql.VALUES("template_code", "#{templateCode,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getTemplateName() != null) {
             sql.VALUES("template_name", "#{templateName,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getMessageType() != null) {
             sql.VALUES("message_type", "#{messageType,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getFormat() != null) {
             sql.VALUES("format", "#{format,jdbcType=VARCHAR}");
         }
-
+        
+        if (record.getEngineType() != null) {
+            sql.VALUES("engine_type", "#{engineType,jdbcType=VARCHAR}");
+        }
+        
         if (record.getSubject() != null) {
             sql.VALUES("subject", "#{subject,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getSignature() != null) {
             sql.VALUES("signature", "#{signature,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getVariables() != null) {
             sql.VALUES("variables", "#{variables,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getEnabled() != null) {
             sql.VALUES("enabled", "#{enabled,jdbcType=TINYINT}");
         }
-
+        
         if (record.getRemark() != null) {
             sql.VALUES("remark", "#{remark,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getDeleted() != null) {
             sql.VALUES("deleted", "#{deleted,jdbcType=TINYINT}");
         }
-
+        
         if (record.getVersion() != null) {
             sql.VALUES("version", "#{version,jdbcType=INTEGER}");
         }
-
+        
         if (record.getCreateTime() != null) {
             sql.VALUES("create_time", "#{createTime,jdbcType=TIMESTAMP}");
         }
-
+        
         if (record.getUpdateTime() != null) {
             sql.VALUES("update_time", "#{updateTime,jdbcType=TIMESTAMP}");
         }
-
+        
         if (record.getContent() != null) {
             sql.VALUES("content", "#{content,jdbcType=LONGVARCHAR}");
         }
-
+        
         return sql.toString();
     }
 
@@ -101,6 +105,7 @@ public class MessageTemplateSqlProvider {
         sql.SELECT("template_name");
         sql.SELECT("message_type");
         sql.SELECT("format");
+        sql.SELECT("engine_type");
         sql.SELECT("subject");
         sql.SELECT("signature");
         sql.SELECT("variables");
@@ -113,11 +118,11 @@ public class MessageTemplateSqlProvider {
         sql.SELECT("content");
         sql.FROM("message_template");
         applyWhere(sql, example, false);
-
+        
         if (example != null && example.getOrderByClause() != null) {
             sql.ORDER_BY(example.getOrderByClause());
         }
-
+        
         return sql.toString();
     }
 
@@ -132,6 +137,7 @@ public class MessageTemplateSqlProvider {
         sql.SELECT("template_name");
         sql.SELECT("message_type");
         sql.SELECT("format");
+        sql.SELECT("engine_type");
         sql.SELECT("subject");
         sql.SELECT("signature");
         sql.SELECT("variables");
@@ -143,81 +149,85 @@ public class MessageTemplateSqlProvider {
         sql.SELECT("update_time");
         sql.FROM("message_template");
         applyWhere(sql, example, false);
-
+        
         if (example != null && example.getOrderByClause() != null) {
             sql.ORDER_BY(example.getOrderByClause());
         }
-
+        
         return sql.toString();
     }
 
     public String updateByExampleSelective(Map<String, Object> parameter) {
         MessageTemplate record = (MessageTemplate) parameter.get("record");
         MessageTemplateExample example = (MessageTemplateExample) parameter.get("example");
-
+        
         SQL sql = new SQL();
         sql.UPDATE("message_template");
-
+        
         if (record.getId() != null) {
             sql.SET("id = #{record.id,jdbcType=BIGINT}");
         }
-
+        
         if (record.getTemplateCode() != null) {
             sql.SET("template_code = #{record.templateCode,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getTemplateName() != null) {
             sql.SET("template_name = #{record.templateName,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getMessageType() != null) {
             sql.SET("message_type = #{record.messageType,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getFormat() != null) {
             sql.SET("format = #{record.format,jdbcType=VARCHAR}");
         }
-
+        
+        if (record.getEngineType() != null) {
+            sql.SET("engine_type = #{record.engineType,jdbcType=VARCHAR}");
+        }
+        
         if (record.getSubject() != null) {
             sql.SET("subject = #{record.subject,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getSignature() != null) {
             sql.SET("signature = #{record.signature,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getVariables() != null) {
             sql.SET("variables = #{record.variables,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getEnabled() != null) {
             sql.SET("enabled = #{record.enabled,jdbcType=TINYINT}");
         }
-
+        
         if (record.getRemark() != null) {
             sql.SET("remark = #{record.remark,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getDeleted() != null) {
             sql.SET("deleted = #{record.deleted,jdbcType=TINYINT}");
         }
-
+        
         if (record.getVersion() != null) {
             sql.SET("version = #{record.version,jdbcType=INTEGER}");
         }
-
+        
         if (record.getCreateTime() != null) {
             sql.SET("create_time = #{record.createTime,jdbcType=TIMESTAMP}");
         }
-
+        
         if (record.getUpdateTime() != null) {
             sql.SET("update_time = #{record.updateTime,jdbcType=TIMESTAMP}");
         }
-
+        
         if (record.getContent() != null) {
             sql.SET("content = #{record.content,jdbcType=LONGVARCHAR}");
         }
-
+        
         applyWhere(sql, example, true);
         return sql.toString();
     }
@@ -225,12 +235,13 @@ public class MessageTemplateSqlProvider {
     public String updateByExampleWithBLOBs(Map<String, Object> parameter) {
         SQL sql = new SQL();
         sql.UPDATE("message_template");
-
+        
         sql.SET("id = #{record.id,jdbcType=BIGINT}");
         sql.SET("template_code = #{record.templateCode,jdbcType=VARCHAR}");
         sql.SET("template_name = #{record.templateName,jdbcType=VARCHAR}");
         sql.SET("message_type = #{record.messageType,jdbcType=VARCHAR}");
         sql.SET("format = #{record.format,jdbcType=VARCHAR}");
+        sql.SET("engine_type = #{record.engineType,jdbcType=VARCHAR}");
         sql.SET("subject = #{record.subject,jdbcType=VARCHAR}");
         sql.SET("signature = #{record.signature,jdbcType=VARCHAR}");
         sql.SET("variables = #{record.variables,jdbcType=VARCHAR}");
@@ -241,7 +252,7 @@ public class MessageTemplateSqlProvider {
         sql.SET("create_time = #{record.createTime,jdbcType=TIMESTAMP}");
         sql.SET("update_time = #{record.updateTime,jdbcType=TIMESTAMP}");
         sql.SET("content = #{record.content,jdbcType=LONGVARCHAR}");
-
+        
         MessageTemplateExample example = (MessageTemplateExample) parameter.get("example");
         applyWhere(sql, example, true);
         return sql.toString();
@@ -250,12 +261,13 @@ public class MessageTemplateSqlProvider {
     public String updateByExample(Map<String, Object> parameter) {
         SQL sql = new SQL();
         sql.UPDATE("message_template");
-
+        
         sql.SET("id = #{record.id,jdbcType=BIGINT}");
         sql.SET("template_code = #{record.templateCode,jdbcType=VARCHAR}");
         sql.SET("template_name = #{record.templateName,jdbcType=VARCHAR}");
         sql.SET("message_type = #{record.messageType,jdbcType=VARCHAR}");
         sql.SET("format = #{record.format,jdbcType=VARCHAR}");
+        sql.SET("engine_type = #{record.engineType,jdbcType=VARCHAR}");
         sql.SET("subject = #{record.subject,jdbcType=VARCHAR}");
         sql.SET("signature = #{record.signature,jdbcType=VARCHAR}");
         sql.SET("variables = #{record.variables,jdbcType=VARCHAR}");
@@ -265,7 +277,7 @@ public class MessageTemplateSqlProvider {
         sql.SET("version = #{record.version,jdbcType=INTEGER}");
         sql.SET("create_time = #{record.createTime,jdbcType=TIMESTAMP}");
         sql.SET("update_time = #{record.updateTime,jdbcType=TIMESTAMP}");
-
+        
         MessageTemplateExample example = (MessageTemplateExample) parameter.get("example");
         applyWhere(sql, example, true);
         return sql.toString();
@@ -274,65 +286,69 @@ public class MessageTemplateSqlProvider {
     public String updateByPrimaryKeySelective(MessageTemplate record) {
         SQL sql = new SQL();
         sql.UPDATE("message_template");
-
+        
         if (record.getTemplateCode() != null) {
             sql.SET("template_code = #{templateCode,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getTemplateName() != null) {
             sql.SET("template_name = #{templateName,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getMessageType() != null) {
             sql.SET("message_type = #{messageType,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getFormat() != null) {
             sql.SET("format = #{format,jdbcType=VARCHAR}");
         }
-
+        
+        if (record.getEngineType() != null) {
+            sql.SET("engine_type = #{engineType,jdbcType=VARCHAR}");
+        }
+        
         if (record.getSubject() != null) {
             sql.SET("subject = #{subject,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getSignature() != null) {
             sql.SET("signature = #{signature,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getVariables() != null) {
             sql.SET("variables = #{variables,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getEnabled() != null) {
             sql.SET("enabled = #{enabled,jdbcType=TINYINT}");
         }
-
+        
         if (record.getRemark() != null) {
             sql.SET("remark = #{remark,jdbcType=VARCHAR}");
         }
-
+        
         if (record.getDeleted() != null) {
             sql.SET("deleted = #{deleted,jdbcType=TINYINT}");
         }
-
+        
         if (record.getVersion() != null) {
             sql.SET("version = #{version,jdbcType=INTEGER}");
         }
-
+        
         if (record.getCreateTime() != null) {
             sql.SET("create_time = #{createTime,jdbcType=TIMESTAMP}");
         }
-
+        
         if (record.getUpdateTime() != null) {
             sql.SET("update_time = #{updateTime,jdbcType=TIMESTAMP}");
         }
-
+        
         if (record.getContent() != null) {
             sql.SET("content = #{content,jdbcType=LONGVARCHAR}");
         }
-
+        
         sql.WHERE("id = #{id,jdbcType=BIGINT}");
-
+        
         return sql.toString();
     }
 
@@ -340,7 +356,7 @@ public class MessageTemplateSqlProvider {
         if (example == null) {
             return;
         }
-
+        
         String parmPhrase1;
         String parmPhrase1_th;
         String parmPhrase2;
@@ -362,7 +378,7 @@ public class MessageTemplateSqlProvider {
             parmPhrase3 = "#{oredCriteria[%d].allCriteria[%d].value[%d]}";
             parmPhrase3_th = "#{oredCriteria[%d].allCriteria[%d].value[%d],typeHandler=%s}";
         }
-
+        
         StringBuilder sb = new StringBuilder();
         List<MessageTemplateExample.Criteria> oredCriteria = example.getOredCriteria();
         boolean firstCriteria = true;
@@ -374,7 +390,7 @@ public class MessageTemplateSqlProvider {
                 } else {
                     sb.append(" or ");
                 }
-
+                
                 sb.append('(');
                 List<MessageTemplateExample.Criterion> criterions = criteria.getAllCriteria();
                 boolean firstCriterion = true;
@@ -385,14 +401,14 @@ public class MessageTemplateSqlProvider {
                     } else {
                         sb.append(" and ");
                     }
-
+                    
                     if (criterion.isNoValue()) {
                         sb.append(criterion.getCondition());
                     } else if (criterion.isSingleValue()) {
                         if (criterion.getTypeHandler() == null) {
                             sb.append(String.format(parmPhrase1, criterion.getCondition(), i, j));
                         } else {
-                            sb.append(String.format(parmPhrase1_th, criterion.getCondition(), i, j, criterion.getTypeHandler()));
+                            sb.append(String.format(parmPhrase1_th, criterion.getCondition(), i, j,criterion.getTypeHandler()));
                         }
                     } else if (criterion.isBetweenValue()) {
                         if (criterion.getTypeHandler() == null) {
@@ -423,7 +439,7 @@ public class MessageTemplateSqlProvider {
                 sb.append(')');
             }
         }
-
+        
         if (sb.length() > 0) {
             sql.WHERE(sb.toString());
         }

@@ -1,14 +1,15 @@
-package io.github.aicyi.midware.message.core.template;
+package io.github.aicyi.midware.message.core.model;
 
-import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.BaseEntity;
 import io.github.aicyi.commons.lang.type.BooleanType;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * 消息模版表:message_template
  */
-public class MessageTemplate extends BaseBean {
+public class MessageTemplate extends BaseEntity implements Serializable {
     /**
      * 主键:id
      */
@@ -25,7 +26,7 @@ public class MessageTemplate extends BaseBean {
     private String templateName;
 
     /**
-     * 模版类型:message_type
+     * 消息类型:message_type
      */
     private String messageType;
 
@@ -33,6 +34,11 @@ public class MessageTemplate extends BaseBean {
      * 模版格式:format
      */
     private String format;
+
+    /**
+     * 模版引擎类型:engine_type
+     */
+    private String engineType;
 
     /**
      * 模版主题:subject
@@ -124,6 +130,14 @@ public class MessageTemplate extends BaseBean {
 
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    public String getEngineType() {
+        return engineType;
+    }
+
+    public void setEngineType(String engineType) {
+        this.engineType = engineType;
     }
 
     public String getSubject() {
