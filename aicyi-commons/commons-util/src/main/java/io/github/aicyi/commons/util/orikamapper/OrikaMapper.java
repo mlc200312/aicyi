@@ -1,6 +1,8 @@
 package io.github.aicyi.commons.util.orikamapper;
 
-import io.github.aicyi.commons.lang.SmartMapper;
+import io.github.aicyi.commons.core.BeanMapper;
+import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.util.JsonUtils;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
@@ -18,15 +20,22 @@ import java.util.List;
  * @description 默认的Mapper
  * @date 2019-05-22
  */
-public final class OrikaMapper implements SmartMapper {
+public final class OrikaMapper implements BeanMapper {
+
+    private final static JsonCodec DEFAULT_JSON_CODEC = JsonUtils.getInstance();
+
     private final MapperFactory mapperFactory;
 
     public OrikaMapper(MapperFactory mapperFactory) {
         this.mapperFactory = mapperFactory;
     }
 
+    public OrikaMapper(JsonCodec jsonCodec) {
+        this.mapperFactory = getDefaultMapperFactory(jsonCodec);
+    }
+
     public OrikaMapper() {
-        this.mapperFactory = getDefaultMapperFactory();
+        this.mapperFactory = getDefaultMapperFactory(DEFAULT_JSON_CODEC);
     }
 
     public MapperFactory getMapperFactory() {
@@ -43,20 +52,19 @@ public final class OrikaMapper implements SmartMapper {
     }
 
     @Override
-    public <S, D> D map(S src, D dest) {
+    public <S, D> void map(S src, D dest) {
         if (src == null || dest == null) {
-            return dest;
+            return;
         }
         getMapperFacade().map(src, dest);
-        return dest;
     }
 
     @Override
-    public <S, D> List<D> mapAsList(Collection<S> src, Class<D> destType) {
+    public <S, D> List<D> mapList(Collection<S> src, Class<D> destType) {
         return CollectionUtils.isEmpty(src) ? Collections.emptyList() : getMapperFacade().mapAsList(src, destType);
     }
 
-    private MapperFactory getDefaultMapperFactory() {
+    private MapperFactory getDefaultMapperFactory(JsonCodec jsonCodec) {
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder()
                 .useAutoMapping(true)
                 .mapNulls(true)
@@ -71,7 +79,7 @@ public final class OrikaMapper implements SmartMapper {
         mapperFactory.getConverterFactory().registerConverter(new Date2LocalDateTimeMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new LocalDateMapperConverter());
         mapperFactory.getConverterFactory().registerConverter(new LocalDateTimeMapperConverter());
-        mapperFactory.getConverterFactory().registerConverter(new JsonMapperConverter());
+        mapperFactory.getConverterFactory().registerConverter(new JsonMapperConverter(jsonCodec));
         mapperFactory.getConverterFactory().registerConverter(new PassThroughConverter(LocalDate.class));
         mapperFactory.getConverterFactory().registerConverter(new PassThroughConverter(LocalDateTime.class));
 

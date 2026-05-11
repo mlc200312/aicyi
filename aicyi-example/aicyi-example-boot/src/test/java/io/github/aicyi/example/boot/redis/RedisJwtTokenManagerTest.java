@@ -1,12 +1,13 @@
 package io.github.aicyi.example.boot.redis;
 
-import io.github.aicyi.commons.core.jwt.JWTInfo;
+import io.github.aicyi.commons.codec.jwt.JWTInfo;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.commons.core.token.TokenConfig;
 import io.github.aicyi.commons.core.token.TokenManager;
 import io.github.aicyi.commons.util.id.IdUtils;
-import io.github.aicyi.commons.core.token.DefaultTokenConfig;
+import io.github.aicyi.commons.codec.jwt.DefaultTokenConfig;
 import io.github.aicyi.example.domain.UserInfo;
+import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.test.util.RandomGenerator;
 import io.github.aicyi.midware.redis.jwt.RedisJwtTokenManager;
@@ -15,7 +16,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisJwtTokenManagerTest extends BaseLoggerTest {
 
     @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
+    private EnhancedRedisTemplateFactory enhancedRedisTemplateFactory;
 
     private JWTInfo jwtInfo;
     private TokenConfig config;
@@ -51,7 +51,7 @@ public class RedisJwtTokenManagerTest extends BaseLoggerTest {
                 .multiTokenAllowed(true)
                 .build();
 
-        tokenManager = new RedisJwtTokenManager(config, redisConnectionFactory, UserInfo.class);
+        tokenManager = new RedisJwtTokenManager(config, enhancedRedisTemplateFactory, UserInfo.class);
     }
 
     @Test

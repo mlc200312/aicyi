@@ -1,10 +1,10 @@
 package io.github.aicyi.example.consumer.config;
 
 import io.github.aicyi.commons.core.cache.StringCacheManager;
-import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
-import io.github.aicyi.commons.core.token.DefaultTokenConfig;
+import io.github.aicyi.commons.core.token.JwtTokenManager;
+import io.github.aicyi.commons.codec.jwt.DefaultTokenConfig;
 import io.github.aicyi.commons.core.token.TokenConfig;
-import io.github.aicyi.commons.lang.IJWTInfo;
+import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
@@ -47,16 +47,16 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public StringCacheManager getStringCacheManager(RedisConnectionFactory redisConnectionFactory) {
-        return new StringRedisCacheManager(redisConnectionFactory, "aicyi");
+    public StringCacheManager getStringCacheManager(EnhancedRedisTemplateFactory enhancedRedisTemplateFactory) {
+        return new StringRedisCacheManager(enhancedRedisTemplateFactory, "aicyi");
     }
 
     @Bean
-    public IJwtTokenManager<IJWTInfo> getJwtInfoTokenManager(RedisConnectionFactory redisConnectionFactory) {
+    public JwtTokenManager<IJWTInfo> getJwtInfoTokenManager(EnhancedRedisTemplateFactory enhancedRedisTemplateFactory) {
         TokenConfig tokenConfig = DefaultTokenConfig.builder()
                 .signingKey("LcR6QUhqWrDqK1InQDKlpZuKx6X/ZgEISdFpKwO3i/E=")
                 .multiTokenAllowed(true)
                 .build();
-        return new RedisJwtTokenManager(tokenConfig, redisConnectionFactory, JacksonTypeFactory.typeOf(UserInfo.class));
+        return new RedisJwtTokenManager(tokenConfig, enhancedRedisTemplateFactory, JacksonTypeFactory.typeOf(UserInfo.class));
     }
 }

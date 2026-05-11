@@ -20,10 +20,10 @@
     </parent>
 
     <modules>
-        <module>commons-codec</module>
         <module>commons-core</module>
         <module>commons-lang</module>
         <module>commons-logging</module>
+        <module>commons-security</module>
         <module>commons-util</module>
     </modules>
 </project>

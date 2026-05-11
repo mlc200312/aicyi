@@ -3,6 +3,7 @@ package io.github.aicyi.test.domain;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
+import io.github.aicyi.commons.core.BoBean;
 import io.github.aicyi.commons.lang.*;
 import lombok.Getter;
 import lombok.Setter;

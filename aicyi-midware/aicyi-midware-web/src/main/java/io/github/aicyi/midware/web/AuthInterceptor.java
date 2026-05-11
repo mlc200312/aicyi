@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.web;
 
 import io.github.aicyi.commons.core.token.TokenManager;
-import io.github.aicyi.commons.lang.IJWTInfo;
+import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;
 import org.apache.commons.lang3.StringUtils;

@@ -1,5 +1,7 @@
 package io.github.aicyi.commons.logging;
 
+import io.github.aicyi.commons.core.logging.Logger;
+
 /**
  * @author Mr.Min
  * @description 日志基础抽象类

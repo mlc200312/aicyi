@@ -1,8 +1,8 @@
 package io.github.aicyi.commons.util.jackson;
 
-import io.github.aicyi.commons.lang.EnumType;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import io.github.aicyi.commons.core.EnumType;
 
 import java.io.IOException;
 

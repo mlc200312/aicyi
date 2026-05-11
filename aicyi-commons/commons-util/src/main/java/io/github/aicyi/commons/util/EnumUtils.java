@@ -1,7 +1,7 @@
 package io.github.aicyi.commons.util;
 
-import io.github.aicyi.commons.lang.EnumType;
-import io.github.aicyi.commons.lang.StringEnumType;
+import io.github.aicyi.commons.core.EnumType;
+import io.github.aicyi.commons.core.StringEnumType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

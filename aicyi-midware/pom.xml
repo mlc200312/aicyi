@@ -34,6 +34,22 @@
             <groupId>io.github.aicyi.commons</groupId>
             <artifactId>commons-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>commons-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>commons-util</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

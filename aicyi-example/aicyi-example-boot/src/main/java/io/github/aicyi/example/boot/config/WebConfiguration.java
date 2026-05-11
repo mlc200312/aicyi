@@ -1,8 +1,8 @@
 package io.github.aicyi.example.boot.config;
 
-import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
+import io.github.aicyi.commons.core.token.JwtTokenManager;
 import io.github.aicyi.commons.core.token.TokenManager;
-import io.github.aicyi.commons.lang.IJWTInfo;
+import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.midware.web.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,9 +21,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-    private final IJwtTokenManager<IJWTInfo> jwtTokenManager;
+    private final JwtTokenManager<IJWTInfo> jwtTokenManager;
 
-    public WebConfiguration(IJwtTokenManager<IJWTInfo> jwtTokenManager) {
+    public WebConfiguration(JwtTokenManager<IJWTInfo> jwtTokenManager) {
         this.jwtTokenManager = jwtTokenManager;
     }
 

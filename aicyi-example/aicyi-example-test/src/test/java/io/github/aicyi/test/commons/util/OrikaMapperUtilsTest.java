@@ -59,7 +59,7 @@ public class OrikaMapperUtilsTest extends BaseLoggerTest {
     @Test
     public void test3() {
         List<ExampleBean> exampleBeanList = DataSource.getExampleList();
-        List<Example> exampleList = OrikaMapperRegistry.INSTANCE.mapAsList(exampleBeanList, Example.class);
+        List<Example> exampleList = OrikaMapperRegistry.INSTANCE.mapList(exampleBeanList, Example.class);
         assert exampleList != null;
 
         List<ExampleResp> exampleRespList = OrikaMapperRegistry.INSTANCE.mapAsList(exampleBeanList, ExampleResp.class, mappingConfig);

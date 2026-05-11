@@ -1,7 +1,7 @@
 package io.github.aicyi.example.domain;
 
-import io.github.aicyi.commons.core.jwt.JWTInfo;
-import io.github.aicyi.commons.lang.IJWTInfo;
+import io.github.aicyi.commons.codec.jwt.JWTInfo;
+import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.util.MapperUtils;
 import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.example.domain.entity.base.User;

@@ -1,6 +1,6 @@
 package io.github.aicyi.test.commons.core;
 
-import io.github.aicyi.commons.core.jwt.JwtTokenGenerator;
+import io.github.aicyi.commons.codec.jwt.JwtTokenGenerator;
 import io.github.aicyi.commons.util.DateUtils;
 import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;

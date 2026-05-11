@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.db.commons.typehandler;
 
-import io.github.aicyi.commons.lang.StringEnumType;
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.StringEnumType;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;

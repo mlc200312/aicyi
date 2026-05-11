@@ -17,12 +17,16 @@ public class RedisCacheFactory implements CacheFactory {
 
     private final EnhancedRedisTemplateFactory enhancedRedisTemplateFactory;
 
+    public RedisCacheFactory(EnhancedRedisTemplateFactory factory) {
+        this.enhancedRedisTemplateFactory = factory;
+    }
+
     public RedisCacheFactory(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
-        this.enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory, objectMapper);
+        this(new EnhancedRedisTemplateFactory(redisConnectionFactory, objectMapper));
     }
 
     public RedisCacheFactory(RedisConnectionFactory redisConnectionFactory) {
-        this.enhancedRedisTemplateFactory = new EnhancedRedisTemplateFactory(redisConnectionFactory);
+        this(new EnhancedRedisTemplateFactory(redisConnectionFactory));
     }
 
     public EnhancedRedisTemplateFactory getEnhancedRedisTemplateFactory() {
@@ -31,12 +35,12 @@ public class RedisCacheFactory implements CacheFactory {
 
     @Override
     public RedisCacheManager<Object> createCache(String name, CacheConfig config) {
-        RedisTemplate<String, Object> redisTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
+        RedisTemplate<String, Object> redisTemplate = getEnhancedRedisTemplateFactory().getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
         return new RedisCacheManager<>(redisTemplate, name);
     }
 
     public <V> RedisCacheManager<V> createCache(String name, JavaType javaType) {
-        RedisTemplate<String, V> redisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(javaType);
+        RedisTemplate<String, V> redisTemplate = getEnhancedRedisTemplateFactory().getJsonTemplate(javaType);
         return new RedisCacheManager<>(redisTemplate, name);
     }
 

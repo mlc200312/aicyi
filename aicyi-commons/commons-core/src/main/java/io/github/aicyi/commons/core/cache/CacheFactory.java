@@ -1,5 +1,6 @@
 package io.github.aicyi.commons.core.cache;
 
+
 /**
  * @author Mr.Min
  * @description 缓存工厂接口
@@ -23,7 +24,7 @@ public interface CacheFactory {
      * @return
      */
     default CacheManager<String, Object> createCache(String name) {
-        return createCache(name, CacheConfig.defaultConfig());
+        return createCache(name, DefaultCacheConfig.defaultConfig());
     }
 
     /**

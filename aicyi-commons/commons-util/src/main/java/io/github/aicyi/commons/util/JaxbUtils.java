@@ -1,7 +1,5 @@
 package io.github.aicyi.commons.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;

@@ -1,6 +1,6 @@
 package io.github.aicyi.example.boot.config;
 
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.SystemUtils;
 import org.springframework.beans.factory.annotation.Value;

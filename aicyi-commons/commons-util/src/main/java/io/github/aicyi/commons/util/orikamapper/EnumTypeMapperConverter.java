@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.util.orikamapper;
 
-import io.github.aicyi.commons.lang.EnumType;
+import io.github.aicyi.commons.core.EnumType;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;

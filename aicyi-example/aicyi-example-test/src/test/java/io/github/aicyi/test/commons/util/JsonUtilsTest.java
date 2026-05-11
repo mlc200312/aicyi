@@ -1,10 +1,10 @@
 package io.github.aicyi.test.commons.util;
 
-import io.github.aicyi.commons.core.jwt.JWTInfo;
-import io.github.aicyi.commons.lang.SmartJsonMapper;
+import io.github.aicyi.commons.codec.jwt.JWTInfo;
+import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.util.id.IdUtils;
-import io.github.aicyi.commons.util.jackson.JacksonJsonMapper;
+import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.test.domain.Example;
@@ -39,7 +39,7 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test() {
-        SmartJsonMapper instance = JsonUtils.getInstance();
+        JsonCodec instance = JsonUtils.getInstance();
         List<ExampleBean> exampleList = DataSource.getExampleList();
         String json = instance.toJson(a);
         String json1 = instance.toJson(aList);
@@ -51,13 +51,13 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test2() {
-        SmartJsonMapper instance = JsonUtils.getInstance();
+        JsonCodec instance = JsonUtils.getInstance();
         String json = DataSource.getExampleJson();
-        Object parse = instance.parse(json);
+        Object parse = instance.fromJson(json, Object.class);
         assert parse instanceof Map;
 
-        Type type = instance.constructType(Example.class);
-        Example parse1 = instance.parse(json, type);
+        Type type = instance.createType(Example.class);
+        Example parse1 = instance.fromJson(json, type);
         assert parse1 != null;
 
         log(parse, parse1);
@@ -65,9 +65,9 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test3() {
-        JacksonJsonMapper instance = JacksonJsonMapper.DEFAULT;
+        JacksonJsonCodec instance = JacksonJsonCodec.DEFAULT;
         String json = "{\"id\":613294732759531520,\"age\":0,\"idCard\":\"1f07da341eb26024b3f927826ef0e6e2\",\"mobile\":\"13010496590\",\"genderType\":\"WOMAN\",\"birthday\":\"2025-08-20\",\"userId\":\"610780341698822144\",\"username\":\"邓纨仪\",\"deviceId\":\"1f07da341ee56475b3f927826ef0e6e2\",\"isMasterDevice\":false}";
-        JWTInfo parse = instance.parse(json, JacksonTypeFactory.typeOf(JWTInfo.class));
+        JWTInfo parse = instance.fromJson(json, JacksonTypeFactory.typeOf(JWTInfo.class));
         assert parse != null;
 
         log(parse);
@@ -75,13 +75,13 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test4() {
-        SmartJsonMapper instance = JsonUtils.getInstance();
+        JsonCodec instance = JsonUtils.getInstance();
         String json = DataSource.getExampleListJson();
-        List<Example> exampleList = instance.parseList(json);
+        List<Example> exampleList = instance.fromJsonList(json, Example.class);
         assert exampleList != null;
 
-        Type type = instance.constructType(Example.class);
-        List<Example> exampleList1 = instance.parseList(json, type);
+        Type type = instance.createType(Example.class);
+        List<Example> exampleList1 = instance.fromJsonList(json, type);
         assert exampleList1 != null;
 
         log(exampleList, exampleList1);
@@ -89,17 +89,17 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test5() {
-        SmartJsonMapper instance = JsonUtils.getInstance();
+        JsonCodec instance = JsonUtils.getInstance();
         String json = DataSource.getExampleMapJson();
-        Map<Object, Object> exampleMap = instance.parseMap(json);
+        Map<Object, Object> exampleMap = instance.fromJsonMap(json, Object.class, Object.class);
         assert exampleMap != null;
 
-        Map<String, Example> exampleMap1 = instance.parseMap(json, Example.class);
+        Map<String, Example> exampleMap1 = instance.fromJsonMap(json, String.class, Example.class);
         assert exampleMap1 != null;
 
-        Type ktype = instance.constructType(Long.class);
-        Type vtype = instance.constructType(Example.class);
-        Map<Long, Example> exampleMap2 = instance.parseMap(json, ktype, vtype);
+        Type ktype = instance.createType(Long.class);
+        Type vtype = instance.createType(Example.class);
+        Map<Long, Example> exampleMap2 = instance.fromJsonMap(json, ktype, vtype);
         assert exampleMap2 != null;
 
         log(exampleMap, exampleMap1, exampleMap2);
@@ -107,11 +107,11 @@ public class JsonUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test6() {
-        SmartJsonMapper instance = JsonUtils.getInstance();
-        boolean emptyJSON = instance.isEmptyJSON("");
-        boolean emptyJSON1 = instance.isEmptyJSON("{}");
-        boolean emptyJSON2 = instance.isEmptyJSON("[]");
-        boolean emptyJSON3 = instance.isEmptyJSON("123");
+        JsonCodec instance = JsonUtils.getInstance();
+        boolean emptyJSON = instance.isEmptyJson("");
+        boolean emptyJSON1 = instance.isEmptyJson("{}");
+        boolean emptyJSON2 = instance.isEmptyJson("[]");
+        boolean emptyJSON3 = instance.isEmptyJson("123");
         assert emptyJSON && emptyJSON1 && emptyJSON2 && !emptyJSON3;
 
         log(emptyJSON, emptyJSON1, emptyJSON2, emptyJSON3);

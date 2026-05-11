@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.util;
 
-import io.github.aicyi.commons.lang.JsonCodec;
+import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 
 /**

@@ -1,6 +1,6 @@
 package io.github.aicyi.example.consumer.handler;
 
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.service.channel.MessageChannels;

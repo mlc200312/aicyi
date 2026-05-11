@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.db.commons.ibatis;
 
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.logging.LoggerType;
 import org.apache.ibatis.logging.Log;

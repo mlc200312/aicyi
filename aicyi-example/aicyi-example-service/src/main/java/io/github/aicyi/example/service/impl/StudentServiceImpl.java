@@ -1,6 +1,6 @@
 package io.github.aicyi.example.service.impl;
 
-import io.github.aicyi.commons.lang.SmartMapper;
+import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.util.NumberUtils;
 import io.github.aicyi.example.dao.mapper.StudentCustomMapper;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 public class StudentServiceImpl implements StudentService {
 
     @Autowired
-    private SmartMapper smartMapper;
+    private BeanMapper beanMapper;
     @Autowired
     private StudentMapper studentMapper;
     @Autowired
@@ -56,13 +56,13 @@ public class StudentServiceImpl implements StudentService {
 
         User newUser;
         if (CollectionUtils.isEmpty(list)) {
-            newUser = smartMapper.map(bean, User.class);
+            newUser = beanMapper.map(bean, User.class);
             userService.save(newUser);
         } else {
             newUser = list.get(0);
         }
 
-        Student newStudent = smartMapper.map(bean, Student.class);
+        Student newStudent = beanMapper.map(bean, Student.class);
         newStudent.setUserId(newUser.getId());
         newStudent.setRegisterTime(LocalDateTime.now());
         BaseEntityUtils.setDefaultValue(newStudent);
@@ -76,7 +76,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void update(StudentBean bean) {
-        Student student = smartMapper.map(bean, Student.class);
+        Student student = beanMapper.map(bean, Student.class);
         studentMapper.updateByPrimaryKeySelective(student);
     }
 
@@ -138,8 +138,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private StudentBean createStudentBean(Student student, User user) {
-        StudentBean studentBean = smartMapper.map(student, StudentBean.class);
-        smartMapper.map(user, studentBean);
+        StudentBean studentBean = beanMapper.map(student, StudentBean.class);
+        beanMapper.map(user, studentBean);
         return studentBean;
     }
 }

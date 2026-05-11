@@ -1,7 +1,7 @@
 package io.github.aicyi.test.domain;
 
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.lang.BoBean;
+import io.github.aicyi.commons.core.BoBean;
 import io.github.aicyi.commons.lang.type.BooleanType;
 import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.example.domain.UserBean;

@@ -1,6 +1,5 @@
 package io.github.aicyi.commons.util.jackson;
 
-import io.github.aicyi.commons.lang.StringEnumType;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.BeanProperty;
@@ -8,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
+import io.github.aicyi.commons.core.StringEnumType;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;

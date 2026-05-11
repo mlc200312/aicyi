@@ -1,9 +1,8 @@
 package io.github.aicyi.example.boot.redis;
 
 import io.github.aicyi.commons.core.cache.CacheManager;
+import io.github.aicyi.commons.core.cache.DefaultCacheConfig;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
-import io.github.aicyi.commons.core.cache.CacheConfig;
-import io.github.aicyi.commons.core.cache.StringCacheManager;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.midware.redis.cache.RedisCacheFactory;
 import org.junit.Before;
@@ -35,7 +34,7 @@ public class RedisCacheManagerTest extends BaseLoggerTest {
     @Before
     @Override
     public void beforeTest() {
-        redisCacheManager = new RedisCacheFactory(redisConnectionFactory).createCache("cache", CacheConfig.defaultConfig());
+        redisCacheManager = new RedisCacheFactory(redisConnectionFactory).createCache("cache", DefaultCacheConfig.defaultConfig());
     }
 
     @Test

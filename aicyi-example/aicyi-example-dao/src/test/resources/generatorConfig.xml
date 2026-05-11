@@ -54,6 +54,11 @@
             <columnOverride column="grade_type"
                             javaType="io.github.aicyi.example.domain.type.GradeType"></columnOverride>
         </table>
+
+        <table tableName="message_template" domainObjectName="MessageTemplate">
+            <columnOverride column="enabled"
+                            javaType="io.github.aicyi.commons.lang.type.BooleanType"></columnOverride>
+        </table>
     </context>
 </generatorConfiguration>
 

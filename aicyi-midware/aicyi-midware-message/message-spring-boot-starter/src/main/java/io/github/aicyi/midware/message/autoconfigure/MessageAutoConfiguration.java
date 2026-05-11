@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.midware.message.core.model.MessageType;
 import io.github.aicyi.midware.message.core.sender.DefaultUnifiedMessageManager;

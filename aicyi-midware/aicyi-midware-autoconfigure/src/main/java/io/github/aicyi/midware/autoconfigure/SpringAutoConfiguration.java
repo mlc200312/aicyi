@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.autoconfigure;
 
-import io.github.aicyi.commons.core.context.SpringEnvironmentHelper;
-import io.github.aicyi.commons.lang.JsonCodec;
+import io.github.aicyi.midware.context.SpringEnvironmentHelper;
+import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.util.JsonUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;

@@ -1,22 +1,22 @@
 package io.github.aicyi.midware.redis.jwt;
 
-import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
-import io.github.aicyi.commons.core.jwt.JWTInfo;
-import io.github.aicyi.commons.lang.IJWTInfo;
-import io.github.aicyi.commons.lang.JsonCodec;
-import io.github.aicyi.commons.core.token.DefaultTokenManager;
+import io.github.aicyi.commons.codec.jwt.DefaultJwtTokenManager;
+import io.github.aicyi.commons.codec.jwt.JwtTokenGenerator;
+import io.github.aicyi.commons.core.logging.Logger;
+import io.github.aicyi.commons.core.token.JwtTokenManager;
+import io.github.aicyi.commons.codec.jwt.JWTInfo;
+import io.github.aicyi.commons.core.IJWTInfo;
+import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.token.AbstractTokenManager;
 import io.github.aicyi.commons.core.token.TokenConfig;
-import io.github.aicyi.commons.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.core.jwt.JwtTokenGenerator;
 import io.github.aicyi.commons.util.Assert;
-import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
+import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.cache.RedisCacheFactory;
 import io.github.aicyi.midware.redis.cache.RedisCacheManager;
 import com.fasterxml.jackson.databind.JavaType;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -28,10 +28,13 @@ import java.util.concurrent.TimeUnit;
  * @description Redis+Jwt Token管理实现
  * @date 15:48
  **/
-public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManager<V> implements IJwtTokenManager<V> {
+public class RedisJwtTokenManager<V extends IJWTInfo> extends AbstractTokenManager<V> implements JwtTokenManager<V> {
 
     // 日志
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisJwtTokenManager.class);
+
+    // JsonCodec
+    private static final JsonCodec DEFAULT_JSON_CODEC = JsonUtils.getInstance();
 
     // 用户Token集合前缀
     private static final String USER_TOKENS_PREFIX = "user_tokens:";
@@ -39,28 +42,23 @@ public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManage
     private final RedisTemplate<String, String> stringRedisTemplate;
     private final HashOperations<String, String, String> opsForHash;
     private final RedisCacheManager<V> redisCacheManager;
-    private final JsonCodec jsonMapper;
 
-    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JacksonJsonCodec jsonCodec, JavaType javaType) {
-        super(tokenConfig, new JwtTokenGenerator(tokenConfig.getSigningKey(), tokenConfig.getIssuer()));
-        RedisCacheFactory redisCacheFactory = new RedisCacheFactory(redisConnectionFactory, jsonCodec.getObjectMapper());
-        EnhancedRedisTemplateFactory enhancedRedisTemplateFactory = redisCacheFactory.getEnhancedRedisTemplateFactory();
+
+    public RedisJwtTokenManager(TokenConfig config, EnhancedRedisTemplateFactory enhancedRedisTemplateFactory, JavaType javaType) {
+        super(config, new JwtTokenGenerator(config.getSigningKey(), config.getIssuer()));
+
+        RedisCacheFactory redisCacheFactory = new RedisCacheFactory(enhancedRedisTemplateFactory);
         this.stringRedisTemplate = enhancedRedisTemplateFactory.getStringTemplate();
         this.opsForHash = stringRedisTemplate.opsForHash();
         this.redisCacheManager = redisCacheFactory.createCache(javaType);
-        this.jsonMapper = jsonCodec;
     }
 
-    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, JavaType javaType) {
-        this(tokenConfig, redisConnectionFactory, JacksonJsonCodec.DEFAULT, javaType);
+    public RedisJwtTokenManager(TokenConfig tokenConfig, EnhancedRedisTemplateFactory enhancedRedisTemplateFactory, Class<V> clazz) {
+        this(tokenConfig, enhancedRedisTemplateFactory, JacksonTypeFactory.typeOf(clazz));
     }
 
-    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory, Class<V> clazz) {
-        this(tokenConfig, redisConnectionFactory, JacksonJsonCodec.DEFAULT, JacksonTypeFactory.typeOf(clazz));
-    }
-
-    public RedisJwtTokenManager(TokenConfig tokenConfig, RedisConnectionFactory redisConnectionFactory) {
-        this(tokenConfig, redisConnectionFactory, JacksonTypeFactory.typeOf(JWTInfo.class));
+    public RedisJwtTokenManager(TokenConfig tokenConfig, EnhancedRedisTemplateFactory enhancedRedisTemplateFactory) {
+        this(tokenConfig, enhancedRedisTemplateFactory, JacksonTypeFactory.typeOf(JWTInfo.class));
     }
 
     @Override
@@ -87,8 +85,8 @@ public class RedisJwtTokenManager<V extends IJWTInfo> extends DefaultTokenManage
         }
         // 自定义声明和默认声明组合
         Map<String, Object> enhancedClaims = new HashMap<>(claims);
-        String json = jsonMapper.toJson(value);
-        Map<String, Object> addClaims = jsonMapper.fromJsonMap(json, String.class, Object.class);
+        String json = DEFAULT_JSON_CODEC.toJson(value);
+        Map<String, Object> addClaims = DEFAULT_JSON_CODEC.fromJsonMap(json, String.class, Object.class);
         enhancedClaims.putAll(addClaims);
         // 生成Token
         String id = value.getId() + ":" + value.getDeviceId();

@@ -1,5 +1,7 @@
 package io.github.aicyi.commons.lang;
 
+import io.github.aicyi.commons.core.DoBean;
+
 /**
  * @author Mr.Min
  * @description 业务描述

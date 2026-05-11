@@ -1,7 +1,7 @@
 package io.github.aicyi.commons.util.orikamapper;
 
+import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.util.JsonUtils;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
@@ -13,14 +13,20 @@ import ma.glasnost.orika.metadata.Type;
  **/
 public class JsonMapperConverter extends BidirectionalConverter<BaseBean, String> {
 
+    private final JsonCodec jsonCodec;
+
+    public JsonMapperConverter(JsonCodec jsonCodec) {
+        this.jsonCodec = jsonCodec;
+    }
+
     @Override
     public String convertTo(BaseBean source, Type<String> type, MappingContext mappingContext) {
-        return JsonUtils.getInstance().toJson(source);
+        return jsonCodec.toJson(source);
     }
 
     @Override
     public BaseBean convertFrom(String source, Type<BaseBean> type, MappingContext mappingContext) {
-        return JsonUtils.getInstance().fromJson(source, type);
+        return jsonCodec.fromJson(source, type);
     }
 
     @Override

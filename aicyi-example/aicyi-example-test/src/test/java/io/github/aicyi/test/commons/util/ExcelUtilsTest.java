@@ -74,7 +74,7 @@ public class ExcelUtilsTest extends BaseLoggerTest {
     @Test
     public void test4() {
         List<StudentBean> studentList = DataSource.getStudentList();
-        List<StudentExcel> studentExcelList = MapperUtils.getInstance().mapAsList(studentList, StudentExcel.class);
+        List<StudentExcel> studentExcelList = MapperUtils.getInstance().mapList(studentList, StudentExcel.class);
         Path path = Paths.get("excel_001.xlsx");
         byte[] bytes = ExcelUtils.exportToBytes("12123", studentExcelList, StudentExcel.class);
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes)) {
@@ -89,7 +89,7 @@ public class ExcelUtilsTest extends BaseLoggerTest {
     @Test
     public void test5() {
         List<StudentBean> studentList = DataSource.getStudentList();
-        List<StudentExcel> studentExcelList = MapperUtils.getInstance().mapAsList(studentList, StudentExcel.class);
+        List<StudentExcel> studentExcelList = MapperUtils.getInstance().mapList(studentList, StudentExcel.class);
         String path = "excel_002.xlsx";
         ExcelUtils.exportToFile(path, "123", studentExcelList, StudentExcel.class);
     }

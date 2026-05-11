@@ -1,5 +1,7 @@
 package io.github.aicyi.commons.lang;
 
+import io.github.aicyi.commons.core.BoBean;
+
 /**
  * @author Mr.Min
  * @description 分页参数对象

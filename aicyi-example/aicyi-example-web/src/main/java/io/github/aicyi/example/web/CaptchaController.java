@@ -1,7 +1,7 @@
 package io.github.aicyi.example.web;
 
-import io.github.aicyi.commons.lang.IResponse;
-import io.github.aicyi.commons.lang.SmartMapper;
+import io.github.aicyi.commons.core.IResponse;
+import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.example.domain.SendCaptchaParam;
 import io.github.aicyi.example.service.CaptchaService;
 import io.github.aicyi.example.web.vo.*;
@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -31,7 +32,7 @@ import java.io.IOException;
 public class CaptchaController {
 
     @Autowired
-    private SmartMapper smartMapper;
+    private BeanMapper beanMapper;
     @Autowired
     private CaptchaService captchaService;
 
@@ -50,12 +51,18 @@ public class CaptchaController {
     @RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
     public void show(HttpServletResponse response, @PathVariable String uuid) {
         BufferedImage image = captchaService.getCaptcha(uuid);
-        try {
-            response.setContentType("image/jpeg");
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Cache-Control", "no-cache");
-            response.setDateHeader("Expires", 0);
 
+        if (Objects.isNull(image)) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        response.setContentType("image/jpeg");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+
+        try {
             ImageIO.write(image, "png", response.getOutputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -65,7 +72,7 @@ public class CaptchaController {
     @ApiOperation(value = "生成邮箱验证码", notes = "生成邮箱验证码")
     @RequestMapping(value = "/send-email-captcha", method = RequestMethod.POST)
     public IResponse<SendEmailCaptchaResp> sendEmailCaptcha(@Validated @RequestBody SendEmailCaptchaReq req) {
-        SendCaptchaParam param = smartMapper.map(req, SendCaptchaParam.class);
+        SendCaptchaParam param = beanMapper.map(req, SendCaptchaParam.class);
         String uuid = captchaService.sendEmailCaptcha(param);
         SendEmailCaptchaResp resp = new SendEmailCaptchaResp();
         resp.setUuid(uuid);
@@ -75,7 +82,7 @@ public class CaptchaController {
     @ApiOperation(value = "生成SMS验证码", notes = "生成SMS验证码")
     @RequestMapping(value = "/send-sms-captcha", method = RequestMethod.POST)
     public IResponse<SendSmsCaptchaResp> sendSmsCaptcha(@Validated @RequestBody SendSmsCaptchaReq req) {
-        SendCaptchaParam param = smartMapper.map(req, SendCaptchaParam.class);
+        SendCaptchaParam param = beanMapper.map(req, SendCaptchaParam.class);
         String uuid = captchaService.sendSmsCaptcha(param);
         SendSmsCaptchaResp resp = new SendSmsCaptchaResp();
         resp.setUuid(uuid);

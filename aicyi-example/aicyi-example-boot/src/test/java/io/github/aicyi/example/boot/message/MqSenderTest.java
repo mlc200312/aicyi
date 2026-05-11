@@ -40,6 +40,7 @@ public class MqSenderTest extends BaseLoggerTest {
     @Autowired(required = false)
     @Qualifier(MessageChannels.DELAYED_OUTPUT)
     private MessageChannel delayedMessageChannel;
+
     @Autowired
     private MqSender mqSender;
 

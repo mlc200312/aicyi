@@ -1,8 +1,8 @@
 package io.github.aicyi.midware.web;
 
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.lang.IResponse;
-import io.github.aicyi.commons.lang.IResultCode;
+import io.github.aicyi.commons.core.IResponse;
+import io.github.aicyi.commons.core.IResultCode;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 
 /**

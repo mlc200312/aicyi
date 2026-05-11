@@ -1,6 +1,6 @@
 package io.github.aicyi.example.consumer.config;
 
-import io.github.aicyi.commons.lang.SmartMapper;
+import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.commons.util.orikamapper.OrikaMapper;
 import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.example.domain.entity.base.Student;
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ManagerConfiguration {
     @Bean
-    public SmartMapper smartMapper() {
+    public BeanMapper smartMapper() {
         OrikaMapper orikaMapper = new OrikaMapper();
         MapperFactory mapperFactory = orikaMapper.getMapperFactory();
 

@@ -1,8 +1,8 @@
 package io.github.aicyi.example.service.impl;
 
-import io.github.aicyi.commons.core.jwt.IJwtTokenManager;
-import io.github.aicyi.commons.lang.SmartMapper;
-import io.github.aicyi.commons.lang.IJWTInfo;
+import io.github.aicyi.commons.core.token.JwtTokenManager;
+import io.github.aicyi.commons.core.BeanMapper;
+import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.example.domain.*;
@@ -27,11 +27,11 @@ import java.util.Objects;
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
-    private SmartMapper smartMapper;
+    private BeanMapper beanMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private IJwtTokenManager<IJWTInfo> jwtInfoTokenManager;
+    private JwtTokenManager<IJWTInfo> jwtInfoTokenManager;
     @Autowired
     private UserService userService;
     @Autowired
@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(RegisterParam param) {
-        User user = smartMapper.map(param, User.class);
+        User user = beanMapper.map(param, User.class);
         // 密码加密
         user.setPassword(passwordEncoder.encode(param.getPassword()));
         userService.save(user);

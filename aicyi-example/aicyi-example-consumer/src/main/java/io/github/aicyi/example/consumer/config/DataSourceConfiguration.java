@@ -2,9 +2,9 @@ package io.github.aicyi.example.consumer.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import io.github.aicyi.commons.lang.EnumType;
-import io.github.aicyi.commons.lang.StringEnumType;
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.EnumType;
+import io.github.aicyi.commons.core.StringEnumType;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.midware.db.commons.typehandler.GenericEnumTypeHandler;
 import io.github.aicyi.midware.db.commons.typehandler.GenericStringEnumTypeHandler;

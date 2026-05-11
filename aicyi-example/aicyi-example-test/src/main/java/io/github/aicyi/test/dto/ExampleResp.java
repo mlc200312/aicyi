@@ -1,7 +1,7 @@
 package io.github.aicyi.test.dto;
 
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.lang.VoBean;
+import io.github.aicyi.commons.core.VoBean;
 import io.github.aicyi.example.web.vo.StudentResp;
 import lombok.Getter;
 import lombok.Setter;

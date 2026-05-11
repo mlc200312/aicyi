@@ -20,6 +20,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>commons-util</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>message-spring-boot-starter</artifactId>
         </dependency>

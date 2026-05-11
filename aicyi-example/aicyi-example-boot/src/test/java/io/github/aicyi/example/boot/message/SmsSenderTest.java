@@ -1,6 +1,8 @@
 package io.github.aicyi.example.boot.message;
 
+import io.github.aicyi.commons.util.Maps;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
+import io.github.aicyi.midware.message.sms.model.SmsMessage;
 import io.github.aicyi.midware.message.sms.sender.SmsSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import lombok.SneakyThrows;
@@ -13,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -29,21 +32,21 @@ public class SmsSenderTest extends BaseLoggerTest {
 
     private List<String> numbers;
     private String content;
-    private String signName;
+    private String sign;
 
     @Before
     @Override
     public void beforeTest() {
         numbers = Arrays.asList("15910436675", "13661371201");
         content = "测试短信";
-        signName = "测试";
+        sign = "测试";
     }
 
     @Test
     @Override
     public void test() {
 
-        boolean isTrue = smsSender.send(numbers.get(0), content, signName);
+        boolean isTrue = smsSender.send(numbers.get(0), content, sign);
 
         log(isTrue);
     }
@@ -52,7 +55,7 @@ public class SmsSenderTest extends BaseLoggerTest {
     @Test
     public void test2() {
 
-        CompletableFuture<Boolean> async = smsSender.sendAsync(numbers, content, signName);
+        CompletableFuture<Boolean> async = smsSender.sendAsync(numbers, content, sign);
 
         Boolean isTrue = async.get();
 
@@ -62,18 +65,11 @@ public class SmsSenderTest extends BaseLoggerTest {
     @Test
     public void test3() {
 
-        boolean isTrue = smsSender.sendTemplate(numbers.get(0), "SMS_168900000", null, signName);
+        Map<String, Object> templateParams = Maps.of("code", "123").and("expireMinutes", "1000").build();
 
-        log(isTrue);
-    }
+        SmsMessage smsMessage = SmsMessage.of(numbers, "SMS_LOGIN_CODE", templateParams);
 
-    @SneakyThrows
-    @Test
-    public void test4() {
-
-        CompletableFuture<Boolean> async = smsSender.sendTemplateAsync(numbers, "SMS_168900000", null, signName);
-
-        Boolean isTrue = async.get();
+        boolean isTrue = smsSender.sendTemplate(smsMessage);
 
         log(isTrue);
     }

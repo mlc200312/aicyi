@@ -1,11 +1,10 @@
 package io.github.aicyi.example.service.impl;
 
 import io.github.aicyi.commons.core.cache.StringCacheManager;
-import io.github.aicyi.commons.core.context.SpringEnvironmentHelper;
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.lang.BoBean;
+import io.github.aicyi.commons.core.BoBean;
 import io.github.aicyi.commons.lang.exception.BusinessException;
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.CaptchaUtils;
 import io.github.aicyi.commons.util.id.IdUtils;
@@ -16,12 +15,14 @@ import io.github.aicyi.example.domain.type.CaptchaType;
 import io.github.aicyi.example.domain.type.ExampleResultCode;
 import io.github.aicyi.example.service.CaptchaService;
 import io.github.aicyi.example.service.UserService;
+import io.github.aicyi.midware.context.SpringEnvironmentHelper;
 import io.github.aicyi.midware.message.core.model.MessageContent;
 import io.github.aicyi.midware.message.core.sender.MessageSendCallback;
 import io.github.aicyi.midware.message.core.model.MessageSendResult;
 import io.github.aicyi.midware.message.core.sender.UnifiedMessageManager;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +63,9 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Override
     public BufferedImage getCaptcha(String uuid) {
         String code = stringCacheManager.get(Constants.getCaptchaKey(uuid));
+        if (StringUtils.isBlank(code)) {
+            return null;
+        }
         return CaptchaUtils.generateImage(code);
     }
 

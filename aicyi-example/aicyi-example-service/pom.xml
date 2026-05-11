@@ -27,6 +27,11 @@
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-kit</artifactId>
         </dependency>
 

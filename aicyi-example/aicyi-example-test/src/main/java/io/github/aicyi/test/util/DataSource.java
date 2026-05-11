@@ -117,9 +117,9 @@ public class DataSource {
         example.setIdList(Arrays.asList(1L, 2L, 3L));
         UserBean user = getUser();
         StudentBean student = getStudent();
-        StudentBean newStudent = MapperUtils.getInstance().map(user, student);
+        MapperUtils.getInstance().map(user, student);
         example.setUser(user);
-        example.setStudent(newStudent);
+        example.setStudent(student);
         example.setNothing("nothing");
         return example;
     }

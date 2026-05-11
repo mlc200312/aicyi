@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.message.core.template;
 
-import io.github.aicyi.commons.lang.JsonCodec;
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;

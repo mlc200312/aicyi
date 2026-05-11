@@ -1,6 +1,6 @@
 package io.github.aicyi.example.domain.type;
 
-import io.github.aicyi.commons.lang.StringEnumType;
+import io.github.aicyi.commons.core.StringEnumType;
 import io.github.aicyi.commons.util.jackson.StringEnumTypeJsonDeserializer;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

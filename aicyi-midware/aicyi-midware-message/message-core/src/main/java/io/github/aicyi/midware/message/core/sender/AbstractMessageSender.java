@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.core.sender;
 
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.midware.message.core.model.MessageContent;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
  **/
 public abstract class AbstractMessageSender implements MessageSender {
 
-    protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public MessageSendResult send(MessageContent content) {
@@ -23,7 +23,7 @@ public abstract class AbstractMessageSender implements MessageSender {
             validate(content);
             return doSend(content);
         } catch (MessageSendException e) {
-            LOGGER.error(e, "发送消息失败");
+            logger.error(e, "发送消息失败");
             return MessageSendResult.builder()
                     .messageId(content.getMessageId())
                     .buildFailure(e.getCode(), e.getMessage());

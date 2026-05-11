@@ -16,7 +16,7 @@ public class StringRedisCacheManager extends RedisCacheManager<String> implement
         super(redisTemplate, cacheName);
     }
 
-    public StringRedisCacheManager(RedisConnectionFactory redisConnectionFactory, String cacheName) {
-        super(new EnhancedRedisTemplateFactory(redisConnectionFactory).getStringTemplate(), cacheName);
+    public StringRedisCacheManager(EnhancedRedisTemplateFactory factory, String cacheName) {
+        super(factory.getStringTemplate(), cacheName);
     }
 }

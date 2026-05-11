@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.util.orikamapper;
 
-import io.github.aicyi.commons.lang.SmartMapper;
+import io.github.aicyi.commons.core.BeanMapper;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
  * 3. 忽略字段映射
  * 4. Mapper缓存复用
  */
-public enum OrikaMapperRegistry implements SmartMapper {
+public enum OrikaMapperRegistry implements BeanMapper {
 
     INSTANCE;
 
     /**
      * 默认Mapper
      */
-    private static final SmartMapper DEFAULT_MAPPER = new OrikaMapper();
+    private static final BeanMapper DEFAULT_MAPPER = new OrikaMapper();
 
     /**
      * 自定义Mapper缓存
@@ -38,13 +38,13 @@ public enum OrikaMapperRegistry implements SmartMapper {
     }
 
     @Override
-    public <S, D> D map(S source, D destination) {
-        return DEFAULT_MAPPER.map(source, destination);
+    public <S, D> void map(S source, D destination) {
+        DEFAULT_MAPPER.map(source, destination);
     }
 
     @Override
-    public <S, D> List<D> mapAsList(Collection<S> sourceList, Class<D> destinationType) {
-        return DEFAULT_MAPPER.mapAsList(sourceList, destinationType);
+    public <S, D> List<D> mapList(Collection<S> sourceList, Class<D> destinationType) {
+        return DEFAULT_MAPPER.mapList(sourceList, destinationType);
     }
 
     public <S, D> D map(S source, Class<D> destinationType, MappingConfig config) {
@@ -59,12 +59,12 @@ public enum OrikaMapperRegistry implements SmartMapper {
         ).map(source, destinationType);
     }
 
-    public <S, D> D map(S source, D destination, MappingConfig config) {
+    public <S, D> void map(S source, D destination, MappingConfig config) {
         if (source == null || destination == null) {
-            return null;
+            return;
         }
 
-        return getOrCreateMapper(
+        getOrCreateMapper(
                 source.getClass(),
                 destination.getClass(),
                 config
@@ -93,7 +93,7 @@ public enum OrikaMapperRegistry implements SmartMapper {
                 first.getClass(),
                 destinationType,
                 config
-        ).mapAsList(sourceList, destinationType);
+        ).mapList(sourceList, destinationType);
     }
 
     private <S, D> OrikaMapper getOrCreateMapper(

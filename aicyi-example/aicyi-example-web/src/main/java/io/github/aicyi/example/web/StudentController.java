@@ -1,7 +1,7 @@
 package io.github.aicyi.example.web;
 
-import io.github.aicyi.commons.lang.IResponse;
-import io.github.aicyi.commons.lang.SmartMapper;
+import io.github.aicyi.commons.core.IResponse;
+import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.example.domain.StudentQuery;
 import io.github.aicyi.example.web.vo.AddStudentReq;
 import io.github.aicyi.midware.web.PageResponse;
@@ -32,7 +32,7 @@ import java.util.List;
 public class StudentController {
 
     @Autowired
-    private SmartMapper smartMapper;
+    private BeanMapper beanMapper;
     @Autowired
     private StudentService studentService;
 
@@ -47,7 +47,7 @@ public class StudentController {
     @RequestMapping(value = "/get-by-id", method = RequestMethod.GET)
     public IResponse<StudentResp> getById(@RequestParam String id) {
         StudentBean bean = studentService.getById(Long.valueOf(id));
-        StudentResp resp = smartMapper.map(bean, StudentResp.class);
+        StudentResp resp = beanMapper.map(bean, StudentResp.class);
         return Response.success(resp);
     }
 
@@ -62,7 +62,7 @@ public class StudentController {
     @RequestMapping(value = "/get-by-mobile", method = RequestMethod.GET)
     public IResponse<StudentResp> getByMobile(@RequestParam String mobile) {
         StudentBean bean = studentService.getByMobile(mobile);
-        StudentResp resp = smartMapper.map(bean, StudentResp.class);
+        StudentResp resp = beanMapper.map(bean, StudentResp.class);
         return Response.success(resp);
     }
 
@@ -76,9 +76,9 @@ public class StudentController {
     )
     @RequestMapping(value = "/paged-list", method = RequestMethod.GET)
     public IResponse<PageResponse<StudentResp>> pagedList(@Validated @ModelAttribute StudentReq req) {
-        StudentQuery query = smartMapper.map(req, StudentQuery.class);
+        StudentQuery query = beanMapper.map(req, StudentQuery.class);
         Page<StudentBean> page = studentService.pagedList(query);
-        List<StudentResp> respList = smartMapper.mapAsList(page.getContent(), StudentResp.class);
+        List<StudentResp> respList = beanMapper.mapList(page.getContent(), StudentResp.class);
         return Response.success(PageResponse.build(respList, page));
     }
 
@@ -92,7 +92,7 @@ public class StudentController {
     )
     @RequestMapping(value = "/add-student", method = RequestMethod.POST)
     public IResponse<Void> addStudent(@Validated @RequestBody AddStudentReq req) {
-        StudentBean bean = smartMapper.map(req, StudentBean.class);
+        StudentBean bean = beanMapper.map(req, StudentBean.class);
         studentService.add(bean);
         return Response.success();
     }

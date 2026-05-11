@@ -1,6 +1,6 @@
 package io.github.aicyi.example.domain.type;
 
-import io.github.aicyi.commons.lang.IResultCode;
+import io.github.aicyi.commons.core.IResultCode;
 
 /**
  * @author Mr.Min

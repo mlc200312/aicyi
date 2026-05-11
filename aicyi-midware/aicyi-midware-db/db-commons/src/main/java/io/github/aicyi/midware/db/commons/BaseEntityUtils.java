@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 基础实体工具类
  * @date 18:18
  **/
 public class BaseEntityUtils {

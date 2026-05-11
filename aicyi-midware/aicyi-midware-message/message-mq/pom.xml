@@ -9,8 +9,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>message rabbitmq</name>
-    <description>message rabbitmq</description>
+    <name>message mq</name>
+    <description>message mq</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>

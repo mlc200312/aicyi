@@ -47,11 +47,11 @@ public class Constants {
     public static MessageContent getEmailMessageContent(CaptchaType captchaType, String captcha, String email) {
         switch (captchaType) {
             case LOGIN_CAPTCHA_TYPE:
-                return MailMessage.of(String.format("【爱创意】验证码：%s，（10分钟内有效）。您正在登录爱创意Aicyi，请勿将验证码告诉他人哦。", captcha), "【爱创意】登录账号", email);
+                return MailMessage.withContent(String.format("【爱创意】验证码：%s，（10分钟内有效）。您正在登录爱创意Aicyi，请勿将验证码告诉他人哦。", captcha), "【爱创意】登录账号", email);
             case REGISTER_CAPTCHA_TYPE:
-                return MailMessage.of(String.format("【爱创意】验证码：%s，（10分钟内有效）。您正在注册爱创意Aicyi，请勿将验证码告诉他人哦。", captcha), "【爱创意】注册账号", email);
+                return MailMessage.withContent(String.format("【爱创意】验证码：%s，（10分钟内有效）。您正在注册爱创意Aicyi，请勿将验证码告诉他人哦。", captcha), "【爱创意】注册账号", email);
             case UPDATE_PASSWORD_CAPTCHA_TYPE:
-                return MailMessage.of(String.format("【爱创意】验证码：%s，（10分钟内有效）。您正在修改密码，请勿将验证码告诉他人哦。", captcha), "【爱创意】修改密码", email);
+                return MailMessage.withContent(String.format("【爱创意】验证码：%s，（10分钟内有效）。您正在修改密码，请勿将验证码告诉他人哦。", captcha), "【爱创意】修改密码", email);
             default:
                 throw new IllegalArgumentException("captchaType is not support");
         }
@@ -60,10 +60,10 @@ public class Constants {
     public static MessageContent getSmsMessageContent(CaptchaType captchaType, String captcha, String phone) {
         switch (captchaType) {
             case UPDATE_PASSWORD_CAPTCHA_TYPE:
-                Map<String, String> templateParams = Maps
+                Map<String, Object> templateParams = Maps
                         .of("captcha", captcha)
                         .build();
-                return SmsMessage.of("1", "+86" + phone, templateParams, "Test");
+                return SmsMessage.of(phone, "SMS_LOGIN_CODE", templateParams);
             default:
                 throw new IllegalArgumentException("captchaType is not support");
         }

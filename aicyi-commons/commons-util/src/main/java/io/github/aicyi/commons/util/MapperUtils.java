@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.util;
 
-import io.github.aicyi.commons.lang.SmartMapper;
+import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.commons.util.orikamapper.OrikaMapperRegistry;
 
 /**
@@ -13,7 +13,7 @@ public class MapperUtils {
     private MapperUtils() {
     }
 
-    public static SmartMapper getInstance() {
+    public static BeanMapper getInstance() {
         return OrikaMapperRegistry.INSTANCE;
     }
 }

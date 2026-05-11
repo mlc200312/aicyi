@@ -1,7 +1,7 @@
 package io.github.aicyi.example.web;
 
-import io.github.aicyi.commons.lang.IResponse;
-import io.github.aicyi.commons.lang.SmartMapper;
+import io.github.aicyi.commons.core.IResponse;
+import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.commons.util.CurrentContextHolder;
 import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.service.UserService;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private SmartMapper smartMapper;
+    private BeanMapper beanMapper;
     @Autowired
     private UserService userService;
 
@@ -40,7 +40,7 @@ public class UserController {
     public IResponse<UserInfoResp> getUserInfo() {
         String userId = CurrentContextHolder.getUserId();
         User user = userService.getById(Long.valueOf(userId));
-        UserInfoResp resp = smartMapper.map(user, UserInfoResp.class);
+        UserInfoResp resp = beanMapper.map(user, UserInfoResp.class);
         return Response.success(resp);
     }
 }

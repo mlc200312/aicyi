@@ -2,6 +2,7 @@ package io.github.aicyi.midware.redis.cache;
 
 import io.github.aicyi.commons.core.cache.CacheConfig;
 import io.github.aicyi.commons.core.cache.CacheManager;
+import io.github.aicyi.commons.core.cache.DefaultCacheConfig;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -30,7 +31,7 @@ public class RedisCacheManager<T> implements CacheManager<String, T> {
     }
 
     public RedisCacheManager(RedisTemplate<String, T> redisTemplate, String cacheName) {
-        this(redisTemplate, CacheConfig.defaultConfig(), cacheName);
+        this(redisTemplate, DefaultCacheConfig.defaultConfig(), cacheName);
     }
 
     public RedisTemplate<String, T> getRedisTemplate() {

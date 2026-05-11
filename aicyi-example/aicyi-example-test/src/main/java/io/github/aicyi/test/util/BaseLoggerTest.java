@@ -1,7 +1,7 @@
 package io.github.aicyi.test.util;
 
 
-import io.github.aicyi.commons.logging.Logger;
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 
 /**
