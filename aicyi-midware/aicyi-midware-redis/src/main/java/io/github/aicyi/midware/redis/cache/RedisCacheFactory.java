@@ -35,12 +35,12 @@ public class RedisCacheFactory implements CacheFactory {
 
     @Override
     public RedisCacheManager<Object> createCache(String name, CacheConfig config) {
-        RedisTemplate<String, Object> redisTemplate = getEnhancedRedisTemplateFactory().getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
+        RedisTemplate<String, Object> redisTemplate = getEnhancedRedisTemplateFactory().getGenericRedisTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
         return new RedisCacheManager<>(redisTemplate, name);
     }
 
     public <V> RedisCacheManager<V> createCache(String name, JavaType javaType) {
-        RedisTemplate<String, V> redisTemplate = getEnhancedRedisTemplateFactory().getJsonTemplate(javaType);
+        RedisTemplate<String, V> redisTemplate = getEnhancedRedisTemplateFactory().getJsonRedisTemplate(javaType);
         return new RedisCacheManager<>(redisTemplate, name);
     }
 

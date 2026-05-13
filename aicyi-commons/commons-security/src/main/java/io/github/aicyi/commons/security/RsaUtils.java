@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.codec;
+package io.github.aicyi.commons.security;
 
 import io.github.aicyi.commons.lang.Pair;
 import org.apache.commons.codec.binary.Base64;
@@ -55,8 +55,8 @@ public class RsaUtils {
             RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
             RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
             return new Pair(publicKey.getEncoded(), privateKey.getEncoded());
-        } catch (NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -71,8 +71,8 @@ public class RsaUtils {
         X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(keyBytes);
         try {
             return KeyFactory.getInstance(KEY_ALGORITHM).generatePublic(x509EncodedKeySpec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            ex.printStackTrace();
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -87,8 +87,8 @@ public class RsaUtils {
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(keyBytes);
         try {
             return KeyFactory.getInstance(KEY_ALGORITHM).generatePrivate(pkcs8EncodedKeySpec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            ex.printStackTrace();
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -107,8 +107,8 @@ public class RsaUtils {
             byte[] encryptBytes = cipher.doFinal(content.getBytes(StandardCharsets.UTF_8));
             return Base64.encodeBase64String(encryptBytes);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException |
-                 BadPaddingException ex) {
-            ex.printStackTrace();
+                 BadPaddingException e) {
+            e.printStackTrace();
         }
         return null;
 
@@ -128,9 +128,12 @@ public class RsaUtils {
             byte[] decodeBase64 = Base64.decodeBase64(content.getBytes(StandardCharsets.UTF_8));
             byte[] decryptBytes = cipher.doFinal(decodeBase64);
             return new String(decryptBytes);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException |
-                 BadPaddingException ex) {
-            ex.printStackTrace();
+        } catch (NoSuchAlgorithmException |
+                 NoSuchPaddingException |
+                 InvalidKeyException |
+                 IllegalBlockSizeException |
+                 BadPaddingException e) {
+            e.printStackTrace();
         }
         return null;
     }

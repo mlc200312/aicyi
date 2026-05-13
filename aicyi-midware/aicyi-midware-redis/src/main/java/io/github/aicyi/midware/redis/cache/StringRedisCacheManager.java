@@ -2,7 +2,6 @@ package io.github.aicyi.midware.redis.cache;
 
 import io.github.aicyi.commons.core.cache.StringCacheManager;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -17,6 +16,6 @@ public class StringRedisCacheManager extends RedisCacheManager<String> implement
     }
 
     public StringRedisCacheManager(EnhancedRedisTemplateFactory factory, String cacheName) {
-        super(factory.getStringTemplate(), cacheName);
+        super(factory.getStringRedisTemplate(), cacheName);
     }
 }

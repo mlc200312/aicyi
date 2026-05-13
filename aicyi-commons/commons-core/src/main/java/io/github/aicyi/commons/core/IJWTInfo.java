@@ -22,13 +22,6 @@ public interface IJWTInfo {
     String getUniqueName();
 
     /**
-     * tokenId
-     *
-     * @return
-     */
-    String getTokenId();
-
-    /**
      * 获取设备ID
      *
      * @return

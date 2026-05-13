@@ -32,7 +32,7 @@ public class RedisSnowflakeIdGeneratorTest extends BaseLoggerTest {
     @Before
     @Override
     public void beforeTest() {
-        this.stringRedisTemplate = new EnhancedRedisTemplateFactory(redisConnectionFactory).getStringTemplate();
+        this.stringRedisTemplate = new EnhancedRedisTemplateFactory(redisConnectionFactory).getStringRedisTemplate();
     }
 
     @Override

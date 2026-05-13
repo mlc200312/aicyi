@@ -1,7 +1,7 @@
 package io.github.aicyi.test.commons.codec;
 
-import io.github.aicyi.commons.codec.Md5Utils;
-import io.github.aicyi.commons.codec.MessageDigestUtils;
+import io.github.aicyi.commons.security.Md5Utils;
+import io.github.aicyi.commons.security.MessageDigestUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import org.junit.Test;
 

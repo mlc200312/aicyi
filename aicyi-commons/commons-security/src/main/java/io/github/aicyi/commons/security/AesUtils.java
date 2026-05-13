@@ -1,7 +1,6 @@
-package io.github.aicyi.commons.codec;
+package io.github.aicyi.commons.security;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;

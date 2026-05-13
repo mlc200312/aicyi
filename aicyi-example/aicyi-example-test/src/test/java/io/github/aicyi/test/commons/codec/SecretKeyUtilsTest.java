@@ -1,6 +1,6 @@
 package io.github.aicyi.test.commons.codec;
 
-import io.github.aicyi.commons.codec.SecretKeyUtils;
+import io.github.aicyi.commons.security.SecretKeyUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

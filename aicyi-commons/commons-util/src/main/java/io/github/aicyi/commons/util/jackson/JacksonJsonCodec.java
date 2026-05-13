@@ -28,8 +28,8 @@ public final class JacksonJsonCodec implements JsonCodec {
 
     private final ObjectMapper objectMapper;
 
-    public JacksonJsonCodec() {
-        this(JsonInclude.Include.NON_NULL);
+    public JacksonJsonCodec(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     public JacksonJsonCodec(JsonInclude.Include include) {
@@ -39,6 +39,10 @@ public final class JacksonJsonCodec implements JsonCodec {
         objectMapper.setTimeZone(TimeZone.getDefault());
 
         registerModules();
+    }
+
+    public JacksonJsonCodec() {
+        this(JsonInclude.Include.NON_NULL);
     }
 
     public ObjectMapper getObjectMapper() {

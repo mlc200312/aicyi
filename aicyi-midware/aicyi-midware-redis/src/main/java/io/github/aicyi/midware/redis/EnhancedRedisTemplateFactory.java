@@ -5,6 +5,7 @@ import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import com.fasterxml.jackson.databind.JavaType;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.*;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
@@ -14,6 +15,8 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
  * @date 2025/8/11
  **/
 public class EnhancedRedisTemplateFactory {
+
+    private static final StringRedisSerializer STRING_REDIS_SERIALIZER = new StringRedisSerializer();
 
     private final RedisConnectionFactory redisConnectionFactory;
     private final ObjectMapper objectMapper;
@@ -31,30 +34,28 @@ public class EnhancedRedisTemplateFactory {
         return redisConnectionFactory;
     }
 
-    public RedisTemplate<String, String> getStringTemplate() {
-        RedisTemplate<String, String> template = new RedisTemplate<>();
-
-        template.setConnectionFactory(redisConnectionFactory);
-
-        // 键始终使用字符串序列化
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-
-        // 值始终使用字符串序列化
-        template.setValueSerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new StringRedisSerializer());
-
-        template.afterPropertiesSet();
-        return template;
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 
-    public <T> RedisTemplate<String, T> getJsonTemplate(JavaType javaType) {
+    public StringRedisTemplate getStringRedisTemplate() {
+
+        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+
+        stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
+
+        stringRedisTemplate.afterPropertiesSet();
+
+        return stringRedisTemplate;
+    }
+
+    public <T> RedisTemplate<String, T> getJsonRedisTemplate(JavaType javaType) {
         RedisTemplate<String, T> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
 
         // 键始终使用字符串序列化
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setKeySerializer(RedisSerializer.string());
+        template.setHashKeySerializer(RedisSerializer.string());
 
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(javaType);
         jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
@@ -74,13 +75,13 @@ public class EnhancedRedisTemplateFactory {
      * @param <T>
      * @return
      */
-    public <T> RedisTemplate<String, T> getXmlTemplate(Class<T> clazz) {
+    public <T> RedisTemplate<String, T> getXmlRedisTemplate(Class<T> clazz) {
         RedisTemplate<String, T> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
 
         // 键始终使用字符串序列化
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setKeySerializer(RedisSerializer.string());
+        template.setHashKeySerializer(RedisSerializer.string());
 
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
         marshaller.setClassesToBeBound(clazz);
@@ -104,13 +105,13 @@ public class EnhancedRedisTemplateFactory {
      * @param <T>
      * @return
      */
-    public <T> RedisTemplate<String, T> getXmlTemplate(String packagesToScan) {
+    public <T> RedisTemplate<String, T> getXmlRedisTemplate(String packagesToScan) {
         RedisTemplate<String, T> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
 
         // 键始终使用字符串序列化
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setKeySerializer(RedisSerializer.string());
+        template.setHashKeySerializer(RedisSerializer.string());
 
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
         marshaller.setPackagesToScan(packagesToScan);
@@ -127,13 +128,13 @@ public class EnhancedRedisTemplateFactory {
         return template;
     }
 
-    public RedisTemplate<String, Object> getGenericTemplate(SerializerType serializerType) {
+    public RedisTemplate<String, Object> getGenericRedisTemplate(SerializerType serializerType) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
 
         // 键始终使用字符串序列化
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setKeySerializer(RedisSerializer.string());
+        template.setHashKeySerializer(RedisSerializer.string());
 
         // 根据类型设置值序列化器
         switch (serializerType) {
@@ -151,8 +152,8 @@ public class EnhancedRedisTemplateFactory {
                 template.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
                 break;
             default:
-                template.setValueSerializer(new StringRedisSerializer());
-                template.setHashValueSerializer(new StringRedisSerializer());
+                template.setValueSerializer(RedisSerializer.string());
+                template.setHashValueSerializer(RedisSerializer.string());
         }
 
         template.afterPropertiesSet();

@@ -1,6 +1,7 @@
 package io.github.aicyi.commons.lang.exception;
 
 import io.github.aicyi.commons.core.IResultCode;
+import io.github.aicyi.commons.core.exception.BaseException;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 
 /**
@@ -12,10 +13,6 @@ public class BusinessException extends BaseException {
 
     public BusinessException(IResultCode resultCode) {
         super(resultCode);
-    }
-
-    public BusinessException(Integer code, String message) {
-        super(code, message);
     }
 
     public BusinessException(String message) {

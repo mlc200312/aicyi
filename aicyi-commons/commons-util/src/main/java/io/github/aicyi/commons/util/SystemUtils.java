@@ -5,9 +5,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
- * @description  业务描述
- * @author  Mr.Min
- * @date  2021/4/28
+ * @author Mr.Min
+ * @description 业务描述
+ * @date 2021/4/28
  **/
 public class SystemUtils {
 
@@ -15,8 +15,8 @@ public class SystemUtils {
         try {
             InetAddress localHost = Inet4Address.getLocalHost();
             return localHost.getHostAddress();
-        } catch (UnknownHostException ex) {
-            ex.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         }
         return "";
     }

@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.web;
 
-import io.github.aicyi.commons.core.token.TokenManager;
+import io.github.aicyi.commons.core.token.TokenService;
 import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;
@@ -11,7 +11,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author Mr.Min
@@ -20,10 +19,10 @@ import java.util.Optional;
  **/
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private TokenManager<String, IJWTInfo> tokenManager;
+    private TokenService<String, IJWTInfo> tokenService;
 
-    public AuthInterceptor(TokenManager<String, IJWTInfo> tokenManager) {
-        this.tokenManager = tokenManager;
+    public AuthInterceptor(TokenService<String, IJWTInfo> tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -50,20 +49,20 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String token = authorization.replace("Bearer ", "");
 
-        if (!tokenManager.validateToken(token)) {
+        if (!tokenService.isValid(token)) {
             throw new UnauthorizedException();
         }
 
-        Optional<IJWTInfo> jwtInfo = tokenManager.parseJwtInfo(token);
+        IJWTInfo jwtInfo = tokenService.parsePrincipal(token);
 
-        CurrentContextHolder.setUserId(jwtInfo.get().getId());
-        CurrentContextHolder.setUsername(jwtInfo.get().getUniqueName());
+        CurrentContextHolder.setUserId(jwtInfo.getId());
+        CurrentContextHolder.setUsername(jwtInfo.getUniqueName());
 
         return true;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) throws Exception {
         CurrentContextHolder.remove();
     }
 }

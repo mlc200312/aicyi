@@ -1,6 +1,6 @@
 package io.github.aicyi.test.commons.util;
 
-import io.github.aicyi.commons.codec.jwt.JWTInfo;
+import io.github.aicyi.commons.security.token.JWTInfo;
 import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.util.id.IdUtils;

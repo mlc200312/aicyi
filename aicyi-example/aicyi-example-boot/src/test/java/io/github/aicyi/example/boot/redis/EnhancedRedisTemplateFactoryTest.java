@@ -39,8 +39,8 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
     @Before
     @Override
     public void beforeTest() {
-        stringTemplate = enhancedRedisTemplateFactory.getStringTemplate();
-        exampleRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(JacksonTypeFactory.typeOf(ExampleBean.class));
+        stringTemplate = enhancedRedisTemplateFactory.getStringRedisTemplate();
+        exampleRedisTemplate = enhancedRedisTemplateFactory.getJsonRedisTemplate(JacksonTypeFactory.typeOf(ExampleBean.class));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
         assert example != null;
 
         JavaType exampleType = JacksonTypeFactory.parametricTypeOf(List.class, JacksonTypeFactory.typeOf(Example.class));
-        RedisTemplate<String, List<ExampleBean>> listRedisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(exampleType);
+        RedisTemplate<String, List<ExampleBean>> listRedisTemplate = enhancedRedisTemplateFactory.getJsonRedisTemplate(exampleType);
         BoundValueOperations<String, List<ExampleBean>> jsonListRedisTemplateTest = listRedisTemplate.boundValueOps("jsonListRedisTemplateTest");
         jsonListRedisTemplateTest.set(DataSource.getExampleList());
         List<ExampleBean> exampleList = jsonListRedisTemplateTest.get();
@@ -81,7 +81,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
     @Test
     public void jsonStrRedisTemplateTest() {
         JavaType stringType = JacksonTypeFactory.typeOf(String.class);
-        RedisTemplate<String, String> redisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(stringType);
+        RedisTemplate<String, String> redisTemplate = enhancedRedisTemplateFactory.getJsonRedisTemplate(stringType);
         BoundValueOperations<String, String> jsonStrRedisTemplateTest = redisTemplate.boundValueOps("jsonStrRedisTemplateTest");
         jsonStrRedisTemplateTest.set("jsonStrRedisTemplateTest");
         String value = jsonStrRedisTemplateTest.get();
@@ -94,7 +94,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
     @Test
     public void jsonIntRedisTemplateTest() {
         JavaType intType = JacksonTypeFactory.typeOf(Integer.class);
-        RedisTemplate<String, Integer> redisTemplate = enhancedRedisTemplateFactory.getJsonTemplate(intType);
+        RedisTemplate<String, Integer> redisTemplate = enhancedRedisTemplateFactory.getJsonRedisTemplate(intType);
         BoundValueOperations<String, Integer> jsonIntRedisTemplateTest = redisTemplate.boundValueOps("jsonIntRedisTemplateTest");
         jsonIntRedisTemplateTest.set(999999);
         Integer value = jsonIntRedisTemplateTest.get();
@@ -107,7 +107,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     @Test
     public void objectJdkRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JDK);
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericRedisTemplate(EnhancedRedisTemplateFactory.SerializerType.JDK);
         BoundValueOperations<String, Object> objectJdkRedisTemplateTest = genericTemplate.boundValueOps("objectJdkRedisTemplateTest");
         objectJdkRedisTemplateTest.set(DataSource.getExample());
         Object value = objectJdkRedisTemplateTest.get();
@@ -120,7 +120,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     @Test
     public void objectXmlRedisTemplateTest() {
-        RedisTemplate<String, Message> genericTemplate = enhancedRedisTemplateFactory.getXmlTemplate(Message.class);
+        RedisTemplate<String, Message> genericTemplate = enhancedRedisTemplateFactory.getXmlRedisTemplate(Message.class);
         BoundValueOperations<String, Message> objectXmlRedisTemplateTest = genericTemplate.boundValueOps("objectXmlRedisTemplateTest");
         objectXmlRedisTemplateTest.set(DataSource.getMessage());
         Message value = objectXmlRedisTemplateTest.get();
@@ -132,7 +132,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     @Test
     public void objectJsonRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericRedisTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
         BoundValueOperations<String, Object> objectJsonRedisTemplateTest = genericTemplate.boundValueOps("objectJsonRedisTemplateTest");
         objectJsonRedisTemplateTest.set(DataSource.getExample());
         Object value = objectJsonRedisTemplateTest.get();
@@ -144,7 +144,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     @Test
     public void objectStrJsonRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericRedisTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
         BoundValueOperations<String, Object> objectStrJsonRedisTemplateTest = genericTemplate.boundValueOps("objectStrJsonRedisTemplateTest");
         objectStrJsonRedisTemplateTest.set("objectStrJsonRedisTemplateTest");
         Object value = objectStrJsonRedisTemplateTest.get();
@@ -156,7 +156,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     @Test
     public void objectNumJsonRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericRedisTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
         BoundValueOperations<String, Object> objectNumJsonRedisTemplateTest = genericTemplate.boundValueOps("objectNumJsonRedisTemplateTest");
         objectNumJsonRedisTemplateTest.set(Double.valueOf("9.9999"));
         Object value = objectNumJsonRedisTemplateTest.get();
@@ -169,7 +169,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     @Test
     public void objectStrTypRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.STRING);
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericRedisTemplate(EnhancedRedisTemplateFactory.SerializerType.STRING);
         BoundValueOperations<String, Object> objectStrTypRedisTemplateTest = genericTemplate.boundValueOps("objectStrTypRedisTemplateTest");
         objectStrTypRedisTemplateTest.set("objectStrTypRedisTemplateTest");
         Object value = objectStrTypRedisTemplateTest.get();
@@ -181,7 +181,7 @@ public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
 
     @Test
     public void objectNumTypRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericTemplate(EnhancedRedisTemplateFactory.SerializerType.STRING);
+        RedisTemplate<String, Object> genericTemplate = enhancedRedisTemplateFactory.getGenericRedisTemplate(EnhancedRedisTemplateFactory.SerializerType.STRING);
         BoundValueOperations<String, Object> objectNumTypRedisTemplateTest = genericTemplate.boundValueOps("objectNumTypRedisTemplateTest");
         objectNumTypRedisTemplateTest.set(999999);
         Object value = objectNumTypRedisTemplateTest.get();

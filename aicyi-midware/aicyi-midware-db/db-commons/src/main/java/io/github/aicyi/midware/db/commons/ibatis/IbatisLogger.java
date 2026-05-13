@@ -32,8 +32,8 @@ public class IbatisLogger implements Log {
     }
 
     @Override
-    public void error(String s, Throwable e) {
-        logger.error(buildMessage(s), e);
+    public void error(String s, Throwable cause) {
+        logger.error(buildMessage(s), cause);
     }
 
     @Override

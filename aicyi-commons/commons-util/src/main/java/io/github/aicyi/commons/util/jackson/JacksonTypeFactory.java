@@ -16,8 +16,7 @@ import java.util.Map;
  **/
 public final class JacksonTypeFactory {
 
-    private static final TypeFactory TYPE_FACTORY =
-            new ObjectMapper().getTypeFactory();
+    private static final TypeFactory TYPE_FACTORY = new ObjectMapper().getTypeFactory();
 
     private JacksonTypeFactory() {
     }

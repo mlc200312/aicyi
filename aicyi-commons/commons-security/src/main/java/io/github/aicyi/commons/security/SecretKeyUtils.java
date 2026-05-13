@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.codec;
+package io.github.aicyi.commons.security;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;

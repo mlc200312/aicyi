@@ -1,6 +1,6 @@
 package io.github.aicyi.test.commons.codec;
 
-import io.github.aicyi.commons.codec.AesUtils;
+import io.github.aicyi.commons.security.AesUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import lombok.SneakyThrows;
 import org.junit.Test;

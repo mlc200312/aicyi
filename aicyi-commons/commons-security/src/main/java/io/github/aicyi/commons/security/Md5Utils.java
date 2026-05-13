@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.codec;
+package io.github.aicyi.commons.security;
 
 import org.apache.commons.codec.digest.DigestUtils;
 

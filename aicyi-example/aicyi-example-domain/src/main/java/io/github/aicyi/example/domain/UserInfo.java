@@ -1,6 +1,6 @@
 package io.github.aicyi.example.domain;
 
-import io.github.aicyi.commons.codec.jwt.JWTInfo;
+import io.github.aicyi.commons.security.token.JWTInfo;
 import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.util.MapperUtils;
 import io.github.aicyi.commons.util.id.IdUtils;

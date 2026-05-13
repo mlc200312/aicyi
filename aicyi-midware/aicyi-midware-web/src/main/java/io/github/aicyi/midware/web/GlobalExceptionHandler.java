@@ -35,36 +35,42 @@ public class GlobalExceptionHandler {
     /**
      * 业务异常处理
      *
-     * @param ex the target exception
+     * @param e the target exception
      * @return
      */
     @ExceptionHandler(BusinessException.class)
-    public final Response<Void> handleBusinessException(BusinessException ex) {
-        LOGGER.error(ex, "handleException cause: {}", ex.getMessage());
-        return Response.failure(ex.getCodeAsString(), ex.getMessage());
+    public final Response<Void> handleBusinessException(BusinessException e) {
+
+        LOGGER.error(e, "handleException cause: {}", e.getMessage());
+
+        return Response.failure(e.getCodeAsString(), e.getMessage());
     }
 
     /**
      * 业务异常处理
      *
-     * @param ex the target exception
+     * @param e the target exception
      * @return
      */
     @ExceptionHandler(UnauthorizedException.class)
-    public final Response<Void> handleBusinessException(UnauthorizedException ex) {
-        LOGGER.error(ex, "handleException cause: {}", ex.getMessage());
-        return Response.failure(ex.getCodeAsString(), ex.getMessage());
+    public final Response<Void> handleBusinessException(UnauthorizedException e) {
+
+        LOGGER.error(e, "handleException cause: {}", e.getMessage());
+
+        return Response.failure(e.getCodeAsString(), e.getMessage());
     }
 
     /**
      * 参数异常处理
      *
-     * @param ex the target exception
+     * @param e the target exception
      * @return
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public final Response<Void> handleIllegalArgumentException(IllegalArgumentException ex) {
-        LOGGER.error(ex, "handleException cause: {}", ex.getMessage());
+    public final Response<Void> handleIllegalArgumentException(IllegalArgumentException e) {
+
+        LOGGER.error(e, "handleException cause: {}", e.getMessage());
+
         return Response.failure(CommonResultCode.PARAM_ERROR);
     }
 
@@ -72,23 +78,23 @@ public class GlobalExceptionHandler {
     /**
      * 参数异常处理
      *
-     * @param ex
+     * @param e
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<String> messageList = new ArrayList<>(5);
-        Object request = ex.getBindingResult().getTarget();
-        ex.getBindingResult().getAllErrors().forEach(err -> messageList
+        Object request = e.getBindingResult().getTarget();
+        e.getBindingResult().getAllErrors().forEach(err -> messageList
                 .add(
                         ((DefaultMessageSourceResolvable) Objects.requireNonNull(err.getArguments())[0]).getDefaultMessage() + ":" + err.getDefaultMessage()
                 )
         );
-        String op = ex.getParameter().getContainingClass().getSimpleName() + "." + ex.getParameter().getMethod().getName();
+        String op = e.getParameter().getContainingClass().getSimpleName() + "." + e.getParameter().getMethod().getName();
 
         String message = String.join(",", messageList);
 
-        LOGGER.error(ex, "handleException cause: {}：", ex.getMessage());
+        LOGGER.error(e, "handleException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
@@ -96,54 +102,53 @@ public class GlobalExceptionHandler {
     /**
      * 参数异常处理
      *
-     * @param ex
+     * @param e
      * @return
      */
     @ExceptionHandler({BindException.class})
-    public Response handleBindException(BindException ex) {
+    public Response handleBindException(BindException e) {
         List<String> messageList = new ArrayList<>();
-        Object request = ex.getBindingResult().getTarget();
-        ex.getBindingResult().getAllErrors().forEach(err -> messageList
+        Object request = e.getBindingResult().getTarget();
+        e.getBindingResult().getAllErrors().forEach(err -> messageList
                 .add(((DefaultMessageSourceResolvable) Objects.requireNonNull(err.getArguments())[0]).getDefaultMessage() + ":" + err.getDefaultMessage())
         );
 
         String message = String.join(",", messageList);
 
-        LOGGER.error(ex, "handleException cause: {}：", ex.getMessage());
+        LOGGER.error(e, "handleException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
 
     /**
-     * @param ex
+     * @param e
      * @return
-     * @NotEmpty String param
      */
     @ExceptionHandler({ConstraintViolationException.class})
-    public Response handleConstraintViolationException(ConstraintViolationException ex) {
+    public Response handleConstraintViolationException(ConstraintViolationException e) {
         List<String> messageList = new ArrayList<>();
-        ex.getConstraintViolations().forEach(err -> messageList
+        e.getConstraintViolations().forEach(err -> messageList
                 .add(((PathImpl) err.getPropertyPath()).getLeafNode().getName() + ":" + err.getMessage())
         );
 
         String message = String.join(",", messageList);
 
-        LOGGER.error(ex, "handleException cause: {}：", ex.getMessage());
+        LOGGER.error(e, "handleException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
 
     /**
-     * @param ex
+     * @param e
      * @return
      * @RequestParam 异常
      */
     @ExceptionHandler({MissingServletRequestParameterException.class})
-    public Response handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+    public Response handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
 
-        String message = String.format("%s is required", ex.getParameterName());
+        String message = String.format("%s is required", e.getParameterName());
 
-        LOGGER.error(ex, "handleException cause: {}：", ex.getMessage());
+        LOGGER.error(e, "handleException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }

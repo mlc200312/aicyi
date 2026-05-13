@@ -1,8 +1,9 @@
-package io.github.aicyi.commons.codec.jwt;
+package io.github.aicyi.commons.security.token;
 
 import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.core.IJWTInfo;
-import io.github.aicyi.commons.util.id.IdUtils;
+
+import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -12,10 +13,8 @@ import io.github.aicyi.commons.util.id.IdUtils;
 public class JWTInfo extends BaseBean implements IJWTInfo {
     private String id;
     private String uniqueName;
-    private String tokenId;
     private String deviceId;
     private boolean isMainDevice;
-
 
     public JWTInfo() {
     }
@@ -23,7 +22,6 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
     public JWTInfo(String id, String uniqueName, String deviceId) {
         this.id = id;
         this.uniqueName = uniqueName;
-        this.tokenId = IdUtils.generateV7Id();
         this.deviceId = deviceId;
         this.isMainDevice = true;
     }
@@ -31,7 +29,6 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
     public JWTInfo(String id, String uniqueName, String deviceId, boolean isMainDevice) {
         this.id = id;
         this.uniqueName = uniqueName;
-        this.tokenId = IdUtils.generateV7Id();
         this.deviceId = deviceId;
         this.isMainDevice = isMainDevice;
     }
@@ -55,15 +52,6 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
     }
 
     @Override
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
-    }
-
-    @Override
     public String getDeviceId() {
         return deviceId;
     }
@@ -79,5 +67,19 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
 
     public void setMainDevice(boolean mainDevice) {
         isMainDevice = mainDevice;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        JWTInfo jwtInfo = (JWTInfo) o;
+        return Objects.equals(id, jwtInfo.id) && Objects.equals(uniqueName, jwtInfo.uniqueName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, uniqueName);
     }
 }

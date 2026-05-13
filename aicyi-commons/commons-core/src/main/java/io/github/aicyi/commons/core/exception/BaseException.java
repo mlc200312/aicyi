@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.lang.exception;
+package io.github.aicyi.commons.core.exception;
 
 import io.github.aicyi.commons.core.IResultCode;
 
@@ -11,14 +11,18 @@ public abstract class BaseException extends RuntimeException {
 
     private final Integer code;
 
-    public BaseException(IResultCode resultCode) {
-        super(resultCode.getMessage());
-        this.code = resultCode.getCode();
-    }
-
     public BaseException(Integer code, String message) {
         super(message);
         this.code = code;
+    }
+
+    public BaseException(Integer code, String message, Throwable cause) {
+        super(message, cause);
+        this.code = code;
+    }
+
+    public BaseException(IResultCode resultCode) {
+        this(resultCode.getCode(), resultCode.getMessage());
     }
 
     public Integer getCode() {
