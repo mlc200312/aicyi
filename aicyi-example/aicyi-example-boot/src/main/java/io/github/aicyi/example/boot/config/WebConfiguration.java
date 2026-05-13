@@ -1,8 +1,9 @@
 package io.github.aicyi.example.boot.config;
 
-import io.github.aicyi.commons.security.token.JwtTokenService;
-import io.github.aicyi.commons.core.token.TokenService;
 import io.github.aicyi.commons.core.IJWTInfo;
+import io.github.aicyi.commons.core.token.TokenService;
+import io.github.aicyi.example.domain.UserInfo;
+import io.github.aicyi.midware.redis.token.RedisTokenService;
 import io.github.aicyi.midware.web.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,15 +22,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-    private final JwtTokenService<IJWTInfo> jwtTokenManager;
+    private final RedisTokenService<IJWTInfo> tokenService;
 
-    public WebConfiguration(JwtTokenService<IJWTInfo> jwtTokenManager) {
-        this.jwtTokenManager = jwtTokenManager;
+    public WebConfiguration(RedisTokenService<IJWTInfo> tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(getAuthInterceptor(jwtTokenManager)).excludePathPatterns("/webjars/**", "/v2/api-docs");
+
+        AuthInterceptor authInterceptor = getAuthInterceptor(tokenService);
+
+        registry.addInterceptor(authInterceptor).excludePathPatterns("/webjars/**", "/v2/api-docs");
     }
 
     @Override

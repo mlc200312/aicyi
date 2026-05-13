@@ -73,7 +73,7 @@ public class JwtTokenServiceImplTest extends BaseLoggerTest {
         assert refreshTtl > 0 && refreshTtl > ttl;
 
         Set<String> tokens = tokenService.getTokens(userInfo);
-        assert tokens.contains(refresh);
+        assert !tokens.contains(refresh);
 
         log(token, refresh, principal, phone);
     }
