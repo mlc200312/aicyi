@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
-import io.github.aicyi.midware.message.core.model.TemplateEngineType;
-import io.github.aicyi.midware.message.core.template.TemplateEngineFactory;
+import io.github.aicyi.commons.core.template.TemplateEngineType;
+import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.mail.sender.DefaultJavaEmailSender;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;

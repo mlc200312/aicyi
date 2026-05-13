@@ -1,6 +1,4 @@
-package io.github.aicyi.midware.message.core.template;
-
-import io.github.aicyi.midware.message.core.model.TemplateEngineType;
+package io.github.aicyi.commons.core.template;
 
 /**
  * @author Mr.Min

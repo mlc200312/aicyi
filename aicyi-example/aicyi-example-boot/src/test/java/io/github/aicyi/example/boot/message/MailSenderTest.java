@@ -8,7 +8,7 @@ import io.github.aicyi.midware.message.mail.model.MailMessage;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.midware.message.mail.model.MailAttachment;
-import io.github.aicyi.midware.message.core.template.TemplateEngine;
+import io.github.aicyi.commons.core.template.TemplateEngine;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;

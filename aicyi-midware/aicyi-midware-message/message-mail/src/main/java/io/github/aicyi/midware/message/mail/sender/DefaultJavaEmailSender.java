@@ -2,15 +2,15 @@ package io.github.aicyi.midware.message.mail.sender;
 
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.midware.message.core.model.MessageFormat;
-import io.github.aicyi.midware.message.core.model.TemplateEngineType;
+import io.github.aicyi.commons.core.template.TemplateEngineType;
 import io.github.aicyi.midware.message.core.template.AbstractTemplateSender;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;
-import io.github.aicyi.midware.message.core.template.TemplateEngineFactory;
+import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.mail.model.MailAttachment;
 import io.github.aicyi.midware.message.mail.model.MailConfig;
 import io.github.aicyi.midware.message.mail.model.MailMessage;
-import io.github.aicyi.midware.message.core.template.TemplateEngine;
+import io.github.aicyi.commons.core.template.TemplateEngine;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.*;

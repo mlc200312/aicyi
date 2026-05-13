@@ -4,7 +4,7 @@ package io.github.aicyi.midware.message.mail.template;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import io.github.aicyi.midware.message.core.template.TemplateEngine;
+import io.github.aicyi.commons.core.template.TemplateEngine;
 
 import java.io.StringWriter;
 import java.util.Map;

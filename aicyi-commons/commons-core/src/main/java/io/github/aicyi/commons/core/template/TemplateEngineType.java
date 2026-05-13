@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.message.core.model;
+package io.github.aicyi.commons.core.template;
 
 public enum TemplateEngineType {
 

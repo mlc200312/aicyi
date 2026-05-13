@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.sms.sender;
 
-import io.github.aicyi.midware.message.core.template.TemplateEngineFactory;
+import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.midware.message.sms.model.Carrier;

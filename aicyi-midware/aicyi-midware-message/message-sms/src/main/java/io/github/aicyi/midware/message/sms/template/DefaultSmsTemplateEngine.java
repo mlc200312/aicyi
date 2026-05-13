@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.sms.template;
 
-import io.github.aicyi.midware.message.core.template.TemplateEngine;
+import io.github.aicyi.commons.core.template.TemplateEngine;
 
 import java.util.Map;
 

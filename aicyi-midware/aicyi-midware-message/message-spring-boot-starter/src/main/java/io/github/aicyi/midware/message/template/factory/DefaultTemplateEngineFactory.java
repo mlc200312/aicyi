@@ -1,8 +1,8 @@
 package io.github.aicyi.midware.message.template.factory;
 
-import io.github.aicyi.midware.message.core.model.TemplateEngineType;
-import io.github.aicyi.midware.message.core.template.TemplateEngine;
-import io.github.aicyi.midware.message.core.template.TemplateEngineFactory;
+import io.github.aicyi.commons.core.template.TemplateEngineType;
+import io.github.aicyi.commons.core.template.TemplateEngine;
+import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

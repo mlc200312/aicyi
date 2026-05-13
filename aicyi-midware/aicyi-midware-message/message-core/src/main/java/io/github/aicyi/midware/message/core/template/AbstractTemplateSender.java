@@ -2,11 +2,11 @@ package io.github.aicyi.midware.message.core.template;
 
 import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.core.logging.Logger;
+import io.github.aicyi.commons.core.template.*;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;
-import io.github.aicyi.midware.message.core.model.TemplateEngineType;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Map;
  * @description 抽象模板发送器
  * @date 2026/5/7
  **/
-public abstract class AbstractTemplateSender<T extends TemplateMessage> implements TemplateSender<T> {
+public abstract class AbstractTemplateSender<T extends TemplateRequest> implements TemplateSender<T> {
 
     protected final static JsonCodec DEFAULT_JSON_CODEC = JsonUtils.getInstance();
 

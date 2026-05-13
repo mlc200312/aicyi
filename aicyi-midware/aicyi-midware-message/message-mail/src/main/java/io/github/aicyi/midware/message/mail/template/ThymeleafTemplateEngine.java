@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.mail.template;
 
-import io.github.aicyi.midware.message.core.template.TemplateEngine;
+import io.github.aicyi.commons.core.template.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Map;

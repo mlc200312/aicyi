@@ -7,6 +7,8 @@ import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.cache.StringRedisCacheManager;
+import io.github.aicyi.midware.redis.token.RedisTokenService;
+import io.github.aicyi.midware.redis.token.RedisTokenServiceImpl;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -49,11 +51,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public JwtTokenService<IJWTInfo> getJwtInfoTokenManager(EnhancedRedisTemplateFactory enhancedRedisTemplateFactory) {
-        TokenConfig tokenConfig = DefaultTokenConfig.builder()
-                .signingKey("LcR6QUhqWrDqK1InQDKlpZuKx6X/ZgEISdFpKwO3i/E=")
-                .multiTokenAllowed(true)
-                .build();
-        return new RedisJwtTokenServiceImpl(tokenConfig, enhancedRedisTemplateFactory, JacksonTypeFactory.typeOf(UserInfo.class));
+    public RedisTokenService<UserInfo> getJwtInfoTokenManager(EnhancedRedisTemplateFactory factory) {
+        return new RedisTokenServiceImpl<>(factory, UserInfo.class);
     }
 }

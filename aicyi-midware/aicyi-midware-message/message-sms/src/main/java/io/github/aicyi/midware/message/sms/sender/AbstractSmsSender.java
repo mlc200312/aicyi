@@ -1,11 +1,11 @@
 package io.github.aicyi.midware.message.sms.sender;
 
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
-import io.github.aicyi.midware.message.core.model.TemplateEngineType;
+import io.github.aicyi.commons.core.template.TemplateEngineType;
 import io.github.aicyi.midware.message.core.template.AbstractTemplateSender;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;
-import io.github.aicyi.midware.message.core.template.TemplateEngine;
-import io.github.aicyi.midware.message.core.template.TemplateEngineFactory;
+import io.github.aicyi.commons.core.template.TemplateEngine;
+import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.sms.model.SmsMessage;
 

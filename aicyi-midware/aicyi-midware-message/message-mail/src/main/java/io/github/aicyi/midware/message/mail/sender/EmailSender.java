@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.mail.sender;
 
-import io.github.aicyi.midware.message.core.template.TemplateSender;
+import io.github.aicyi.commons.core.template.TemplateSender;
 import io.github.aicyi.midware.message.mail.model.MailAttachment;
 import io.github.aicyi.midware.message.mail.model.MailMessage;
 

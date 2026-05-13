@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.message.core.template;
+package io.github.aicyi.commons.core.template;
 
 import java.util.Map;
 

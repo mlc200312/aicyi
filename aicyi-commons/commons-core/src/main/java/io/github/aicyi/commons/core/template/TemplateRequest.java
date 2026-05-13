@@ -1,6 +1,4 @@
-package io.github.aicyi.midware.message.core.template;
-
-import io.github.aicyi.midware.message.core.model.MessageContent;
+package io.github.aicyi.commons.core.template;
 
 import java.util.Map;
 
@@ -9,7 +7,7 @@ import java.util.Map;
  * @description 模版消息内容接口
  * @date 15:36
  **/
-public interface TemplateMessage<T> extends MessageContent<T> {
+public interface TemplateRequest {
 
     /**
      * 获取模版ID

@@ -1,8 +1,9 @@
 package io.github.aicyi.midware.message.sms.model;
 
 import io.github.aicyi.midware.message.core.model.AbstractMessage;
+import io.github.aicyi.midware.message.core.model.MessageContent;
 import io.github.aicyi.midware.message.core.model.MessageType;
-import io.github.aicyi.midware.message.core.template.TemplateMessage;
+import io.github.aicyi.commons.core.template.TemplateRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.HashMap;
  * @description 短信消息
  * @date 2025/8/25
  **/
-public class SmsMessage extends AbstractMessage<String> implements TemplateMessage<String> {
+public class SmsMessage extends AbstractMessage<String> implements MessageContent<String>, TemplateRequest {
     private final List<String> phoneNumbers; // 手机号列表
     private final String sign; // 短信签名
     private final String templateId; // 短信模板ID
