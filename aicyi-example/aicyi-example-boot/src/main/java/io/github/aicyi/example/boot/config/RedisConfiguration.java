@@ -50,7 +50,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public MultiRedisTokenServiceImpl<IJWTInfo> getTokenService(EnhancedRedisTemplateFactory factory) {
-        return new MultiRedisTokenServiceImpl<>(factory, IJWTInfo.class);
+    public RedisTokenService<IJWTInfo> getTokenService(EnhancedRedisTemplateFactory factory) {
+        return new MultiRedisTokenServiceImpl<>(factory, UserInfo.class);
     }
 }

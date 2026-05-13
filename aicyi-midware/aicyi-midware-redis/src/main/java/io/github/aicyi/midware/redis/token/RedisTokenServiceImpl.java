@@ -2,6 +2,7 @@ package io.github.aicyi.midware.redis.token;
 
 import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.core.token.TokenCreateRequest;
+import io.github.aicyi.commons.security.token.exception.TokenException;
 import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
 import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
 import io.github.aicyi.commons.util.Assert;
@@ -58,15 +59,15 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     /**
      * Principal类型
      */
-    private final Class<P> principalType;
+    private final Class<? extends P> principalType;
 
-    public RedisTokenServiceImpl(StringRedisTemplate redisTemplate, JsonCodec jsonCodec, Class<P> principalType) {
+    public RedisTokenServiceImpl(StringRedisTemplate redisTemplate, JsonCodec jsonCodec, Class<? extends P> principalType) {
         this.redisTemplate = redisTemplate;
         this.jsonCodec = jsonCodec;
         this.principalType = principalType;
     }
 
-    public RedisTokenServiceImpl(EnhancedRedisTemplateFactory factory, Class<P> principalType) {
+    public RedisTokenServiceImpl(EnhancedRedisTemplateFactory factory, Class<? extends P> principalType) {
         this(factory.getStringRedisTemplate(), new JacksonJsonCodec(factory.getObjectMapper()), principalType);
     }
 
@@ -118,7 +119,7 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
 
             return tokenInfo != null;
 
-        } catch (Exception e) {
+        } catch (TokenException e) {
 
             return false;
         }

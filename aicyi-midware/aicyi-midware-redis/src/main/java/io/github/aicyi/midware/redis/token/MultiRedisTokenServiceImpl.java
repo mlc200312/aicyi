@@ -28,11 +28,11 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
     private boolean isMultiTokenAllowed = false;
     private int multiTokenCount = 1;
 
-    public MultiRedisTokenServiceImpl(StringRedisTemplate redisTemplate, JsonCodec jsonCodec, Class<P> principalType) {
+    public MultiRedisTokenServiceImpl(StringRedisTemplate redisTemplate, JsonCodec jsonCodec, Class<? extends P> principalType) {
         super(redisTemplate, jsonCodec, principalType);
     }
 
-    public MultiRedisTokenServiceImpl(EnhancedRedisTemplateFactory factory, Class<P> principalType) {
+    public MultiRedisTokenServiceImpl(EnhancedRedisTemplateFactory factory, Class<? extends P> principalType) {
         super(factory, principalType);
     }
 

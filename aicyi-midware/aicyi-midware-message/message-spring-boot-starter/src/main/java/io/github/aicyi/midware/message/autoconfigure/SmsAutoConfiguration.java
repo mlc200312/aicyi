@@ -1,9 +1,9 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
+import io.github.aicyi.commons.core.template.DefualtTemplateEngine;
 import io.github.aicyi.commons.core.template.TemplateEngineType;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
-import io.github.aicyi.midware.message.sms.template.DefaultSmsTemplateEngine;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.midware.message.sms.sender.TwilioSmsSender;
 import io.github.aicyi.midware.message.properties.MessageProperties;
@@ -44,7 +44,7 @@ public class SmsAutoConfiguration {
 
         TemplateEngineFactory factory = new DefaultTemplateEngineFactory();
 
-        factory.register(TemplateEngineType.SIMPLE, new DefaultSmsTemplateEngine());
+        factory.register(TemplateEngineType.SIMPLE, new DefualtTemplateEngine());
 
         return new DefaultSmsSender(templateProvider, factory, emailSender);
     }
@@ -60,7 +60,7 @@ public class SmsAutoConfiguration {
 
         TemplateEngineFactory factory = new DefaultTemplateEngineFactory();
 
-        factory.register(TemplateEngineType.SIMPLE, new DefaultSmsTemplateEngine());
+        factory.register(TemplateEngineType.SIMPLE, new DefualtTemplateEngine());
 
         return new TwilioSmsSender(smsProperties.getUsername(), smsProperties.getPassword(), smsProperties.getFrom(), templateProvider, factory);
     }

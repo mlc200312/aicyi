@@ -1,15 +1,13 @@
-package io.github.aicyi.midware.message.sms.template;
-
-import io.github.aicyi.commons.core.template.TemplateEngine;
+package io.github.aicyi.commons.core.template;
 
 import java.util.Map;
 
 /**
  * @author Mr.Min
- * @description 模版渲染管理器实现
- * @date 15:54
+ * @description 基于FreeMarker的模板引擎实现
+ * @date 2025/8/25
  **/
-public class DefaultSmsTemplateEngine implements TemplateEngine {
+public class DefualtTemplateEngine implements TemplateEngine {
 
     @Override
     public String process(String template, Map<String, Object> templateParams) {
