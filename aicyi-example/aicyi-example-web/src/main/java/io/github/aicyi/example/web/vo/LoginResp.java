@@ -1,7 +1,7 @@
 package io.github.aicyi.example.web.vo;
 
-import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.core.VoBean;
+import io.github.aicyi.commons.core.token.TokenPair;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -15,9 +15,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel("登录响应参数")
-public class LoginResp extends BaseBean implements VoBean {
+public class LoginResp implements VoBean {
     @ApiModelProperty("用户ID")
     private String userId;
-    @ApiModelProperty("accessToken")
-    private String accessToken;
+    @ApiModelProperty("令牌对")
+    private TokenPair token;
 }

@@ -2,9 +2,11 @@ package io.github.aicyi.example.service.impl;
 
 import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.commons.core.IJWTInfo;
-import io.github.aicyi.commons.core.token.TokenCreateRequest;
+import io.github.aicyi.commons.core.token.AuthenticationTokenService;
+import io.github.aicyi.commons.core.token.TokenPair;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
+import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.example.domain.*;
 import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.domain.type.CaptchaType;
@@ -12,7 +14,6 @@ import io.github.aicyi.example.domain.type.ExampleResultCode;
 import io.github.aicyi.example.service.AuthService;
 import io.github.aicyi.example.service.CaptchaService;
 import io.github.aicyi.example.service.UserService;
-import io.github.aicyi.midware.redis.token.RedisTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private RedisTokenService<IJWTInfo> tokenService;
+    private AuthenticationTokenService<IJWTInfo> tokenService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -60,15 +61,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 生成token
-        TokenCreateRequest<IJWTInfo> request = new TokenCreateRequest<>();
-        request.setPrincipal(UserInfo.of(user));
-        String token = tokenService.create(request);
+        TokenPair token = tokenService.createToken(UserInfo.of(user, IdUtils.generateV7Id()), null);
+
+        // 返回登录结果
         LoginResult result = new LoginResult();
         result.setUserId(user.getId());
-        result.setAccessToken(token);
+        result.setToken(token);
         return result;
-
-
     }
 
     @Override

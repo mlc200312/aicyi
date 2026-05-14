@@ -1,6 +1,6 @@
 package io.github.aicyi.example.domain;
 
-import io.github.aicyi.commons.security.token.JWTInfo;
+import io.github.aicyi.commons.security.token.jwt.JWTInfo;
 import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.util.MapperUtils;
 import io.github.aicyi.commons.util.id.IdUtils;
@@ -19,8 +19,8 @@ public class UserInfo extends JWTInfo {
     private String nickname;
     private String mobile;
 
-    public static UserInfo of(User user) {
-        IJWTInfo jwtInfo = new JWTInfo(String.valueOf(user.getId()), user.getUsername(), IdUtils.generateV7Id());
+    public static UserInfo of(User user, String deviceId) {
+        IJWTInfo jwtInfo = new JWTInfo(String.valueOf(user.getId()), user.getUsername(), deviceId);
         UserInfo userInfo = MapperUtils.getInstance().map(jwtInfo, UserInfo.class);
         userInfo.setNickname(user.getNickname());
         userInfo.setMobile(user.getMobile());

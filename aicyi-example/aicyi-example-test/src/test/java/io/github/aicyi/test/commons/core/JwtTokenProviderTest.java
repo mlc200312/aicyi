@@ -1,12 +1,11 @@
 package io.github.aicyi.test.commons.core;
 
-import io.github.aicyi.commons.security.token.JwtTokenProvider;
+import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
 import io.github.aicyi.commons.util.DateUtils;
 import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.junit.Before;
 import org.junit.Test;

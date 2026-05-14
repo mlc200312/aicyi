@@ -22,8 +22,6 @@ import java.util.List;
  */
 public final class OrikaMapper implements BeanMapper {
 
-    private final static JsonCodec DEFAULT_JSON_CODEC = JsonUtils.getInstance();
-
     private final MapperFactory mapperFactory;
 
     public OrikaMapper(MapperFactory mapperFactory) {
@@ -35,7 +33,7 @@ public final class OrikaMapper implements BeanMapper {
     }
 
     public OrikaMapper() {
-        this.mapperFactory = getDefaultMapperFactory(DEFAULT_JSON_CODEC);
+        this.mapperFactory = getDefaultMapperFactory(JsonUtils.getInstance());
     }
 
     public MapperFactory getMapperFactory() {

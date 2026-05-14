@@ -1,28 +1,41 @@
-package io.github.aicyi.midware.redis.token;
+package io.github.aicyi.commons.security.token;
+
+import io.github.aicyi.commons.core.DtoBean;
 
 import java.util.Map;
 
 /**
- * Redis Token信息
- *
- * @param <P> principal类型
+ * @param <P> Principal类型
+ * @author Mr.Min
+ * @description RefreshToken会话
+ * @date 2025/8/12
  */
-public class RedisTokenInfo<P> {
+public class TokenInfo<P> implements DtoBean {
 
     /**
-     * Token
+     * RefreshToken
      */
     private String token;
 
     /**
-     * 主体信息
+     * Principal
      */
     private P principal;
 
     /**
-     * Token属性
+     * 自定义属性
      */
     private Map<String, Object> attributes;
+
+    /**
+     * 登录设备ID
+     */
+    private String deviceId;
+
+    /**
+     * 登录时间
+     */
+    private long issuedAt;
 
     /**
      * 过期时间
@@ -49,10 +62,24 @@ public class RedisTokenInfo<P> {
         return attributes;
     }
 
-    public void setAttributes(
-            Map<String, Object> attributes) {
-
+    public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public long getIssuedAt() {
+        return issuedAt;
+    }
+
+    public void setIssuedAt(long issuedAt) {
+        this.issuedAt = issuedAt;
     }
 
     public long getExpireAt() {

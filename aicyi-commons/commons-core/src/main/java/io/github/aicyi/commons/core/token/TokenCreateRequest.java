@@ -63,4 +63,14 @@ public class TokenCreateRequest<P> implements DtoBean {
     public void setTimeUnit(TimeUnit timeUnit) {
         this.timeUnit = timeUnit;
     }
+
+    @Override
+    public String toString() {
+        return "TokenCreateRequest{" +
+                "principal=" + principal +
+                ", attributes=" + attributes +
+                ", ttl=" + ttl +
+                ", timeUnit=" + timeUnit +
+                '}';
+    }
 }

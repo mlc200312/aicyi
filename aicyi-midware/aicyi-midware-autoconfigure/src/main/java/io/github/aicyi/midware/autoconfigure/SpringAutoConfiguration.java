@@ -1,5 +1,6 @@
 package io.github.aicyi.midware.autoconfigure;
 
+import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import io.github.aicyi.midware.context.SpringEnvironmentHelper;
 import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.util.JsonUtils;
@@ -19,8 +20,8 @@ public class SpringAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(JsonCodec.class)
-    public JsonCodec smartJsonMapper() {
-        return JsonUtils.getInstance();
+    public JsonCodec getDefaultJsonCodec() {
+        return JacksonJsonCodec.DEFAULT;
     }
 
     @Bean

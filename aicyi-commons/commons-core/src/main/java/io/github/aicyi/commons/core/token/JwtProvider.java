@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @param <T>
  */
-public interface TokenProvider<T> {
+public interface JwtProvider<T> {
 
     T create(String tokenId, Map<String, Object> attributes);
 

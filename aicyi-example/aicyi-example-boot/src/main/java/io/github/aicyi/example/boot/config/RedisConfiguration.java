@@ -1,13 +1,8 @@
 package io.github.aicyi.example.boot.config;
 
-import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.core.cache.StringCacheManager;
-import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.cache.StringRedisCacheManager;
-import io.github.aicyi.midware.redis.token.MultiRedisTokenServiceImpl;
-import io.github.aicyi.midware.redis.token.RedisTokenService;
-import io.github.aicyi.midware.redis.token.RedisTokenServiceImpl;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -47,10 +42,5 @@ public class RedisConfiguration {
     @Bean
     public StringCacheManager getStringCacheManager(EnhancedRedisTemplateFactory enhancedRedisTemplateFactory) {
         return new StringRedisCacheManager(enhancedRedisTemplateFactory, "aicyi");
-    }
-
-    @Bean
-    public RedisTokenService<IJWTInfo> getTokenService(EnhancedRedisTemplateFactory factory) {
-        return new MultiRedisTokenServiceImpl<>(factory, UserInfo.class);
     }
 }

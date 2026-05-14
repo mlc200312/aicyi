@@ -17,19 +17,18 @@ import java.util.stream.Collectors;
 public class SpringEnvironmentHelper implements InitializingBean {
 
     private static SpringEnvironmentHelper INSTANCE;
-    private static final JsonCodec DEFAULT_JSON_CODEC = JsonUtils.getInstance();
 
     private Environment environment;
-    private JsonCodec jsonMapper;
+    private JsonCodec jsonCodec;
 
     public SpringEnvironmentHelper(Environment environment) {
         this.environment = environment;
-        this.jsonMapper = DEFAULT_JSON_CODEC;
+        this.jsonCodec = JsonUtils.getInstance();
     }
 
-    public SpringEnvironmentHelper(Environment environment, JsonCodec jsonMapper) {
+    public SpringEnvironmentHelper(Environment environment, JsonCodec jsonCodec) {
         this.environment = environment;
-        this.jsonMapper = jsonMapper;
+        this.jsonCodec = jsonCodec;
     }
 
     /**
@@ -81,7 +80,7 @@ public class SpringEnvironmentHelper implements InitializingBean {
             return Collections.emptyMap();
         }
         try {
-            return INSTANCE.jsonMapper.fromJsonMap(json, String.class, Object.class);
+            return INSTANCE.jsonCodec.fromJsonMap(json, String.class, Object.class);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to parse map property: " + key, e);
         }
@@ -98,7 +97,7 @@ public class SpringEnvironmentHelper implements InitializingBean {
             return null;
         }
         try {
-            return INSTANCE.jsonMapper.fromJson(json, JacksonTypeFactory.typeOf(clazz));
+            return INSTANCE.jsonCodec.fromJson(json, JacksonTypeFactory.typeOf(clazz));
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to parse object property: " + key, e);
         }

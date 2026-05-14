@@ -2,6 +2,7 @@ package io.github.aicyi.midware.redis.token;
 
 import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.core.token.TokenCreateRequest;
+import io.github.aicyi.commons.security.token.TokenInfo;
 import io.github.aicyi.commons.security.token.exception.TokenException;
 import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
 import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
@@ -84,13 +85,15 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
 
             long ttl = request.getTtl() > 0 ? request.getTimeUnit().toSeconds(request.getTtl()) : DEFAULT_TTL;
 
-            RedisTokenInfo<P> tokenInfo = new RedisTokenInfo<>();
+            TokenInfo<P> tokenInfo = new TokenInfo<>();
 
             tokenInfo.setToken(token);
 
             tokenInfo.setPrincipal(request.getPrincipal());
 
             tokenInfo.setAttributes(request.getAttributes());
+
+            tokenInfo.setIssuedAt(System.currentTimeMillis());
 
             tokenInfo.setExpireAt(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(ttl));
 
@@ -115,7 +118,7 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
 
         try {
 
-            RedisTokenInfo<P> tokenInfo = getTokenInfo(token);
+            TokenInfo<P> tokenInfo = getTokenInfo(token);
 
             return tokenInfo != null;
 
@@ -128,7 +131,7 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     @Override
     public P parsePrincipal(String token) {
 
-        RedisTokenInfo<P> tokenInfo = requireTokenInfo(token);
+        TokenInfo<P> tokenInfo = requireTokenInfo(token);
 
         return tokenInfo.getPrincipal();
     }
@@ -136,7 +139,7 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     @Override
     public Map<String, Object> parseAttributes(String token) {
 
-        RedisTokenInfo<P> tokenInfo = requireTokenInfo(token);
+        TokenInfo<P> tokenInfo = requireTokenInfo(token);
 
         return Optional.ofNullable(tokenInfo.getAttributes()).orElse(Collections.emptyMap());
     }
@@ -145,7 +148,7 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     @SuppressWarnings("unchecked")
     public <V> V getAttribute(String token, String attributeName) {
 
-        RedisTokenInfo<P> tokenInfo = requireTokenInfo(token);
+        TokenInfo<P> tokenInfo = requireTokenInfo(token);
 
         if (tokenInfo.getAttributes() == null) {
             return null;
@@ -157,7 +160,7 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     @Override
     public String refresh(String token) {
 
-        RedisTokenInfo<P> tokenInfo = requireTokenInfo(token);
+        TokenInfo<P> tokenInfo = requireTokenInfo(token);
 
         revoke(token);
 
@@ -200,7 +203,7 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     @Override
     public void revoke(String token) {
 
-        RedisTokenInfo<P> tokenInfo = getTokenInfo(token);
+        TokenInfo<P> tokenInfo = getTokenInfo(token);
 
         if (tokenInfo == null) {
             return;
@@ -227,7 +230,7 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     /**
      * 获取Token信息
      */
-    private RedisTokenInfo<P> getTokenInfo(String token) {
+    private TokenInfo<P> getTokenInfo(String token) {
 
         try {
 
@@ -238,7 +241,7 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
             }
 
 
-            return jsonCodec.fromJson(json, JacksonTypeFactory.parametricTypeOf(RedisTokenInfo.class, JacksonTypeFactory.typeOf(principalType)));
+            return jsonCodec.fromJson(json, JacksonTypeFactory.parametricTypeOf(TokenInfo.class, JacksonTypeFactory.typeOf(principalType)));
 
         } catch (Exception e) {
 
@@ -249,9 +252,9 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     /**
      * 获取Token信息（不存在则抛异常）
      */
-    private RedisTokenInfo<P> requireTokenInfo(String token) {
+    private TokenInfo<P> requireTokenInfo(String token) {
 
-        RedisTokenInfo<P> tokenInfo = getTokenInfo(token);
+        TokenInfo<P> tokenInfo = getTokenInfo(token);
 
         if (tokenInfo == null) {
 

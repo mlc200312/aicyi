@@ -1,6 +1,6 @@
-package io.github.aicyi.commons.security.token;
+package io.github.aicyi.commons.security.token.jwt;
 
-import io.github.aicyi.commons.core.token.TokenProvider;
+import io.github.aicyi.commons.core.token.JwtProvider;
 import io.github.aicyi.commons.security.token.exception.TokenException;
 import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
 import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
@@ -19,8 +19,10 @@ import java.util.concurrent.TimeUnit;
  * JWT Token Provider
  *
  * @author Mr.Min
+ * @description JWT令牌提供者
+ * @date 2025/05/14
  */
-public class JwtTokenProvider implements TokenProvider<String> {
+public class JwtTokenProvider implements JwtProvider<String> {
 
     /**
      * JWT标准Claim

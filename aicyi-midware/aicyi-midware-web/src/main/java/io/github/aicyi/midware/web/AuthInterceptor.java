@@ -1,5 +1,6 @@
 package io.github.aicyi.midware.web;
 
+import io.github.aicyi.commons.core.token.AuthenticationTokenService;
 import io.github.aicyi.commons.core.token.TokenService;
 import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
@@ -19,9 +20,9 @@ import java.util.Objects;
  **/
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private TokenService<String, IJWTInfo> tokenService;
+    private AuthenticationTokenService<IJWTInfo> tokenService;
 
-    public AuthInterceptor(TokenService<String, IJWTInfo> tokenService) {
+    public AuthInterceptor(AuthenticationTokenService<IJWTInfo> tokenService) {
         this.tokenService = tokenService;
     }
 
@@ -47,13 +48,13 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new UnauthorizedException();
         }
 
-        String token = authorization.replace("Bearer ", "");
+        String accessToken = authorization.replace("Bearer ", "");
 
-        if (!tokenService.isValid(token)) {
+        if (!tokenService.validateAccessToken(accessToken)) {
             throw new UnauthorizedException();
         }
 
-        IJWTInfo jwtInfo = tokenService.parsePrincipal(token);
+        IJWTInfo jwtInfo = tokenService.parsePrincipal(accessToken);
 
         CurrentContextHolder.setUserId(jwtInfo.getId());
         CurrentContextHolder.setUsername(jwtInfo.getUniqueName());

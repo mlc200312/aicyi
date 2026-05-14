@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.security.token;
+package io.github.aicyi.commons.security.token.jwt;
 
 import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.core.IJWTInfo;

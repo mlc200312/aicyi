@@ -1,6 +1,5 @@
 package io.github.aicyi.midware.message.core.template;
 
-import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.core.template.*;
 import io.github.aicyi.commons.logging.LoggerFactory;
@@ -17,9 +16,6 @@ import java.util.Map;
  * @date 2026/5/7
  **/
 public abstract class AbstractTemplateSender<T extends TemplateRequest> implements TemplateSender<T> {
-
-    protected final static JsonCodec DEFAULT_JSON_CODEC = JsonUtils.getInstance();
-
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     protected final TemplateProvider templateProvider;
     protected final TemplateEngineFactory factory;
@@ -45,7 +41,7 @@ public abstract class AbstractTemplateSender<T extends TemplateRequest> implemen
             throw new MessageSendException("NOT_FOUND_TEMPLATE", "模版不存在");
         }
 
-        List<String> required = DEFAULT_JSON_CODEC.fromJsonList(template.getVariables(), String.class);
+        List<String> required = JsonUtils.getInstance().fromJsonList(template.getVariables(), String.class);
 
         for (String key : required) {
             if (templateParams == null || !templateParams.containsKey(key)) {

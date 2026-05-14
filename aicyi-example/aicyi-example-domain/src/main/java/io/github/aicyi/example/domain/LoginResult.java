@@ -1,5 +1,6 @@
 package io.github.aicyi.example.domain;
 
+import io.github.aicyi.commons.core.token.TokenPair;
 import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.core.BoBean;
 import lombok.Getter;
@@ -14,5 +15,5 @@ import lombok.Setter;
 @Setter
 public class LoginResult extends BaseBean implements BoBean {
     private Long userId;
-    private String accessToken;
+    private TokenPair token;
 }

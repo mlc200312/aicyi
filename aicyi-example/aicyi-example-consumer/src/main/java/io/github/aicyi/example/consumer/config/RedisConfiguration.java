@@ -1,9 +1,6 @@
 package io.github.aicyi.example.consumer.config;
 
 import io.github.aicyi.commons.core.cache.StringCacheManager;
-import io.github.aicyi.commons.security.token.JwtTokenService;
-import io.github.aicyi.commons.core.IJWTInfo;
-import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.cache.StringRedisCacheManager;
