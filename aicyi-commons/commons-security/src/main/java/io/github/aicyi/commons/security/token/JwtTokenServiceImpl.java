@@ -30,10 +30,10 @@ public class JwtTokenServiceImpl<P extends IJWTInfo> implements JwtTokenService<
     /**
      * Principal类型
      */
-    private final Class<P> principalType;
+    private final Class<? extends P> principalType;
 
 
-    public JwtTokenServiceImpl(TokenProvider<String> tokenProvider, JsonCodec jsonCodec, Class<P> principalType) {
+    public JwtTokenServiceImpl(TokenProvider<String> tokenProvider, JsonCodec jsonCodec, Class<? extends P> principalType) {
         this.tokenProvider = tokenProvider;
         this.jsonCodec = jsonCodec;
         this.principalType = principalType;
