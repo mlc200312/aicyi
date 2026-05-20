@@ -1,13 +1,11 @@
 package io.github.aicyi.commons.core.token;
 
-import io.github.aicyi.commons.core.DtoBean;
-
 /**
  * @author Mr.Min
  * @description Token对
  * @date 2026/5/14
  **/
-public class TokenPair implements DtoBean {
+public class TokenPair {
 
     /**
      * AccessToken

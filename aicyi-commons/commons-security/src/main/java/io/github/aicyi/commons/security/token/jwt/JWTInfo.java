@@ -14,7 +14,6 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
     private String id;
     private String uniqueName;
     private String deviceId;
-    private boolean isMainDevice;
 
     public JWTInfo() {
     }
@@ -23,14 +22,12 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
         this.id = id;
         this.uniqueName = uniqueName;
         this.deviceId = deviceId;
-        this.isMainDevice = true;
     }
 
     public JWTInfo(String id, String uniqueName, String deviceId, boolean isMainDevice) {
         this.id = id;
         this.uniqueName = uniqueName;
         this.deviceId = deviceId;
-        this.isMainDevice = isMainDevice;
     }
 
     @Override
@@ -58,15 +55,6 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    @Override
-    public boolean isMainDevice() {
-        return isMainDevice;
-    }
-
-    public void setMainDevice(boolean mainDevice) {
-        isMainDevice = mainDevice;
     }
 
     @Override

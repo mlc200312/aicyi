@@ -6,7 +6,6 @@ import io.github.aicyi.commons.security.token.jwt.JWTInfo;
 import io.github.aicyi.commons.util.Maps;
 import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
-
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.token.RedisTokenServiceImpl;
 import io.github.aicyi.test.util.BaseLoggerTest;
@@ -33,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisTokenServiceImplTest extends BaseLoggerTest {
 
     @Autowired
-    private EnhancedRedisTemplateFactory enhancedRedisTemplateFactory;
+    private EnhancedRedisTemplateFactory factory;
 
     private JWTInfo jwtInfo;
     private TokenCreateRequest<JWTInfo> request;
@@ -46,7 +45,6 @@ public class RedisTokenServiceImplTest extends BaseLoggerTest {
         jwtInfo.setId("610780341698822144");
         jwtInfo.setUniqueName("张三");
         jwtInfo.setDeviceId(IdUtils.generateV7Id());
-        jwtInfo.setMainDevice(false);
 
         request = new TokenCreateRequest<>();
         request.setPrincipal(jwtInfo);
@@ -54,7 +52,10 @@ public class RedisTokenServiceImplTest extends BaseLoggerTest {
         request.setTtl(1);
         request.setTimeUnit(TimeUnit.HOURS);
 
-        tokenService = new RedisTokenServiceImpl<>(enhancedRedisTemplateFactory, JWTInfo.class);
+        long refreshTtl = 3;
+        TimeUnit refreshTimeUnit = TimeUnit.HOURS;
+
+        tokenService = new RedisTokenServiceImpl<>(factory.getStringRedisTemplate(), JWTInfo.class, refreshTtl, refreshTimeUnit);
     }
 
     @Test

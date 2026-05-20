@@ -2,13 +2,15 @@ package io.github.aicyi.example.boot.config;
 
 import io.github.aicyi.commons.core.IJWTInfo;
 import io.github.aicyi.commons.core.token.AuthenticationTokenService;
-import io.github.aicyi.commons.core.token.JwtPrincipalSerializer;
+import io.github.aicyi.commons.core.token.PrincipalSerializer;
 import io.github.aicyi.commons.core.token.TokenService;
-import io.github.aicyi.commons.security.token.JwtRefreshAuthenticationTokenService;
-import io.github.aicyi.commons.security.token.jwt.DefultJwtPrincipalSerializer;
+import io.github.aicyi.commons.security.SecretKeyUtils;
+import io.github.aicyi.commons.security.token.jwt.JwtPrincipalSerializer;
 import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
+import io.github.aicyi.midware.redis.token.AuthenticationConfig;
+import io.github.aicyi.midware.redis.token.JwtRefreshAuthenticationTokenService;
 import io.github.aicyi.midware.redis.token.MultiRedisTokenServiceImpl;
 import io.github.aicyi.midware.web.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -73,12 +75,18 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Bean
     public AuthenticationTokenService<IJWTInfo> tokenService() {
 
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("OczHbdKy3tzPx2PdYw5FwyQALsEZ36jd0Vrj3ZWZ3ic=", "aicyi", "aicyi.com");
+        AuthenticationConfig config = AuthenticationConfig.builder()
+                .secretKey("OczHbdKy3tzPx2PdYw5FwyQALsEZ36jd0Vrj3ZWZ3ic=")
+                .issuer("aicyi")
+                .subject("aicyi.com")
+                .refreshTokenTtl(7)
+                .refreshTokenTimeUnit(TimeUnit.DAYS)
+                .accessTokenTtl(1)
+                .accessTokenTimeUnit(TimeUnit.DAYS)
+                .multiTokenAllowed(true)
+                .multiTokenCount(2)
+                .build();
 
-        TokenService<String, IJWTInfo> refreshTokenService = new MultiRedisTokenServiceImpl<>(factory, UserInfo.class);
-
-        JwtPrincipalSerializer<IJWTInfo> jwtPrincipalSerializer = new DefultJwtPrincipalSerializer<>(UserInfo.class);
-
-        return new JwtRefreshAuthenticationTokenService<>(jwtTokenProvider, refreshTokenService, jwtPrincipalSerializer, 30, TimeUnit.MINUTES, 7, TimeUnit.DAYS);
+        return new JwtRefreshAuthenticationTokenService<>(config, factory.getStringRedisTemplate(), UserInfo.class);
     }
 }

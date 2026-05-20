@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Mr.Min
  * @description Redis相关配置
@@ -49,6 +51,6 @@ public class RedisConfiguration {
 
     @Bean
     public RedisTokenService<UserInfo> getJwtInfoTokenManager(EnhancedRedisTemplateFactory factory) {
-        return new RedisTokenServiceImpl<>(factory, UserInfo.class);
+        return new RedisTokenServiceImpl<>(factory.getStringRedisTemplate(), UserInfo.class, 86400, TimeUnit.SECONDS);
     }
 }

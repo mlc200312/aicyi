@@ -1,20 +1,17 @@
 package io.github.aicyi.midware.redis.token;
 
-import io.github.aicyi.commons.core.JsonCodec;
-import io.github.aicyi.commons.core.token.TokenCreateRequest;
-import io.github.aicyi.commons.security.token.TokenInfo;
-import io.github.aicyi.commons.security.token.exception.TokenException;
+import io.github.aicyi.commons.core.token.PrincipalSerializer;
+import io.github.aicyi.commons.security.token.TokenSession;
+import io.github.aicyi.commons.security.token.AbstractTokenService;
+import io.github.aicyi.commons.security.token.TokenSessionPrincipalSerializer;
 import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
 import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
-import io.github.aicyi.commons.util.Assert;
 import io.github.aicyi.commons.util.id.IdUtils;
-import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
-import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
-import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @param <P> Principal类型
  * @author Mr.Min
  */
-public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
+public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements RedisTokenService<P> {
 
     /**
      * Token Key前缀
@@ -53,134 +50,94 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     protected final StringRedisTemplate redisTemplate;
 
     /**
-     * JSON序列化
+     * Principal序列化器
      */
-    protected final JsonCodec jsonCodec;
+    protected final PrincipalSerializer<TokenSession<P>> serializer;
 
     /**
-     * Principal类型
+     * 默认refresh ttl
      */
-    private final Class<? extends P> principalType;
+    private long refreshTtl;
 
-    public RedisTokenServiceImpl(StringRedisTemplate redisTemplate, JsonCodec jsonCodec, Class<? extends P> principalType) {
+    /**
+     * 默认refresh ttl 单位
+     */
+    private TimeUnit refreshTimeUnit;
+
+    public RedisTokenServiceImpl(StringRedisTemplate redisTemplate, PrincipalSerializer<TokenSession<P>> serializer, long refreshTtl, TimeUnit refreshTimeUnit) {
+        super(refreshTtl, refreshTimeUnit);
         this.redisTemplate = redisTemplate;
-        this.jsonCodec = jsonCodec;
-        this.principalType = principalType;
+        this.serializer = serializer;
+        this.refreshTtl = refreshTtl;
+        this.refreshTimeUnit = refreshTimeUnit;
     }
 
-    public RedisTokenServiceImpl(EnhancedRedisTemplateFactory factory, Class<? extends P> principalType) {
-        this(factory.getStringRedisTemplate(), new JacksonJsonCodec(factory.getObjectMapper()), principalType);
+    public RedisTokenServiceImpl(StringRedisTemplate redisTemplate, Class<P> principalType, long refreshTtl, TimeUnit refreshTimeUnit) {
+        this(redisTemplate, new TokenSessionPrincipalSerializer<>(principalType), refreshTtl, refreshTimeUnit);
     }
 
     @Override
-    public String create(TokenCreateRequest<P> request) {
+    protected String createToken() {
+        return IdUtils.generateV7Id();
+    }
 
-        Assert.notNull(request, "tokenCreateRequest");
+    @Override
+    protected String getTokenId(String token) {
+        return TOKEN_KEY_PREFIX + token;
+    }
 
-        Assert.notNull(request.getPrincipal(), "principal");
+    @Override
+    protected String getPrincipalId(P principal) {
+        return PRINCIPAL_TOKENS_PREFIX + principal.hashCode();
+    }
+
+    @Override
+    protected void saveTokenSession(TokenSession<P> session, long ttlSeconds) {
+
+        String json = serializer.serialize(session);
+
+        String tokenId = getTokenId(session.getToken());
+
+        redisTemplate.opsForValue().set(tokenId, json, Duration.ofSeconds(ttlSeconds));
+    }
+
+    @Override
+    protected void cachePrincipalToken(P principal, String token, long ttlSeconds) {
+
+        String principalId = getPrincipalId(principal);
+
+        redisTemplate.opsForSet().add(principalId, token);
+
+        redisTemplate.expire(principalId, ttlSeconds, TimeUnit.SECONDS);
+    }
+
+    @Override
+    protected TokenSession<P> getTokenSession(String token) throws TokenInvalidException {
 
         try {
 
-            String token = IdUtils.generateV7Id();
+            String tokenId = getTokenId(token);
 
-            long ttl = request.getTtl() > 0 ? request.getTimeUnit().toSeconds(request.getTtl()) : DEFAULT_TTL;
+            String json = redisTemplate.opsForValue().get(tokenId);
 
-            TokenInfo<P> tokenInfo = new TokenInfo<>();
+            if (json == null) {
+                return null;
+            }
 
-            tokenInfo.setToken(token);
-
-            tokenInfo.setPrincipal(request.getPrincipal());
-
-            tokenInfo.setAttributes(request.getAttributes());
-
-            tokenInfo.setIssuedAt(System.currentTimeMillis());
-
-            tokenInfo.setExpireAt(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(ttl));
-
-            String tokenKey = buildTokenKey(token);
-
-            String json = jsonCodec.toJson(tokenInfo);
-
-            redisTemplate.opsForValue().set(tokenKey, json, Duration.ofSeconds(ttl));
-
-            cachePrincipalToken(request.getPrincipal(), token, ttl);
-
-            return token;
+            return serializer.deserialize(json);
 
         } catch (Exception e) {
 
-            throw new RuntimeException("create redis token failed", e);
+            throw new TokenInvalidException("invalid token", e);
         }
-    }
-
-    @Override
-    public boolean isValid(String token) {
-
-        try {
-
-            TokenInfo<P> tokenInfo = getTokenInfo(token);
-
-            return tokenInfo != null;
-
-        } catch (TokenException e) {
-
-            return false;
-        }
-    }
-
-    @Override
-    public P parsePrincipal(String token) {
-
-        TokenInfo<P> tokenInfo = requireTokenInfo(token);
-
-        return tokenInfo.getPrincipal();
-    }
-
-    @Override
-    public Map<String, Object> parseAttributes(String token) {
-
-        TokenInfo<P> tokenInfo = requireTokenInfo(token);
-
-        return Optional.ofNullable(tokenInfo.getAttributes()).orElse(Collections.emptyMap());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <V> V getAttribute(String token, String attributeName) {
-
-        TokenInfo<P> tokenInfo = requireTokenInfo(token);
-
-        if (tokenInfo.getAttributes() == null) {
-            return null;
-        }
-
-        return (V) tokenInfo.getAttributes().get(attributeName);
-    }
-
-    @Override
-    public String refresh(String token) {
-
-        TokenInfo<P> tokenInfo = requireTokenInfo(token);
-
-        revoke(token);
-
-        TokenCreateRequest<P> request = new TokenCreateRequest<>();
-
-        request.setPrincipal(tokenInfo.getPrincipal());
-
-        request.setAttributes(tokenInfo.getAttributes());
-
-        request.setTtl(DEFAULT_REFRESH_TTL);
-
-        request.setTimeUnit(TimeUnit.SECONDS);
-
-        return create(request);
     }
 
     @Override
     public long getRemainingTtl(String token, TimeUnit unit) {
 
-        Long seconds = redisTemplate.getExpire(buildTokenKey(token), TimeUnit.SECONDS);
+        String tokenId = getTokenId(token);
+
+        Long seconds = redisTemplate.getExpire(tokenId, TimeUnit.SECONDS);
 
         if (seconds == null || seconds <= 0) {
 
@@ -193,9 +150,9 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     @Override
     public Set<String> getTokens(P principal) {
 
-        String principalKey = buildPrincipalTokensKey(principal);
+        String principalId = getPrincipalId(principal);
 
-        Set<String> tokens = redisTemplate.opsForSet().members(principalKey);
+        Set<String> tokens = redisTemplate.opsForSet().members(principalId);
 
         return tokens == null ? Collections.emptySet() : tokens;
     }
@@ -203,15 +160,19 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
     @Override
     public void revoke(String token) {
 
-        TokenInfo<P> tokenInfo = getTokenInfo(token);
+        TokenSession<P> session = getTokenSession(token);
 
-        if (tokenInfo == null) {
+        if (session == null) {
             return;
         }
 
-        redisTemplate.delete(buildTokenKey(token));
+        String tokenId = getTokenId(token);
 
-        redisTemplate.opsForSet().remove(buildPrincipalTokensKey(tokenInfo.getPrincipal()), token);
+        P principal = session.getPrincipal();
+
+        redisTemplate.delete(tokenId);
+
+        revokePrincipal(principal, token);
     }
 
     @Override
@@ -221,74 +182,20 @@ public class RedisTokenServiceImpl<P> implements RedisTokenService<P> {
 
         for (String token : tokens) {
 
-            redisTemplate.delete(buildTokenKey(token));
+            String tokenId = getTokenId(token);
+
+            redisTemplate.delete(tokenId);
         }
 
-        redisTemplate.delete(buildPrincipalTokensKey(principal));
+        String principalId = getPrincipalId(principal);
+
+        redisTemplate.delete(principalId);
     }
 
-    /**
-     * 获取Token信息
-     */
-    private TokenInfo<P> getTokenInfo(String token) {
+    protected void revokePrincipal(P principal, String token) {
 
-        try {
+        String principalId = getPrincipalId(principal);
 
-            String json = redisTemplate.opsForValue().get(buildTokenKey(token));
-
-            if (json == null) {
-                return null;
-            }
-
-
-            return jsonCodec.fromJson(json, JacksonTypeFactory.parametricTypeOf(TokenInfo.class, JacksonTypeFactory.typeOf(principalType)));
-
-        } catch (Exception e) {
-
-            throw new TokenInvalidException("invalid token", e);
-        }
-    }
-
-    /**
-     * 获取Token信息（不存在则抛异常）
-     */
-    private TokenInfo<P> requireTokenInfo(String token) {
-
-        TokenInfo<P> tokenInfo = getTokenInfo(token);
-
-        if (tokenInfo == null) {
-
-            throw new TokenExpiredException("token expired");
-        }
-
-        return tokenInfo;
-    }
-
-    /**
-     * 缓存Principal Token
-     */
-    private void cachePrincipalToken(P principal, String token, long ttlSeconds) {
-
-        String key = buildPrincipalTokensKey(principal);
-
-        redisTemplate.opsForSet().add(key, token);
-
-        redisTemplate.expire(key, ttlSeconds, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 构建Token Key
-     */
-    private String buildTokenKey(String token) {
-
-        return TOKEN_KEY_PREFIX + token;
-    }
-
-    /**
-     * 构建Principal Token集合Key
-     */
-    private String buildPrincipalTokensKey(P principal) {
-
-        return PRINCIPAL_TOKENS_PREFIX + principal.hashCode();
+        redisTemplate.opsForSet().remove(principalId, token);
     }
 }

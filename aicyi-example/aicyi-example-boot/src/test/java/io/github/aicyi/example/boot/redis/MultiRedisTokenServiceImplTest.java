@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 public class MultiRedisTokenServiceImplTest extends BaseLoggerTest {
 
     @Autowired
-    private EnhancedRedisTemplateFactory enhancedRedisTemplateFactory;
+    private EnhancedRedisTemplateFactory factory;
 
     private JWTInfo jwtInfo;
     private TokenCreateRequest<JWTInfo> request;
@@ -47,7 +47,6 @@ public class MultiRedisTokenServiceImplTest extends BaseLoggerTest {
         jwtInfo.setId("610780341698822144");
         jwtInfo.setUniqueName("张三");
         jwtInfo.setDeviceId(IdUtils.generateV7Id());
-        jwtInfo.setMainDevice(false);
 
         request = new TokenCreateRequest<>();
 
@@ -56,7 +55,10 @@ public class MultiRedisTokenServiceImplTest extends BaseLoggerTest {
         request.setTtl(1);
         request.setTimeUnit(TimeUnit.HOURS);
 
-        MultiRedisTokenServiceImpl multiRedisTokenService = new MultiRedisTokenServiceImpl<>(enhancedRedisTemplateFactory, JWTInfo.class);
+        long refreshTtl = 3;
+        TimeUnit refreshTimeUnit = TimeUnit.HOURS;
+
+        MultiRedisTokenServiceImpl multiRedisTokenService = new MultiRedisTokenServiceImpl<>(factory.getStringRedisTemplate(), JWTInfo.class, refreshTtl, refreshTimeUnit);
         multiRedisTokenService.setMultiTokenAllowed(true);
         multiRedisTokenService.setMultiTokenCount(3);
 
@@ -88,7 +90,7 @@ public class MultiRedisTokenServiceImplTest extends BaseLoggerTest {
         Set<String> tokens = tokenService.getTokens(jwtInfo);
         assert tokens.contains(refresh);
 
-        log(token, refresh, principal, phone);
+        log(token, refresh, principal, phone, ttl, refreshTtl);
     }
 
     @Test
@@ -96,9 +98,8 @@ public class MultiRedisTokenServiceImplTest extends BaseLoggerTest {
         // 模拟多设备登录
 
         MultiRedisTokenServiceImpl<JWTInfo> multiRedisTokenService = (MultiRedisTokenServiceImpl<JWTInfo>) tokenService;
-
-//        multiRedisTokenService.setMultiTokenAllowed(true);
-//        multiRedisTokenService.setMultiTokenCount(2);
+        multiRedisTokenService.setMultiTokenAllowed(true);
+        multiRedisTokenService.setMultiTokenCount(2);
 
         List<String> tokenList = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
@@ -115,13 +116,22 @@ public class MultiRedisTokenServiceImplTest extends BaseLoggerTest {
 
         Set<String> tokens = multiRedisTokenService.getTokens(request.getPrincipal());
 
-        assert tokens.size() == 3 && !tokens.contains(first);
+        assert tokens.size() == multiRedisTokenService.getMultiTokenCount() && !tokens.contains(first);
 
-        log(tokens);
+        List<JWTInfo> principals = new ArrayList<>();
+        for (String token : tokens) {
+
+            JWTInfo principal = multiRedisTokenService.parsePrincipal(token);
+
+            principals.add(principal);
+        }
+
+        log(tokens, principals);
     }
 
     @Test
     public void test3() {
 
+        tokenService.revokeAll(request.getPrincipal());
     }
 }

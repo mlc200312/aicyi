@@ -3,114 +3,75 @@ package io.github.aicyi.commons.security.token;
 import io.github.aicyi.commons.core.token.*;
 import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
 import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
+import io.github.aicyi.commons.security.token.jwt.JwtPrincipalSerializer;
+import io.github.aicyi.commons.core.token.TokenProvider;
+import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
 import io.github.aicyi.commons.util.id.IdUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import javax.crypto.SecretKey;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mr.Min
- * @description 刷新令牌认证Token服务
- * @date 16:13
+ * @description 抽象认证Token服务
+ * @date 00:25
  **/
-public class JwtRefreshAuthenticationTokenService<P> implements AuthenticationTokenService<P> {
+public abstract class AbstractAuthenticationTokenService<P> extends AbstractTokenService<P> implements AuthenticationTokenService<P>, TokenService<String, P> {
 
     /**
      * Principal Claim名称
      */
     private static final String PRINCIPAL_CLAIM = "principal";
+
     /**
      * RefreshToken Claim名称
      */
     private static final String REFRESH_TOKEN_CLAIM = "refresh_token";
 
     /**
-     * 默认AccessToken有效期（分钟）
-     */
-    private static final long DEFAULT_ACCESS_TOKEN_TTL = 30;
-
-    /**
-     * 默认RefreshToken有效期（天）
-     */
-    private static final long DEFAULT_REFRESH_TOKEN_TTL = 7;
-
-    /**
      * JWT提供者
      */
-    private final JwtProvider<String> accessTokenProvider;
-
-    /**
-     * 令牌服务
-     */
-    private final TokenService<String, P> refreshTokenService;
+    private final TokenProvider<String> accessTokenProvider;
 
     /**
      * JsonCodec
      */
-    private final JwtPrincipalSerializer<P> serializer;
+    private final PrincipalSerializer<P> serializer;
 
     /**
      * AccessToken有效期
      */
-    private final long accessTokenTtl;
+    protected final long accessTokenTtl;
 
     /**
      * AccessToken时间单位
      */
-    private final TimeUnit accessTokenTimeUnit;
+    protected final TimeUnit accessTokenTimeUnit;
 
-    /**
-     * RefreshToken有效期
-     */
-    private final long refreshTokenTtl;
-
-    /**
-     * RefreshToken时间单位
-     */
-    private final TimeUnit refreshTokenTimeUnit;
-
-    public JwtRefreshAuthenticationTokenService(JwtProvider<String> accessTokenProvider, TokenService<String, P> refreshTokenService, JwtPrincipalSerializer<P> jwtPrincipalSerializer) {
-        this(
-                accessTokenProvider,
-                refreshTokenService,
-                jwtPrincipalSerializer,
-                DEFAULT_ACCESS_TOKEN_TTL,
-                TimeUnit.MINUTES,
-                DEFAULT_REFRESH_TOKEN_TTL,
-                TimeUnit.DAYS
-        );
-    }
-
-    public JwtRefreshAuthenticationTokenService(
-            JwtProvider<String> accessTokenProvider,
-            TokenService<String, P> refreshTokenStore,
-            JwtPrincipalSerializer<P> jwtPrincipalSerializer,
-            long accessTokenTtl,
-            TimeUnit accessTokenTimeUnit,
-            long refreshTokenTtl,
-            TimeUnit refreshTokenTimeUnit) {
-
-        this.accessTokenProvider = Objects.requireNonNull(
-                accessTokenProvider, "accessTokenProvider can not be null"
-        );
-
-        this.refreshTokenService = Objects.requireNonNull(
-                refreshTokenStore, "refreshTokenService can not be null"
-        );
-
-        this.serializer = jwtPrincipalSerializer;
-
+    public AbstractAuthenticationTokenService(SecretKey secretKey, String issuer, String subject, long refreshTokenTtl, TimeUnit refreshTokenTimeUnit, long accessTokenTtl, TimeUnit accessTokenTimeUnit, Class<? extends P> principalType) {
+        super(refreshTokenTtl, refreshTokenTimeUnit);
+        this.accessTokenProvider = new JwtTokenProvider(secretKey, issuer, subject);
+        this.serializer = new JwtPrincipalSerializer<>(principalType);
         this.accessTokenTtl = accessTokenTtl;
-
         this.accessTokenTimeUnit = accessTokenTimeUnit;
-
-        this.refreshTokenTtl = refreshTokenTtl;
-
-        this.refreshTokenTimeUnit = refreshTokenTimeUnit;
     }
 
+    public AbstractAuthenticationTokenService(String secretKey, String issuer, String subject, long refreshTokenTtl, TimeUnit refreshTokenTimeUnit, long accessTokenTtl, TimeUnit accessTokenTimeUnit, Class<? extends P> principalType) {
+        super(refreshTokenTtl, refreshTokenTimeUnit);
+        this.accessTokenProvider = new JwtTokenProvider(secretKey, issuer, subject);
+        this.serializer = new JwtPrincipalSerializer<>(principalType);
+        this.accessTokenTtl = accessTokenTtl;
+        this.accessTokenTimeUnit = accessTokenTimeUnit;
+    }
+
+    public long getAccessTokenTtl() {
+        return accessTokenTtl;
+    }
+
+    public TimeUnit getAccessTokenTimeUnit() {
+        return accessTokenTimeUnit;
+    }
 
     @Override
     public TokenPair createToken(P principal, Map<String, Object> attributes) {
@@ -122,13 +83,13 @@ public class JwtRefreshAuthenticationTokenService<P> implements AuthenticationTo
 
         request.setAttributes(attributes);
 
-        request.setTtl(refreshTokenTtl);
+        request.setTtl(getRefreshTtl());
 
-        request.setTimeUnit(refreshTokenTimeUnit);
+        request.setTimeUnit(getRefreshTimeUnit());
 
-        String refreshToken = refreshTokenService.create(request);
+        String refreshToken = create(request);
 
-        // 2. 生成JWT AccessToken
+        // 2. 生成AccessToken
         String accessToken = createAccessToken(principal, attributes, refreshToken);
 
         // 3. 返回TokenPair
@@ -141,10 +102,10 @@ public class JwtRefreshAuthenticationTokenService<P> implements AuthenticationTo
         // 1. 校验RefreshToken
         validateRefreshToken(refreshToken);
 
-        // 2. 查询Redis
-        P principal = refreshTokenService.parsePrincipal(refreshToken);
+        // 2. 查询缓存对象
+        P principal = super.parsePrincipal(refreshToken);
 
-        Map<String, Object> attributes = refreshTokenService.parseAttributes(refreshToken);
+        Map<String, Object> attributes = super.parseAttributes(refreshToken);
 
         // 3. 重新生成AccessToken
         String accessToken = createAccessToken(principal, attributes, refreshToken);
@@ -172,11 +133,21 @@ public class JwtRefreshAuthenticationTokenService<P> implements AuthenticationTo
 
         Map<String, Object> attributes = accessTokenProvider.getAttributes(accessToken);
 
+        if (attributes == null || attributes.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
         attributes.remove(PRINCIPAL_CLAIM);
 
         attributes.remove(REFRESH_TOKEN_CLAIM);
 
         return attributes;
+    }
+
+    @Override
+    public Set<String> getRefreshTokens(P principal) {
+
+        return getTokens(principal);
     }
 
     @Override
@@ -186,8 +157,7 @@ public class JwtRefreshAuthenticationTokenService<P> implements AuthenticationTo
             return;
         }
 
-        refreshTokenService.revoke(refreshToken);
-
+        this.revoke(refreshToken);
     }
 
     protected String createAccessToken(P principal, Map<String, Object> attributes, String refreshToken) {
@@ -217,7 +187,7 @@ public class JwtRefreshAuthenticationTokenService<P> implements AuthenticationTo
             throw new TokenInvalidException("refresh token can not be blank");
         }
 
-        if (!refreshTokenService.isValid(refreshToken)) {
+        if (!this.isValid(refreshToken)) {
 
             throw new TokenExpiredException("refresh token expired");
         }
@@ -232,16 +202,16 @@ public class JwtRefreshAuthenticationTokenService<P> implements AuthenticationTo
      */
     protected TokenPair buildTokenPair(String accessToken, String refreshToken) {
 
-        TokenPair pair = new TokenPair();
+        TokenPair tokenPair = new TokenPair();
 
-        pair.setAccessToken(accessToken);
+        tokenPair.setAccessToken(accessToken);
 
-        pair.setRefreshToken(refreshToken);
+        tokenPair.setRefreshToken(refreshToken);
 
-        pair.setAccessTokenExpiresIn(accessTokenTimeUnit.toSeconds(accessTokenTtl));
+        tokenPair.setAccessTokenExpiresIn(getAccessTokenTimeUnit().toSeconds(getAccessTokenTtl()));
 
-        pair.setRefreshTokenExpiresIn(refreshTokenTimeUnit.toSeconds(refreshTokenTtl));
+        tokenPair.setRefreshTokenExpiresIn(getRefreshTimeUnit().toSeconds(getRefreshTtl()));
 
-        return pair;
+        return tokenPair;
     }
 }

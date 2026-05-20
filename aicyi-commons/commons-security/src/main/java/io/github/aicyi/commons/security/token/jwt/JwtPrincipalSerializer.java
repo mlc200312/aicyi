@@ -2,7 +2,7 @@ package io.github.aicyi.commons.security.token.jwt;
 
 
 import io.github.aicyi.commons.core.JsonCodec;
-import io.github.aicyi.commons.core.token.JwtPrincipalSerializer;
+import io.github.aicyi.commons.core.token.PrincipalSerializer;
 import io.github.aicyi.commons.util.JsonUtils;
 
 /**
@@ -10,19 +10,19 @@ import io.github.aicyi.commons.util.JsonUtils;
  *
  * @param <P>
  */
-public class DefultJwtPrincipalSerializer<P> implements JwtPrincipalSerializer<P> {
+public class JwtPrincipalSerializer<P> implements PrincipalSerializer<P> {
 
     private final JsonCodec jsonCodec;
 
     private final Class<? extends P> principalType;
 
-    public DefultJwtPrincipalSerializer(JsonCodec jsonCodec, Class<? extends P> principalType) {
+    public JwtPrincipalSerializer(JsonCodec jsonCodec, Class<? extends P> principalType) {
 
         this.jsonCodec = jsonCodec;
         this.principalType = principalType;
     }
 
-    public DefultJwtPrincipalSerializer(Class<? extends P> principalType) {
+    public JwtPrincipalSerializer(Class<? extends P> principalType) {
 
         this.jsonCodec = JsonUtils.getInstance();
         this.principalType = principalType;

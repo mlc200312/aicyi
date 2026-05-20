@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public interface TokenService<T, P> {
 
     /**
-     * 创建 Token
+     * 创建 Token 对象
      *
      * @param request Token创建请求
      * @return Token
@@ -25,7 +25,7 @@ public interface TokenService<T, P> {
      * @param token Token
      * @return true-有效
      */
-    boolean isValid(T token);
+    boolean isValid(String token);
 
     /**
      * 解析 Token 主体信息
@@ -33,7 +33,7 @@ public interface TokenService<T, P> {
      * @param token Token
      * @return 主体信息
      */
-    P parsePrincipal(T token);
+    P parsePrincipal(String token);
 
     /**
      * 解析 Token 属性
@@ -41,7 +41,7 @@ public interface TokenService<T, P> {
      * @param token Token
      * @return Token属性
      */
-    Map<String, Object> parseAttributes(T token);
+    Map<String, Object> parseAttributes(String token);
 
     /**
      * 获取指定 Token 属性
@@ -51,7 +51,7 @@ public interface TokenService<T, P> {
      * @param <V>           属性值类型
      * @return 属性值
      */
-    <V> V getAttribute(T token, String attributeName);
+    <V> V getAttribute(String token, String attributeName);
 
     /**
      * 刷新 Token
@@ -59,7 +59,7 @@ public interface TokenService<T, P> {
      * @param token 原Token
      * @return 新Token
      */
-    T refresh(T token);
+    T refresh(String token);
 
     /**
      * 获取 Token 剩余有效期
@@ -68,7 +68,7 @@ public interface TokenService<T, P> {
      * @param unit  时间单位
      * @return 剩余有效时间
      */
-    long getRemainingTtl(T token, TimeUnit unit);
+    long getRemainingTtl(String token, TimeUnit unit);
 
     /**
      * 获取主体所有有效 Token
@@ -76,14 +76,14 @@ public interface TokenService<T, P> {
      * @param principal 主体信息
      * @return Token集合
      */
-    Set<T> getTokens(P principal);
+    Set<String> getTokens(P principal);
 
     /**
      * 撤销 Token
      *
      * @param token Token
      */
-    void revoke(T token);
+    void revoke(String token);
 
     /**
      * 撤销主体所有 Token
@@ -91,11 +91,4 @@ public interface TokenService<T, P> {
      * @param principal 主体信息
      */
     void revokeAll(P principal);
-
-    /**
-     * 默认Token有效期
-     */
-    long DEFAULT_TTL = TimeUnit.DAYS.toSeconds(7);
-
-    long DEFAULT_REFRESH_TTL = TimeUnit.DAYS.toSeconds(7);
 }

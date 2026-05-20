@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @param <T>
  */
-public interface JwtProvider<T> {
+public interface TokenProvider<T> {
 
     T create(String tokenId, Map<String, Object> attributes);
 
@@ -19,13 +19,13 @@ public interface JwtProvider<T> {
 
     Map<String, Object> parseClaims(String token);
 
+    Map<String, Object> getAttributes(String token);
+
+    <V> V getAttribute(String token, String attributeName);
+
     String getTokenId(String token);
 
     Date getExpiration(String token);
 
     long getRemainingTtl(String token, TimeUnit unit);
-
-    Map<String, Object> getAttributes(String token);
-
-    <V> V getAttribute(String token, String attributeName);
 }

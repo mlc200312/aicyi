@@ -27,11 +27,4 @@ public interface IJWTInfo {
      * @return
      */
     String getDeviceId();
-
-    /**
-     * 是否是主设备
-     *
-     * @return
-     */
-    boolean isMainDevice();
 }

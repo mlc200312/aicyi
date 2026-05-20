@@ -1,16 +1,13 @@
 package io.github.aicyi.commons.security.token;
 
-import io.github.aicyi.commons.core.DtoBean;
-
 import java.util.Map;
 
 /**
- * @param <P> Principal类型
  * @author Mr.Min
- * @description RefreshToken会话
- * @date 2025/8/12
- */
-public class TokenInfo<P> implements DtoBean {
+ * @description Token会话
+ * @date 16:44
+ **/
+public class TokenInfo<P> implements TokenSession<P> {
 
     /**
      * RefreshToken
@@ -28,11 +25,6 @@ public class TokenInfo<P> implements DtoBean {
     private Map<String, Object> attributes;
 
     /**
-     * 登录设备ID
-     */
-    private String deviceId;
-
-    /**
      * 登录时间
      */
     private long issuedAt;
@@ -42,6 +34,8 @@ public class TokenInfo<P> implements DtoBean {
      */
     private long expireAt;
 
+
+    @Override
     public String getToken() {
         return token;
     }
@@ -50,6 +44,7 @@ public class TokenInfo<P> implements DtoBean {
         this.token = token;
     }
 
+    @Override
     public P getPrincipal() {
         return principal;
     }
@@ -58,20 +53,13 @@ public class TokenInfo<P> implements DtoBean {
         this.principal = principal;
     }
 
+    @Override
     public Map<String, Object> getAttributes() {
         return attributes;
     }
 
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
     }
 
     public long getIssuedAt() {

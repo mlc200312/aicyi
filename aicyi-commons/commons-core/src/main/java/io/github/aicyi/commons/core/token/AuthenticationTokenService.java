@@ -1,6 +1,7 @@
 package io.github.aicyi.commons.core.token;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 认证Token服务
@@ -50,6 +51,14 @@ public interface AuthenticationTokenService<P> {
      * @return
      */
     Map<String, Object> getAttributes(String accessToken);
+
+    /**
+     * 获取在线RefreshToken
+     *
+     * @param principal
+     * @return
+     */
+    Set<String> getRefreshTokens(P principal);
 
     /**
      * 退出登录

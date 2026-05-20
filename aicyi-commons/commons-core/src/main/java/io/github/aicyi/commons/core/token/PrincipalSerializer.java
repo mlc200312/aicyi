@@ -5,7 +5,7 @@ package io.github.aicyi.commons.core.token;
  *
  * @param <P>
  */
-public interface JwtPrincipalSerializer<P> {
+public interface PrincipalSerializer<P> {
 
     /**
      * 序列化

@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.security.token.jwt;
 
-import io.github.aicyi.commons.core.token.JwtProvider;
+import io.github.aicyi.commons.core.token.TokenProvider;
 import io.github.aicyi.commons.security.token.exception.TokenException;
 import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
 import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @description JWT令牌提供者
  * @date 2025/05/14
  */
-public class JwtTokenProvider implements JwtProvider<String> {
+public class JwtTokenProvider implements TokenProvider<String> {
 
     /**
      * JWT标准Claim
@@ -184,47 +184,6 @@ public class JwtTokenProvider implements JwtProvider<String> {
     }
 
     /**
-     * 获取Token ID
-     *
-     * @param token
-     * @return
-     */
-    @Override
-    public String getTokenId(String token) {
-
-        return parseClaims(token).getId();
-    }
-
-    /**
-     * 获取过期时间
-     *
-     * @param token
-     * @return
-     */
-    @Override
-    public Date getExpiration(String token) {
-
-        return parseClaims(token).getExpiration();
-    }
-
-    /**
-     * 获取剩余有效期
-     *
-     * @param token
-     * @param unit
-     * @return
-     */
-    @Override
-    public long getRemainingTtl(String token, TimeUnit unit) {
-
-        Date expiration = getExpiration(token);
-
-        long millis = expiration.getTime() - System.currentTimeMillis();
-
-        return unit.convert(millis, TimeUnit.MILLISECONDS);
-    }
-
-    /**
      * 获取自定义属性
      *
      * @param token
@@ -271,5 +230,46 @@ public class JwtTokenProvider implements JwtProvider<String> {
     public <T> T getAttribute(String token, String attributeName) {
 
         return (T) parseClaims(token).get(attributeName);
+    }
+
+    /**
+     * 获取Token ID
+     *
+     * @param token
+     * @return
+     */
+    @Override
+    public String getTokenId(String token) {
+
+        return parseClaims(token).getId();
+    }
+
+    /**
+     * 获取过期时间
+     *
+     * @param token
+     * @return
+     */
+    @Override
+    public Date getExpiration(String token) {
+
+        return parseClaims(token).getExpiration();
+    }
+
+    /**
+     * 获取剩余有效期
+     *
+     * @param token
+     * @param unit
+     * @return
+     */
+    @Override
+    public long getRemainingTtl(String token, TimeUnit unit) {
+
+        Date expiration = getExpiration(token);
+
+        long millis = expiration.getTime() - System.currentTimeMillis();
+
+        return unit.convert(millis, TimeUnit.MILLISECONDS);
     }
 }
