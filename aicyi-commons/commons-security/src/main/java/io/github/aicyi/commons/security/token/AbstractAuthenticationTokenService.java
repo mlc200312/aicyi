@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @description 抽象认证Token服务
  * @date 00:25
  **/
-public abstract class AbstractAuthenticationTokenService<P> extends AbstractTokenService<P> implements AuthenticationTokenService<P>, TokenService<String, P> {
+public abstract class AbstractAuthenticationTokenService<P> extends AbstractTokenService<P> implements AuthenticationTokenService<P> {
 
     /**
      * Principal Claim名称
