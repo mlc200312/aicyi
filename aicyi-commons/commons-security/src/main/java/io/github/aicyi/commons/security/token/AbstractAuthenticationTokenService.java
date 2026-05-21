@@ -162,6 +162,22 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
     }
 
     @Override
+    public Set<String> getRefreshTokens(P principal) {
+
+        return refreshTokenService.getTokens(principal);
+    }
+
+    @Override
+    public void revokeToken(String refreshToken) {
+
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            return;
+        }
+
+        refreshTokenService.revoke(refreshToken);
+    }
+
+    @Override
     public boolean validateAccessToken(String accessToken) {
 
         return accessTokenProvider.isValid(accessToken);
@@ -189,22 +205,6 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
         attributes.remove(REFRESH_TOKEN_CLAIM);
 
         return attributes;
-    }
-
-    @Override
-    public Set<String> getRefreshTokens(P principal) {
-
-        return refreshTokenService.getTokens(principal);
-    }
-
-    @Override
-    public void revokeToken(String refreshToken) {
-
-        if (refreshToken == null || refreshToken.isEmpty()) {
-            return;
-        }
-
-        refreshTokenService.revoke(refreshToken);
     }
 
     protected String createAccessToken(P principal, Map<String, Object> attributes, String refreshToken) {

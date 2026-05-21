@@ -29,6 +29,21 @@ public interface AuthenticationTokenService<P> {
     TokenPair refreshToken(String refreshToken);
 
     /**
+     * 获取在线RefreshToken
+     *
+     * @param principal
+     * @return
+     */
+    Set<String> getRefreshTokens(P principal);
+
+    /**
+     * 退出登录
+     *
+     * @param refreshToken RefreshToken
+     */
+    void revokeToken(String refreshToken);
+
+    /**
      * 校验AccessToken
      *
      * @param accessToken AccessToken
@@ -51,19 +66,4 @@ public interface AuthenticationTokenService<P> {
      * @return
      */
     Map<String, Object> getAttributes(String accessToken);
-
-    /**
-     * 获取在线RefreshToken
-     *
-     * @param principal
-     * @return
-     */
-    Set<String> getRefreshTokens(P principal);
-
-    /**
-     * 退出登录
-     *
-     * @param refreshToken RefreshToken
-     */
-    void revokeToken(String refreshToken);
 }
