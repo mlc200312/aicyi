@@ -1,1 +1,2 @@
 io.github.aicyi.midware.autoconfigure.SpringAutoConfiguration
+io.github.aicyi.midware.autoconfigure.SnowflakeAutoConfiguration

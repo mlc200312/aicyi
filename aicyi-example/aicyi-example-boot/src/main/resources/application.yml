@@ -94,3 +94,14 @@ spring:
               declare-exchange: false
               bind-queue: false
               routing-key-expression: headers['routingKey'] # 动态路由键
+
+snowflake:
+  enabled: true
+  service-name: aicyi-example-boot
+  worker-id-bits: 5
+  datacenter-id: 0
+  ttl-seconds: 60000000
+  heartbeat-seconds: 20
+  auto-recover: false
+  clock-backward-tolerance-ms: 5
+  epoch: 1672531200000

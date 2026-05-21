@@ -10,7 +10,7 @@ import com.github.f4b6a3.uuid.UuidCreator;
  **/
 public class IdUtils {
 
-    private static final Snowflake SNOWFLAKE = new Snowflake(0, 0);
+    private static final SnowflakeIdGenerator SNOWFLAKE = new SnowflakeIdGenerator(0, 0);
 
     private IdUtils() {
     }

@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.security.token.exception;
 
-import io.github.aicyi.commons.core.exception.BaseException;
+import io.github.aicyi.commons.lang.exception.BaseException;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 
 /**
