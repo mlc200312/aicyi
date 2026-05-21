@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.core;
+package io.github.aicyi.commons.security.token.jwt;
 
 /**
  * @author Mr.Min

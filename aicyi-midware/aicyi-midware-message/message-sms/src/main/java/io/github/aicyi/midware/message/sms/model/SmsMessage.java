@@ -1,8 +1,8 @@
 package io.github.aicyi.midware.message.sms.model;
 
 import io.github.aicyi.midware.message.core.model.AbstractMessage;
-import io.github.aicyi.midware.message.core.model.MessageContent;
-import io.github.aicyi.midware.message.core.model.MessageType;
+import io.github.aicyi.commons.core.message.MessageContent;
+import io.github.aicyi.commons.core.message.MessageType;
 import io.github.aicyi.commons.core.template.TemplateRequest;
 
 import java.util.List;

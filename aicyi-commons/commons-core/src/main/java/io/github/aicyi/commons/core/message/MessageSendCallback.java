@@ -1,6 +1,4 @@
-package io.github.aicyi.midware.message.core.sender;
-
-import io.github.aicyi.midware.message.core.model.MessageSendResult;
+package io.github.aicyi.commons.core.message;
 
 /**
  * @author Mr.Min

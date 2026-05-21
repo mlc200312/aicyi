@@ -1,17 +1,11 @@
 package io.github.aicyi.example.boot.config;
 
-import io.github.aicyi.commons.core.IJWTInfo;
-import io.github.aicyi.commons.core.token.AuthenticationTokenService;
-import io.github.aicyi.commons.core.token.PrincipalSerializer;
-import io.github.aicyi.commons.core.token.TokenService;
-import io.github.aicyi.commons.security.SecretKeyUtils;
-import io.github.aicyi.commons.security.token.jwt.JwtPrincipalSerializer;
-import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
+import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
+import io.github.aicyi.commons.security.token.AuthenticationTokenService;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.token.AuthenticationConfig;
 import io.github.aicyi.midware.redis.token.JwtRefreshAuthenticationTokenService;
-import io.github.aicyi.midware.redis.token.MultiRedisTokenServiceImpl;
 import io.github.aicyi.midware.web.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

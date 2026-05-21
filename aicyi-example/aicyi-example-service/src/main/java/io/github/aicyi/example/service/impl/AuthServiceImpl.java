@@ -1,9 +1,9 @@
 package io.github.aicyi.example.service.impl;
 
 import io.github.aicyi.commons.core.BeanMapper;
-import io.github.aicyi.commons.core.IJWTInfo;
-import io.github.aicyi.commons.core.token.AuthenticationTokenService;
-import io.github.aicyi.commons.core.token.TokenPair;
+import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
+import io.github.aicyi.commons.security.token.AuthenticationTokenService;
+import io.github.aicyi.commons.security.token.TokenPair;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.id.IdUtils;

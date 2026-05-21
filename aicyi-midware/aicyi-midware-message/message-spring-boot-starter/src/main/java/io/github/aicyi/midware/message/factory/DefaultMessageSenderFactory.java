@@ -1,8 +1,8 @@
 package io.github.aicyi.midware.message.factory;
 
-import io.github.aicyi.midware.message.core.sender.MessageSender;
+import io.github.aicyi.commons.core.message.MessageSender;
 import io.github.aicyi.midware.message.core.sender.MessageSenderFactory;
-import io.github.aicyi.midware.message.core.model.MessageType;
+import io.github.aicyi.commons.core.message.MessageType;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

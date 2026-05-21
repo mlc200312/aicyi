@@ -1,9 +1,9 @@
 package io.github.aicyi.example.boot.token;
 
 import io.github.aicyi.commons.core.BeanMapper;
-import io.github.aicyi.commons.core.token.*;
-import io.github.aicyi.commons.core.token.TokenPair;
+import io.github.aicyi.commons.security.token.TokenPair;
 import io.github.aicyi.commons.security.SecretKeyUtils;
+import io.github.aicyi.commons.security.token.AuthenticationTokenService;
 import io.github.aicyi.commons.util.Maps;
 import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.example.boot.AicyiExampleApplication;

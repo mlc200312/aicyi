@@ -1,8 +1,9 @@
 package io.github.aicyi.midware.message.core.sender;
 
-import io.github.aicyi.midware.message.core.model.MessageContent;
+import io.github.aicyi.commons.core.message.MessageContent;
+import io.github.aicyi.commons.core.message.MessageSendCallback;
 import io.github.aicyi.midware.message.core.model.MessagePriority;
-import io.github.aicyi.midware.message.core.model.MessageSendResult;
+import io.github.aicyi.commons.core.message.MessageSendResult;
 
 import java.util.List;
 import java.util.stream.Collectors;

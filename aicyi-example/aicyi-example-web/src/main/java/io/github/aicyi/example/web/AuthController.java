@@ -1,10 +1,10 @@
 package io.github.aicyi.example.web;
 
-import io.github.aicyi.commons.core.IJWTInfo;
+import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.core.IResponse;
 import io.github.aicyi.commons.core.BeanMapper;
-import io.github.aicyi.commons.core.token.AuthenticationTokenService;
-import io.github.aicyi.commons.core.token.TokenPair;
+import io.github.aicyi.commons.security.token.AuthenticationTokenService;
+import io.github.aicyi.commons.security.token.TokenPair;
 import io.github.aicyi.example.domain.LoginParam;
 import io.github.aicyi.example.domain.LoginResult;
 import io.github.aicyi.example.domain.RegisterParam;

@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.redis.token;
 
-import io.github.aicyi.commons.core.IJWTInfo;
+import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.core.token.TokenCreateRequest;
 import io.github.aicyi.commons.security.token.TokenSessionPrincipalSerializer;
 import io.github.aicyi.commons.security.token.exception.TokenExpiredException;

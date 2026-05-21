@@ -1,6 +1,4 @@
-package io.github.aicyi.midware.message.core.model;
-
-import io.github.aicyi.commons.lang.BaseBean;
+package io.github.aicyi.commons.core.message;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +7,7 @@ import java.time.LocalDateTime;
  * @description 发送结果 - 使用建造者模式优化
  * @date 2025/8/25
  **/
-public class MessageSendResult extends BaseBean {
+public class MessageSendResult {
     private final boolean success;
     private final String messageId;
     private final String channelMessageId;

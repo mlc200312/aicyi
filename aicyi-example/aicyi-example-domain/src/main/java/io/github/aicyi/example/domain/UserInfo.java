@@ -1,9 +1,8 @@
 package io.github.aicyi.example.domain;
 
 import io.github.aicyi.commons.security.token.jwt.JWTInfo;
-import io.github.aicyi.commons.core.IJWTInfo;
+import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.util.MapperUtils;
-import io.github.aicyi.commons.util.id.IdUtils;
 import io.github.aicyi.example.domain.entity.base.User;
 import lombok.Getter;
 import lombok.Setter;

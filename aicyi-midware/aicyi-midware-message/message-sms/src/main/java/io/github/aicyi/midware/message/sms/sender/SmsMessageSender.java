@@ -2,9 +2,9 @@ package io.github.aicyi.midware.message.sms.sender;
 
 
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
-import io.github.aicyi.midware.message.core.model.MessageContent;
-import io.github.aicyi.midware.message.core.model.MessageType;
-import io.github.aicyi.midware.message.core.model.MessageSendResult;
+import io.github.aicyi.commons.core.message.MessageContent;
+import io.github.aicyi.commons.core.message.MessageType;
+import io.github.aicyi.commons.core.message.MessageSendResult;
 import io.github.aicyi.midware.message.core.sender.AbstractMessageSender;
 import io.github.aicyi.midware.message.sms.model.SmsMessage;
 
