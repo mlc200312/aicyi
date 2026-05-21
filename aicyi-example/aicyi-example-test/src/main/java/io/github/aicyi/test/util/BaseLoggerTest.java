@@ -11,7 +11,7 @@ import io.github.aicyi.commons.logging.LoggerFactory;
  **/
 public abstract class BaseLoggerTest {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(BaseLoggerTest.class);
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     public void log(Object... os) {
         int i = 0;
@@ -19,7 +19,7 @@ public abstract class BaseLoggerTest {
         for (Object o : os) {
             sb.append(++i).append("、").append(o).append("\n");
         }
-        LOGGER.info(sb);
+        logger.info(sb);
     }
 
     public abstract void beforeTest();

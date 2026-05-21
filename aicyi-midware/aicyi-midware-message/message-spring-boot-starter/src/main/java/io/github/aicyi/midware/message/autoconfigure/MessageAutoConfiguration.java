@@ -32,10 +32,12 @@ import java.util.Optional;
 @EnableConfigurationProperties({MessageProperties.class})
 public class MessageAutoConfiguration implements InitializingBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageAutoConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final EmailSender defaultEmailSender;
+
     private final MqSender defaultMqSender;
+
     private final SmsSender defaultSmsSender;
 
     public MessageAutoConfiguration(@Autowired(required = false) EmailSender defaultEmailSender,
@@ -60,6 +62,6 @@ public class MessageAutoConfiguration implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        LOGGER.info("Initializing Configuration '{}'!", this.getClass().getName());
+        logger.info("Initializing Configuration '{}'!", this.getClass().getName());
     }
 }

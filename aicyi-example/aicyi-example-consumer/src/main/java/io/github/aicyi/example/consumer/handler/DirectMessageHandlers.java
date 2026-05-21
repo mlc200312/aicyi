@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DirectMessageHandlers {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DirectMessageHandlers.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @StreamListener(MessageChannels.DIRECT_INPUT)
     public void handleMessage(org.springframework.messaging.Message<UserBean> message) {
@@ -24,7 +24,7 @@ public class DirectMessageHandlers {
 
         Object object = headers.get("amqp_receivedRoutingKey");
 
-        LOGGER.info("Received message [{}]: {}", object, message.getPayload());
+        logger.info("Received message [{}]: {}", object, message.getPayload());
         // 处理消息逻辑
     }
 }

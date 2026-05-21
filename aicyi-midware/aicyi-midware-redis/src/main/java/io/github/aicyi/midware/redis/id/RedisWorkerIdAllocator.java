@@ -18,10 +18,7 @@ import java.util.Collections;
  **/
 public class RedisWorkerIdAllocator implements WorkerIdAllocator {
 
-    /**
-     * 日志
-     */
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * String Redis 模板

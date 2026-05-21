@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  **/
 public class StreamMqSender implements MqSender {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StreamMqSender.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final StreamBridge streamBridge;
 
@@ -48,7 +48,7 @@ public class StreamMqSender implements MqSender {
             }
 
         } catch (Exception e) {
-            LOGGER.error(e, "发送MQ消息失败 - destination: {}, properties: {}", channel, headers);
+            logger.error(e, "发送MQ消息失败 - destination: {}, properties: {}", channel, headers);
             throw new MessageSendException("发送MQ消息失败:" + e.getMessage(), e);
         }
         return true;

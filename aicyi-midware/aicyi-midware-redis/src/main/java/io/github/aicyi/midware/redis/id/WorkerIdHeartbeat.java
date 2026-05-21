@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  **/
 public class WorkerIdHeartbeat {
 
-    private final Logger logger = LoggerFactory.getLogger(WorkerIdHeartbeat.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final WorkerIdAllocator allocator;
     private final WorkerIdLease lease;
     private final long heartbeatSeconds;

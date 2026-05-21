@@ -27,7 +27,7 @@ import java.util.Set;
 @Configuration
 public class DataSourceConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Bean
     public DataSource dataSource() {
@@ -88,7 +88,7 @@ public class DataSourceConfiguration {
                 if (StringEnumType.class.isAssignableFrom(enumClass)) {
                     registry.register(enumType, new GenericStringEnumTypeHandler(enumType));
                 }
-                LOGGER.info("Registered EnumTypeHandler for: {}", enumType.getName());
+                logger.info("Registered EnumTypeHandler for: {}", enumType.getName());
             }
 
         }

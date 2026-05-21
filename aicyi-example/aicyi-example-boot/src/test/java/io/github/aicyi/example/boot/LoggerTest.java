@@ -17,10 +17,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest(classes = AicyiExampleApplication.class)
 public class LoggerTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggerType.BIZ);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Test
     public void test() {
-        LOGGER.error(new RuntimeException("不支持的操作类型"), "测试失败日志打印");
+        logger.error(new RuntimeException("不支持的操作类型"), "测试失败日志打印");
     }
 }

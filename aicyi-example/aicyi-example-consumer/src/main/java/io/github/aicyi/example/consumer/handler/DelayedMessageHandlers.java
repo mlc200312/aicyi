@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DelayedMessageHandlers {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DelayedMessageHandlers.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @StreamListener(MessageChannels.DELAYED_INPUT)
     public void handleMessage(org.springframework.messaging.Message<UserBean> message) {
@@ -24,7 +24,7 @@ public class DelayedMessageHandlers {
 
         Object object = headers.get("amqp_receivedRoutingKey");
 
-        LOGGER.info("Received message [{}]: {}", object, message.getPayload());
+        logger.info("Received message [{}]: {}", object, message.getPayload());
         // 处理消息逻辑
     }
 }

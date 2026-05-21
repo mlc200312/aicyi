@@ -39,7 +39,7 @@ import java.util.function.Function;
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CaptchaService.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UnifiedMessageManager unifiedMessageManager;
@@ -90,7 +90,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         boolean isEq = captcha.equalsIgnoreCase(code);
         // 测试环境不验证
         if (!SpringEnvironmentHelper.isProd()) {
-            LOGGER.info("验证码校验：{}", isEq);
+            logger.info("验证码校验：{}", isEq);
             return;
         }
         if (!isEq) {

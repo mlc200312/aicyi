@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class GenericEnumTypeHandler<E extends Enum<E> & EnumType> extends BaseTypeHandler<E> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GenericEnumTypeHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Class<E> type;
     private Map<Integer, E> enumMap = new HashMap<>();
@@ -73,7 +73,7 @@ public class GenericEnumTypeHandler<E extends Enum<E> & EnumType> extends BaseTy
     private E convert(int value) {
         E result = enumMap.get(value);
         if (result == null) {
-            LOGGER.warn("Unknown value {} for enum {}", value, type.getSimpleName());
+            logger.warn("Unknown value {} for enum {}", value, type.getSimpleName());
             return null;
         }
         return result;

@@ -30,7 +30,7 @@ import java.util.Objects;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 业务异常处理
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public final Response<Void> handleBusinessException(BusinessException e) {
 
-        LOGGER.error(e, "handleException cause: {}", e.getMessage());
+        logger.error(e, "handleException cause: {}", e.getMessage());
 
         return Response.failure(e.getCodeAsString(), e.getMessage());
     }
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public final Response<Void> handleBusinessException(UnauthorizedException e) {
 
-        LOGGER.error(e, "handleException cause: {}", e.getMessage());
+        logger.error(e, "handleException cause: {}", e.getMessage());
 
         return Response.failure(e.getCodeAsString(), e.getMessage());
     }
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public final Response<Void> handleIllegalArgumentException(IllegalArgumentException e) {
 
-        LOGGER.error(e, "handleException cause: {}", e.getMessage());
+        logger.error(e, "handleException cause: {}", e.getMessage());
 
         return Response.failure(CommonResultCode.PARAM_ERROR);
     }
@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
 
         String message = String.join(",", messageList);
 
-        LOGGER.error(e, "handleException cause: {}：", e.getMessage());
+        logger.error(e, "handleException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
@@ -115,7 +115,7 @@ public class GlobalExceptionHandler {
 
         String message = String.join(",", messageList);
 
-        LOGGER.error(e, "handleException cause: {}：", e.getMessage());
+        logger.error(e, "handleException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
 
         String message = String.join(",", messageList);
 
-        LOGGER.error(e, "handleException cause: {}：", e.getMessage());
+        logger.error(e, "handleException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
@@ -148,7 +148,7 @@ public class GlobalExceptionHandler {
 
         String message = String.format("%s is required", e.getParameterName());
 
-        LOGGER.error(e, "handleException cause: {}：", e.getMessage());
+        logger.error(e, "handleException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
@@ -162,7 +162,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Response<Void>> handleException(Exception ex, WebRequest request) {
 
-        LOGGER.error(ex, "handleException cause: {}", ex.getMessage());
+        logger.error(ex, "handleException cause: {}", ex.getMessage());
 
         request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, ex, WebRequest.SCOPE_REQUEST);
 

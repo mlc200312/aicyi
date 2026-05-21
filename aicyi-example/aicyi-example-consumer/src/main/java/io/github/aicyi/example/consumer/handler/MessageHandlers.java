@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageHandlers {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageHandlers.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @StreamListener(MessageChannels.INPUT)
     public void handleMessage(UserBean message) {
-        LOGGER.info("Received message: " + message);
+        logger.info("Received message: " + message);
         // 处理消息逻辑
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TopicMessageHandlers {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TopicMessageHandlers.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @StreamListener(value = MessageChannels.ORDER_EVENTS_IN_0, condition = "headers['routingKey']=='order.created'")
     public void orderEventsCreated(org.springframework.messaging.Message<UserBean> message) {
@@ -25,7 +25,7 @@ public class TopicMessageHandlers {
 
         Object object = headers.get("routingKey");
 
-        LOGGER.info("Received message [{}]: {}", object, message.getPayload());
+        logger.info("Received message [{}]: {}", object, message.getPayload());
         // 处理消息逻辑
     }
 
@@ -36,7 +36,7 @@ public class TopicMessageHandlers {
 
         Object object = headers.get("routingKey");
 
-        LOGGER.info("Received message [{}]: {}", object, message.getPayload());
+        logger.info("Received message [{}]: {}", object, message.getPayload());
         // 处理消息逻辑
     }
 
@@ -47,6 +47,6 @@ public class TopicMessageHandlers {
 
         Object object = headers.get("routingKey");
 
-        LOGGER.info("Received message [{}]: {}", object, message.getPayload());
+        logger.info("Received message [{}]: {}", object, message.getPayload());
     }
 }

@@ -18,11 +18,11 @@ import java.util.concurrent.TimeUnit;
  **/
 public class AicyiFactory extends ThreadFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AicyiFactory.class);
-
     private static final ThreadLocal<Long> TIME_THREAD_LOCAL = new ThreadLocal<>();
 
     public static int PRODUCT_COUNT = 0;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AicyiFactory.class);
 
     private String name;
     private Robot robot;

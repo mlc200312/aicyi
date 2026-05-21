@@ -25,7 +25,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 public class SwaggerConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Value("${server.port:80}")
     private String serverPort;
@@ -39,7 +39,7 @@ public class SwaggerConfiguration {
                 .version("1.0")
                 .build();
         String ipAddress = SystemUtils.getIpAddress();
-        LOGGER.info("Swagger url 'http://{}:{}/api-doc.html'!", ipAddress, serverPort);
+        logger.info("Swagger url 'http://{}:{}/api-doc.html'!", ipAddress, serverPort);
         return (new Docket(DocumentationType.OAS_30))
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo)
