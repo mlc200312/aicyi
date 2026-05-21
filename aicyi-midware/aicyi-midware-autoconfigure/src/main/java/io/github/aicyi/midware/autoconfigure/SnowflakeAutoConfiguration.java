@@ -8,6 +8,7 @@ import io.github.aicyi.midware.properties.SnowflakeProperties;
 import io.github.aicyi.midware.redis.id.RedisCoordinatedSnowflakeIdGenerator;
 import io.github.aicyi.midware.redis.id.RedisWorkerIdAllocator;
 import io.github.aicyi.midware.redis.id.WorkerIdManager;
+import io.github.aicyi.midware.utils.IdUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -74,5 +75,14 @@ public class SnowflakeAutoConfiguration {
                 properties.getEpoch(),
                 properties.getClockBackwardToleranceMs()
         );
+    }
+
+    /**
+     * 创建ID生成器
+     */
+    @Bean
+    @ConditionalOnMissingBean(IdUtils.class)
+    public IdUtils getIdUtils(IdGenerator idGenerator) {
+        return new IdUtils(idGenerator);
     }
 }
