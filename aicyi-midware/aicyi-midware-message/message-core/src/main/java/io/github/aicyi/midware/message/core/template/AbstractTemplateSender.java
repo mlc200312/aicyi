@@ -17,7 +17,7 @@ import java.util.Map;
  **/
 public abstract class AbstractTemplateSender<T extends TemplateRequest> implements TemplateSender<T> {
 
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final TemplateProvider templateProvider;
 
