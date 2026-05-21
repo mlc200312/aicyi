@@ -6,7 +6,6 @@ import io.github.aicyi.commons.security.SecretKeyUtils;
 import io.github.aicyi.commons.security.token.AuthenticationTokenService;
 import io.github.aicyi.commons.util.Maps;
 import io.github.aicyi.commons.util.UUIDUtils;
-import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.domain.UserInfo;
@@ -127,21 +126,30 @@ public class JwtRefreshAuthenticationTokenServiceTest extends BaseLoggerTest {
 
         for (int i = 0; i < 3; i++) {
 
-            Map<String, Object> attributes = Maps.of("deviceId", "设备：" + i).build();
+            TokenPair token = authenticationTokenService.createToken(userInfo, Maps.of("deviceId", "设备：" + i).build());
 
-            TokenPair token = authenticationTokenService.createToken(userInfo, attributes);
-
-            Map<String, Object> attributes1 = authenticationTokenService.getAttributes(token.getAccessToken());
+            Map<String, Object> attributes = authenticationTokenService.getAttributes(token.getAccessToken());
 
             tokenList.add(token.getRefreshToken());
 
-            deviceIdList.add(attributes1.get("deviceId").toString());
+            deviceIdList.add(attributes.get("deviceId").toString());
         }
 
         Set<String> refreshTokens = authenticationTokenService.getRefreshTokens(userInfo);
 
+        List<String> deviceIdList2 = new ArrayList<>();
+
+        for (String refreshToken : refreshTokens) {
+
+            TokenPair tokenPair = authenticationTokenService.refreshToken(refreshToken);
+
+            Map<String, Object> attributes = authenticationTokenService.getAttributes(tokenPair.getAccessToken());
+
+            deviceIdList2.add(attributes.get("deviceId").toString());
+        }
+
         assert refreshTokens.size() == 2;
 
-        log(tokenList, deviceIdList, refreshTokens);
+        log(tokenList, deviceIdList, refreshTokens, deviceIdList2);
     }
 }

@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @description 抽象认证Token服务
  * @date 00:25
  **/
-public abstract class AbstractAuthenticationTokenService<P> extends AbstractTokenService<P> implements AuthenticationTokenService<P> {
+public abstract class AbstractAuthenticationTokenService<P> implements AuthenticationTokenService<P> {
 
     /**
      * Principal Claim名称
@@ -30,14 +30,29 @@ public abstract class AbstractAuthenticationTokenService<P> extends AbstractToke
     private static final String REFRESH_TOKEN_CLAIM = "refresh_token";
 
     /**
-     * JWT提供者
+     * 刷新Token服务
+     */
+    private final TokenService<String, P> refreshTokenService;
+
+    /**
+     * 访问Token服务
      */
     private final TokenProvider<String> accessTokenProvider;
 
     /**
-     * JsonCodec
+     * Principal序列化器
      */
     private final PrincipalSerializer<P> serializer;
+
+    /**
+     * RefreshToken有效期
+     */
+    protected final long refreshTokenTtl;
+
+    /**
+     * RefreshToken时间单位
+     */
+    protected final TimeUnit refreshTokenTimeUnit;
 
     /**
      * AccessToken有效期
@@ -49,20 +64,52 @@ public abstract class AbstractAuthenticationTokenService<P> extends AbstractToke
      */
     protected final TimeUnit accessTokenTimeUnit;
 
-    public AbstractAuthenticationTokenService(SecretKey secretKey, String issuer, String subject, long refreshTokenTtl, TimeUnit refreshTokenTimeUnit, long accessTokenTtl, TimeUnit accessTokenTimeUnit, Class<? extends P> principalType) {
-        super(refreshTokenTtl, refreshTokenTimeUnit);
+    public AbstractAuthenticationTokenService(
+            TokenService<String, P> refreshTokenService,
+            Class<? extends P> principalType,
+            SecretKey secretKey,
+            String issuer,
+            String subject,
+            Long refreshTokenTtl,
+            TimeUnit refreshTokenTimeUnit,
+            Long accessTokenTtl,
+            TimeUnit accessTokenTimeUnit
+    ) {
+        this.refreshTokenService = refreshTokenService;
         this.accessTokenProvider = new JwtTokenProvider(secretKey, issuer, subject);
         this.serializer = new JwtPrincipalSerializer<>(principalType);
+        this.refreshTokenTtl = refreshTokenTtl;
+        this.refreshTokenTimeUnit = refreshTokenTimeUnit;
         this.accessTokenTtl = accessTokenTtl;
         this.accessTokenTimeUnit = accessTokenTimeUnit;
     }
 
-    public AbstractAuthenticationTokenService(String secretKey, String issuer, String subject, long refreshTokenTtl, TimeUnit refreshTokenTimeUnit, long accessTokenTtl, TimeUnit accessTokenTimeUnit, Class<? extends P> principalType) {
-        super(refreshTokenTtl, refreshTokenTimeUnit);
+    public AbstractAuthenticationTokenService(
+            TokenService<String, P> refreshTokenService,
+            Class<? extends P> principalType,
+            String secretKey,
+            String issuer,
+            String subject,
+            Long refreshTokenTtl,
+            TimeUnit refreshTokenTimeUnit,
+            Long accessTokenTtl,
+            TimeUnit accessTokenTimeUnit
+    ) {
+        this.refreshTokenService = refreshTokenService;
         this.accessTokenProvider = new JwtTokenProvider(secretKey, issuer, subject);
         this.serializer = new JwtPrincipalSerializer<>(principalType);
+        this.refreshTokenTtl = refreshTokenTtl;
+        this.refreshTokenTimeUnit = refreshTokenTimeUnit;
         this.accessTokenTtl = accessTokenTtl;
         this.accessTokenTimeUnit = accessTokenTimeUnit;
+    }
+
+    public long getRefreshTokenTtl() {
+        return refreshTokenTtl;
+    }
+
+    public TimeUnit getRefreshTokenTimeUnit() {
+        return refreshTokenTimeUnit;
     }
 
     public long getAccessTokenTtl() {
@@ -83,11 +130,11 @@ public abstract class AbstractAuthenticationTokenService<P> extends AbstractToke
 
         request.setAttributes(attributes);
 
-        request.setTtl(getRefreshTtl());
+        request.setTtl(refreshTokenTtl);
 
-        request.setTimeUnit(getRefreshTimeUnit());
+        request.setTimeUnit(refreshTokenTimeUnit);
 
-        String refreshToken = create(request);
+        String refreshToken = refreshTokenService.create(request);
 
         // 2. 生成AccessToken
         String accessToken = createAccessToken(principal, attributes, refreshToken);
@@ -103,9 +150,9 @@ public abstract class AbstractAuthenticationTokenService<P> extends AbstractToke
         validateRefreshToken(refreshToken);
 
         // 2. 查询缓存对象
-        P principal = super.parsePrincipal(refreshToken);
+        P principal = refreshTokenService.parsePrincipal(refreshToken);
 
-        Map<String, Object> attributes = super.parseAttributes(refreshToken);
+        Map<String, Object> attributes = refreshTokenService.parseAttributes(refreshToken);
 
         // 3. 重新生成AccessToken
         String accessToken = createAccessToken(principal, attributes, refreshToken);
@@ -147,7 +194,7 @@ public abstract class AbstractAuthenticationTokenService<P> extends AbstractToke
     @Override
     public Set<String> getRefreshTokens(P principal) {
 
-        return getTokens(principal);
+        return refreshTokenService.getTokens(principal);
     }
 
     @Override
@@ -157,7 +204,7 @@ public abstract class AbstractAuthenticationTokenService<P> extends AbstractToke
             return;
         }
 
-        this.revoke(refreshToken);
+        refreshTokenService.revoke(refreshToken);
     }
 
     protected String createAccessToken(P principal, Map<String, Object> attributes, String refreshToken) {
@@ -187,7 +234,7 @@ public abstract class AbstractAuthenticationTokenService<P> extends AbstractToke
             throw new TokenInvalidException("refresh token can not be blank");
         }
 
-        if (!this.isValid(refreshToken)) {
+        if (!refreshTokenService.isValid(refreshToken)) {
 
             throw new TokenExpiredException("refresh token expired");
         }
@@ -208,9 +255,9 @@ public abstract class AbstractAuthenticationTokenService<P> extends AbstractToke
 
         tokenPair.setRefreshToken(refreshToken);
 
-        tokenPair.setAccessTokenExpiresIn(getAccessTokenTimeUnit().toSeconds(getAccessTokenTtl()));
+        tokenPair.setAccessTokenExpiresIn(accessTokenTimeUnit.toSeconds(accessTokenTtl));
 
-        tokenPair.setRefreshTokenExpiresIn(getRefreshTimeUnit().toSeconds(getRefreshTtl()));
+        tokenPair.setRefreshTokenExpiresIn(refreshTokenTimeUnit.toSeconds(refreshTokenTtl));
 
         return tokenPair;
     }
