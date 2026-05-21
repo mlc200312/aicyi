@@ -147,16 +147,10 @@ public class SpringEnvironmentHelper implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        SpringEnvironmentHelper.INSTANCE = this;
-        checkEnvironmentInitialized();
-    }
-
-    /**
-     * 检查环境对象是否初始化，未初始化则抛出异常
-     */
-    private static void checkEnvironmentInitialized() {
-        if (SpringEnvironmentHelper.INSTANCE.environment == null) {
-            throw new IllegalStateException("EnvironmentUtils 未完成初始化，请确认 Spring 容器已加载且 Environment 已注入");
+        if (this.environment == null) {
+            throw new IllegalStateException("SpringEnvironmentHelper 未完成初始化，请确认 Spring 容器已加载且 Environment 已注入");
         }
+
+        SpringEnvironmentHelper.INSTANCE = this;
     }
 }

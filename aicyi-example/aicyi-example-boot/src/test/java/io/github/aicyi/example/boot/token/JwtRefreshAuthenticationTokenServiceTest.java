@@ -5,7 +5,8 @@ import io.github.aicyi.commons.security.token.TokenPair;
 import io.github.aicyi.commons.security.SecretKeyUtils;
 import io.github.aicyi.commons.security.token.AuthenticationTokenService;
 import io.github.aicyi.commons.util.Maps;
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.example.domain.UserInfo;
@@ -80,7 +81,7 @@ public class JwtRefreshAuthenticationTokenServiceTest extends BaseLoggerTest {
 
         User user = beanMapper.map(userBean, User.class);
 
-        UserInfo userInfo = UserInfo.of(user, IdUtils.generateV7Id());
+        UserInfo userInfo = UserInfo.of(user, UUIDUtils.generateV7Id());
 
         Map<String, Object> attributes = Maps.of("test", "test").build();
 
@@ -118,7 +119,7 @@ public class JwtRefreshAuthenticationTokenServiceTest extends BaseLoggerTest {
 
         User user = beanMapper.map(userBean, User.class);
 
-        UserInfo userInfo = UserInfo.of(user, IdUtils.generateV7Id());
+        UserInfo userInfo = UserInfo.of(user, UUIDUtils.generateV7Id());
 
         List<String> tokenList = new ArrayList<>();
 

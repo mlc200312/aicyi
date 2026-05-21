@@ -1,7 +1,10 @@
 package io.github.aicyi.example.service.impl;
 
 import io.github.aicyi.commons.core.BeanMapper;
+import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.lang.exception.BusinessException;
+import io.github.aicyi.commons.lang.type.BooleanType;
+import io.github.aicyi.commons.util.CurrentContextHolder;
 import io.github.aicyi.commons.util.NumberUtils;
 import io.github.aicyi.example.dao.mapper.StudentCustomMapper;
 import io.github.aicyi.example.dao.mapper.base.StudentMapper;
@@ -40,6 +43,8 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private BeanMapper beanMapper;
     @Autowired
+    private IdGenerator idGenerator;
+    @Autowired
     private StudentMapper studentMapper;
     @Autowired
     private StudentCustomMapper studentCustomMapper;
@@ -49,23 +54,16 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public void add(StudentBean bean) {
-        UserQuery userQuery = new UserQuery();
-        userQuery.setMobileEq(bean.getMobile());
-        userQuery.setIdCardEq(bean.getIdCard());
-        List<User> list = userService.list(userQuery);
-
-        User newUser;
-        if (CollectionUtils.isEmpty(list)) {
-            newUser = beanMapper.map(bean, User.class);
-            userService.save(newUser);
-        } else {
-            newUser = list.get(0);
+        String userId = CurrentContextHolder.getUserId();
+        User user = userService.getById(Long.parseLong(userId));
+        StudentBean student = getByUserId(user.getId());
+        if (Objects.nonNull(student)) {
+            return;
         }
-
         Student newStudent = beanMapper.map(bean, Student.class);
-        newStudent.setUserId(newUser.getId());
+        newStudent.setUserId(user.getId());
         newStudent.setRegisterTime(LocalDateTime.now());
-        BaseEntityUtils.setDefaultValue(newStudent);
+        BaseEntityUtils.setDefaultValue(newStudent, idGenerator);
         studentMapper.insertSelective(newStudent);
     }
 
@@ -86,6 +84,21 @@ public class StudentServiceImpl implements StudentService {
         if (Objects.isNull(student)) {
             throw new BusinessException(ExampleResultCode.OBJECT_NOT_FOUND);
         }
+        User user = userService.getById(student.getUserId());
+        return createStudentBean(student, user);
+    }
+
+    @Override
+    public StudentBean getByUserId(Long userId) {
+        StudentExample example = new StudentExample();
+        StudentExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(BooleanType.FALSE);
+        criteria.andUserIdEqualTo(userId);
+        List<Student> studentList = studentMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(studentList)) {
+            throw new BusinessException(ExampleResultCode.OBJECT_NOT_FOUND);
+        }
+        Student student = studentList.get(0);
         User user = userService.getById(student.getUserId());
         return createStudentBean(student, user);
     }

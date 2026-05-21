@@ -2,6 +2,7 @@ package io.github.aicyi.test.util;
 
 import io.github.aicyi.commons.lang.type.BooleanType;
 import io.github.aicyi.commons.util.MapperUtils;
+import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.commons.util.orikamapper.OrikaMapperRegistry;
 import io.github.aicyi.test.domain.Example;
 import io.github.aicyi.test.domain.ExampleBean;
@@ -15,7 +16,7 @@ import io.github.aicyi.example.domain.type.Season;
 import java.util.ArrayList;
 import java.util.Date;
 
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.example.domain.type.GenderType;
 import io.github.aicyi.test.dto.ExampleResp;
@@ -61,7 +62,7 @@ public class DataSource {
         user.setId(IdUtils.generateId());
         user.setUserName(RandomGenerator.generateFullName());
         user.setAge(RandomUtils.nextInt(0, 100));
-        user.setIdCard(IdUtils.generateV7Id());
+        user.setIdCard(UUIDUtils.generateV7Id());
         user.setMobile(RandomGenerator.generatePhoneNum());
         user.setGenderType(RandomGenerator.randomEnum(GenderType.class));
         user.setBirthday(LocalDate.now());

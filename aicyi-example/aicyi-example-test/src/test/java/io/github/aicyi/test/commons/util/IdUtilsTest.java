@@ -1,6 +1,7 @@
 package io.github.aicyi.test.commons.util;
 
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import org.junit.Test;
 
@@ -34,7 +35,7 @@ public class IdUtilsTest extends BaseLoggerTest {
     public void test2() {
         Set<String> uuidSet = new HashSet<>();
         for (int i = 0; i < 50; i++) {
-            String uuid = IdUtils.generateV7Id();
+            String uuid = UUIDUtils.generateV7Id();
             uuidSet.add(uuid);
             System.out.println(uuid);
         }

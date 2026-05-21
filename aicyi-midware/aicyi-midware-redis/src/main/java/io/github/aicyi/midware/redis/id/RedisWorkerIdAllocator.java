@@ -2,9 +2,9 @@ package io.github.aicyi.midware.redis.id;
 
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.util.id.IdUtils;
-import io.github.aicyi.commons.util.id.WorkerIdAllocator;
-import io.github.aicyi.commons.util.id.WorkerIdLease;
+import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.commons.core.id.WorkerIdAllocator;
+import io.github.aicyi.commons.core.id.WorkerIdLease;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 
@@ -52,7 +52,7 @@ public class RedisWorkerIdAllocator implements WorkerIdAllocator {
 
     @Override
     public WorkerIdLease allocate() {
-        String token = IdUtils.generateV7Id();
+        String token = UUIDUtils.generateV7Id();
 
         for (int workerId = 0; workerId <= maxWorkerId; workerId++) {
             String key = buildKey(workerId);

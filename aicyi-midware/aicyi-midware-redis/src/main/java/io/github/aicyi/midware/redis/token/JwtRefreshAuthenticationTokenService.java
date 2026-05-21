@@ -3,7 +3,7 @@ package io.github.aicyi.midware.redis.token;
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.security.token.AbstractAuthenticationTokenService;
 import io.github.aicyi.commons.security.token.TokenSession;
-import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
+import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Set;

@@ -1,10 +1,10 @@
 package io.github.aicyi.midware.redis.id;
 
-import io.github.aicyi.commons.core.IdGenerator;
+import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.id.SnowflakeIdGenerator;
-import io.github.aicyi.commons.util.id.WorkerIdLease;
+import io.github.aicyi.commons.core.id.WorkerIdLease;
 
 /**
  * @author Mr.Min

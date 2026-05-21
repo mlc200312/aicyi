@@ -3,7 +3,7 @@ package io.github.aicyi.midware.message.core.model;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageType;
 import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.commons.util.UUIDUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public abstract class AbstractMessage<T> extends BaseBean implements MessageCont
     public AbstractMessage(T content, MessageType messageType) {
         this.content = content;
         this.messageType = messageType;
-        this.messageId = IdUtils.generateV7Id();
+        this.messageId = UUIDUtils.generateV7Id();
         this.properties = new HashMap<>();
         this.timestamp = LocalDateTime.now();
     }

@@ -2,8 +2,8 @@ package io.github.aicyi.midware.redis.id;
 
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.util.id.WorkerIdAllocator;
-import io.github.aicyi.commons.util.id.WorkerIdLease;
+import io.github.aicyi.commons.core.id.WorkerIdAllocator;
+import io.github.aicyi.commons.core.id.WorkerIdLease;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,6 +20,7 @@ public class WorkerIdHeartbeat {
     private final Logger logger = LoggerFactory.getLogger(WorkerIdHeartbeat.class);
     private final WorkerIdAllocator allocator;
     private final WorkerIdLease lease;
+    private final long heartbeatSeconds;
     private final Runnable onLeaseLost;
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(
@@ -32,10 +33,18 @@ public class WorkerIdHeartbeat {
         this.allocator = allocator;
         this.lease = lease;
         this.onLeaseLost = onLeaseLost;
+        this.heartbeatSeconds = Math.max(lease.getTtlSeconds() / 3, 5);
+    }
+
+    public WorkerIdHeartbeat(WorkerIdAllocator allocator, WorkerIdLease lease, long heartbeatSeconds, Runnable onLeaseLost) {
+        this.allocator = allocator;
+        this.lease = lease;
+        this.heartbeatSeconds = heartbeatSeconds;
+        this.onLeaseLost = onLeaseLost;
     }
 
     public void start() {
-        long interval = Math.max(lease.getTtlSeconds() / 3, 5);
+        long interval = heartbeatSeconds;
 
         future = scheduler.scheduleAtFixedRate(() -> {
             try {

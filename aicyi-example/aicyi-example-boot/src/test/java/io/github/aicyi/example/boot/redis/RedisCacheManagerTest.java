@@ -1,7 +1,7 @@
 package io.github.aicyi.example.boot.redis;
 
 import io.github.aicyi.commons.core.cache.CacheManager;
-import io.github.aicyi.commons.core.cache.DefaultCacheConfig;
+import io.github.aicyi.midware.redis.cache.DefaultCacheConfig;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.github.aicyi.midware.redis.cache.RedisCacheFactory;

@@ -2,7 +2,8 @@ package io.github.aicyi.test.commons.core;
 
 import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
 import io.github.aicyi.commons.util.DateUtils;
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -36,7 +37,7 @@ public class JwtTokenProviderTest extends BaseLoggerTest {
     @Test
     public void test() {
         HashMap<String, Object> claims = new HashMap<>();
-        claims.put("jti", IdUtils.generateV7Id());
+        claims.put("jti", UUIDUtils.generateV7Id());
         claims.put("userId", userId);
 
         expiredToken = tokenProvider.create(userId, new HashMap<>(), -1 * 3600 * 1000L, TimeUnit.MILLISECONDS);

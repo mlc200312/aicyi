@@ -1,9 +1,9 @@
 package io.github.aicyi.midware.autoconfigure;
 
-import io.github.aicyi.commons.core.IdGenerator;
+import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.util.id.WorkerIdAllocator;
+import io.github.aicyi.commons.core.id.WorkerIdAllocator;
 import io.github.aicyi.midware.properties.SnowflakeProperties;
 import io.github.aicyi.midware.redis.id.RedisCoordinatedSnowflakeIdGenerator;
 import io.github.aicyi.midware.redis.id.RedisWorkerIdAllocator;
@@ -50,10 +50,14 @@ public class SnowflakeAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public WorkerIdManager workerIdManager(WorkerIdAllocator allocator) {
+    public WorkerIdManager workerIdManager(WorkerIdAllocator allocator, SnowflakeProperties properties) {
         logger.info("Initializing WorkerIdManager");
 
-        return new WorkerIdManager(allocator);
+        return new WorkerIdManager(
+                allocator,
+                properties.getHeartbeatSeconds(),
+                properties.isAutoRecover()
+        );
     }
 
     /**

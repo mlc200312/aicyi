@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.util.id;
+package io.github.aicyi.commons.core.id;
 
 /**
  * @author Mr.Min

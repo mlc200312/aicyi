@@ -3,7 +3,7 @@ package io.github.aicyi.example.boot.message;
 import io.github.aicyi.commons.util.Maps;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.commons.util.DateTimeUtils;
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.midware.message.mail.model.MailMessage;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.test.util.BaseLoggerTest;

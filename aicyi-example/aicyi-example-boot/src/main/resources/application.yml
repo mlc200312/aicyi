@@ -100,8 +100,8 @@ snowflake:
   service-name: aicyi-example-boot
   worker-id-bits: 5
   datacenter-id: 0
-  ttl-seconds: 60000000
+  ttl-seconds: 60
   heartbeat-seconds: 20
-  auto-recover: false
+  auto-recover: true
   clock-backward-tolerance-ms: 5
   epoch: 1672531200000

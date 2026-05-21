@@ -1,4 +1,6 @@
-package io.github.aicyi.commons.core.cache;
+package io.github.aicyi.midware.redis.cache;
+
+import io.github.aicyi.commons.core.cache.CacheConfig;
 
 import java.util.concurrent.TimeUnit;
 

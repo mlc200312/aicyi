@@ -3,6 +3,7 @@ package io.github.aicyi.midware.redis.cache;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.aicyi.commons.core.cache.CacheConfig;
 import io.github.aicyi.commons.core.cache.CacheFactory;
+import io.github.aicyi.commons.core.cache.CacheManager;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import com.fasterxml.jackson.databind.JavaType;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -37,6 +38,11 @@ public class RedisCacheFactory implements CacheFactory {
     public RedisCacheManager<Object> createCache(String name, CacheConfig config) {
         RedisTemplate<String, Object> redisTemplate = getEnhancedRedisTemplateFactory().getGenericRedisTemplate(EnhancedRedisTemplateFactory.SerializerType.JSON);
         return new RedisCacheManager<>(redisTemplate, name);
+    }
+
+    @Override
+    public CacheManager<String, Object> createCache(String name) {
+        return createCache(name, DefaultCacheConfig.defaultConfig());
     }
 
     public <V> RedisCacheManager<V> createCache(String name, JavaType javaType) {

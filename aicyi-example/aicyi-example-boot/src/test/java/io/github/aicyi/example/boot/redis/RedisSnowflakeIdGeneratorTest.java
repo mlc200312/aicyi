@@ -2,7 +2,7 @@ package io.github.aicyi.example.boot.redis;
 
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.test.util.BaseLoggerTest;
-import io.github.aicyi.commons.core.IdGenerator;
+import io.github.aicyi.commons.core.id.IdGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

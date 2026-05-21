@@ -6,7 +6,7 @@ import io.github.aicyi.commons.security.token.AuthenticationTokenService;
 import io.github.aicyi.commons.security.token.TokenPair;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.example.domain.*;
 import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.domain.type.CaptchaType;
@@ -61,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 生成token
-        TokenPair token = tokenService.createToken(UserInfo.of(user, IdUtils.generateV7Id()), null);
+        TokenPair token = tokenService.createToken(UserInfo.of(user, UUIDUtils.generateV7Id()), null);
 
         // 返回登录结果
         LoginResult result = new LoginResult();

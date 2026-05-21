@@ -1,10 +1,10 @@
 package io.github.aicyi.commons.security.token.jwt;
 
 import io.github.aicyi.commons.core.token.TokenProvider;
-import io.github.aicyi.commons.security.token.exception.TokenException;
-import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
-import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
-import io.github.aicyi.commons.security.token.exception.TokenParseException;
+import io.github.aicyi.commons.lang.exception.TokenException;
+import io.github.aicyi.commons.lang.exception.TokenExpiredException;
+import io.github.aicyi.commons.lang.exception.TokenInvalidException;
+import io.github.aicyi.commons.lang.exception.TokenParseException;
 import io.github.aicyi.commons.util.Assert;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

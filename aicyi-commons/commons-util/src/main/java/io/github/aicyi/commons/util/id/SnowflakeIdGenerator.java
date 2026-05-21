@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.util.id;
 
-import io.github.aicyi.commons.core.IdGenerator;
+import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.lang.exception.ClockMovedBackwardsException;
 import io.github.aicyi.commons.lang.exception.SnowflakeException;
 

@@ -1,5 +1,6 @@
 package io.github.aicyi.example.service.impl;
 
+import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.example.dao.mapper.base.UserMapper;
 import io.github.aicyi.example.domain.UserQuery;
 import io.github.aicyi.example.domain.entity.base.User;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -28,11 +28,13 @@ import java.util.Objects;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
+    private IdGenerator idGenerator;
+    @Autowired
     private UserMapper userMapper;
 
     @Override
     public void save(User user) {
-        BaseEntityUtils.setDefaultValue(user);
+        BaseEntityUtils.setDefaultValue(user, idGenerator);
         userMapper.insertSelective(user);
     }
 
@@ -44,6 +46,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(Long id) {
+        long nextId = idGenerator.nextId();
+        System.out.println(nextId);
         return userMapper.selectByPrimaryKey(id);
     }
 

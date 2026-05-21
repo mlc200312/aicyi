@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.security.token.exception;
+package io.github.aicyi.commons.lang.exception;
 
 
 /**

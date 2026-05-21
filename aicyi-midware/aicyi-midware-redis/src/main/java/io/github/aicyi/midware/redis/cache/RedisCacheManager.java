@@ -2,7 +2,6 @@ package io.github.aicyi.midware.redis.cache;
 
 import io.github.aicyi.commons.core.cache.CacheConfig;
 import io.github.aicyi.commons.core.cache.CacheManager;
-import io.github.aicyi.commons.core.cache.DefaultCacheConfig;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;

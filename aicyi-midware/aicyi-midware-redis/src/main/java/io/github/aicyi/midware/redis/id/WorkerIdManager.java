@@ -2,8 +2,8 @@ package io.github.aicyi.midware.redis.id;
 
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.util.id.WorkerIdAllocator;
-import io.github.aicyi.commons.util.id.WorkerIdLease;
+import io.github.aicyi.commons.core.id.WorkerIdAllocator;
+import io.github.aicyi.commons.core.id.WorkerIdLease;
 import org.springframework.context.SmartLifecycle;
 
 /**
@@ -17,6 +17,10 @@ public class WorkerIdManager implements SmartLifecycle {
 
     private final WorkerIdAllocator allocator;
 
+    private final long heartbeatSeconds;
+
+    private final boolean autoRecover;
+
     private volatile WorkerIdLease lease;
 
     private WorkerIdHeartbeat heartbeat;
@@ -28,12 +32,38 @@ public class WorkerIdManager implements SmartLifecycle {
      */
     private volatile boolean leaseValid = false;
 
-    public WorkerIdManager(WorkerIdAllocator allocator) {
+    public WorkerIdManager(WorkerIdAllocator allocator, Long heartbeatSeconds) {
         this.allocator = allocator;
+        this.heartbeatSeconds = heartbeatSeconds;
+        this.autoRecover = false;
+    }
+
+    public WorkerIdManager(WorkerIdAllocator allocator, Long heartbeatSeconds, Boolean autoRecover) {
+        this.allocator = allocator;
+        this.heartbeatSeconds = heartbeatSeconds;
+        this.autoRecover = autoRecover;
     }
 
     public WorkerIdLease getLease() {
         return lease;
+    }
+
+    public boolean isLeaseValid() {
+        return leaseValid;
+    }
+
+    private void markLeaseLost() {
+
+        logger.error("WorkerId lease LOST! workerId={}", lease.getWorkerId());
+
+        if (autoRecover) {
+
+            start();
+        } else {
+
+            leaseValid = false;
+        }
+
     }
 
     @Override
@@ -44,6 +74,7 @@ public class WorkerIdManager implements SmartLifecycle {
         heartbeat = new WorkerIdHeartbeat(
                 allocator,
                 lease,
+                heartbeatSeconds,
                 this::markLeaseLost
         );
 
@@ -64,16 +95,6 @@ public class WorkerIdManager implements SmartLifecycle {
         }
 
         running = false;
-    }
-
-    public boolean isLeaseValid() {
-        return leaseValid;
-    }
-
-    private void markLeaseLost() {
-        leaseValid = false;
-
-        logger.error("WorkerId lease LOST! workerId={}", lease.getWorkerId());
     }
 
     @Override

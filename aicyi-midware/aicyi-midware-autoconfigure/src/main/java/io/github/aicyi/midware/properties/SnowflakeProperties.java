@@ -37,7 +37,7 @@ public class SnowflakeProperties {
      * heartbeat 间隔
      * 默认 ttl / 3
      */
-    private long heartbeatSeconds = 20;
+    private long heartbeatSeconds = ttlSeconds / 3;
 
     /**
      * lease 丢失后是否尝试自动恢复

@@ -1,14 +1,17 @@
-package io.github.aicyi.commons.util.id;
+package io.github.aicyi.commons.core.id;
 
-import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.core.DtoBean;
 
 /**
  * @author Mr.Min
  * @description Lease 对象
  * @date 2026/5/21
  **/
-public class WorkerIdLease extends BaseBean {
+public class WorkerIdLease implements DtoBean {
 
+    /**
+     * WorkerId
+     */
     private int workerId;
 
     /**

@@ -23,9 +23,7 @@ public interface CacheFactory {
      * @param name
      * @return
      */
-    default CacheManager<String, Object> createCache(String name) {
-        return createCache(name, DefaultCacheConfig.defaultConfig());
-    }
+    CacheManager<String, Object> createCache(String name);
 
     /**
      * 创建缓存实例(使用默认配置)

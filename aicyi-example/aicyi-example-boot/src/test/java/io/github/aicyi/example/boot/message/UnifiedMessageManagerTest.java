@@ -3,7 +3,8 @@ package io.github.aicyi.example.boot.message;
 import io.github.aicyi.commons.util.DateTimeUtils;
 import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.commons.util.Maps;
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.service.channel.MessageChannels;
 import io.github.aicyi.midware.message.mail.model.MailMessage;
@@ -51,7 +52,7 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
     @Override
     public void test() {
         SmsMessage smsMessage = SmsMessage.of("15910436675", "SMS_REGISTER_CODE", Maps.of("code", "123456").and("expireMinutes", "1000").build());
-        smsMessage.setBusinessId(IdUtils.generateV7Id());
+        smsMessage.setBusinessId(UUIDUtils.generateV7Id());
 
         MessageSendResult result = unifiedMessageManager.send(smsMessage);
 

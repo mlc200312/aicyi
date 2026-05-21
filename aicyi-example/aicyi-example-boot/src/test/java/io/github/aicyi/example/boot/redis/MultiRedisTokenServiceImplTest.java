@@ -4,7 +4,8 @@ import io.github.aicyi.commons.core.token.TokenCreateRequest;
 import io.github.aicyi.commons.core.token.TokenService;
 import io.github.aicyi.commons.security.token.jwt.JWTInfo;
 import io.github.aicyi.commons.util.Maps;
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.token.MultiRedisTokenServiceImpl;
@@ -46,7 +47,7 @@ public class MultiRedisTokenServiceImplTest extends BaseLoggerTest {
         jwtInfo = new JWTInfo();
         jwtInfo.setId("610780341698822144");
         jwtInfo.setUniqueName("张三");
-        jwtInfo.setDeviceId(IdUtils.generateV7Id());
+        jwtInfo.setDeviceId(UUIDUtils.generateV7Id());
 
         request = new TokenCreateRequest<>();
 

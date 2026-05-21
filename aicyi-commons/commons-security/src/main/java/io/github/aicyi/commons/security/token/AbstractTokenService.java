@@ -2,9 +2,9 @@ package io.github.aicyi.commons.security.token;
 
 import io.github.aicyi.commons.core.token.TokenCreateRequest;
 import io.github.aicyi.commons.core.token.TokenService;
-import io.github.aicyi.commons.security.token.exception.TokenException;
-import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
-import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
+import io.github.aicyi.commons.lang.exception.TokenException;
+import io.github.aicyi.commons.lang.exception.TokenExpiredException;
+import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.util.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

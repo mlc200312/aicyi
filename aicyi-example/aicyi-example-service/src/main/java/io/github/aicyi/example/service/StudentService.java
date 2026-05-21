@@ -22,6 +22,8 @@ public interface StudentService {
 
     StudentBean getById(Long id);
 
+    StudentBean getByUserId(Long userId);
+
     StudentBean getByMobile(String mobile);
 
     List<Student> list(StudentQuery query);

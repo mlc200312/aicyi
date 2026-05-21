@@ -4,9 +4,9 @@ import io.github.aicyi.commons.core.token.PrincipalSerializer;
 import io.github.aicyi.commons.security.token.TokenSession;
 import io.github.aicyi.commons.security.token.AbstractTokenService;
 import io.github.aicyi.commons.security.token.TokenSessionPrincipalSerializer;
-import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
-import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.commons.lang.exception.TokenExpiredException;
+import io.github.aicyi.commons.lang.exception.TokenInvalidException;
+import io.github.aicyi.commons.util.UUIDUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
@@ -78,7 +78,7 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
 
     @Override
     protected String createToken() {
-        return IdUtils.generateV7Id();
+        return UUIDUtils.generateV7Id();
     }
 
     @Override

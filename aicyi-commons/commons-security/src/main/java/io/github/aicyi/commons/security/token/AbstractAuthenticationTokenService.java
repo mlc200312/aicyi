@@ -1,12 +1,12 @@
 package io.github.aicyi.commons.security.token;
 
 import io.github.aicyi.commons.core.token.*;
-import io.github.aicyi.commons.security.token.exception.TokenExpiredException;
-import io.github.aicyi.commons.security.token.exception.TokenInvalidException;
+import io.github.aicyi.commons.lang.exception.TokenExpiredException;
+import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.security.token.jwt.JwtPrincipalSerializer;
 import io.github.aicyi.commons.core.token.TokenProvider;
 import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
-import io.github.aicyi.commons.util.id.IdUtils;
+import io.github.aicyi.commons.util.UUIDUtils;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -164,7 +164,7 @@ public abstract class AbstractAuthenticationTokenService<P> extends AbstractToke
 
         attributes = attributes == null ? new HashMap<>() : new HashMap<>(attributes);
 
-        String tokenId = IdUtils.generateV7Id();
+        String tokenId = UUIDUtils.generateV7Id();
 
         String principalJson = serializer.serialize(principal);
 
