@@ -20,12 +20,12 @@
     </parent>
 
     <modules>
-        <module>aicyi-midware-autoconfigure</module>
         <module>aicyi-midware-db</module>
         <module>aicyi-midware-kit</module>
         <module>aicyi-midware-message</module>
         <module>aicyi-midware-rabbitmq</module>
         <module>aicyi-midware-redis</module>
+        <module>aicyi-midware-spring-boot-starter</module>
         <module>aicyi-midware-web</module>
     </modules>
 
@@ -56,7 +56,7 @@
         <dependencies>
             <dependency>
                 <groupId>io.github.aicyi.midware</groupId>
-                <artifactId>aicyi-midware-autoconfigure</artifactId>
+                <artifactId>aicyi-midware-spring-boot-starter</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
