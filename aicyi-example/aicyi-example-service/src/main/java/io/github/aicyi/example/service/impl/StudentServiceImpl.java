@@ -132,21 +132,28 @@ public class StudentServiceImpl implements StudentService {
         if (Objects.nonNull(query.getRegisterTimeEnd())) {
             criteria.andRegisterTimeLessThanOrEqualTo(query.getRegisterTimeEnd());
         }
-        return studentMapper.selectByExample(studentExample);
+        List<Student> studentList = studentMapper.selectByExample(studentExample);
+
+        return studentList;
     }
 
     @Override
     public Page<StudentBean> pagedList(StudentQuery query) {
+
         Page<Student> page = PageUtils.getPage(query, () -> list(query));
-        List<Student> studentList = page.getContent();
-        if (CollectionUtils.isNotEmpty(studentList)) {
+
+        if (!page.isEmpty()) {
+            List<Student> studentList = page.getContent();
             UserQuery userQuery = new UserQuery();
             List<Long> userIdList = studentList.stream().map(Student::getUserId).collect(Collectors.toList());
             userQuery.setIdListIn(userIdList);
+
             List<User> userList = userService.list(userQuery);
             Map<Long, User> userMap = userList.stream().collect(Collectors.toMap(User::getId, o -> o));
-            return page.map(item -> createStudentBean(item, userMap.get(item.getUserId())));
+
+            return page.map(o -> createStudentBean(o, userMap.get(o.getUserId())));
         }
+
         return Page.empty(page.getPageable());
     }
 
