@@ -15,12 +15,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserInfo extends JWTInfo {
+    private Long userId;
     private String nickname;
     private String mobile;
 
     public static UserInfo of(User user, String deviceId) {
         IJWTInfo jwtInfo = new JWTInfo(String.valueOf(user.getId()), user.getUsername(), deviceId);
         UserInfo userInfo = MapperUtils.getInstance().map(jwtInfo, UserInfo.class);
+        userInfo.setUserId(user.getId());
         userInfo.setNickname(user.getNickname());
         userInfo.setMobile(user.getMobile());
         return userInfo;

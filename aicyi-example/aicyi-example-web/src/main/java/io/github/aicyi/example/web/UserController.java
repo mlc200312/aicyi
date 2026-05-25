@@ -2,9 +2,8 @@ package io.github.aicyi.example.web;
 
 import io.github.aicyi.commons.core.IResponse;
 import io.github.aicyi.commons.core.BeanMapper;
-import io.github.aicyi.commons.util.CurrentContextHolder;
-import io.github.aicyi.example.domain.entity.base.User;
-import io.github.aicyi.example.service.UserService;
+import io.github.aicyi.example.domain.UserInfo;
+import io.github.aicyi.example.service.util.UserSessionUtils;
 import io.github.aicyi.example.web.vo.UserInfoResp;
 import io.github.aicyi.midware.web.Response;
 import io.swagger.annotations.Api;
@@ -25,8 +24,6 @@ public class UserController {
 
     @Autowired
     private BeanMapper beanMapper;
-    @Autowired
-    private UserService userService;
 
     @ApiOperation(value = "查询用户信息", notes = "查询用户信息")
     @ApiImplicitParam(
@@ -38,9 +35,11 @@ public class UserController {
     )
     @RequestMapping(value = "/get-user-info", method = RequestMethod.GET)
     public IResponse<UserInfoResp> getUserInfo() {
-        String userId = CurrentContextHolder.getUserId();
-        User user = userService.getById(Long.valueOf(userId));
-        UserInfoResp resp = beanMapper.map(user, UserInfoResp.class);
+
+        UserInfo userInfo = UserSessionUtils.getUserInfo();
+
+        UserInfoResp resp = beanMapper.map(userInfo, UserInfoResp.class);
+
         return Response.success(resp);
     }
 }

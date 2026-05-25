@@ -18,8 +18,9 @@ public class UserInfoResp extends BaseBean implements VoBean {
     @JsonProperty("userId")
     @ApiModelProperty("用户ID")
     private String id;
+    @JsonProperty("username")
     @ApiModelProperty("用户名")
-    private String username;
+    private String uniqueName;
     @ApiModelProperty("用户昵称")
     private String nickname;
     @ApiModelProperty("手机号")

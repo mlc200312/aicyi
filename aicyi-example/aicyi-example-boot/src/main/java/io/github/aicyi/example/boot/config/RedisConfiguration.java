@@ -2,13 +2,9 @@ package io.github.aicyi.example.boot.config;
 
 import io.github.aicyi.commons.core.cache.Cache;
 import io.github.aicyi.commons.core.cache.CacheConfig;
-import io.github.aicyi.commons.core.cache.CacheLock;
+import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import io.github.aicyi.midware.redis.SerializerType;
-import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
-import io.github.aicyi.midware.redis.cache.RedisCache;
-import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
-import io.github.aicyi.midware.redis.cache.RedisCacheLock;
+import io.github.aicyi.midware.redis.cache.*;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -58,6 +54,21 @@ public class RedisConfiguration {
                 .cacheName("string")
                 .ttl(Duration.ofMinutes(10))
                 .serializer(new CacheWrapperPrincipalSerializer<>(String.class))
+                .build();
+
+        return new RedisCache<>(stringRedisTemplate, cacheConfig);
+    }
+
+    @Bean
+    public Cache<String, UserInfo> getUserInfCache(EnhancedRedisTemplateFactory templateFactory) {
+
+        StringRedisTemplate stringRedisTemplate = templateFactory.getStringRedisTemplate();
+
+        CacheConfig cacheConfig = RedisCacheConfig.builder()
+                .globalPrefix("aicyi.cache")
+                .cacheName("userInfo")
+                .ttl(Duration.ofMinutes(10))
+                .serializer(new CacheWrapperPrincipalSerializer<>(UserInfo.class))
                 .build();
 
         return new RedisCache<>(stringRedisTemplate, cacheConfig);

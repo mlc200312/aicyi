@@ -4,12 +4,12 @@ import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.type.BooleanType;
-import io.github.aicyi.commons.util.CurrentContextHolder;
 import io.github.aicyi.commons.util.NumberUtils;
 import io.github.aicyi.example.dao.mapper.StudentCustomMapper;
 import io.github.aicyi.example.dao.mapper.base.StudentMapper;
 import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.example.domain.StudentQuery;
+import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.example.domain.UserQuery;
 import io.github.aicyi.example.domain.entity.base.Student;
 import io.github.aicyi.example.domain.entity.base.StudentExample;
@@ -17,6 +17,7 @@ import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.domain.type.ExampleResultCode;
 import io.github.aicyi.example.service.StudentService;
 import io.github.aicyi.example.service.UserService;
+import io.github.aicyi.example.service.util.UserSessionUtils;
 import io.github.aicyi.midware.db.commons.BaseEntityUtils;
 import io.github.aicyi.midware.db.commons.PageUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -54,14 +55,13 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public void add(StudentBean bean) {
-        String userId = CurrentContextHolder.getUserId();
-        User user = userService.getById(Long.parseLong(userId));
-        StudentBean student = getByUserId(user.getId());
+        UserInfo userInfo = UserSessionUtils.getUserInfo();
+        StudentBean student = getByUserId(userInfo.getUserId());
         if (Objects.nonNull(student)) {
             return;
         }
         Student newStudent = beanMapper.map(bean, Student.class);
-        newStudent.setUserId(user.getId());
+        newStudent.setUserId(userInfo.getUserId());
         newStudent.setRegisterTime(LocalDateTime.now());
         BaseEntityUtils.setDefaultValue(newStudent, idGenerator);
         studentMapper.insertSelective(newStudent);
