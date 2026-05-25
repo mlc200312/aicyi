@@ -1,12 +1,15 @@
 package io.github.aicyi.midware.redis.token;
 
-import io.github.aicyi.commons.core.token.PrincipalSerializer;
+import io.github.aicyi.commons.core.cache.CacheConfig;
+import io.github.aicyi.commons.security.token.TokenInfo;
 import io.github.aicyi.commons.security.token.TokenSession;
 import io.github.aicyi.commons.security.token.AbstractTokenService;
-import io.github.aicyi.commons.security.token.TokenSessionPrincipalSerializer;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.midware.redis.cache.RedisCache;
+import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
@@ -45,35 +48,31 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
     private static final String PRINCIPAL_TOKENS_PREFIX = "security:principal:tokens:";
 
     /**
-     * RedisTemplate
+     * token 缓存
+     */
+    protected final RedisCache<TokenSession<P>> tokenCache;
+
+    /**
+     * redis 操作
      */
     protected final StringRedisTemplate redisTemplate;
 
-    /**
-     * Principal序列化器
-     */
-    protected final PrincipalSerializer<TokenSession<P>> serializer;
-
-    /**
-     * 默认refresh ttl
-     */
-    private long refreshTtl;
-
-    /**
-     * 默认refresh ttl 单位
-     */
-    private TimeUnit refreshTimeUnit;
-
-    public RedisTokenServiceImpl(StringRedisTemplate redisTemplate, PrincipalSerializer<TokenSession<P>> serializer, long refreshTtl, TimeUnit refreshTimeUnit) {
+    public RedisTokenServiceImpl(RedisCache<TokenSession<P>> tokenCache, long refreshTtl, TimeUnit refreshTimeUnit) {
         super(refreshTtl, refreshTimeUnit);
-        this.redisTemplate = redisTemplate;
-        this.serializer = serializer;
-        this.refreshTtl = refreshTtl;
-        this.refreshTimeUnit = refreshTimeUnit;
+        this.tokenCache = tokenCache;
+        this.redisTemplate = tokenCache.getTemplate();
     }
 
-    public RedisTokenServiceImpl(StringRedisTemplate redisTemplate, Class<P> principalType, long refreshTtl, TimeUnit refreshTimeUnit) {
-        this(redisTemplate, new TokenSessionPrincipalSerializer<>(principalType), refreshTtl, refreshTimeUnit);
+    public RedisTokenServiceImpl(StringRedisTemplate redisTemplate, Class<? extends P> principalType, long refreshTtl, TimeUnit refreshTimeUnit) {
+        super(refreshTtl, refreshTimeUnit);
+        CacheConfig cacheConfig = RedisCacheConfig.builder()
+                .globalPrefix("cache")
+                .cacheName("token")
+                .ttl(Duration.ofMillis(refreshTimeUnit.toMillis(refreshTtl)))
+                .serializer(new CacheWrapperPrincipalSerializer<>(TokenInfo.class, principalType))
+                .build();
+        this.tokenCache = new RedisCache<>(redisTemplate, cacheConfig);
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -94,11 +93,9 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
     @Override
     protected void saveTokenSession(TokenSession<P> session, long ttlSeconds) {
 
-        String json = serializer.serialize(session);
-
         String tokenId = getTokenId(session.getToken());
 
-        redisTemplate.opsForValue().set(tokenId, json, Duration.ofSeconds(ttlSeconds));
+        tokenCache.put(tokenId, session, Duration.ofSeconds(ttlSeconds));
     }
 
     @Override
@@ -118,13 +115,13 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
 
             String tokenId = getTokenId(token);
 
-            String json = redisTemplate.opsForValue().get(tokenId);
+            TokenSession<P> session = tokenCache.get(tokenId);
 
-            if (json == null) {
+            if (session == null) {
                 return null;
             }
 
-            return serializer.deserialize(json);
+            return session;
 
         } catch (Exception e) {
 
@@ -137,7 +134,7 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
 
         String tokenId = getTokenId(token);
 
-        Long seconds = redisTemplate.getExpire(tokenId, TimeUnit.SECONDS);
+        Long seconds = tokenCache.getExpire(tokenId, TimeUnit.SECONDS);
 
         if (seconds == null || seconds <= 0) {
 
@@ -170,7 +167,7 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
 
         P principal = session.getPrincipal();
 
-        redisTemplate.delete(tokenId);
+        tokenCache.evict(tokenId);
 
         revokePrincipal(principal, token);
     }
@@ -184,12 +181,10 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
 
             String tokenId = getTokenId(token);
 
-            redisTemplate.delete(tokenId);
+            tokenCache.evict(tokenId);
         }
 
-        String principalId = getPrincipalId(principal);
-
-        redisTemplate.delete(principalId);
+        revokePrincipalAll(principal);
     }
 
     protected void revokePrincipal(P principal, String token) {
@@ -197,5 +192,12 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
         String principalId = getPrincipalId(principal);
 
         redisTemplate.opsForSet().remove(principalId, token);
+    }
+
+    protected void revokePrincipalAll(P principal) {
+
+        String principalId = getPrincipalId(principal);
+
+        redisTemplate.delete(principalId);
     }
 }

@@ -42,9 +42,7 @@ public interface JsonCodec {
     /**
      * Deserialize JSON object to map.
      */
-    default <K, V> Map<K, V> fromJsonMap(String json,
-                                         Type keyType,
-                                         Type valueType) {
+    default <K, V> Map<K, V> fromJsonMap(String json, Type keyType, Type valueType) {
         return fromJson(json, createMapType(Map.class, keyType, valueType));
     }
 
@@ -56,15 +54,12 @@ public interface JsonCodec {
     /**
      * Create parameterized type.
      */
-    Type createParameterizedType(Class<?> rawType,
-                                 Type... actualTypes);
+    Type createParameterizedType(Class<?> rawType, Type... actualTypes);
 
     /**
      * Create collection type.
      */
-    default Type createCollectionType(
-            Class<? extends Collection> collectionType,
-            Type elementType) {
+    default Type createCollectionType(Class<? extends Collection> collectionType, Type elementType) {
 
         return createParameterizedType(collectionType, elementType);
     }
@@ -72,10 +67,7 @@ public interface JsonCodec {
     /**
      * Create map type.
      */
-    default Type createMapType(
-            Class<? extends Map> mapType,
-            Type keyType,
-            Type valueType) {
+    default Type createMapType(Class<? extends Map> mapType, Type keyType, Type valueType) {
 
         return createParameterizedType(mapType, keyType, valueType);
     }
@@ -91,7 +83,6 @@ public interface JsonCodec {
 
         String value = json.trim();
 
-        return EMPTY_JSON_ARRAY.equals(value)
-                || EMPTY_JSON_OBJECT.equals(value);
+        return EMPTY_JSON_ARRAY.equals(value) || EMPTY_JSON_OBJECT.equals(value);
     }
 }

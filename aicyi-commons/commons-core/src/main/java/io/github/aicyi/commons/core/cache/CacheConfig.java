@@ -1,19 +1,31 @@
 package io.github.aicyi.commons.core.cache;
 
-import java.util.concurrent.TimeUnit;
+import io.github.aicyi.commons.core.PrincipalSerializer;
+
+import java.time.Duration;
 
 /**
  * @author Mr.Min
  * @description 缓存配置接口
  * @date 11:10
  **/
-public interface CacheConfig {
+public interface CacheConfig<P> {
 
-    long getDefaultExpireTime();
+    String getGlobalPrefix();
 
-    TimeUnit getDefaultTimeUnit();
+    String getCacheName();
 
-    int getMaxSize();
+    Duration getTtl();
 
-    boolean isRecordStats();
+    boolean isCacheNull();
+
+    boolean isTtlJitter();
+
+    int getJitterPercent();
+
+    Duration getLockTtl();
+
+    Duration getWaitTimeout();
+
+    PrincipalSerializer<P> getSerializer();
 }

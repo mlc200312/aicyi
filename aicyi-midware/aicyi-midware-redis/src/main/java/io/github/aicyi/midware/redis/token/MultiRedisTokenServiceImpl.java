@@ -2,7 +2,6 @@ package io.github.aicyi.midware.redis.token;
 
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.core.token.TokenCreateRequest;
-import io.github.aicyi.commons.security.token.TokenSessionPrincipalSerializer;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.util.Assert;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -36,13 +35,13 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
     private int multiTokenCount = 1;
 
     public MultiRedisTokenServiceImpl(StringRedisTemplate redisTemplate, Class<? extends P> principalType, long refreshTtl, TimeUnit refreshTimeUnit, boolean isMultiTokenAllowed, int multiTokenCount) {
-        super(redisTemplate, new TokenSessionPrincipalSerializer<>(principalType), refreshTtl, refreshTimeUnit);
+        super(redisTemplate, principalType, refreshTtl, refreshTimeUnit);
         this.isMultiTokenAllowed = isMultiTokenAllowed;
         this.multiTokenCount = multiTokenCount;
     }
 
     public MultiRedisTokenServiceImpl(StringRedisTemplate redisTemplate, Class<? extends P> principalType, long refreshTtl, TimeUnit refreshTimeUnit) {
-        super(redisTemplate, new TokenSessionPrincipalSerializer<>(principalType), refreshTtl, refreshTimeUnit);
+        super(redisTemplate, principalType, refreshTtl, refreshTimeUnit);
     }
 
     public boolean isMultiTokenAllowed() {
@@ -116,24 +115,6 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
         Set<String> tokens = redisTemplate.opsForZSet().range(principalId, 0, -1);
 
         return tokens == null ? Collections.emptySet() : tokens;
-    }
-
-    @Override
-    public void revokeAll(P principal) {
-
-        String principalId = getPrincipalId(principal);
-
-        Set<String> tokens = redisTemplate.opsForZSet().range(principalId, 0, -1);
-
-        if (tokens != null) {
-
-            for (String token : tokens) {
-
-                super.revoke(token);
-            }
-        }
-
-        redisTemplate.delete(principalId);
     }
 
     @Override

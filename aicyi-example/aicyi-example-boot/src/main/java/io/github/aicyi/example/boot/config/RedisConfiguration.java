@@ -1,8 +1,14 @@
 package io.github.aicyi.example.boot.config;
 
-import io.github.aicyi.commons.core.cache.StringCacheManager;
+import io.github.aicyi.commons.core.cache.Cache;
+import io.github.aicyi.commons.core.cache.CacheConfig;
+import io.github.aicyi.commons.core.cache.CacheLock;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import io.github.aicyi.midware.redis.cache.StringRedisCacheManager;
+import io.github.aicyi.midware.redis.SerializerType;
+import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.midware.redis.cache.RedisCache;
+import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
+import io.github.aicyi.midware.redis.cache.RedisCacheLock;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -10,6 +16,9 @@ import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
+
+import java.time.Duration;
 
 /**
  * @author Mr.Min
@@ -40,7 +49,17 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public StringCacheManager getStringCacheManager(EnhancedRedisTemplateFactory enhancedRedisTemplateFactory) {
-        return new StringRedisCacheManager(enhancedRedisTemplateFactory, "aicyi");
+    public Cache<String, String> getStringCache(EnhancedRedisTemplateFactory templateFactory) {
+
+        StringRedisTemplate stringRedisTemplate = templateFactory.getStringRedisTemplate();
+
+        CacheConfig cacheConfig = RedisCacheConfig.builder()
+                .globalPrefix("aicyi.cache")
+                .cacheName("string")
+                .ttl(Duration.ofMinutes(10))
+                .serializer(new CacheWrapperPrincipalSerializer<>(String.class))
+                .build();
+
+        return new RedisCache<>(stringRedisTemplate, cacheConfig);
     }
 }

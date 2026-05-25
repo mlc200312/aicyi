@@ -75,15 +75,39 @@ public final class JacksonJsonCodec implements JsonCodec {
         return this;
     }
 
+    public String toPrettyJson(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Object serialization failed.", e);
+        }
+    }
+
+    public <T> T fromJson(String json, JavaType javaType) {
+        try {
+            return objectMapper.readValue(json, javaType);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("JSON deserialization failed.", e);
+        }
+    }
+
+    private JavaType createJavaType(Type type) {
+        return objectMapper.getTypeFactory().constructType(type);
+    }
+
     @Override
     public JavaType createType(Class<?> type) {
-        return objectMapper.getTypeFactory().constructType(type);
+        return createJavaType(type);
     }
 
     @Override
     public JavaType createParameterizedType(Class<?> rawType, Type... parameterTypes) {
         JavaType[] javaTypes = Arrays.stream(parameterTypes)
-                .map(type -> objectMapper.getTypeFactory().constructType(type))
+                .map(type -> createJavaType(type))
                 .toArray(JavaType[]::new);
 
         return objectMapper.getTypeFactory().constructParametricType(rawType, javaTypes);
@@ -102,29 +126,8 @@ public final class JacksonJsonCodec implements JsonCodec {
         }
     }
 
-    public String toPrettyJson(Object value) {
-        if (value == null) {
-            return null;
-        }
-
-        try {
-            return objectMapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(value);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Object serialization failed.", e);
-        }
-    }
-
-    public <T> T fromJson(String json, JavaType javaType) {
-        try {
-            return objectMapper.readValue(json, javaType);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("JSON deserialization failed.", e);
-        }
-    }
-
     @Override
     public <T> T fromJson(String json, Type type) {
-        return fromJson(json, objectMapper.getTypeFactory().constructType(type));
+        return fromJson(json, createJavaType(type));
     }
 }

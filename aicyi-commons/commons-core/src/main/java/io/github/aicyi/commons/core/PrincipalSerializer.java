@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.core.token;
+package io.github.aicyi.commons.core;
 
 /**
  * Principal序列化器

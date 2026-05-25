@@ -1,16 +1,13 @@
 package io.github.aicyi.midware.autoconfigure;
 
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
-import io.github.aicyi.midware.context.SpringEnvironmentHelper;
+import io.github.aicyi.midware.utils.SpringEnvironmentHelper;
 import io.github.aicyi.commons.core.JsonCodec;
-import io.github.aicyi.commons.util.JsonUtils;
-import io.github.aicyi.midware.utils.IdUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
-import org.springframework.util.IdGenerator;
 
 /**
  * @author Mr.Min

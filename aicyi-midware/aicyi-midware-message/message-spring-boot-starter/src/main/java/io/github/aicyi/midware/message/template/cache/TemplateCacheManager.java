@@ -18,11 +18,11 @@ public class TemplateCacheManager implements TemplateProvider {
 
     private final TemplateLocalCache localCache;
 
-    private final TemplateRedisCache redisCache;
+    private final TemplateRemoteCache redisCache;
 
     private final MessageTemplateMapper templateMapper;
 
-    public TemplateCacheManager(TemplateLocalCache localCache, TemplateRedisCache redisCache, MessageTemplateMapper templateMapper) {
+    public TemplateCacheManager(TemplateLocalCache localCache, TemplateRemoteCache redisCache, MessageTemplateMapper templateMapper) {
         this.localCache = localCache;
         this.redisCache = redisCache;
         this.templateMapper = templateMapper;

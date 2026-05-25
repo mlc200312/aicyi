@@ -16,8 +16,6 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
  **/
 public class EnhancedRedisTemplateFactory {
 
-    private static final StringRedisSerializer STRING_REDIS_SERIALIZER = new StringRedisSerializer();
-
     private final RedisConnectionFactory redisConnectionFactory;
     private final ObjectMapper objectMapper;
 
@@ -158,9 +156,5 @@ public class EnhancedRedisTemplateFactory {
 
         template.afterPropertiesSet();
         return template;
-    }
-
-    public enum SerializerType {
-        JDK, JSON, STRING
     }
 }

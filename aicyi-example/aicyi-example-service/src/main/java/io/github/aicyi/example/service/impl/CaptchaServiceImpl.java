@@ -1,6 +1,6 @@
 package io.github.aicyi.example.service.impl;
 
-import io.github.aicyi.commons.core.cache.StringCacheManager;
+import io.github.aicyi.commons.core.cache.Cache;
 import io.github.aicyi.commons.lang.BaseBean;
 import io.github.aicyi.commons.core.BoBean;
 import io.github.aicyi.commons.lang.exception.BusinessException;
@@ -15,7 +15,7 @@ import io.github.aicyi.example.domain.type.CaptchaType;
 import io.github.aicyi.example.domain.type.ExampleResultCode;
 import io.github.aicyi.example.service.CaptchaService;
 import io.github.aicyi.example.service.UserService;
-import io.github.aicyi.midware.context.SpringEnvironmentHelper;
+import io.github.aicyi.midware.utils.SpringEnvironmentHelper;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageSendCallback;
 import io.github.aicyi.commons.core.message.MessageSendResult;
@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -44,7 +43,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Autowired
     private UnifiedMessageManager unifiedMessageManager;
     @Autowired
-    private StringCacheManager stringCacheManager;
+    private Cache<String, String> stringCache;
     @Autowired
     private UserService userService;
 
@@ -56,13 +55,13 @@ public class CaptchaServiceImpl implements CaptchaService {
 
         // 缓存验证码
         String captchaKey = Constants.getCaptchaKey(uuid);
-        stringCacheManager.put(captchaKey, captcha, Constants.CAPTCHA_EXPIRE, TimeUnit.MILLISECONDS);
+        stringCache.put(captchaKey, captcha);
         return uuid;
     }
 
     @Override
     public BufferedImage getCaptcha(String uuid) {
-        String code = stringCacheManager.get(Constants.getCaptchaKey(uuid));
+        String code = stringCache.get(Constants.getCaptchaKey(uuid));
         if (StringUtils.isBlank(code)) {
             return null;
         }
@@ -86,7 +85,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         // 验证码缓存key
         String captchaKey = Constants.getCaptchaKey(captchaType, uuid);
         // 获取缓存验证码
-        String code = stringCacheManager.get(captchaKey);
+        String code = stringCache.get(captchaKey);
         boolean isEq = captcha.equalsIgnoreCase(code);
         // 测试环境不验证
         if (!SpringEnvironmentHelper.isProd()) {
@@ -94,7 +93,7 @@ public class CaptchaServiceImpl implements CaptchaService {
             return;
         }
         if (!isEq) {
-            stringCacheManager.remove(Constants.getCaptchaKey(uuid));
+            stringCache.evict(Constants.getCaptchaKey(uuid));
             throw new BusinessException("验证码错误");
         }
     }
@@ -129,8 +128,8 @@ public class CaptchaServiceImpl implements CaptchaService {
 
                 // 缓存验证码
                 String captchaKey = Constants.getCaptchaKey(captchaType, uuid);
-                Long captchaExpire = Constants.getCaptchaExpire(captchaType);
-                stringCacheManager.put(captchaKey, captcha, captchaExpire, TimeUnit.MILLISECONDS);
+
+                stringCache.put(captchaKey, captcha);
             }
 
             @Override

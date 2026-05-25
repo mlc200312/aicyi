@@ -5,7 +5,6 @@ import io.github.aicyi.commons.core.token.TokenService;
 import io.github.aicyi.commons.security.token.jwt.JWTInfo;
 import io.github.aicyi.commons.util.Maps;
 import io.github.aicyi.commons.util.UUIDUtils;
-import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.token.RedisTokenServiceImpl;
@@ -66,7 +65,7 @@ public class RedisTokenServiceImplTest extends BaseLoggerTest {
         assert ttl > 0;
 
         boolean isValid = tokenService.isValid(token);
-        assert isValid == true;
+        assert isValid;
 
         String refresh = tokenService.refresh(token);
         JWTInfo principal = tokenService.parsePrincipal(refresh);
@@ -108,5 +107,6 @@ public class RedisTokenServiceImplTest extends BaseLoggerTest {
     @Test
     public void test3() {
 
+        tokenService.revokeAll(request.getPrincipal());
     }
 }

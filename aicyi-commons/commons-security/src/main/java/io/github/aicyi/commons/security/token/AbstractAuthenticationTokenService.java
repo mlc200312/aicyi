@@ -1,9 +1,10 @@
 package io.github.aicyi.commons.security.token;
 
+import io.github.aicyi.commons.core.PrincipalSerializer;
 import io.github.aicyi.commons.core.token.*;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
-import io.github.aicyi.commons.security.token.jwt.JwtPrincipalSerializer;
+import io.github.aicyi.commons.util.JsonCodecPrincipalSerializer;
 import io.github.aicyi.commons.core.token.TokenProvider;
 import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
 import io.github.aicyi.commons.util.UUIDUtils;
@@ -77,7 +78,7 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
     ) {
         this.refreshTokenService = refreshTokenService;
         this.accessTokenProvider = new JwtTokenProvider(secretKey, issuer, subject);
-        this.serializer = new JwtPrincipalSerializer<>(principalType);
+        this.serializer = new JsonCodecPrincipalSerializer<>(principalType);
         this.refreshTokenTtl = refreshTokenTtl;
         this.refreshTokenTimeUnit = refreshTokenTimeUnit;
         this.accessTokenTtl = accessTokenTtl;
@@ -97,7 +98,7 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
     ) {
         this.refreshTokenService = refreshTokenService;
         this.accessTokenProvider = new JwtTokenProvider(secretKey, issuer, subject);
-        this.serializer = new JwtPrincipalSerializer<>(principalType);
+        this.serializer = new JsonCodecPrincipalSerializer<>(principalType);
         this.refreshTokenTtl = refreshTokenTtl;
         this.refreshTokenTimeUnit = refreshTokenTimeUnit;
         this.accessTokenTtl = accessTokenTtl;

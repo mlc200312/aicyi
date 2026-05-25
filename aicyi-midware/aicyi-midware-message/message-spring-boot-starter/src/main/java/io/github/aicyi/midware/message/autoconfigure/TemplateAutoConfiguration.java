@@ -1,22 +1,28 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
-import com.fasterxml.jackson.databind.JavaType;
-import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
+import io.github.aicyi.commons.core.cache.CacheConfig;
+import io.github.aicyi.commons.core.cache.CacheLock;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.template.cache.TemplateCacheManager;
 import io.github.aicyi.midware.message.template.cache.TemplateLocalCache;
-import io.github.aicyi.midware.message.template.cache.TemplateRedisCache;
+import io.github.aicyi.midware.message.template.cache.TemplateRemoteCache;
 import io.github.aicyi.midware.message.template.mapper.MessageTemplateMapper;
-import io.github.aicyi.midware.redis.cache.RedisCacheFactory;
-import io.github.aicyi.midware.redis.cache.RedisCacheManager;
+import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
+import io.github.aicyi.midware.redis.SerializerType;
+import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.midware.redis.cache.RedisCache;
+import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
+import io.github.aicyi.midware.redis.cache.RedisCacheLock;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+
+import java.time.Duration;
 
 /**
  * @author Mr.Min
@@ -27,23 +33,34 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 @MapperScan(basePackages = {"io.github.aicyi.midware.message.template.mapper"})
 public class TemplateAutoConfiguration {
 
-    private final RedisConnectionFactory redisConnectionFactory;
+    private final EnhancedRedisTemplateFactory templateFactory;
 
-    public TemplateAutoConfiguration(@Autowired(required = false) RedisConnectionFactory redisConnectionFactory) {
-        this.redisConnectionFactory = redisConnectionFactory;
+    public TemplateAutoConfiguration(EnhancedRedisTemplateFactory templateFactory) {
+        this.templateFactory = templateFactory;
     }
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(RedisConnectionFactory.class)
+    @ConditionalOnClass(EnhancedRedisTemplateFactory.class)
     public TemplateProvider templateProvider(MessageTemplateMapper templateMapper) {
+        StringRedisTemplate stringRedisTemplate = templateFactory.getStringRedisTemplate();
+
+        CacheConfig cacheConfig = RedisCacheConfig.builder()
+                .globalPrefix("cache")
+                .cacheName("message_template")
+                .ttl(Duration.ofDays(1))
+                .cacheNull(true)
+                .serializer(new CacheWrapperPrincipalSerializer<>(MessageTemplate.class))
+                .build();
+
+        RedisCache<MessageTemplate> messageTemplateCache = new RedisCache<>(stringRedisTemplate, cacheConfig);
+
         // 本地缓存
         TemplateLocalCache templateLocalCache = new TemplateLocalCache();
+
         // redis缓存
-        RedisCacheFactory redisCacheFactory = new RedisCacheFactory(redisConnectionFactory);
-        JavaType javaType = JacksonTypeFactory.typeOf(MessageTemplate.class);
-        RedisCacheManager<MessageTemplate> redisCacheManager = redisCacheFactory.createCache("messageTemplate", javaType);
-        TemplateRedisCache templateRedisCache = new TemplateRedisCache(redisCacheManager);
-        return new TemplateCacheManager(templateLocalCache, templateRedisCache, templateMapper);
+        TemplateRemoteCache templateRemoteCache = new TemplateRemoteCache(messageTemplateCache);
+
+        return new TemplateCacheManager(templateLocalCache, templateRemoteCache, templateMapper);
     }
 }

@@ -77,8 +77,6 @@ public class MailSenderTest extends BaseLoggerTest {
     @Test
     public void test1() {
 
-//        TemplateEngine templateEngine = new FreeMarkerTemplateEngine("/templates/email", "email-template.ftl");
-
         // mock TemplateEngine
         TemplateEngine templateEngine = Mockito.mock(TemplateEngine.class);
 
@@ -156,10 +154,6 @@ public class MailSenderTest extends BaseLoggerTest {
     @SneakyThrows
     @Test
     public void test4() {
-//        String subject = "复杂模板测试";
-//
-//        String templateName = "order-confirmation.ftl";
-
         Map<String, Object> templateParams = new HashMap<>();
         templateParams.put("orderId", IdUtils.generateId() + "");
         templateParams.put("userName", "王五");
@@ -177,11 +171,6 @@ public class MailSenderTest extends BaseLoggerTest {
         List<Map<String, Object>> products = Arrays.asList(build1, build2);
         templateParams.put("products", products);
         templateParams.put("totalAmount", 6397.00);
-
-        // 模拟模板引擎返回内容
-//        String expectedHtml = "<html><body>...</body></html>";
-
-//        when(templateEngine.process(eq(templateName), eq(templateParams))).thenReturn(expectedHtml);
 
         MailMessage mailMessage = MailMessage.of(toList, "EMAIL_USER_ORDER_INFO", templateParams);
 
