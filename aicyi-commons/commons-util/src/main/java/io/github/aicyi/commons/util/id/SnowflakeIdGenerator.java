@@ -88,6 +88,11 @@ public class SnowflakeIdGenerator implements IdGenerator {
     private final boolean clockBackwardWait;
 
     /**
+     * 时钟回拨容忍时间
+     */
+    private long clockBackwardToleranceMs;
+
+    /**
      * 序列号
      */
     private long sequence = 0L;
@@ -96,11 +101,6 @@ public class SnowflakeIdGenerator implements IdGenerator {
      * 上次时间戳
      */
     private long lastTimestamp = -1L;
-
-    /**
-     * 时钟回拨容忍时间
-     */
-    private long clockBackwardToleranceMs;
 
     public SnowflakeIdGenerator(long workerId, long datacenterId) {
         this(workerId, datacenterId, DEFAULT_EPOCH, true, MAX_BACKWARD_WAIT_MILLIS);
@@ -122,7 +122,7 @@ public class SnowflakeIdGenerator implements IdGenerator {
             boolean clockBackwardWait,
             long clockBackwardToleranceMs
     ) {
-        validate(workerId, datacenterId, epoch);
+        validate(workerId, datacenterId, epoch, clockBackwardToleranceMs);
 
         this.workerId = workerId;
         this.datacenterId = datacenterId;
@@ -172,7 +172,7 @@ public class SnowflakeIdGenerator implements IdGenerator {
         }
 
         // 小回拨等待
-        if (offset <= MAX_BACKWARD_WAIT_MILLIS) {
+        if (offset <= clockBackwardToleranceMs) {
             sleep(offset);
             long timestamp = currentTimeMillis();
 
@@ -221,7 +221,7 @@ public class SnowflakeIdGenerator implements IdGenerator {
     /**
      * 参数校验
      */
-    private void validate(long workerId, long datacenterId, long epoch) {
+    private void validate(long workerId, long datacenterId, long epoch, long clockBackwardToleranceMs) {
         if (workerId < 0 || workerId > MAX_WORKER_ID) {
             throw new IllegalArgumentException(
                     String.format("workerId must be between 0 and %d", MAX_WORKER_ID)
@@ -240,6 +240,10 @@ public class SnowflakeIdGenerator implements IdGenerator {
 
         if (epoch > System.currentTimeMillis()) {
             throw new IllegalArgumentException("epoch must not be in the future");
+        }
+
+        if (clockBackwardToleranceMs <= 0) {
+            throw new IllegalArgumentException("clockBackwardToleranceMs must be greater than 0");
         }
     }
 

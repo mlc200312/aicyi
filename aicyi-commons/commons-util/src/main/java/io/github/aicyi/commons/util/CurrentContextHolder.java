@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by ace on 2017/9/8.
- */
+ * @author Mr.Min
+ * @description 当前线程上下文
+ * @date 2026/5/26
+ **/
 public class CurrentContextHolder {
     public static final String CONTEXT_KEY_USER_ID = "currentUserId";
     public static final String CONTEXT_KEY_USERNAME = "currentUserName";
