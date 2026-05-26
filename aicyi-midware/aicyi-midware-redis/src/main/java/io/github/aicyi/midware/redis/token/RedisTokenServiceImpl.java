@@ -7,7 +7,7 @@ import io.github.aicyi.commons.security.token.AbstractTokenService;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.util.UUIDUtils;
-import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.commons.util.serializer.CacheWrapperPrincipalSerializer;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
 import org.springframework.data.redis.core.StringRedisTemplate;

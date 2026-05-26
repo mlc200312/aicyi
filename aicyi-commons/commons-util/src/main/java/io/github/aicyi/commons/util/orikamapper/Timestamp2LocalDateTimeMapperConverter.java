@@ -28,6 +28,6 @@ public class Timestamp2LocalDateTimeMapperConverter extends BidirectionalConvert
         if (dateTime == null) {
             return null;
         }
-        return new Timestamp(DateTimeUtils.toLong(dateTime));
+        return new Timestamp(DateTimeUtils.toEpochMilli(dateTime));
     }
 }

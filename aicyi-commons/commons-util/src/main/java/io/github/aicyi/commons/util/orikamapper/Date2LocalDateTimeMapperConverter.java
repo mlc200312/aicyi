@@ -20,7 +20,7 @@ public class Date2LocalDateTimeMapperConverter extends BidirectionalConverter<Da
         if (date == null) {
             return null;
         }
-        return DateTimeUtils.toLDateTime(date);
+        return DateTimeUtils.toLocalDateTime(date.toInstant());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class Date2LocalDateTimeMapperConverter extends BidirectionalConverter<Da
         if (dateTime == null) {
             return null;
         }
-        return DateTimeUtils.toDate(dateTime);
+        return new Date(DateTimeUtils.toEpochMilli(dateTime));
     }
 
 }

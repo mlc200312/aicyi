@@ -25,12 +25,12 @@ public class LocalDateTimeMapperConverter extends BidirectionalConverter<LocalDa
 
     @Override
     public String convertTo(LocalDateTime dateTime, Type<String> type, MappingContext mappingContext) {
-        return DateTimeUtils.formatLDateTime(dateTime, pattern);
+        return DateTimeUtils.format(dateTime, pattern);
     }
 
     @Override
     public LocalDateTime convertFrom(String dateStr, Type<LocalDateTime> type, MappingContext mappingContext) {
-        return DateTimeUtils.toLDateTime(dateStr, pattern);
+        return DateTimeUtils.parse(dateStr, pattern);
     }
 
 }

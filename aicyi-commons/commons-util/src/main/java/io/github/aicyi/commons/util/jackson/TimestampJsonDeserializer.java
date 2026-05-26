@@ -19,7 +19,7 @@ public class TimestampJsonDeserializer extends com.fasterxml.jackson.databind.Js
     public Object deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonToken jsonToken = jsonParser.currentToken();
         if (jsonToken == JsonToken.VALUE_STRING) {
-            return Timestamp.valueOf(DateTimeUtils.toLDateTime(jsonParser.getText()));
+            return Timestamp.valueOf(DateTimeUtils.parseAuto(jsonParser.getText()));
         } else if (jsonToken.isNumeric()) {
             return new Timestamp(jsonParser.getValueAsLong());
         }

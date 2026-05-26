@@ -1,6 +1,7 @@
 package io.github.aicyi.midware.utils;
 
 import io.github.aicyi.commons.core.id.IdGenerator;
+import io.github.aicyi.commons.util.id.SnowflakeIdGenerator;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.InitializingBean;
  * @date 19:15
  **/
 public class IdUtils implements InitializingBean {
+
+    private static final SnowflakeIdGenerator DEFAULT_ID_GENERATOR = new SnowflakeIdGenerator(0, 0);
 
     private static IdUtils INSTANCE;
 
@@ -19,6 +22,9 @@ public class IdUtils implements InitializingBean {
     }
 
     public static long generateId() {
+        if (INSTANCE == null || INSTANCE.idGenerator == null) {
+            return DEFAULT_ID_GENERATOR.nextId();
+        }
         return INSTANCE.idGenerator.nextId();
     }
 

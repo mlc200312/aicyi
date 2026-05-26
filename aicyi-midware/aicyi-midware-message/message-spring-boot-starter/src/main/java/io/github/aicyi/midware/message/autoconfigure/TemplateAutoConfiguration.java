@@ -8,7 +8,7 @@ import io.github.aicyi.midware.message.template.cache.TemplateLocalCache;
 import io.github.aicyi.midware.message.template.cache.TemplateRemoteCache;
 import io.github.aicyi.midware.message.template.mapper.MessageTemplateMapper;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.commons.util.serializer.CacheWrapperPrincipalSerializer;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
 import io.github.aicyi.midware.redis.cache.RedissonCacheLock;

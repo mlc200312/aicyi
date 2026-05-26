@@ -2,129 +2,211 @@ package io.github.aicyi.commons.util;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Mr.Min
- * @description LocalDateTime 工具类
- * @date 2025/8/7
+ * @description 时间工具类
+ * @date 2026/5/26
  **/
-public class DateTimeUtils {
-    // 日期格式
-    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    public static final String ISO_DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
+public final class DateTimeUtils {
+
+    private DateTimeUtils() {
+    }
+
+    // ========================= patterns =========================
+
     public static final String DATE_PATTERN = "yyyy-MM-dd";
-    private static final String DEFAULT_PATTERN = DATE_TIME_PATTERN;
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_TIME_MILLIS_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
-    /**
-     * String 转换为 LocalDateTime
-     *
-     * @param dateTime
-     * @return
-     */
-    public static LocalDateTime toLDateTime(String dateTime, String pattern) {
-        if (dateTime == null || dateTime.trim().isEmpty()) {
-            return null;
+    // ========================= formatter =========================
+
+    private static final Map<String, DateTimeFormatter> FORMATTERS = new ConcurrentHashMap<>(8);
+
+    static {
+        register(DATE_PATTERN);
+        register(DATE_TIME_PATTERN);
+        register(DATE_TIME_MILLIS_PATTERN);
+    }
+
+    private static void register(String pattern) {
+        FORMATTERS.put(pattern, DateTimeFormatter.ofPattern(pattern));
+    }
+
+    private static DateTimeFormatter formatter(String pattern) {
+        DateTimeFormatter formatter = FORMATTERS.get(pattern);
+
+        if (formatter == null) {
+            throw new IllegalArgumentException(
+                    "Unsupported pattern: " + pattern
+            );
         }
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
-        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, dateTimeFormatter);
-        return localDateTime;
+
+        return formatter;
     }
 
-    /**
-     * String 转换为 LocalDateTime
-     *
-     * @param dateTime
-     * @return
-     */
-    public static LocalDateTime toLDateTime(String dateTime) {
-        return toLDateTime(dateTime, DEFAULT_PATTERN);
+    // ========================= clock =========================
+
+    private static volatile Clock CLOCK = Clock.systemDefaultZone();
+
+    public static void setClock(Clock clock) {
+        CLOCK = Objects.requireNonNull(clock);
     }
 
-    /**
-     * long（毫秒数）转换为 LocalDateTime
-     *
-     * @param dateTime
-     * @return
-     */
-    public static LocalDateTime toLDateTime(long dateTime) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(dateTime), ZoneId.systemDefault());
+    public static void resetClock() {
+        CLOCK = Clock.systemDefaultZone();
     }
 
-    /**
-     * Date 转换为 LocalDateTime
-     *
-     * @param date
-     * @return
-     */
-    public static LocalDateTime toLDateTime(Date date) {
-        if (date == null) {
-            return null;
+    public static ZoneId zone() {
+        return CLOCK.getZone();
+    }
+
+    // ========================= now =========================
+
+    public static Instant now() {
+        return CLOCK.instant();
+    }
+
+    public static long nowMillis() {
+        return CLOCK.millis();
+    }
+
+    public static LocalDate today() {
+        return LocalDate.now(CLOCK);
+    }
+
+    // ========================= convert =========================
+
+    public static LocalDateTime toLocalDateTime(Instant instant) {
+        Objects.requireNonNull(instant);
+
+        return LocalDateTime.ofInstant(
+                instant,
+                zone()
+        );
+    }
+
+    public static Instant toInstant(LocalDateTime localDateTime) {
+        Objects.requireNonNull(localDateTime);
+
+        return localDateTime
+                .atZone(zone())
+                .toInstant();
+    }
+
+    public static long toEpochMilli(LocalDateTime localDateTime) {
+        return toInstant(localDateTime).toEpochMilli();
+    }
+
+    // ========================= parse =========================
+
+    public static LocalDateTime parse(
+            String text,
+            String pattern
+    ) {
+
+        Objects.requireNonNull(text);
+
+        return LocalDateTime.parse(
+                text.trim(),
+                formatter(pattern)
+        );
+    }
+
+    public static LocalDateTime parseAuto(String text) {
+
+        Objects.requireNonNull(text);
+
+        String value = text.trim();
+
+        int len = value.length();
+
+        try {
+
+            // yyyy-MM-dd
+            if (len == 10) {
+                return LocalDate
+                        .parse(value, formatter(DATE_PATTERN))
+                        .atStartOfDay();
+            }
+
+            // yyyy-MM-dd HH:mm:ss
+            if (len == 19 && value.charAt(10) == ' ') {
+                return LocalDateTime.parse(
+                        value,
+                        formatter(DATE_TIME_PATTERN)
+                );
+            }
+
+            // yyyy-MM-dd HH:mm:ss.SSS
+            if (len >= 21 && value.contains(".")) {
+                return LocalDateTime.parse(
+                        value,
+                        formatter(DATE_TIME_MILLIS_PATTERN)
+                );
+            }
+
+            // ISO
+            if (value.contains("T")) {
+                return OffsetDateTime
+                        .parse(value)
+                        .toLocalDateTime();
+            }
+
+        } catch (Exception e) {
+            throw new DateTimeParseException(
+                    "Unsupported datetime format",
+                    value,
+                    0
+            );
         }
-        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+
+        throw new DateTimeParseException(
+                "Unsupported datetime format",
+                value,
+                0
+        );
     }
 
-    /**
-     * LocalDate 转换为 LocalDateTime
-     *
-     * @param date
-     * @return
-     */
-    public static LocalDateTime toLDateTime(LocalDate date) {
-        if (date == null) {
-            return null;
-        }
-        return LocalDateTime.of(date, LocalTime.parse("00:00:00"));
+    // ========================= format =========================
+
+    public static String format(
+            LocalDateTime time,
+            String pattern
+    ) {
+
+        Objects.requireNonNull(time);
+
+        return formatter(pattern).format(time);
     }
 
-    /**
-     * 格式化为字符串
-     *
-     * @param dateTime
-     * @param pattern
-     * @return
-     */
-    public static String formatLDateTime(LocalDateTime dateTime, String pattern) {
-        if (dateTime == null) {
-            return null;
-        }
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
-        return dateTimeFormatter.format(dateTime);
+    // ========================= compare =========================
+
+    public static boolean isBetween(
+            LocalDateTime source,
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+
+        Objects.requireNonNull(source);
+        Objects.requireNonNull(start);
+        Objects.requireNonNull(end);
+
+        return !source.isBefore(start) && !source.isAfter(end);
     }
 
-    /**
-     * 格式化为字符串
-     *
-     * @param dateTime
-     * @return
-     */
-    public static String formatLDateTime(LocalDateTime dateTime) {
-        return formatLDateTime(dateTime, DEFAULT_PATTERN);
+    // ========================= truncate =========================
+
+    public static LocalDateTime truncateToMinute(LocalDateTime time) {
+
+        Objects.requireNonNull(time);
+
+        return time.truncatedTo(ChronoUnit.MINUTES);
     }
 
-    /**
-     * 转换为毫秒数
-     *
-     * @param dateTime
-     * @return
-     */
-    public static Long toLong(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        return dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-    }
-
-    /**
-     * 转换为 Date
-     *
-     * @param dateTime
-     * @return
-     */
-    public static Date toDate(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
-    }
 }

@@ -157,7 +157,7 @@ public class MailSenderTest extends BaseLoggerTest {
         Map<String, Object> templateParams = new HashMap<>();
         templateParams.put("orderId", IdUtils.generateId() + "");
         templateParams.put("userName", "王五");
-        templateParams.put("orderDate", DateTimeUtils.formatLDateTime(LocalDateTime.now(), DateTimeUtils.DATE_PATTERN));
+        templateParams.put("orderDate", DateTimeUtils.format(LocalDateTime.now(), DateTimeUtils.DATE_PATTERN));
         Map<String, Object> build1 = Maps.of("", new Object())
                 .and("name", "笔记本电脑")
                 .and("price", 5999.00)

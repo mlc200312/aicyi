@@ -9,7 +9,7 @@ import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.commons.util.serializer.CacheWrapperPrincipalSerializer;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
 import io.github.aicyi.test.util.BaseLoggerTest;

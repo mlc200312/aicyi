@@ -49,7 +49,7 @@ public class ServiceTest extends BaseLoggerTest {
         studentBean = DataSource.getStudent();
         studentBean.setMobile(testMobile);
         studentBean.setIdCard("1f0a9a831f9e6ec3817d77e5fd2ca3bb");
-        studentBean.setBirthday(DateTimeUtils.toLDateTime("2025-10-11 00:00:00.000").toLocalDate());
+        studentBean.setBirthday(DateTimeUtils.parseAuto("2025-10-11 00:00:00.000").toLocalDate());
     }
 
     @Test
@@ -90,8 +90,8 @@ public class ServiceTest extends BaseLoggerTest {
         UserQuery query = new UserQuery();
         query.setMobileEq(testMobile);
         query.setIdCardEq("1f0a9a831f9e6ec3817d77e5fd2ca3bb");
-        query.setBirthdayStart(DateTimeUtils.toLDateTime("2025-10-01 00:00:00.000").toLocalDate());
-        query.setBirthdayEnd(DateTimeUtils.toLDateTime("2025-11-01 00:00:00.000").toLocalDate());
+        query.setBirthdayStart(DateTimeUtils.parseAuto("2025-10-01 00:00:00.000").toLocalDate());
+        query.setBirthdayEnd(DateTimeUtils.parseAuto("2025-11-01 00:00:00.000").toLocalDate());
 
         Pageable pageable = PageUtils.createPageable(1, 10, Sort.by(Sort.Order.desc("update_time"), Sort.Order.asc("id")));
         List<User> list = userService.list(pageable, query);
@@ -102,8 +102,8 @@ public class ServiceTest extends BaseLoggerTest {
     @Test
     public void test30() {
         UserQuery query = new UserQuery();
-        query.setBirthdayStart(DateTimeUtils.toLDateTime("2024-10-01 00:00:00.000").toLocalDate());
-        query.setBirthdayEnd(DateTimeUtils.toLDateTime("2026-11-01 00:00:00.000").toLocalDate());
+        query.setBirthdayStart(DateTimeUtils.parseAuto("2024-10-01 00:00:00.000").toLocalDate());
+        query.setBirthdayEnd(DateTimeUtils.parseAuto("2026-11-01 00:00:00.000").toLocalDate());
 
         Pageable pageable = PageUtils.createPageable(1, 10, Sort.by(Sort.Order.desc("update_time"), Sort.Order.asc("id")));
         Page<User> pageResult = userService.pagedList(pageable, query);

@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.redis.cache;
+package io.github.aicyi.commons.lang;
 
 /**
  * @author Mr.Min
@@ -33,11 +33,11 @@ public class CacheWrapper<T> {
         this.data = data;
     }
 
-    static <T> CacheWrapper<T> hit(T value) {
+    public static <T> CacheWrapper<T> hit(T value) {
         return new CacheWrapper<>(false, value);
     }
 
-    static <T> CacheWrapper<T> miss() {
+    public static <T> CacheWrapper<T> miss() {
         return new CacheWrapper<>(true, null);
     }
 }

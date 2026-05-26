@@ -2,6 +2,7 @@ package io.github.aicyi.example.boot.config;
 
 import io.github.aicyi.commons.core.cache.Cache;
 import io.github.aicyi.commons.core.cache.CacheConfig;
+import io.github.aicyi.commons.util.serializer.CacheWrapperPrincipalSerializer;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.cache.*;

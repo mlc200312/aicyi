@@ -4,7 +4,7 @@ import io.github.aicyi.commons.core.PrincipalSerializer;
 import io.github.aicyi.commons.core.token.*;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
-import io.github.aicyi.commons.util.JsonCodecPrincipalSerializer;
+import io.github.aicyi.commons.util.serializer.JsonCodecPrincipalSerializer;
 import io.github.aicyi.commons.core.token.TokenProvider;
 import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
 import io.github.aicyi.commons.util.UUIDUtils;
