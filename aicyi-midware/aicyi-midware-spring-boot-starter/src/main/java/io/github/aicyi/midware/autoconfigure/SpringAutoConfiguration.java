@@ -1,6 +1,8 @@
 package io.github.aicyi.midware.autoconfigure;
 
+import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
+import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.midware.utils.SpringEnvironmentHelper;
 import io.github.aicyi.commons.core.JsonCodec;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -19,8 +21,14 @@ public class SpringAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(JsonCodec.class)
-    public JsonCodec getDefaultJsonCodec() {
+    public JsonCodec getJsonCodec() {
         return JacksonJsonCodec.DEFAULT;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(IdUtils.class)
+    public IdUtils getIdUtils(IdGenerator idGenerator) {
+        return new IdUtils(idGenerator);
     }
 
     @Bean

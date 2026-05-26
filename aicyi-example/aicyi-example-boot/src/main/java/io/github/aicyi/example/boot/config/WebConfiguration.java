@@ -26,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
 
-    private final EnhancedRedisTemplateFactory factory;
+    private final EnhancedRedisTemplateFactory templateFactory;
 
-    public WebConfiguration(EnhancedRedisTemplateFactory factory) {
-        this.factory = factory;
+    public WebConfiguration(EnhancedRedisTemplateFactory templateFactory) {
+        this.templateFactory = templateFactory;
     }
 
     @Override
@@ -47,11 +47,6 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/webjars/");
         registry.addResourceHandler("/api-doc.html")
                 .addResourceLocations("classpath:/api-doc.html");
-    }
-
-    @Bean
-    public AuthInterceptor getAuthInterceptor() {
-        return new AuthInterceptor(tokenService());
     }
 
     @Bean
@@ -81,6 +76,11 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .multiTokenCount(2)
                 .build();
 
-        return new JwtRefreshAuthenticationTokenService<>(config, factory.getStringRedisTemplate(), UserInfo.class);
+        return new JwtRefreshAuthenticationTokenService<>(config, templateFactory.getStringRedisTemplate(), UserInfo.class);
+    }
+
+    @Bean
+    public AuthInterceptor getAuthInterceptor() {
+        return new AuthInterceptor(tokenService());
     }
 }

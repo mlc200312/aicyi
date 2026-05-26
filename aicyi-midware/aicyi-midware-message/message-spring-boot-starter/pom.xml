@@ -28,36 +28,42 @@
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-kit</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>message-mail</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>message-mq</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>message-sms</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-rabbitmq</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-redis</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 

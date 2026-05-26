@@ -2,14 +2,13 @@ package io.github.aicyi.example.boot.redis;
 
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.commons.core.lock.DistributedLock;
-import io.github.aicyi.test.util.AicyiFactory;
+import io.github.aicyi.commons.core.lock.DistributedLockManager;
 import io.github.aicyi.test.util.BaseLoggerTest;
-import io.github.aicyi.midware.redis.lock.RedissonDistributedLock;
+import io.github.aicyi.test.util.RedisLockStressFactory;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -22,45 +21,37 @@ import java.util.*;
 public class DistributedLockTest extends BaseLoggerTest {
 
     @Autowired
-    private RedissonClient redissonClient;
+    private DistributedLockManager distributedLockManager;
 
-    private static int LOCK = 3;
-    private Queue<DistributedLock> list = new LinkedList<>();
+    private static int LOCK = 1;
 
     @Before
     @Override
     public void beforeTest() {
-        for (int i = 0; i < LOCK; i++) {
-            list.add(new RedissonDistributedLock("myLock:" + i, redissonClient));
-        }
     }
 
     @SneakyThrows
     @Test
     public void test() {
-        AicyiFactory factory = getAicyiFactory();
+        RedisLockStressFactory factory = new RedisLockStressFactory(
+                200,      // 200线程
+                1000,     // 每线程1000次
+                new RedisLockStressFactory.Robot() {
+                    @Override
+                    public DistributedLock getLock() {
+                        return distributedLockManager.getLock("test-lock" + new Random().nextInt(LOCK));
+                    }
+
+                    @Override
+                    public String working() {
+                        try {
+                            Thread.sleep(5); // 模拟业务
+                        } catch (InterruptedException ignored) {
+                        }
+                        return "OK";
+                    }
+                });
 
         factory.startRun();
-
-        factory.stopRun();
-    }
-
-    private AicyiFactory getAicyiFactory() {
-
-        AicyiFactory factory = new AicyiFactory(500, new AicyiFactory.Robot() {
-            @Override
-            public DistributedLock getLock() {
-                return new RedissonDistributedLock("myLock", redissonClient);
-//                return null;
-            }
-
-            @SneakyThrows
-            @Override
-            public String working() {
-                Thread.sleep(new Random().nextInt(3) * 10);
-                return "I am working...";
-            }
-        });
-        return factory;
     }
 }

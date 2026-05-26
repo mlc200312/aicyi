@@ -2,13 +2,10 @@ package io.github.aicyi.example.consumer.config;
 
 import io.github.aicyi.commons.core.cache.Cache;
 import io.github.aicyi.commons.core.cache.CacheConfig;
-import io.github.aicyi.commons.core.cache.CacheLock;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import io.github.aicyi.midware.redis.SerializerType;
 import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
-import io.github.aicyi.midware.redis.cache.RedisCacheLock;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;

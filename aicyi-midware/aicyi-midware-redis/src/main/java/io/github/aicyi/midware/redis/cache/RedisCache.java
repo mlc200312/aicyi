@@ -27,14 +27,19 @@ public class RedisCache<T> implements Cache<String, T> {
     private final CacheLock lock;
     private final CacheStats stats = new CacheStats();
 
-    public RedisCache(StringRedisTemplate template, CacheConfig<CacheWrapper<T>> config) {
+    public RedisCache(StringRedisTemplate template, CacheConfig<CacheWrapper<T>> config, CacheLock lock) {
 
         Assert.notNull(template, "template");
         Assert.notNull(config, "config");
 
         this.template = template;
         this.config = config;
-        this.lock = new RedisCacheLock(template);
+        this.lock = lock;
+    }
+
+    public RedisCache(StringRedisTemplate template, CacheConfig<CacheWrapper<T>> config) {
+
+        this(template, config, new RedisCacheLock(template));
     }
 
     public StringRedisTemplate getTemplate() {

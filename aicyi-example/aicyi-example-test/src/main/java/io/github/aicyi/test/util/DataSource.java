@@ -165,8 +165,4 @@ public class DataSource {
     public static String getExampleMapJson() {
         return JsonUtils.getInstance().toJson(getExampleMap());
     }
-
-    public static AicyiFactory getFactory(AicyiFactory.Robot robot) {
-        return new AicyiFactory(1000, robot);
-    }
 }

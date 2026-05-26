@@ -76,13 +76,4 @@ public class SnowflakeAutoConfiguration {
                 properties.getClockBackwardToleranceMs()
         );
     }
-
-    /**
-     * 创建ID生成器
-     */
-    @Bean
-    @ConditionalOnMissingBean(IdUtils.class)
-    public IdUtils getIdUtils(IdGenerator idGenerator) {
-        return new IdUtils(idGenerator);
-    }
 }

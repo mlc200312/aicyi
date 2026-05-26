@@ -28,6 +28,7 @@
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>message-mail</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- 当前最新稳定版 (仍为9.x系列) -->

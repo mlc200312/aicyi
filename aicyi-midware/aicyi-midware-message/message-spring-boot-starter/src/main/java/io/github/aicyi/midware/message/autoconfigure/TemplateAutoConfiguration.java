@@ -1,7 +1,6 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
 import io.github.aicyi.commons.core.cache.CacheConfig;
-import io.github.aicyi.commons.core.cache.CacheLock;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.template.cache.TemplateCacheManager;
@@ -9,17 +8,16 @@ import io.github.aicyi.midware.message.template.cache.TemplateLocalCache;
 import io.github.aicyi.midware.message.template.cache.TemplateRemoteCache;
 import io.github.aicyi.midware.message.template.mapper.MessageTemplateMapper;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import io.github.aicyi.midware.redis.SerializerType;
 import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
-import io.github.aicyi.midware.redis.cache.RedisCacheLock;
+import io.github.aicyi.midware.redis.cache.RedissonCacheLock;
 import org.mybatis.spring.annotation.MapperScan;
+import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
@@ -34,9 +32,11 @@ import java.time.Duration;
 public class TemplateAutoConfiguration {
 
     private final EnhancedRedisTemplateFactory templateFactory;
+    private final RedissonClient redissonClient;
 
-    public TemplateAutoConfiguration(EnhancedRedisTemplateFactory templateFactory) {
+    public TemplateAutoConfiguration(EnhancedRedisTemplateFactory templateFactory, RedissonClient redissonClient) {
         this.templateFactory = templateFactory;
+        this.redissonClient = redissonClient;
     }
 
     @Bean
@@ -53,12 +53,14 @@ public class TemplateAutoConfiguration {
                 .serializer(new CacheWrapperPrincipalSerializer<>(MessageTemplate.class))
                 .build();
 
-        RedisCache<MessageTemplate> messageTemplateCache = new RedisCache<>(stringRedisTemplate, cacheConfig);
+        RedissonCacheLock redissonCacheLock = new RedissonCacheLock(redissonClient);
+
+        RedisCache<MessageTemplate> messageTemplateCache = new RedisCache<>(stringRedisTemplate, cacheConfig, redissonCacheLock);
 
         // 本地缓存
         TemplateLocalCache templateLocalCache = new TemplateLocalCache();
 
-        // redis缓存
+        // 远程缓存
         TemplateRemoteCache templateRemoteCache = new TemplateRemoteCache(messageTemplateCache);
 
         return new TemplateCacheManager(templateLocalCache, templateRemoteCache, templateMapper);

@@ -2,17 +2,16 @@ package io.github.aicyi.example.boot.redis;
 
 import io.github.aicyi.commons.core.cache.Cache;
 import io.github.aicyi.commons.core.cache.CacheConfig;
-import io.github.aicyi.commons.core.cache.CacheLoader;
 import io.github.aicyi.commons.core.cache.CacheLock;
+import io.github.aicyi.commons.core.cache.DefaultCacheLock;
+import io.github.aicyi.commons.core.lock.DistributedLockManager;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import io.github.aicyi.midware.redis.SerializerType;
 import io.github.aicyi.midware.redis.cache.CacheWrapperPrincipalSerializer;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
-import io.github.aicyi.midware.redis.cache.RedisCacheLock;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import org.apache.commons.collections4.MapUtils;
 import org.junit.Before;
@@ -20,7 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -40,9 +38,11 @@ public class RedisCacheTest extends BaseLoggerTest {
     @Autowired
     private EnhancedRedisTemplateFactory templateFactory;
     @Autowired
-    private Cache<String, String> cache;
+    private DistributedLockManager distributedLockManager;
     @Autowired
     private TemplateProvider templateProvider;
+    @Autowired
+    private Cache<String, String> cache;
 
     private RedisCache<MessageTemplate> redisCache;
 
@@ -61,7 +61,9 @@ public class RedisCacheTest extends BaseLoggerTest {
                 .serializer(new CacheWrapperPrincipalSerializer<>(MessageTemplate.class))
                 .build();
 
-        redisCache = new RedisCache<>(stringRedisTemplate, cacheConfig);
+        CacheLock cacheLock = new DefaultCacheLock(distributedLockManager);
+
+        redisCache = new RedisCache<>(stringRedisTemplate, cacheConfig, cacheLock);
     }
 
     @Test

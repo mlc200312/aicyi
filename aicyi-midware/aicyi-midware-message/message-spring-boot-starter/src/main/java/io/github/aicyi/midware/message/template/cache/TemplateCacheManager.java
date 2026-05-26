@@ -18,13 +18,13 @@ public class TemplateCacheManager implements TemplateProvider {
 
     private final TemplateLocalCache localCache;
 
-    private final TemplateRemoteCache redisCache;
+    private final TemplateRemoteCache remoteCache;
 
     private final MessageTemplateMapper templateMapper;
 
-    public TemplateCacheManager(TemplateLocalCache localCache, TemplateRemoteCache redisCache, MessageTemplateMapper templateMapper) {
+    public TemplateCacheManager(TemplateLocalCache localCache, TemplateRemoteCache remoteCache, MessageTemplateMapper templateMapper) {
         this.localCache = localCache;
-        this.redisCache = redisCache;
+        this.remoteCache = remoteCache;
         this.templateMapper = templateMapper;
     }
 
@@ -62,7 +62,7 @@ public class TemplateCacheManager implements TemplateProvider {
         }
 
         // 回填缓存
-        redisCache.put(template);
+        remoteCache.put(template);
 
         localCache.put(templateCode, template);
 

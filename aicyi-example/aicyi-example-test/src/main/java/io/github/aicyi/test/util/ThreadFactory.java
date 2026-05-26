@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2025/8/19
  **/
 public class ThreadFactory {
-    protected final ExecutorService executorService;
+    protected final ExecutorService executor;
     private final int maxThreads;
 
     /**
@@ -23,7 +23,7 @@ public class ThreadFactory {
             throw new IllegalArgumentException("线程数必须大于0");
         }
         this.maxThreads = maxThreads;
-        this.executorService = Executors.newCachedThreadPool();
+        this.executor = Executors.newFixedThreadPool(maxThreads);
     }
 
     /**
@@ -32,7 +32,7 @@ public class ThreadFactory {
      * @param task 要执行的任务
      */
     public void submitTask(Runnable task) {
-        executorService.submit(task);
+        executor.submit(task);
     }
 
     /**
@@ -43,17 +43,22 @@ public class ThreadFactory {
      * @throws InterruptedException
      */
     public void shutdown(long timeout, TimeUnit unit) throws InterruptedException {
-        executorService.shutdown();
-        if (!executorService.awaitTermination(timeout, unit)) {
-            executorService.shutdownNow();
+        executor.shutdown();
+        if (!executor.awaitTermination(timeout, unit)) {
+            executor.shutdownNow();
         }
     }
 
     /**
      * 立即关闭线程池
      */
-    public void shutdownNow() {
-        executorService.shutdownNow();
+    public void shutdownNow(long timeout, TimeUnit unit) {
+        executor.shutdownNow();
+        try {
+            executor.awaitTermination(timeout, unit);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -62,7 +67,7 @@ public class ThreadFactory {
      * @return 活跃线程数
      */
     public int getActiveThreadCount() {
-        return ((java.util.concurrent.ThreadPoolExecutor) executorService).getActiveCount();
+        return ((java.util.concurrent.ThreadPoolExecutor) executor).getActiveCount();
     }
 
     /**
