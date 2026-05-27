@@ -116,7 +116,7 @@ public class RedisCacheTest extends BaseLoggerTest {
     @Test
     public void test3() {
 
-        MessageTemplate template = templateProvider.getTemplate("EMAIL_USER_ORDER_INFO");
+        MessageTemplate template = templateProvider.getTemplate("SMS_DELIVERY_NOTICE");
 
         redisCache.put("123", template);
 
@@ -132,7 +132,7 @@ public class RedisCacheTest extends BaseLoggerTest {
 
         MessageTemplate messageTemplate = redisCache.get("123");
 
-        MessageTemplate messageTemplate1 = redisCache.get("123", key -> templateProvider.getTemplate("EMAIL_USER_ORDER_INFO"));
+        MessageTemplate messageTemplate1 = redisCache.get("123", key -> templateProvider.getTemplate("SMS_DELIVERY_NOTICE"));
 
         MessageTemplate messageTemplate2 = redisCache.get("1234", key -> null);
 

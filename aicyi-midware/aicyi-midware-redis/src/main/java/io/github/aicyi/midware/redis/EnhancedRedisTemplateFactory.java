@@ -1,160 +1,257 @@
 package io.github.aicyi.midware.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
-import com.fasterxml.jackson.databind.JavaType;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.*;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.lang.NonNull;
+
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 企业级增强版 RedisTemplate 工厂
+ * <p>
+ * 优化点：
+ * 1. RedisTemplate 缓存复用
+ * 2. Serializer 缓存
+ * 3. 消除重复代码
+ * 4. ObjectMapper 隔离
+ * 5. 支持 Class / Type
+ * 6. XML Serializer 缓存
+ * 7. 泛型增强
+ * 8. 更好的扩展性
+ *
  * @author Mr.Min
- * @description RedisTemplate 工厂类
- * @date 2025/8/11
- **/
+ */
 public class EnhancedRedisTemplateFactory {
 
+    /**
+     * Redis连接工厂
+     */
     private final RedisConnectionFactory redisConnectionFactory;
-    private final ObjectMapper objectMapper;
 
-    public EnhancedRedisTemplateFactory(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
-        this.redisConnectionFactory = redisConnectionFactory;
-        this.objectMapper = objectMapper;
+    /**
+     * 独立 JsonCodec，避免外部污染
+     */
+    private final JsonCodec jsonCodec;
+
+    /**
+     * RedisTemplate 缓存
+     */
+    private final Map<String, RedisTemplate<?, ?>> templateCache = new ConcurrentHashMap<>();
+
+    /**
+     * value Serializer 缓存
+     */
+    private final Map<String, RedisSerializer<?>> valueSerializerCache = new ConcurrentHashMap<>();
+
+    /**
+     * 通用 Generic Serializer（单例）
+     */
+    private final JsonCodecRedisSerializer genericJsonSerializer = new JsonCodecRedisSerializer(Object.class);
+
+    /**
+     * JDK Serializer（单例）
+     */
+    private final JdkSerializationRedisSerializer jdkSerializer = new JdkSerializationRedisSerializer();
+
+    /**
+     * String Serializer（单例）
+     */
+    private final RedisSerializer<String> stringSerializer = RedisSerializer.string();
+
+    public EnhancedRedisTemplateFactory(@NonNull RedisConnectionFactory redisConnectionFactory, @NonNull JsonCodec jsonCodec) {
+
+        this.redisConnectionFactory = Objects.requireNonNull(redisConnectionFactory);
+        this.jsonCodec = Objects.requireNonNull(jsonCodec);
     }
 
-    public EnhancedRedisTemplateFactory(RedisConnectionFactory redisConnectionFactory) {
-        this(redisConnectionFactory, JacksonJsonCodec.DEFAULT.getObjectMapper());
+    public EnhancedRedisTemplateFactory(@NonNull RedisConnectionFactory redisConnectionFactory) {
+        this(redisConnectionFactory, JacksonJsonCodec.DEFAULT);
     }
+
+    /**
+     * 获取 StringRedisTemplate
+     */
+    public StringRedisTemplate getStringRedisTemplate() {
+
+        return (StringRedisTemplate) templateCache.computeIfAbsent(
+                "string_template",
+                key -> {
+                    StringRedisTemplate template = new StringRedisTemplate();
+                    template.setConnectionFactory(redisConnectionFactory);
+                    template.afterPropertiesSet();
+                    return template;
+                }
+        );
+    }
+
+    // =========================================================
+    // JSON TEMPLATE
+    // =========================================================
+
+    /**
+     * JSON RedisTemplate（Class）
+     */
+    public <T> RedisTemplate<String, T> getJsonRedisTemplate(Class<T> clazz) {
+
+        String cacheKey = "json:" + clazz.getName();
+
+        return cast(
+                templateCache.computeIfAbsent(
+                        cacheKey,
+                        key -> {
+
+                            RedisSerializer<?> serializer = getOrCreateValueSerializer(clazz);
+
+                            return createTemplate(serializer);
+                        }
+                )
+        );
+    }
+
+    /**
+     * JSON RedisTemplate（Type）
+     */
+    public <T> RedisTemplate<String, T> getJsonRedisTemplate(Type type) {
+
+        RedisSerializer<?> serializer = getOrCreateValueSerializer(type);
+
+        return cast(
+                createTemplate(serializer)
+        );
+    }
+
+    /**
+     * 通用 JSON Template
+     */
+    public RedisTemplate<String, Object> getGenericJsonRedisTemplate() {
+
+        return (RedisTemplate<String, Object>) getRedisTemplate(SerializerType.JSON);
+    }
+
+    // =========================================================
+    // GENERIC TEMPLATE
+    // =========================================================
+
+    /**
+     * 获取通用 RedisTemplate
+     */
+    public RedisTemplate<String, Object> getRedisTemplate(SerializerType serializerType) {
+
+        String cacheKey = "generic:" + serializerType.name();
+
+        return cast(
+                templateCache.computeIfAbsent(
+                        cacheKey,
+                        key -> createTemplate(
+                                resolveSerializer(serializerType)
+                        )
+                )
+        );
+    }
+
+    // =========================================================
+    // INTERNAL
+    // =========================================================
+
+    /**
+     * 创建 RedisTemplate
+     */
+    private <T> RedisTemplate<String, T> createTemplate(RedisSerializer<T> valueSerializer) {
+
+        RedisTemplate<String, T> template = new RedisTemplate<>();
+
+        template.setConnectionFactory(redisConnectionFactory);
+
+        // key serializer
+        template.setKeySerializer(stringSerializer);
+        template.setHashKeySerializer(stringSerializer);
+
+        // value serializer
+        template.setValueSerializer(valueSerializer);
+        template.setHashValueSerializer(valueSerializer);
+
+        // default serializer
+        template.setEnableDefaultSerializer(false);
+
+        // 是否开启事务（按需开启）
+        // template.setEnableTransactionSupport(true);
+
+        template.afterPropertiesSet();
+
+        return template;
+    }
+
+    /**
+     * 获取 XML Serializer（Class）
+     */
+    private RedisSerializer<?> getOrCreateValueSerializer(Type type) {
+
+        JsonCodecRedisSerializer<?> serializer = new JsonCodecRedisSerializer<>(type);
+
+        serializer.setJsonCodec(jsonCodec);
+
+        if (type instanceof Class) {
+            return cast(
+                    valueSerializerCache.computeIfAbsent(
+                            type.getTypeName(),
+                            key -> serializer
+                    )
+            );
+        }
+        return cast(
+                serializer
+        );
+    }
+
+    /**
+     * Serializer 路由
+     */
+    private RedisSerializer<?> resolveSerializer(SerializerType serializerType) {
+
+        switch (serializerType) {
+
+            case JDK:
+                return jdkSerializer;
+
+            case JSON:
+                return genericJsonSerializer;
+
+            default:
+                return stringSerializer;
+        }
+    }
+
+    /**
+     * 泛型转换
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T cast(Object obj) {
+        return (T) obj;
+    }
+
+    // =========================================================
+    // GETTER
+    // =========================================================
 
     public RedisConnectionFactory getRedisConnectionFactory() {
         return redisConnectionFactory;
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
-
-    public StringRedisTemplate getStringRedisTemplate() {
-
-        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
-
-        stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
-
-        stringRedisTemplate.afterPropertiesSet();
-
-        return stringRedisTemplate;
-    }
-
-    public <T> RedisTemplate<String, T> getJsonRedisTemplate(JavaType javaType) {
-        RedisTemplate<String, T> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-
-        // 键始终使用字符串序列化
-        template.setKeySerializer(RedisSerializer.string());
-        template.setHashKeySerializer(RedisSerializer.string());
-
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(javaType);
-        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
-
-        // 值使用Jackson序列化
-        template.setValueSerializer(jackson2JsonRedisSerializer);
-        template.setHashValueSerializer(jackson2JsonRedisSerializer);
-
-        template.afterPropertiesSet();
-        return template;
+    public JsonCodec getJsonCodec() {
+        return jsonCodec;
     }
 
     /**
-     * * XML模版
-     *
-     * @param clazz
-     * @param <T>
-     * @return
+     * 清空缓存（测试场景可用）
      */
-    public <T> RedisTemplate<String, T> getXmlRedisTemplate(Class<T> clazz) {
-        RedisTemplate<String, T> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-
-        // 键始终使用字符串序列化
-        template.setKeySerializer(RedisSerializer.string());
-        template.setHashKeySerializer(RedisSerializer.string());
-
-        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setClassesToBeBound(clazz);
-
-        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setClassesToBeBound(clazz);
-
-        OxmSerializer oxmSerializer = new OxmSerializer(marshaller, unmarshaller);
-
-        template.setValueSerializer(oxmSerializer);
-        template.setHashValueSerializer(oxmSerializer);
-
-        template.afterPropertiesSet();
-        return template;
-    }
-
-    /**
-     * XML模版
-     *
-     * @param packagesToScan
-     * @param <T>
-     * @return
-     */
-    public <T> RedisTemplate<String, T> getXmlRedisTemplate(String packagesToScan) {
-        RedisTemplate<String, T> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-
-        // 键始终使用字符串序列化
-        template.setKeySerializer(RedisSerializer.string());
-        template.setHashKeySerializer(RedisSerializer.string());
-
-        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setPackagesToScan(packagesToScan);
-
-        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setPackagesToScan(packagesToScan);
-
-        OxmSerializer oxmSerializer = new OxmSerializer(marshaller, unmarshaller);
-
-        template.setValueSerializer(oxmSerializer);
-        template.setHashValueSerializer(oxmSerializer);
-
-        template.afterPropertiesSet();
-        return template;
-    }
-
-    public RedisTemplate<String, Object> getGenericRedisTemplate(SerializerType serializerType) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-
-        // 键始终使用字符串序列化
-        template.setKeySerializer(RedisSerializer.string());
-        template.setHashKeySerializer(RedisSerializer.string());
-
-        // 根据类型设置值序列化器
-        switch (serializerType) {
-            case JDK:
-                template.setValueSerializer(new JdkSerializationRedisSerializer());
-                template.setHashValueSerializer(new JdkSerializationRedisSerializer());
-                break;
-            case JSON:
-                GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
-                template.setValueSerializer(genericJackson2JsonRedisSerializer);
-                template.setHashValueSerializer(genericJackson2JsonRedisSerializer);
-                break;
-            case STRING:
-                template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
-                template.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
-                break;
-            default:
-                template.setValueSerializer(RedisSerializer.string());
-                template.setHashValueSerializer(RedisSerializer.string());
-        }
-
-        template.afterPropertiesSet();
-        return template;
+    public void clearCache() {
+        templateCache.clear();
     }
 }

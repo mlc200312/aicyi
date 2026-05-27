@@ -1,202 +1,395 @@
+
 package io.github.aicyi.example.boot.redis;
 
+import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
-import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
-import io.github.aicyi.midware.redis.SerializerType;
-import io.github.aicyi.test.domain.Example;
-import io.github.aicyi.test.domain.ExampleBean;
-import io.github.aicyi.test.domain.Message;
-import io.github.aicyi.test.util.BaseLoggerTest;
-import io.github.aicyi.test.util.DataSource;
-import com.fasterxml.jackson.databind.JavaType;
+import io.github.aicyi.example.domain.StudentBean;
+import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import org.apache.commons.collections4.CollectionUtils;
-import org.junit.Before;
-import org.junit.Test;
+import io.github.aicyi.midware.redis.JsonCodecRedisSerializer;
+import io.github.aicyi.midware.redis.SerializerType;
+import io.github.aicyi.test.util.DataSource;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
+ * EnhancedRedisTemplateFactory 测试类
+ * <p>
+ * 测试覆盖：
+ * 1. StringRedisTemplate 缓存复用
+ * 2. JSON RedisTemplate 缓存复用
+ * 3. Type Template 创建
+ * 4. Generic JSON Template
+ * 5. SerializerType 路由
+ * 6. Serializer 配置正确性
+ * 7. ConnectionFactory 注入正确性
+ * 8. Cache clear 行为
+ *
  * @author Mr.Min
- * @description 业务描述
- * @date 12:07
- **/
+ */
+@ExtendWith(MockitoExtension.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = AicyiExampleApplication.class)
-public class EnhancedRedisTemplateFactoryTest extends BaseLoggerTest {
+class EnhancedRedisTemplateFactoryTest {
 
     @Autowired
-    private EnhancedRedisTemplateFactory templateFactory;
+    private RedisConnectionFactory redisConnectionFactory;
 
-    private RedisTemplate<String, String> stringTemplate;
-    private RedisTemplate<String, ExampleBean> exampleRedisTemplate;
+    private JsonCodec jsonCodec;
 
-    @Before
-    @Override
-    public void beforeTest() {
-        stringTemplate = templateFactory.getStringRedisTemplate();
-        exampleRedisTemplate = templateFactory.getJsonRedisTemplate(JacksonTypeFactory.typeOf(ExampleBean.class));
+    private EnhancedRedisTemplateFactory factory;
+
+    private StringRedisTemplate stringRedisTemplate;
+
+    private UserBean user;
+
+    @BeforeEach
+    void setUp() {
+        jsonCodec = JacksonJsonCodec.DEFAULT;
+        factory = new EnhancedRedisTemplateFactory(redisConnectionFactory, jsonCodec);
+        stringRedisTemplate = factory.getStringRedisTemplate();
+        user = DataSource.getUser();
+    }
+
+    // =========================================================
+    // STRING TEMPLATE
+    // =========================================================
+
+    @Test
+    @DisplayName("StringRedisTemplate 应该缓存复用")
+    void shouldReuseStringRedisTemplate() {
+
+        StringRedisTemplate template1 = factory.getStringRedisTemplate();
+        StringRedisTemplate template2 = factory.getStringRedisTemplate();
+
+        Assertions.assertSame(template1, template2);
     }
 
     @Test
-    public void test() {
-        BoundValueOperations<String, String> stringRedisTemplate = stringTemplate.boundValueOps("stringRedisTemplateTest");
-        stringRedisTemplate.set("stringRedisTemplateTest");
-        String value = stringRedisTemplate.get();
-        assert value.equals("stringRedisTemplateTest");
+    @DisplayName("StringRedisTemplate ConnectionFactory 应正确注入")
+    void shouldInjectConnectionFactoryForStringTemplate() {
 
-        BoundValueOperations<String, String> intRedisTemplate = stringTemplate.boundValueOps("intRedisTemplateTest");
-        intRedisTemplate.set("999999");
-        intRedisTemplate.increment();
-        String value2 = intRedisTemplate.get();
-        assert value2.equals("1000000");
+        StringRedisTemplate template = factory.getStringRedisTemplate();
 
-        log(value, value2);
+        Assertions.assertSame(redisConnectionFactory, template.getConnectionFactory());
+    }
+
+    // =========================================================
+    // JSON TEMPLATE（CLASS）
+    // =========================================================
+
+    @Test
+    @DisplayName("JSON RedisTemplate(Class) 应该缓存复用")
+    void shouldReuseJsonRedisTemplateByClass() {
+
+        RedisTemplate<String, UserBean> template1 = factory.getJsonRedisTemplate(UserBean.class);
+
+        RedisTemplate<String, UserBean> template2 = factory.getJsonRedisTemplate(UserBean.class);
+
+        Assertions.assertSame(template1, template2);
     }
 
     @Test
-    public void jsonRedisTemplateTest() {
-        BoundValueOperations<String, ExampleBean> redisTemplateTest = exampleRedisTemplate.boundValueOps("jsonRedisTemplateTest");
-        redisTemplateTest.set(DataSource.getExample());
-        ExampleBean example = redisTemplateTest.get();
-        String exampleStr = stringTemplate.opsForValue().get("jsonRedisTemplateTest");
-        assert example != null;
+    @DisplayName("不同 Class 应创建不同 RedisTemplate")
+    void shouldCreateDifferentTemplateForDifferentClass() {
 
-        JavaType exampleType = JacksonTypeFactory.parametricTypeOf(List.class, JacksonTypeFactory.typeOf(Example.class));
-        RedisTemplate<String, List<ExampleBean>> listRedisTemplate = templateFactory.getJsonRedisTemplate(exampleType);
-        BoundValueOperations<String, List<ExampleBean>> jsonListRedisTemplateTest = listRedisTemplate.boundValueOps("jsonListRedisTemplateTest");
-        jsonListRedisTemplateTest.set(DataSource.getExampleList());
-        List<ExampleBean> exampleList = jsonListRedisTemplateTest.get();
-        String exampleListStr = stringTemplate.opsForValue().get("jsonListRedisTemplateTest");
-        assert CollectionUtils.isNotEmpty(exampleList) && exampleList.size() == DataSource.MAX_NUM;
+        RedisTemplate<String, UserBean> userTemplate = factory.getJsonRedisTemplate(UserBean.class);
 
-        log(example, exampleStr, exampleList, exampleListStr);
+        RedisTemplate<String, StudentBean> studentTemplate = factory.getJsonRedisTemplate(StudentBean.class);
+
+        Assertions.assertNotSame(userTemplate, studentTemplate);
     }
 
     @Test
-    public void jsonStrRedisTemplateTest() {
-        JavaType stringType = JacksonTypeFactory.typeOf(String.class);
-        RedisTemplate<String, String> redisTemplate = templateFactory.getJsonRedisTemplate(stringType);
-        BoundValueOperations<String, String> jsonStrRedisTemplateTest = redisTemplate.boundValueOps("jsonStrRedisTemplateTest");
-        jsonStrRedisTemplateTest.set("jsonStrRedisTemplateTest");
-        String value = jsonStrRedisTemplateTest.get();
-        String valueStr = stringTemplate.opsForValue().get("jsonStrRedisTemplateTest");
-        assert value.equals("jsonStrRedisTemplateTest");
+    @DisplayName("JSON RedisTemplate 应正确设置 serializer")
+    void shouldConfigureJsonSerializerCorrectly() {
 
-        log(value, valueStr);
+        RedisTemplate<String, UserBean> template = factory.getJsonRedisTemplate(UserBean.class);
+
+        Assertions.assertNotNull(template.getValueSerializer());
+        Assertions.assertNotNull(template.getHashValueSerializer());
+
+        Assertions.assertSame(
+                template.getValueSerializer(),
+                template.getHashValueSerializer()
+        );
     }
 
     @Test
-    public void jsonIntRedisTemplateTest() {
-        JavaType intType = JacksonTypeFactory.typeOf(Integer.class);
-        RedisTemplate<String, Integer> redisTemplate = templateFactory.getJsonRedisTemplate(intType);
-        BoundValueOperations<String, Integer> jsonIntRedisTemplateTest = redisTemplate.boundValueOps("jsonIntRedisTemplateTest");
-        jsonIntRedisTemplateTest.set(999999);
-        Integer value = jsonIntRedisTemplateTest.get();
-        jsonIntRedisTemplateTest.increment();
-        String valueStr = stringTemplate.opsForValue().get("jsonIntRedisTemplateTest");
-        assert value.equals(999999);
+    @DisplayName("JSON RedisTemplate KeySerializer 应为 StringSerializer")
+    void shouldUseStringSerializerForKey() {
 
-        log(value, valueStr);
+        RedisTemplate<String, UserBean> template = factory.getJsonRedisTemplate(UserBean.class);
+
+        RedisSerializer<?> keySerializer = template.getKeySerializer();
+
+        Assertions.assertNotNull(keySerializer);
+        Assertions.assertEquals(
+                RedisSerializer.string().getClass(),
+                keySerializer.getClass()
+        );
     }
 
     @Test
-    public void objectJdkRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = templateFactory.getGenericRedisTemplate(SerializerType.JDK);
-        BoundValueOperations<String, Object> objectJdkRedisTemplateTest = genericTemplate.boundValueOps("objectJdkRedisTemplateTest");
-        objectJdkRedisTemplateTest.set(DataSource.getExample());
-        Object value = objectJdkRedisTemplateTest.get();
-        String valueStr = stringTemplate.opsForValue().get("objectJdkRedisTemplateTest");
-        assert value instanceof ExampleBean && value != null;
+    @DisplayName("JSON RedisTemplate ConnectionFactory 应正确注入")
+    void shouldInjectConnectionFactoryForJsonTemplate() {
 
-        log(value, valueStr);
+        RedisTemplate<String, UserBean> template = factory.getJsonRedisTemplate(UserBean.class);
+
+        Assertions.assertSame(redisConnectionFactory, template.getConnectionFactory());
     }
 
+    // =========================================================
+    // JSON TEMPLATE（TYPE）
+    // =========================================================
 
     @Test
-    public void objectXmlRedisTemplateTest() {
-        RedisTemplate<String, Message> genericTemplate = templateFactory.getXmlRedisTemplate(Message.class);
-        BoundValueOperations<String, Message> objectXmlRedisTemplateTest = genericTemplate.boundValueOps("objectXmlRedisTemplateTest");
-        objectXmlRedisTemplateTest.set(DataSource.getMessage());
-        Message value = objectXmlRedisTemplateTest.get();
-        String valueStr = stringTemplate.opsForValue().get("objectXmlRedisTemplateTest");
-        assert value != null && value instanceof Message;
+    @DisplayName("Type RedisTemplate 应正常创建")
+    void shouldCreateJsonRedisTemplateByType() {
 
-        log(value, valueStr);
-    }
+        Type type = new com.fasterxml.jackson.core.type.TypeReference<List<StudentBean>>() {
+        }.getType();
 
-    @Test
-    public void objectJsonRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = templateFactory.getGenericRedisTemplate(SerializerType.JSON);
-        BoundValueOperations<String, Object> objectJsonRedisTemplateTest = genericTemplate.boundValueOps("objectJsonRedisTemplateTest");
-        objectJsonRedisTemplateTest.set(DataSource.getExample());
-        Object value = objectJsonRedisTemplateTest.get();
-        String valueStr = stringTemplate.opsForValue().get("objectJsonRedisTemplateTest");
-        assert value != null;
+        RedisTemplate<String, List<StudentBean>> template = factory.getJsonRedisTemplate(type);
 
-        log(value, valueStr);
+        Assertions.assertNotNull(template);
+        Assertions.assertNotNull(template.getValueSerializer());
     }
 
     @Test
-    public void objectStrJsonRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = templateFactory.getGenericRedisTemplate(SerializerType.JSON);
-        BoundValueOperations<String, Object> objectStrJsonRedisTemplateTest = genericTemplate.boundValueOps("objectStrJsonRedisTemplateTest");
-        objectStrJsonRedisTemplateTest.set("objectStrJsonRedisTemplateTest");
-        Object value = objectStrJsonRedisTemplateTest.get();
-        String valueStr = stringTemplate.opsForValue().get("objectStrJsonRedisTemplateTest");
-        assert value instanceof String;
+    @DisplayName("Type RedisTemplate 默认不缓存")
+    void shouldNotReuseJsonRedisTemplateByType() {
 
-        log(value, valueStr);
+        Type type = new com.fasterxml.jackson.core.type.TypeReference<List<UserBean>>() {
+        }.getType();
+
+        RedisTemplate<String, List<UserBean>> template1 = factory.getJsonRedisTemplate(type);
+
+        RedisTemplate<String, List<UserBean>> template2 = factory.getJsonRedisTemplate(type);
+
+        Assertions.assertNotSame(template1, template2);
+    }
+
+    // =========================================================
+    // GENERIC JSON TEMPLATE
+    // =========================================================
+
+    @Test
+    @DisplayName("Generic JSON Template 应缓存复用")
+    void shouldReuseGenericJsonRedisTemplate() {
+
+        RedisTemplate<String, Object> template1 = factory.getGenericJsonRedisTemplate();
+
+        RedisTemplate<String, Object> template2 = factory.getGenericJsonRedisTemplate();
+
+        Assertions.assertSame(template1, template2);
     }
 
     @Test
-    public void objectNumJsonRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = templateFactory.getGenericRedisTemplate(SerializerType.JSON);
-        BoundValueOperations<String, Object> objectNumJsonRedisTemplateTest = genericTemplate.boundValueOps("objectNumJsonRedisTemplateTest");
-        objectNumJsonRedisTemplateTest.set(Double.valueOf("9.9999"));
-        Object value = objectNumJsonRedisTemplateTest.get();
-        objectNumJsonRedisTemplateTest.increment(0.0001);
-        String valueStr = stringTemplate.opsForValue().get("objectNumJsonRedisTemplateTest");
-        assert value instanceof Double && ((Double) value).doubleValue() == 9.9999;
+    @DisplayName("Generic JSON Template 应使用 GenericJackson2JsonRedisSerializer")
+    void shouldUseGenericJacksonSerializer() {
 
-        log(value, valueStr);
+        RedisTemplate<String, Object> template = factory.getGenericJsonRedisTemplate();
+
+        Assertions.assertInstanceOf(
+                JsonCodecRedisSerializer.class,
+                template.getValueSerializer()
+        );
+    }
+
+    // =========================================================
+    // SERIALIZER TYPE
+    // =========================================================
+
+    @Test
+    @DisplayName("JDK Template 应使用 JDK Serializer")
+    void shouldUseJdkSerializer() {
+
+        RedisTemplate<String, Object> template = factory.getRedisTemplate(SerializerType.JDK);
+
+        Assertions.assertInstanceOf(
+                JdkSerializationRedisSerializer.class,
+                template.getValueSerializer()
+        );
     }
 
     @Test
-    public void objectStrTypRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = templateFactory.getGenericRedisTemplate(SerializerType.STRING);
-        BoundValueOperations<String, Object> objectStrTypRedisTemplateTest = genericTemplate.boundValueOps("objectStrTypRedisTemplateTest");
-        objectStrTypRedisTemplateTest.set("objectStrTypRedisTemplateTest");
-        Object value = objectStrTypRedisTemplateTest.get();
-        String valueStr = stringTemplate.opsForValue().get("objectStrTypRedisTemplateTest");
-        assert value.equals("objectStrTypRedisTemplateTest");
+    @DisplayName("JSON Template 应使用 Generic JSON Serializer")
+    void shouldUseJsonSerializer() {
 
-        log(value, valueStr);
+        RedisTemplate<String, Object> template = factory.getRedisTemplate(SerializerType.JSON);
+
+        Assertions.assertInstanceOf(
+                JsonCodecRedisSerializer.class,
+                template.getValueSerializer()
+        );
     }
 
     @Test
-    public void objectNumTypRedisTemplateTest() {
-        RedisTemplate<String, Object> genericTemplate = templateFactory.getGenericRedisTemplate(SerializerType.STRING);
-        BoundValueOperations<String, Object> objectNumTypRedisTemplateTest = genericTemplate.boundValueOps("objectNumTypRedisTemplateTest");
-        objectNumTypRedisTemplateTest.set(999999);
-        Object value = objectNumTypRedisTemplateTest.get();
-        objectNumTypRedisTemplateTest.increment();
-        String valueStr = stringTemplate.opsForValue().get("objectNumTypRedisTemplateTest");
-        assert value.equals("999999");
+    @DisplayName("相同 SerializerType 应缓存复用")
+    void shouldReuseTemplateBySerializerType() {
 
-        BoundValueOperations<String, Object> objectDoubleTypRedisTemplateTest = genericTemplate.boundValueOps("objectDoubleTypRedisTemplateTest");
-        objectDoubleTypRedisTemplateTest.set(Double.valueOf("9.9999"));
-        Object value2 = objectDoubleTypRedisTemplateTest.get();
-        objectDoubleTypRedisTemplateTest.increment(0.0001);
-        String valueStr2 = stringTemplate.opsForValue().get("objectDoubleTypRedisTemplateTest");
-        assert value2.equals("9.9999");
+        RedisTemplate<String, Object> template1 = factory.getRedisTemplate(SerializerType.JSON);
 
-        log(value, valueStr, value2, valueStr2);
+        RedisTemplate<String, Object> template2 = factory.getRedisTemplate(SerializerType.JSON);
+
+        Assertions.assertSame(template1, template2);
+    }
+
+    // =========================================================
+    // CACHE
+    // =========================================================
+
+    @Test
+    @DisplayName("clearCache 后应该重新创建 Template")
+    void shouldCreateNewTemplateAfterClearCache() {
+
+        RedisTemplate<String, UserBean> template1 = factory.getJsonRedisTemplate(UserBean.class);
+
+        factory.clearCache();
+
+        RedisTemplate<String, UserBean> template2 = factory.getJsonRedisTemplate(UserBean.class);
+
+        Assertions.assertNotSame(template1, template2);
+    }
+
+    // =========================================================
+    // GETTER
+    // =========================================================
+
+    @Test
+    @DisplayName("应该返回正确的 RedisConnectionFactory")
+    void shouldReturnCorrectRedisConnectionFactory() {
+
+        Assertions.assertSame(
+                redisConnectionFactory,
+                factory.getRedisConnectionFactory()
+        );
+    }
+
+    @Test
+    @DisplayName("应该返回正确的 JsonCodec")
+    void shouldReturnCorrectJsonCodec() {
+
+        Assertions.assertSame(jsonCodec, factory.getJsonCodec());
+    }
+
+    @Test
+    @DisplayName("应该正确缓存并获取")
+    void getJsonRedisTemplate() {
+        RedisTemplate<String, UserBean> template = factory.getJsonRedisTemplate(UserBean.class);
+
+        BoundValueOperations<String, UserBean> valueOps = template.boundValueOps("testJson");
+
+        valueOps.set(user);
+
+        UserBean userBean = valueOps.get();
+
+        String string = stringRedisTemplate.opsForValue().get("testJson");
+
+        Assertions.assertEquals(userBean, user);
+
+        System.out.println(string);
+    }
+
+    @Test
+    @DisplayName("getJsonRedisTemplate")
+    void getJsonRedisTemplate2() {
+        Type type = new com.fasterxml.jackson.core.type.TypeReference<List<StudentBean>>() {
+        }.getType();
+        RedisTemplate<String, List<StudentBean>> template = factory.getJsonRedisTemplate(type);
+
+        BoundValueOperations<String, List<StudentBean>> valueOps = template.boundValueOps("testJsonList");
+
+        List<StudentBean> studentList = DataSource.getStudentList();
+
+        valueOps.set(studentList);
+
+        List<StudentBean> studentBeanList = valueOps.get();
+
+        String string = stringRedisTemplate.opsForValue().get("testJsonList");
+
+        Assertions.assertEquals(studentList, studentBeanList);
+
+        System.out.println(string);
+    }
+
+    @Test
+    @DisplayName("getGenericJsonRedisTemplate")
+    void getGenericJsonRedisTemplate() {
+
+        RedisTemplate<String, Object> template = factory.getGenericJsonRedisTemplate();
+
+        BoundValueOperations<String, Object> valueOps = template.boundValueOps("testGenericJson");
+
+        valueOps.set(user);
+
+        Object object = valueOps.get();
+
+        String string = stringRedisTemplate.opsForValue().get("testGenericJson");
+
+        Assertions.assertNotNull(object);
+        Assertions.assertNotEquals(object, user);
+
+        System.out.println(string);
+    }
+
+    @Test
+    @DisplayName("getRedisTemplate")
+    void getRedisTemplateTest() {
+
+        RedisTemplate<String, Object> template = factory.getRedisTemplate(SerializerType.JSON);
+
+        BoundValueOperations<String, Object> valueOps = template.boundValueOps("testJsonObject");
+
+        valueOps.set(user);
+
+        Object object = valueOps.get();
+
+        String string = stringRedisTemplate.opsForValue().get("testJsonObject");
+
+        Assertions.assertNotNull(object);
+        Assertions.assertNotEquals(object, user);
+
+        System.out.println(string);
+    }
+
+    @Test
+    @DisplayName("getRedisTemplate")
+    void getRedisTemplateTest2() {
+
+        RedisTemplate<String, Object> template = factory.getRedisTemplate(SerializerType.JDK);
+
+        BoundValueOperations<String, Object> valueOps = template.boundValueOps("testJdk");
+
+        valueOps.set(user);
+
+        Object object = valueOps.get();
+
+        String string = stringRedisTemplate.opsForValue().get("testJdk");
+
+        Assertions.assertNotNull(object);
+        Assertions.assertEquals(object, user);
+
+        System.out.println(string);
     }
 }
+

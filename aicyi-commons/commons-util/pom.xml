@@ -105,5 +105,11 @@
             <groupId>com.github.f4b6a3</groupId>
             <artifactId>uuid-creator</artifactId>
         </dependency>
+
+        <!-- cache -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
     </dependencies>
 </project>

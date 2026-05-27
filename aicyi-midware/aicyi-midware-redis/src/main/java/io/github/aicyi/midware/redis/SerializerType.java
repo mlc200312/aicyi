@@ -6,5 +6,5 @@ package io.github.aicyi.midware.redis;
  * @date 2026/5/22
  **/
 public enum SerializerType {
-    JDK, JSON, STRING
+    JDK, JSON
 }

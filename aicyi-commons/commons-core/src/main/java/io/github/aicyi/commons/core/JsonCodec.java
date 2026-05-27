@@ -11,6 +11,9 @@ import java.util.Map;
  * @date 2019-05-22
  **/
 public interface JsonCodec {
+
+    byte[] EMPTY_ARRAY = new byte[0];
+
     String EMPTY_JSON_ARRAY = "[]";
 
     String EMPTY_JSON_OBJECT = "{}";
