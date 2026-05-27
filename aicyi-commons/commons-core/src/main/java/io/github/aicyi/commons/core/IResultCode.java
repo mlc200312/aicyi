@@ -5,5 +5,10 @@ package io.github.aicyi.commons.core;
  * @description 统一结果接口
  * @date 10:39
  **/
-public interface IResultCode extends ICodeType<Integer> {
+public interface IResultCode extends ICodeType<Integer>, IEnumType<Integer> {
+
+    @Override
+    default String getDescription() {
+        return getMessage();
+    }
 }
