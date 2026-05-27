@@ -1,6 +1,7 @@
-package io.github.aicyi.commons.core.id;
+package io.github.aicyi.commons.lang.model;
 
-import io.github.aicyi.commons.core.DtoBean;
+
+import io.github.aicyi.commons.lang.DtoBean;
 
 /**
  * @author Mr.Min

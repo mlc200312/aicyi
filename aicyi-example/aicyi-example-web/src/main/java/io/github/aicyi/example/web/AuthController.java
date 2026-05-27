@@ -1,7 +1,7 @@
 package io.github.aicyi.example.web;
 
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
-import io.github.aicyi.commons.core.IResponse;
+import io.github.aicyi.commons.lang.IResponse;
 import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.commons.security.token.AuthenticationTokenService;
 import io.github.aicyi.commons.security.token.TokenPair;

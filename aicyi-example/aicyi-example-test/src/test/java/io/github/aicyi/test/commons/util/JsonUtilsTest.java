@@ -2,9 +2,8 @@ package io.github.aicyi.test.commons.util;
 
 import io.github.aicyi.commons.security.token.jwt.JWTInfo;
 import io.github.aicyi.commons.core.JsonCodec;
-import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.model.BaseBean;
 import io.github.aicyi.commons.util.UUIDUtils;
-import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import io.github.aicyi.commons.util.JsonUtils;

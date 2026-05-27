@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.core.message;
+package io.github.aicyi.commons.lang.model;
 
 import java.time.LocalDateTime;
 

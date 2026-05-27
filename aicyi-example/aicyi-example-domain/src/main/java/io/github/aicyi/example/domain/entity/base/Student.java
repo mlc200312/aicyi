@@ -1,6 +1,6 @@
 package io.github.aicyi.example.domain.entity.base;
 
-import io.github.aicyi.commons.lang.BaseEntity;
+import io.github.aicyi.commons.lang.model.BaseEntity;
 import io.github.aicyi.commons.lang.type.BooleanType;
 import io.github.aicyi.example.domain.type.GradeType;
 import java.io.Serializable;

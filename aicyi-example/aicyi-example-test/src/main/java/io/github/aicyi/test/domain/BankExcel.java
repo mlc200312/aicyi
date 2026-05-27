@@ -1,6 +1,6 @@
 package io.github.aicyi.test.domain;
 
-import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.model.BaseBean;
 import lombok.Getter;
 import lombok.Setter;
 

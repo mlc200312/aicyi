@@ -1,8 +1,8 @@
 package io.github.aicyi.example.web.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.core.VoBean;
+import io.github.aicyi.commons.lang.model.BaseBean;
+import io.github.aicyi.commons.lang.VoBean;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;

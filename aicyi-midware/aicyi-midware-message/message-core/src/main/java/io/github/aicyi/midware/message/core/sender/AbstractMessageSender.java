@@ -6,7 +6,7 @@ import io.github.aicyi.commons.core.message.MessageSender;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
-import io.github.aicyi.commons.core.message.MessageSendResult;
+import io.github.aicyi.commons.lang.model.MessageSendResult;
 
 import java.util.concurrent.CompletableFuture;
 

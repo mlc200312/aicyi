@@ -1,7 +1,7 @@
-package io.github.aicyi.commons.lang;
+package io.github.aicyi.commons.lang.model;
 
-import io.github.aicyi.commons.core.IResult;
-import io.github.aicyi.commons.core.IResultCode;
+import io.github.aicyi.commons.lang.IResult;
+import io.github.aicyi.commons.lang.IResultCode;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 
 /**

@@ -2,7 +2,7 @@ package io.github.aicyi.midware.db.commons;
 
 import com.github.pagehelper.ISelect;
 import com.github.pagehelper.PageHelper;
-import io.github.aicyi.commons.lang.PageParam;
+import io.github.aicyi.commons.lang.model.PageParam;
 import org.springframework.data.domain.*;
 
 import java.util.List;

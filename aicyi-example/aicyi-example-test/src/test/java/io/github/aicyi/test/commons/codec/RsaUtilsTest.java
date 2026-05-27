@@ -1,6 +1,6 @@
 package io.github.aicyi.test.commons.codec;
 
-import io.github.aicyi.commons.lang.Pair;
+import io.github.aicyi.commons.lang.model.Pair;
 import io.github.aicyi.commons.security.RsaUtils;
 import io.github.aicyi.test.util.BaseLoggerTest;
 import org.junit.Before;

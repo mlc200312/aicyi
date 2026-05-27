@@ -1,7 +1,7 @@
 package io.github.aicyi.example.domain;
 
-import io.github.aicyi.commons.core.BoBean;
-import io.github.aicyi.commons.lang.PageParam;
+import io.github.aicyi.commons.lang.BoBean;
+import io.github.aicyi.commons.lang.model.PageParam;
 import io.github.aicyi.example.domain.type.GradeType;
 import lombok.Getter;
 import lombok.Setter;

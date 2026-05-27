@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.web;
 
-import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.model.BaseBean;
 import io.swagger.annotations.ApiModel;
 import org.springframework.data.domain.Page;
 

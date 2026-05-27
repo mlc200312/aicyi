@@ -2,7 +2,7 @@ package io.github.aicyi.midware.redis.cache;
 
 import io.github.aicyi.commons.core.PrincipalSerializer;
 import io.github.aicyi.commons.core.cache.CacheConfig;
-import io.github.aicyi.commons.lang.CacheWrapper;
+import io.github.aicyi.commons.lang.model.CacheWrapper;
 import io.github.aicyi.commons.util.Assert;
 
 import java.time.Duration;

@@ -1,6 +1,6 @@
-package io.github.aicyi.commons.core.token;
+package io.github.aicyi.commons.lang.model;
 
-import io.github.aicyi.commons.core.DtoBean;
+import io.github.aicyi.commons.lang.DtoBean;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

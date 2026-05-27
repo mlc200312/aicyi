@@ -1,7 +1,8 @@
 package io.github.aicyi.midware.redis.cache;
 
 import io.github.aicyi.commons.core.cache.*;
-import io.github.aicyi.commons.lang.CacheWrapper;
+import io.github.aicyi.commons.lang.model.CacheStats;
+import io.github.aicyi.commons.lang.model.CacheWrapper;
 import io.github.aicyi.commons.util.Assert;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.Cursor;

@@ -2,6 +2,7 @@ package io.github.aicyi.midware.message.core.template;
 
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.core.template.*;
+import io.github.aicyi.commons.lang.type.TemplateEngineType;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;

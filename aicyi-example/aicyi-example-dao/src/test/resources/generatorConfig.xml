@@ -34,7 +34,7 @@
                             targetProject="${generated.domain.dir}src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="exampleTargetProject" value="${generated.domain.dir}src/main/java"/>
-            <property name="rootClass" value="io.github.aicyi.commons.lang.BaseEntity"/>
+            <property name="rootClass" value="io.github.aicyi.commons.lang.model.BaseEntity"/>
         </javaModelGenerator>
 
         <!-- 生成DAO的包名和位置 -->

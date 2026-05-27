@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.lang;
+package io.github.aicyi.commons.lang.model;
 
 /**
  * @author Mr.Min

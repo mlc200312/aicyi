@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.security.token.jwt;
 
-import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.model.BaseBean;
 
 import java.util.Objects;
 

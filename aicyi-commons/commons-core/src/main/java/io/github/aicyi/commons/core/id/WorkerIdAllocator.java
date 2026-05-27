@@ -1,5 +1,7 @@
 package io.github.aicyi.commons.core.id;
 
+import io.github.aicyi.commons.lang.model.WorkerIdLease;
+
 /**
  * @author Mr.Min
  * @description WorkerId 分配器接口

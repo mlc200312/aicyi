@@ -21,11 +21,6 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
             <artifactId>commons-util</artifactId>
         </dependency>
 

@@ -1,6 +1,6 @@
 package io.github.aicyi.example.web;
 
-import io.github.aicyi.commons.core.IResponse;
+import io.github.aicyi.commons.lang.IResponse;
 import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.example.service.util.UserSessionUtils;

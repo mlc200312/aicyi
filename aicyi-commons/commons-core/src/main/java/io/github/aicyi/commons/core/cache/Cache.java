@@ -1,5 +1,7 @@
 package io.github.aicyi.commons.core.cache;
 
+import io.github.aicyi.commons.lang.model.CacheStats;
+
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;

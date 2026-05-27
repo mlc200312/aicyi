@@ -1,6 +1,6 @@
 package io.github.aicyi.example.web.vo;
 
-import io.github.aicyi.commons.core.VoBean;
+import io.github.aicyi.commons.lang.VoBean;
 import io.github.aicyi.commons.security.token.TokenPair;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

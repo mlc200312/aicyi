@@ -1,8 +1,8 @@
 package io.github.aicyi.example.service.impl;
 
 import io.github.aicyi.commons.core.cache.Cache;
-import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.core.BoBean;
+import io.github.aicyi.commons.lang.model.BaseBean;
+import io.github.aicyi.commons.lang.BoBean;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
@@ -18,7 +18,7 @@ import io.github.aicyi.example.service.UserService;
 import io.github.aicyi.midware.utils.SpringEnvironmentHelper;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageSendCallback;
-import io.github.aicyi.commons.core.message.MessageSendResult;
+import io.github.aicyi.commons.lang.model.MessageSendResult;
 import io.github.aicyi.midware.message.core.sender.UnifiedMessageManager;
 import lombok.Getter;
 import lombok.Setter;

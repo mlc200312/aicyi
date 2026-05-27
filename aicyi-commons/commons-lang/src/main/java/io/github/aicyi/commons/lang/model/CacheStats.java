@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.core.cache;
+package io.github.aicyi.commons.lang.model;
 
 import java.util.concurrent.atomic.LongAdder;
 

@@ -1,5 +1,7 @@
 package io.github.aicyi.commons.core.message;
 
+import io.github.aicyi.commons.lang.model.MessageSendResult;
+
 /**
  * @author Mr.Min
  * @description 发送结果回调接口

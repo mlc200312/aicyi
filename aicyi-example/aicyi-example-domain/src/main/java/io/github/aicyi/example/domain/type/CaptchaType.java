@@ -1,6 +1,6 @@
 package io.github.aicyi.example.domain.type;
 
-import io.github.aicyi.commons.core.EnumType;
+import io.github.aicyi.commons.lang.EnumType;
 
 /**
  * @author Mr.Min

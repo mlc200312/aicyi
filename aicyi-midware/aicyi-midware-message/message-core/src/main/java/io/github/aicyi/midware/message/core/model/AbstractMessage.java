@@ -1,8 +1,8 @@
 package io.github.aicyi.midware.message.core.model;
 
 import io.github.aicyi.commons.core.message.MessageContent;
-import io.github.aicyi.commons.core.message.MessageType;
-import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.type.MessageType;
+import io.github.aicyi.commons.lang.model.BaseBean;
 import io.github.aicyi.commons.util.UUIDUtils;
 
 import java.time.LocalDateTime;

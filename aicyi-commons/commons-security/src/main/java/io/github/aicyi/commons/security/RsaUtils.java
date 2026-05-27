@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.security;
 
-import io.github.aicyi.commons.lang.Pair;
+import io.github.aicyi.commons.lang.model.Pair;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.BadPaddingException;

@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.redis.token;
 
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
-import io.github.aicyi.commons.core.token.TokenCreateRequest;
+import io.github.aicyi.commons.lang.model.TokenCreateRequest;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.util.Assert;
 import org.springframework.data.redis.core.StringRedisTemplate;

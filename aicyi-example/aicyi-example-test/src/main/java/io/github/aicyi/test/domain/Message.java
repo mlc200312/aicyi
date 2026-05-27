@@ -1,7 +1,7 @@
 package io.github.aicyi.test.domain;
 
-import io.github.aicyi.commons.core.BoBean;
-import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.BoBean;
+import io.github.aicyi.commons.lang.model.BaseBean;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;

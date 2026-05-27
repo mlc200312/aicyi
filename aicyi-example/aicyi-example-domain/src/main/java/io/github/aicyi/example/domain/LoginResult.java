@@ -1,8 +1,8 @@
 package io.github.aicyi.example.domain;
 
 import io.github.aicyi.commons.security.token.TokenPair;
-import io.github.aicyi.commons.lang.BaseBean;
-import io.github.aicyi.commons.core.BoBean;
+import io.github.aicyi.commons.lang.model.BaseBean;
+import io.github.aicyi.commons.lang.BoBean;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
-import io.github.aicyi.commons.core.StringEnumType;
+import io.github.aicyi.commons.lang.StringEnumType;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;

@@ -2,7 +2,7 @@ package io.github.aicyi.commons.util.serializer;
 
 import io.github.aicyi.commons.core.JsonCodec;
 import io.github.aicyi.commons.core.PrincipalSerializer;
-import io.github.aicyi.commons.lang.CacheWrapper;
+import io.github.aicyi.commons.lang.model.CacheWrapper;
 import io.github.aicyi.commons.util.Assert;
 import io.github.aicyi.commons.util.JsonUtils;
 

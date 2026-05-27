@@ -2,7 +2,7 @@ package io.github.aicyi.midware.message.mq.model;
 
 
 import io.github.aicyi.midware.message.core.model.AbstractMessage;
-import io.github.aicyi.commons.core.message.MessageType;
+import io.github.aicyi.commons.lang.type.MessageType;
 
 /**
  * @author Mr.Min

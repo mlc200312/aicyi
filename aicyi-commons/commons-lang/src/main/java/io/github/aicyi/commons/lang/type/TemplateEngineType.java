@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.core.template;
+package io.github.aicyi.commons.lang.type;
 
 public enum TemplateEngineType {
 

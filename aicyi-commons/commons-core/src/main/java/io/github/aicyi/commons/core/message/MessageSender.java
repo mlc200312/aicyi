@@ -1,5 +1,8 @@
 package io.github.aicyi.commons.core.message;
 
+import io.github.aicyi.commons.lang.model.MessageSendResult;
+import io.github.aicyi.commons.lang.type.MessageType;
+
 /**
  * @author Mr.Min
  * @description 消息发送服务接口

@@ -1,6 +1,6 @@
-package io.github.aicyi.commons.lang;
+package io.github.aicyi.commons.lang.model;
 
-import io.github.aicyi.commons.core.BoBean;
+import io.github.aicyi.commons.lang.BoBean;
 
 /**
  * @author Mr.Min

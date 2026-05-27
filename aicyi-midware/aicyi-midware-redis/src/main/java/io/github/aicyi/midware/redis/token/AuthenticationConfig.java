@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.redis.token;
 
-import io.github.aicyi.commons.lang.BaseBean;
+import io.github.aicyi.commons.lang.model.BaseBean;
 
 import java.util.concurrent.TimeUnit;
 
