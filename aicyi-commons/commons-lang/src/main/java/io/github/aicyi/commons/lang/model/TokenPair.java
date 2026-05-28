@@ -1,11 +1,11 @@
-package io.github.aicyi.commons.security.token;
+package io.github.aicyi.commons.lang.model;
 
 /**
  * @author Mr.Min
  * @description Token对
  * @date 2026/5/14
  **/
-public class TokenPair {
+public class TokenPair extends BaseBean {
 
     /**
      * AccessToken
@@ -57,15 +57,5 @@ public class TokenPair {
 
     public void setRefreshTokenExpiresIn(long refreshTokenExpiresIn) {
         this.refreshTokenExpiresIn = refreshTokenExpiresIn;
-    }
-
-    @Override
-    public String toString() {
-        return "TokenPair{" +
-                "accessToken='" + accessToken + '\'' +
-                ", refreshToken='" + refreshToken + '\'' +
-                ", accessTokenExpiresIn=" + accessTokenExpiresIn +
-                ", refreshTokenExpiresIn=" + refreshTokenExpiresIn +
-                '}';
     }
 }

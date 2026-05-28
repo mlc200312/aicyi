@@ -7,8 +7,7 @@ import java.util.concurrent.atomic.LongAdder;
  * @description 缓存统计类
  * @date 2026/5/22
  **/
-public class CacheStats {
-
+public class CacheStats extends BaseBean {
     private final LongAdder hitCount = new LongAdder();
     private final LongAdder missCount = new LongAdder();
     private final LongAdder loadSuccessCount = new LongAdder();

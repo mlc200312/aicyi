@@ -1,14 +1,11 @@
 package io.github.aicyi.commons.lang.model;
 
-
-import io.github.aicyi.commons.lang.DtoBean;
-
 /**
  * @author Mr.Min
  * @description Lease 对象
  * @date 2026/5/21
  **/
-public class WorkerIdLease implements DtoBean {
+public class WorkerIdLease extends BaseBean {
 
     /**
      * WorkerId

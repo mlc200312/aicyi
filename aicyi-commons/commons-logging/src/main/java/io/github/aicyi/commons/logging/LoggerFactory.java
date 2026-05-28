@@ -20,12 +20,12 @@ public class LoggerFactory {
         switch (type) {
             case ACCESS:
                 return ACCESS_LOGGER;
-            case SCHEDULE:
-                return SCHEDULE_LOGGER;
             case CLIENT:
                 return CLIENT_LOGGER;
             case PERFORMANCE:
                 return PERFORMANCE_LOGGER;
+            case SCHEDULE:
+                return SCHEDULE_LOGGER;
             case MESSAGE:
                 return MESSAGE_LOGGER;
             case BIZ:
@@ -33,7 +33,7 @@ public class LoggerFactory {
             case DAO:
                 return DAO_LOGGER;
             default:
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("不支持的操作类型：" + type.getName());
         }
     }
 

@@ -1,13 +1,11 @@
 package io.github.aicyi.commons.lang.model;
 
-import io.github.aicyi.commons.lang.BoBean;
-
 /**
  * @author Mr.Min
  * @description 分页参数对象
  * @date 15:50
  **/
-public class PageParam extends BaseBean implements BoBean {
+public class PageParam extends BaseBean {
     private Integer page;
     private Integer size;
 

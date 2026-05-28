@@ -1,16 +1,11 @@
-package io.github.aicyi.commons.security.token;
+package io.github.aicyi.commons.core.token;
 
 import io.github.aicyi.commons.core.PrincipalSerializer;
-import io.github.aicyi.commons.core.token.*;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.lang.model.TokenCreateRequest;
-import io.github.aicyi.commons.util.serializer.JsonCodecPrincipalSerializer;
-import io.github.aicyi.commons.core.token.TokenProvider;
-import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
-import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.commons.lang.model.TokenPair;
 
-import javax.crypto.SecretKey;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -68,38 +63,16 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
 
     public AbstractAuthenticationTokenService(
             TokenService<String, P> refreshTokenService,
-            Class<? extends P> principalType,
-            SecretKey secretKey,
-            String issuer,
-            String subject,
+            TokenProvider<String> accessTokenProvider,
+            PrincipalSerializer<P> serializer,
             Long refreshTokenTtl,
             TimeUnit refreshTokenTimeUnit,
             Long accessTokenTtl,
             TimeUnit accessTokenTimeUnit
     ) {
         this.refreshTokenService = refreshTokenService;
-        this.accessTokenProvider = new JwtTokenProvider(secretKey, issuer, subject);
-        this.serializer = new JsonCodecPrincipalSerializer<>(principalType);
-        this.refreshTokenTtl = refreshTokenTtl;
-        this.refreshTokenTimeUnit = refreshTokenTimeUnit;
-        this.accessTokenTtl = accessTokenTtl;
-        this.accessTokenTimeUnit = accessTokenTimeUnit;
-    }
-
-    public AbstractAuthenticationTokenService(
-            TokenService<String, P> refreshTokenService,
-            Class<? extends P> principalType,
-            String secretKey,
-            String issuer,
-            String subject,
-            Long refreshTokenTtl,
-            TimeUnit refreshTokenTimeUnit,
-            Long accessTokenTtl,
-            TimeUnit accessTokenTimeUnit
-    ) {
-        this.refreshTokenService = refreshTokenService;
-        this.accessTokenProvider = new JwtTokenProvider(secretKey, issuer, subject);
-        this.serializer = new JsonCodecPrincipalSerializer<>(principalType);
+        this.accessTokenProvider = accessTokenProvider;
+        this.serializer = serializer;
         this.refreshTokenTtl = refreshTokenTtl;
         this.refreshTokenTimeUnit = refreshTokenTimeUnit;
         this.accessTokenTtl = accessTokenTtl;
@@ -120,6 +93,10 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
 
     public TimeUnit getAccessTokenTimeUnit() {
         return accessTokenTimeUnit;
+    }
+
+    protected String generateTokenId() {
+        return UUID.randomUUID().toString();
     }
 
     @Override
@@ -213,7 +190,7 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
 
         attributes = attributes == null ? new HashMap<>() : new HashMap<>(attributes);
 
-        String tokenId = UUIDUtils.generateV7Id();
+        String tokenId = generateTokenId();
 
         String principalJson = serializer.serialize(principal);
 

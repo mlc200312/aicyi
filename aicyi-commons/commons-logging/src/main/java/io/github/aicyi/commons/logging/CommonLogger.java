@@ -1,5 +1,7 @@
 package io.github.aicyi.commons.logging;
 
+import io.github.aicyi.commons.lang.text.StringFormat;
+
 /**
  * @author Mr.Min
  * @description 通用日志实现
@@ -26,6 +28,6 @@ public class CommonLogger extends BaseLogger {
 
     @Override
     protected String formatMessage(String format, Object... args) {
-        return StringFormat.format1(format, args);
+        return StringFormat.format(format, args);
     }
 }

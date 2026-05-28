@@ -1,7 +1,5 @@
 package io.github.aicyi.commons.lang.model;
 
-import io.github.aicyi.commons.lang.DtoBean;
-
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  * @description
  * @date 2026/5/11
  **/
-public class TokenCreateRequest<P> implements DtoBean {
+public class TokenCreateRequest<P> extends BaseBean {
 
     /**
      * 主体信息

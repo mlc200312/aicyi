@@ -26,23 +26,21 @@ public abstract class BaseLogger implements Logger {
         return org.slf4j.LoggerFactory.getLogger(this.name);
     }
 
-    /**
-     * 拼接日志
-     *
-     * @param obj
-     * @return
-     */
     protected abstract String formatMessage(Object obj);
 
-    /**
-     * 拼接日志
-     *
-     * @param format
-     * @param args
-     * @return
-     */
     protected abstract String formatMessage(String format, Object... args);
 
+    private boolean isInfoEnabled() {
+        return getLogger().isInfoEnabled();
+    }
+
+    private boolean isWarnEnabled() {
+        return getLogger().isWarnEnabled();
+    }
+
+    private boolean isErrorEnabled() {
+        return getLogger().isErrorEnabled();
+    }
 
     @Override
     public boolean isDebugEnabled() {
@@ -57,7 +55,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void trace(Object obj) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isTraceEnabled()) {
+        if (isTraceEnabled()) {
             logger.trace(formatMessage(obj));
         }
     }
@@ -65,7 +63,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void trace(String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isTraceEnabled()) {
+        if (isTraceEnabled()) {
             logger.trace(formatMessage(format, args));
         }
     }
@@ -73,7 +71,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void trace(Throwable cause, String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isTraceEnabled()) {
+        if (isTraceEnabled()) {
             logger.trace(formatMessage(format, args), cause);
         }
     }
@@ -81,7 +79,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void debug(Object obj) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isDebugEnabled()) {
+        if (isDebugEnabled()) {
             logger.debug(formatMessage(obj));
         }
     }
@@ -89,7 +87,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void debug(String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isDebugEnabled()) {
+        if (isDebugEnabled()) {
             logger.debug(formatMessage(format, args));
         }
     }
@@ -97,7 +95,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void debug(Throwable cause, String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isDebugEnabled()) {
+        if (isDebugEnabled()) {
             logger.debug(formatMessage(format, args), cause);
         }
     }
@@ -105,7 +103,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void info(Object obj) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isInfoEnabled()) {
+        if (isInfoEnabled()) {
             logger.info(formatMessage(obj));
         }
     }
@@ -113,7 +111,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void info(String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isInfoEnabled()) {
+        if (isInfoEnabled()) {
             logger.info(formatMessage(format, args));
         }
     }
@@ -121,7 +119,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void info(Throwable cause, String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isInfoEnabled()) {
+        if (isInfoEnabled()) {
             logger.info(formatMessage(format, args), cause);
         }
     }
@@ -129,7 +127,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void warn(Object obj) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isWarnEnabled()) {
+        if (isWarnEnabled()) {
             logger.warn(formatMessage(obj));
         }
     }
@@ -137,7 +135,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void warn(String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isWarnEnabled()) {
+        if (isWarnEnabled()) {
             logger.warn(formatMessage(format, args));
         }
     }
@@ -145,7 +143,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void warn(Throwable cause, String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isWarnEnabled()) {
+        if (isWarnEnabled()) {
             logger.warn(formatMessage(format, args), cause);
         }
     }
@@ -153,7 +151,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void error(Object obj) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isErrorEnabled()) {
+        if (isErrorEnabled()) {
             logger.error(formatMessage(obj));
         }
     }
@@ -161,7 +159,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void error(String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isErrorEnabled()) {
+        if (isErrorEnabled()) {
             logger.error(formatMessage(format, args));
         }
     }
@@ -169,7 +167,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void error(Throwable cause, String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (logger.isErrorEnabled()) {
+        if (isErrorEnabled()) {
             logger.error(formatMessage(format, args), cause);
         }
     }

@@ -1,13 +1,11 @@
 package io.github.aicyi.midware.redis.token;
 
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
-import io.github.aicyi.commons.security.token.AbstractAuthenticationTokenService;
-import io.github.aicyi.commons.security.token.TokenSession;
-import io.github.aicyi.commons.lang.exception.TokenInvalidException;
+import io.github.aicyi.commons.core.token.AbstractAuthenticationTokenService;
+import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
+import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.commons.util.serializer.JsonCodecPrincipalSerializer;
 import org.springframework.data.redis.core.StringRedisTemplate;
-
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mr.Min
@@ -26,14 +24,21 @@ public class JwtRefreshAuthenticationTokenService<P extends IJWTInfo> extends Ab
                         config.isMultiTokenAllowed(),
                         config.getMultiTokenCount()
                 ),
-                principalType,
-                config.getSecretKey(),
-                config.getIssuer(),
-                config.getIssuer(),
+                new JwtTokenProvider(
+                        config.getSecretKey(),
+                        config.getIssuer(),
+                        config.getSubject()
+                ),
+                new JsonCodecPrincipalSerializer<>(principalType),
                 config.getRefreshTokenTtl(),
                 config.getRefreshTokenTimeUnit(),
                 config.getAccessTokenTtl(),
                 config.getAccessTokenTimeUnit()
         );
+    }
+
+    @Override
+    protected String generateTokenId() {
+        return UUIDUtils.generateV7Id();
     }
 }

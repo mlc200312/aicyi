@@ -5,7 +5,7 @@ package io.github.aicyi.commons.lang.model;
  * @description Redis缓存包装类
  * @date 2026/5/22
  **/
-public class CacheWrapper<T> {
+public class CacheWrapper<T> extends BaseBean {
     private boolean nullValue;
     private T data;
 

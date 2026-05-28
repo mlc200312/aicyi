@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  * @description 发送结果 - 使用建造者模式优化
  * @date 2025/8/25
  **/
-public class MessageSendResult {
+public class MessageSendResult extends BaseBean {
     private final boolean success;
     private final String messageId;
     private final String channelMessageId;

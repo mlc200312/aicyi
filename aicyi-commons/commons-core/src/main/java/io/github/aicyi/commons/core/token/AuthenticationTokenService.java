@@ -1,4 +1,6 @@
-package io.github.aicyi.commons.security.token;
+package io.github.aicyi.commons.core.token;
+
+import io.github.aicyi.commons.lang.model.TokenPair;
 
 import java.util.Map;
 import java.util.Set;

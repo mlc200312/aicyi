@@ -1,7 +1,7 @@
 package io.github.aicyi.example.web.vo;
 
 import io.github.aicyi.commons.lang.VoBean;
-import io.github.aicyi.commons.security.token.TokenPair;
+import io.github.aicyi.commons.lang.model.TokenPair;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

@@ -5,14 +5,14 @@ package io.github.aicyi.commons.lang;
  * @description 枚举接口
  * @date 10:24
  **/
-public interface IEnumType<C> {
+public interface IEnumType<K> {
 
     /**
      * 枚举代码
      *
      * @return
      */
-    C getCode();
+    K getCode();
 
     /**
      * 描述

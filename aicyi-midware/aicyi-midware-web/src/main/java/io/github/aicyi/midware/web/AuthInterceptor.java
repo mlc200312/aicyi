@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.web;
 
-import io.github.aicyi.commons.security.token.AuthenticationTokenService;
+import io.github.aicyi.commons.core.token.AuthenticationTokenService;
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;

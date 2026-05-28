@@ -5,12 +5,11 @@ package io.github.aicyi.commons.lang;
  * @description 统一结果接口
  * @date 10:39
  **/
-public interface IResult<C, D> extends ICodeType<C> {
+public interface IResult<K, V> {
 
-    /**
-     * 数据
-     *
-     * @return
-     */
-    D getData();
+    K getCode();
+
+    String getMessage();
+
+    V getData();
 }
