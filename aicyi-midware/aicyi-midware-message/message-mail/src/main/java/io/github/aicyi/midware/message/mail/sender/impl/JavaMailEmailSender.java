@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.message.mail.sender;
+package io.github.aicyi.midware.message.mail.sender.impl;
 
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.midware.message.core.model.MessageFormat;
@@ -8,8 +8,9 @@ import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.mail.model.MailAttachment;
-import io.github.aicyi.midware.message.mail.model.MailConfig;
+import io.github.aicyi.midware.message.mail.config.MailConfig;
 import io.github.aicyi.midware.message.mail.model.MailMessage;
+import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.commons.core.template.TemplateEngine;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -22,21 +23,21 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Mr.Min
- * @description 邮件发送服务实现
+ * @description 基于 JavaMail 的邮件发送服务实现
  * @date 2025/8/25
  **/
-public class DefaultJavaEmailSender extends AbstractTemplateSender<MailMessage> implements EmailSender {
+public class JavaMailEmailSender extends AbstractTemplateSender<MailMessage> implements EmailSender {
 
     private final MailConfig mailConfig;
     private final Session session;
 
-    public DefaultJavaEmailSender(TemplateProvider templateProvider, TemplateEngineFactory factory, MailConfig mailConfig) {
+    public JavaMailEmailSender(TemplateProvider templateProvider, TemplateEngineFactory factory, MailConfig mailConfig) {
         super(templateProvider, factory);
         this.mailConfig = mailConfig;
         this.session = createSession();
     }
 
-    public DefaultJavaEmailSender(MailConfig mailConfig) {
+    public JavaMailEmailSender(MailConfig mailConfig) {
         this(templateCode -> null, null, mailConfig);
     }
 

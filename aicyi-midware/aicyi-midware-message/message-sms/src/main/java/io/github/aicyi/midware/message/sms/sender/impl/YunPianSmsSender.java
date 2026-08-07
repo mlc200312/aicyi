@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.message.sms.sender;
+package io.github.aicyi.midware.message.sms.sender.impl;
 
 import com.yunpian.sdk.YunpianClient;
 import com.yunpian.sdk.model.Result;

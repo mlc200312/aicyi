@@ -4,11 +4,11 @@ import io.github.aicyi.commons.core.template.DefualtTemplateEngine;
 import io.github.aicyi.commons.lang.type.TemplateEngineType;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
-import io.github.aicyi.midware.message.mail.sender.DefaultJavaEmailSender;
+import io.github.aicyi.midware.message.mail.config.MailConfig;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
-import io.github.aicyi.midware.message.mail.model.MailConfig;
-import io.github.aicyi.midware.message.mail.template.FreeMarkerTemplateEngine;
-import io.github.aicyi.midware.message.mail.template.ThymeleafTemplateEngine;
+import io.github.aicyi.midware.message.mail.sender.impl.JavaMailEmailSender;
+import io.github.aicyi.midware.message.template.engine.FreeMarkerTemplateEngine;
+import io.github.aicyi.midware.message.template.engine.ThymeleafTemplateEngine;
 import io.github.aicyi.midware.message.properties.MessageProperties;
 import io.github.aicyi.midware.message.template.factory.DefaultTemplateEngineFactory;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public class EmailAutoConfiguration {
         // 创建模板引擎工厂
         TemplateEngineFactory factory = getTemplateEngineFactory();
 
-        return new DefaultJavaEmailSender(templateProvider, factory, mailConfig);
+        return new JavaMailEmailSender(templateProvider, factory, mailConfig);
     }
 
     // 创建模板引擎

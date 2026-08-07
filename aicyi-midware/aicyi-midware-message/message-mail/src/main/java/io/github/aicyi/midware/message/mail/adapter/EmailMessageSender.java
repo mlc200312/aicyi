@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.message.mail.sender;
+package io.github.aicyi.midware.message.mail.adapter;
 
 
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
@@ -7,10 +7,11 @@ import io.github.aicyi.commons.lang.type.MessageType;
 import io.github.aicyi.commons.lang.model.MessageSendResult;
 import io.github.aicyi.midware.message.core.sender.AbstractMessageSender;
 import io.github.aicyi.midware.message.mail.model.MailMessage;
+import io.github.aicyi.midware.message.mail.sender.EmailSender;
 
 /**
  * @author Mr.Min
- * @description Email发送器实现
+ * @description Email消息发送器适配器，对接通用消息框架
  * @date 2025/8/25
  **/
 public class EmailMessageSender extends AbstractMessageSender {

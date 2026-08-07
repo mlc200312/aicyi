@@ -73,6 +73,21 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- FreeMarker 模板引擎 -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
         <!--其中spring-boot-configuration-processor的作用是编译时生成spring-configuration-metadata.json，此文件主要给IDE使用。如当配置此jar相关配置属性在application.yml，你可以用ctlr+鼠标左键点击属性名，IDE会跳转到你配置此属性的类中。-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

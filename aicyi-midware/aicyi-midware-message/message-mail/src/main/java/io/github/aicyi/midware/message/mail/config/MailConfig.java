@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.message.mail.model;
+package io.github.aicyi.midware.message.mail.config;
 
 import io.github.aicyi.commons.lang.model.BaseBean;
 import io.github.aicyi.commons.util.Assert;

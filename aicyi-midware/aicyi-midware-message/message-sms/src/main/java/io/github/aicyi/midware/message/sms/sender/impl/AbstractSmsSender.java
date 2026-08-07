@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.message.sms.sender;
+package io.github.aicyi.midware.message.sms.sender.impl;
 
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.commons.lang.type.TemplateEngineType;
@@ -8,6 +8,7 @@ import io.github.aicyi.commons.core.template.TemplateEngine;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.sms.model.SmsMessage;
+import io.github.aicyi.midware.message.sms.sender.SmsSender;
 
 import javax.annotation.PreDestroy;
 import java.util.List;

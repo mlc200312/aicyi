@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.message.mail.template;
+package io.github.aicyi.midware.message.template.engine;
 
 import io.github.aicyi.commons.core.template.TemplateEngine;
 import org.thymeleaf.context.Context;
