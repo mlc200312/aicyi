@@ -18,6 +18,15 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>aicyi-commons-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>aicyi-commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-message-core</artifactId>
         </dependency>

@@ -26,7 +26,7 @@ public class SpringAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(IdUtils.class)
+    @ConditionalOnMissingBean(IdGenerator.class)
     public IdUtils getIdUtils(IdGenerator idGenerator) {
         return new IdUtils(idGenerator);
     }

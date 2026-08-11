@@ -15,7 +15,7 @@ public class IdUtils implements InitializingBean {
 
     private static IdUtils INSTANCE;
 
-    private IdGenerator idGenerator;
+    private final IdGenerator idGenerator;
 
     public IdUtils(IdGenerator idGenerator) {
         this.idGenerator = idGenerator;

@@ -13,7 +13,7 @@ import io.github.aicyi.commons.lang.model.WorkerIdLease;
  **/
 public class RedisCoordinatedSnowflakeIdGenerator implements IdGenerator {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final WorkerIdManager workerIdManager;
     private final int datacenterId;

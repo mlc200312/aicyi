@@ -28,31 +28,33 @@
         <module>aicyi-midware-web</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>aicyi-commons-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>aicyi-commons-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>aicyi-commons-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>aicyi-commons-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>aicyi-commons-util</artifactId>
-        </dependency>
-    </dependencies>
-
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-core</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-lang</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-logging</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-security</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-util</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>io.github.aicyi.midware</groupId>
                 <artifactId>aicyi-midware-db-commons</artifactId>
