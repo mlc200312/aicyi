@@ -20,7 +20,7 @@
 
         <slf4j.version>1.7.36</slf4j.version>
         <hutool.version>5.8.47</hutool.version>
-        <jackson.version>2.13.5</jackson.version>
+        <jackson.version>2.21.4</jackson.version>
         <redis.version>7.2.4</redis.version>
         <org.quartz.version>2.3.2</org.quartz.version>
     </properties>
@@ -151,7 +151,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.12.0</version>
+                <version>2.14.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-beanutils</groupId>
@@ -166,7 +166,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.5</version>
+                <version>3.18.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -265,6 +265,16 @@
                 <version>3.5.4</version>
             </dependency>
             <!-- google end -->
+
+            <!-- jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- jackson end -->
 
             <!-- jwt -->
             <dependency>
