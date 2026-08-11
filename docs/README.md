@@ -36,11 +36,11 @@ aicyi
 ├── aicyi-base-dependencies          # BOM：统一版本管理
 ├── aicyi-base-starter-parent        # Parent POM：插件 + 公共依赖管理
 ├── aicyi-commons                    # 公共基础库
-│   ├── commons-core                 # 核心接口：ID、缓存、锁、消息、Token
-│   ├── commons-lang                 # 语言基础：异常、枚举、返回码
-│   ├── commons-logging              # 日志门面
-│   ├── commons-security             # 安全：加解密、JWT
-│   └── commons-util                 # 工具：JSON、Snowflake、Excel、二维码
+│   ├── aicyi-commons-core           # 核心接口：ID、缓存、锁、消息、Token
+│   ├── aicyi-commons-lang           # 语言基础：异常、枚举、返回码
+│   ├── aicyi-commons-logging        # 日志门面
+│   ├── aicyi-commons-security       # 安全：加解密、JWT
+│   └── aicyi-commons-util           # 工具：JSON、Snowflake、Excel、二维码
 ├── aicyi-midware                    # 中间件实现
 │   ├── aicyi-midware-db             # 数据库：MyBatis 日志、TypeHandler、分页
 │   ├── aicyi-midware-message        # 消息：邮件/SMS/MQ 统一发送
@@ -82,6 +82,8 @@ aicyi
 - **commons 层**：定义纯 Java 接口，不依赖 Spring，保证可移植性
 - **midware 层**：基于 Spring Boot 生态提供具体实现，通过 `spring.factories` 自动装配
 - **example 层**：演示如何集成使用，采用 DDD 分层结构
+
+目录结构的详细评估和后续迁移建议见 [项目目录结构评估](./architecture.md)。
 
 ## 快速开始
 
