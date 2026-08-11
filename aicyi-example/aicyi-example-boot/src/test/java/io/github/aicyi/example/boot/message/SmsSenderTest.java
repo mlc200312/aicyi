@@ -4,7 +4,7 @@ import io.github.aicyi.commons.util.Maps;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.midware.message.sms.model.SmsMessage;
 import io.github.aicyi.midware.message.sms.sender.SmsSender;
-import io.github.aicyi.test.util.BaseLoggerTest;
+import io.github.aicyi.example.fixture.util.BaseLoggerTest;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;

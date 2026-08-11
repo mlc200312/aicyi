@@ -12,7 +12,7 @@ import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.commons.util.serializer.CacheWrapperPrincipalSerializer;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
-import io.github.aicyi.test.util.BaseLoggerTest;
+import io.github.aicyi.example.fixture.util.BaseLoggerTest;
 import org.apache.commons.collections4.MapUtils;
 import org.junit.Before;
 import org.junit.Test;

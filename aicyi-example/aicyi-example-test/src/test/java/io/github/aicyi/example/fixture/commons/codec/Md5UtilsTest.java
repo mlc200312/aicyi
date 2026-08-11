@@ -1,0 +1,30 @@
+package io.github.aicyi.example.fixture.commons.codec;
+
+import io.github.aicyi.commons.security.Md5Utils;
+import io.github.aicyi.commons.security.MessageDigestUtils;
+import io.github.aicyi.example.fixture.util.BaseLoggerTest;
+import org.junit.Test;
+
+/**
+ * @author Mr.Min
+ * @description 业务描述
+ * @date 16:18
+ **/
+public class Md5UtilsTest extends BaseLoggerTest {
+
+    @Override
+    public void beforeTest() {
+
+    }
+
+    @Test
+    public void test() {
+        // 测试数据
+        String data = "test 123";
+        String md5 = Md5Utils.md5(data);
+        String generateMd5 = MessageDigestUtils.generateMd5(data);
+        assert md5.equals(generateMd5);
+
+        log(md5);
+    }
+}

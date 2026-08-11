@@ -9,7 +9,7 @@ import io.github.aicyi.example.domain.UserBean;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.JsonCodecRedisSerializer;
 import io.github.aicyi.midware.redis.SerializerType;
-import io.github.aicyi.test.util.DataSource;
+import io.github.aicyi.example.fixture.util.DataSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

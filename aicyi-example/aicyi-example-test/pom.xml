@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.example</groupId>
-            <artifactId>aicyi-example-web</artifactId>
+            <artifactId>aicyi-example-fixture</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

@@ -17,10 +17,10 @@
     </parent>
 
     <modules>
-        <module>message-core</module>
-        <module>message-mail</module>
-        <module>message-mq</module>
-        <module>message-sms</module>
-        <module>message-spring-boot-starter</module>
+        <module>aicyi-midware-message-core</module>
+        <module>aicyi-midware-message-mail</module>
+        <module>aicyi-midware-message-mq</module>
+        <module>aicyi-midware-message-sms</module>
+        <module>aicyi-midware-message-spring-boot-starter</module>
     </modules>
 </project>

@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>aicyi-example-domain</artifactId>
+    <artifactId>aicyi-example-fixture</artifactId>
 
     <packaging>jar</packaging>
-    <name>aicyi example domain</name>
-    <description>aicyi example domain</description>
+    <name>aicyi example fixture</name>
+    <description>aicyi example fixture</description>
 
     <parent>
         <groupId>io.github.aicyi.example</groupId>
@@ -18,14 +18,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-message-mail</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-message-sms</artifactId>
+            <groupId>io.github.aicyi.example</groupId>
+            <artifactId>aicyi-example-web</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

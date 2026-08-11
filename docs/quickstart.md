@@ -160,7 +160,7 @@ curl http://localhost/user/info \
     <!-- 消息系统（可选） -->
     <dependency>
         <groupId>io.github.aicyi.midware</groupId>
-        <artifactId>message-spring-boot-starter</artifactId>
+        <artifactId>aicyi-midware-message-spring-boot-starter</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </dependency>
 </dependencies>
