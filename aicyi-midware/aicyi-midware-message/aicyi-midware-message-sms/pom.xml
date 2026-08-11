@@ -35,13 +35,6 @@
             <artifactId>aicyi-midware-message-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-message-mail</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- 当前最新稳定版 (仍为9.x系列) -->
         <dependency>
             <groupId>com.twilio.sdk</groupId>

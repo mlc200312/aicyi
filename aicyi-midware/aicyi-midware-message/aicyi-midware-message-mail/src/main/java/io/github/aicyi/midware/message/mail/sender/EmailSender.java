@@ -1,6 +1,7 @@
 package io.github.aicyi.midware.message.mail.sender;
 
 import io.github.aicyi.commons.core.template.TemplateSender;
+import io.github.aicyi.midware.message.core.sender.TextMessageSender;
 import io.github.aicyi.midware.message.mail.model.MailAttachment;
 import io.github.aicyi.midware.message.mail.model.MailMessage;
 
@@ -12,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
  * @description 邮件发送服务
  * @date 2025/8/25
  **/
-public interface EmailSender extends TemplateSender<MailMessage> {
+public interface EmailSender extends TemplateSender<MailMessage>, TextMessageSender {
     /**
      * 发送邮件（完整参数）
      *

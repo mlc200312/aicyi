@@ -1,8 +1,8 @@
 package io.github.aicyi.midware.message.sms.sender.impl;
 
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
+import io.github.aicyi.midware.message.core.sender.TextMessageSender;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
-import io.github.aicyi.midware.message.mail.sender.EmailSender;
 import io.github.aicyi.midware.message.sms.model.Carrier;
 
 import java.util.*;
@@ -14,11 +14,11 @@ import java.util.*;
  **/
 public class DefaultSmsSender extends AbstractSmsSender {
 
-    private EmailSender emailSender;
+    private final TextMessageSender textMessageSender;
 
-    public DefaultSmsSender(TemplateProvider templateProvider, TemplateEngineFactory factory, EmailSender emailSender) {
+    public DefaultSmsSender(TemplateProvider templateProvider, TemplateEngineFactory factory, TextMessageSender textMessageSender) {
         super(templateProvider, factory);
-        this.emailSender = emailSender;
+        this.textMessageSender = textMessageSender;
     }
 
     @Override
@@ -28,6 +28,6 @@ public class DefaultSmsSender extends AbstractSmsSender {
         for (Carrier carrier : values) {
             phoneNumbers.add(phoneNumber + carrier.getGatewayDomain());
         }
-        return emailSender.sendText(phoneNumbers, "Notification", messageContent);
+        return textMessageSender.sendText(phoneNumbers, "Notification", messageContent);
     }
 }
