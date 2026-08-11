@@ -6,7 +6,6 @@
 
     <groupId>io.github.aicyi.commons</groupId>
     <artifactId>aicyi-commons</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>aicyi commons</name>
