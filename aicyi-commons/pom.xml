@@ -19,10 +19,10 @@
     </parent>
 
     <modules>
-        <module>commons-core</module>
-        <module>commons-lang</module>
-        <module>commons-logging</module>
-        <module>commons-security</module>
-        <module>commons-util</module>
+        <module>aicyi-commons-core</module>
+        <module>aicyi-commons-lang</module>
+        <module>aicyi-commons-logging</module>
+        <module>aicyi-commons-security</module>
+        <module>aicyi-commons-util</module>
     </modules>
 </project>

@@ -75,8 +75,8 @@ public class JwtTokenProvider implements TokenProvider<String> {
         this.issuer = issuer;
         this.subject = subject;
 
-        this.jwtParser = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
+        this.jwtParser = Jwts.parser()
+                .verifyWith(secretKey)
                 .requireIssuer(issuer)
                 .requireSubject(subject)
                 .build();

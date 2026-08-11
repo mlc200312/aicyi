@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>commons-security</artifactId>
+    <artifactId>aicyi-commons-security</artifactId>
 
     <packaging>jar</packaging>
     <name>commons security</name>
@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-util</artifactId>
+            <artifactId>aicyi-commons-util</artifactId>
         </dependency>
 
         <dependency>

@@ -31,23 +31,23 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-core</artifactId>
+            <artifactId>aicyi-commons-core</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-lang</artifactId>
+            <artifactId>aicyi-commons-lang</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-logging</artifactId>
+            <artifactId>aicyi-commons-logging</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-security</artifactId>
+            <artifactId>aicyi-commons-security</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-util</artifactId>
+            <artifactId>aicyi-commons-util</artifactId>
         </dependency>
     </dependencies>
 

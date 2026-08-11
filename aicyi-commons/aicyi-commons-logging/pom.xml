@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>commons-logging</artifactId>
+    <artifactId>aicyi-commons-logging</artifactId>
 
     <packaging>jar</packaging>
     <name>commons logging</name>
@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-core</artifactId>
+            <artifactId>aicyi-commons-core</artifactId>
         </dependency>
 
         <dependency>

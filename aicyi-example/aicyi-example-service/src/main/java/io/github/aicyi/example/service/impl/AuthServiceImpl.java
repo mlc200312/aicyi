@@ -1,11 +1,11 @@
 package io.github.aicyi.example.service.impl;
 
 import io.github.aicyi.commons.core.BeanMapper;
-import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.core.token.AuthenticationTokenService;
 import io.github.aicyi.commons.lang.model.TokenPair;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
+import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.example.domain.*;
 import io.github.aicyi.example.domain.entity.base.User;

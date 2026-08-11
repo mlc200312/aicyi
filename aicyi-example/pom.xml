@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>commons-core</artifactId>
+            <artifactId>aicyi-commons-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
