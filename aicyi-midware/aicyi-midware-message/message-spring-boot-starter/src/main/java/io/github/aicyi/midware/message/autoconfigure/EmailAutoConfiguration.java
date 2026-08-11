@@ -72,7 +72,7 @@ public class EmailAutoConfiguration {
     // 获取邮件配置
     private static @NotNull MailConfig getMailConfig(MessageProperties messageProperties) {
         MessageProperties.EmailProperties emailProperties = messageProperties.getEmail();
-        MailConfig mailConfig = MailConfig.builder()
+        return MailConfig.builder()
                 .host(emailProperties.getHost())
                 .port(emailProperties.getPort())
                 .username(emailProperties.getUsername())
@@ -80,6 +80,5 @@ public class EmailAutoConfiguration {
                 .fromAddress(emailProperties.getUsername())
                 .fromName(emailProperties.getFromName())
                 .build();
-        return mailConfig;
     }
 }

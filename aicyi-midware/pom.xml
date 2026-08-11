@@ -6,7 +6,6 @@
 
     <groupId>io.github.aicyi.midware</groupId>
     <artifactId>aicyi-midware</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>aicyi midware</name>

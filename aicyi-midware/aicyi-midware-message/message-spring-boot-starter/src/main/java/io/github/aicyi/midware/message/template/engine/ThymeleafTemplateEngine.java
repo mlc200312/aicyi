@@ -13,7 +13,7 @@ import java.util.Map;
 public class ThymeleafTemplateEngine implements TemplateEngine {
 
     //模板引擎
-    private org.thymeleaf.TemplateEngine templateEngine;
+    private final org.thymeleaf.TemplateEngine templateEngine;
 
     public ThymeleafTemplateEngine(org.thymeleaf.TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
