@@ -7,8 +7,8 @@
     <artifactId>aicyi-midware-message-spring-boot-starter</artifactId>
 
     <packaging>jar</packaging>
-    <name>message spring boot starter</name>
-    <description>message spring boot starter</description>
+    <name>aicyi midware message spring boot starter</name>
+    <description>aicyi midware message spring boot starter</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>

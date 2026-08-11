@@ -7,8 +7,8 @@
     <artifactId>aicyi-midware-message-mq</artifactId>
 
     <packaging>jar</packaging>
-    <name>message mq</name>
-    <description>message mq</description>
+    <name>aicyi midware message mq</name>
+    <description>aicyi midware message mq</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>

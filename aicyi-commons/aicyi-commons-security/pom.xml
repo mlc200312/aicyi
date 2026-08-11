@@ -7,8 +7,8 @@
     <artifactId>aicyi-commons-security</artifactId>
 
     <packaging>jar</packaging>
-    <name>commons security</name>
-    <description>commons security</description>
+    <name>aicyi commons security</name>
+    <description>aicyi commons security</description>
 
     <parent>
         <groupId>io.github.aicyi.commons</groupId>

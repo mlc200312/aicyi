@@ -7,8 +7,8 @@
     <artifactId>aicyi-commons-lang</artifactId>
 
     <packaging>jar</packaging>
-    <name>commons lang</name>
-    <description>commons lang</description>
+    <name>aicyi commons lang</name>
+    <description>aicyi commons lang</description>
 
     <parent>
         <groupId>io.github.aicyi.commons</groupId>

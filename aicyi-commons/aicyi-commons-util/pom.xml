@@ -7,8 +7,8 @@
     <artifactId>aicyi-commons-util</artifactId>
 
     <packaging>jar</packaging>
-    <name>commons util</name>
-    <description>commons util</description>
+    <name>aicyi commons util</name>
+    <description>aicyi commons util</description>
 
     <parent>
         <groupId>io.github.aicyi.commons</groupId>

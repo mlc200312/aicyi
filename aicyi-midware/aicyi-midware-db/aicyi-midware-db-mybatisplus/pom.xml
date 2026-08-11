@@ -7,8 +7,8 @@
     <artifactId>aicyi-midware-db-mybatisplus</artifactId>
 
     <packaging>jar</packaging>
-    <name>db mybatisplus</name>
-    <description>db mybatisplus</description>
+    <name>aicyi midware db mybatisplus</name>
+    <description>aicyi midware db mybatisplus</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>

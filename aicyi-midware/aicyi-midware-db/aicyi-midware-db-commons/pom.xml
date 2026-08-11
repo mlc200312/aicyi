@@ -7,8 +7,8 @@
     <artifactId>aicyi-midware-db-commons</artifactId>
 
     <packaging>jar</packaging>
-    <name>db commons</name>
-    <description>db commons</description>
+    <name>aicyi midware db commons</name>
+    <description>aicyi midware db commons</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>

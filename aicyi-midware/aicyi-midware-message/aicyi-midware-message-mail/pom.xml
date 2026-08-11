@@ -7,8 +7,8 @@
     <artifactId>aicyi-midware-message-mail</artifactId>
 
     <packaging>jar</packaging>
-    <name>message mail</name>
-    <description>message mail</description>
+    <name>aicyi midware message mail</name>
+    <description>aicyi midware message mail</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>

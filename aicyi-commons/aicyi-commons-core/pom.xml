@@ -7,8 +7,8 @@
     <artifactId>aicyi-commons-core</artifactId>
 
     <packaging>jar</packaging>
-    <name>commons core</name>
-    <description>commons core</description>
+    <name>aicyi commons core</name>
+    <description>aicyi commons core</description>
 
     <parent>
         <groupId>io.github.aicyi.commons</groupId>

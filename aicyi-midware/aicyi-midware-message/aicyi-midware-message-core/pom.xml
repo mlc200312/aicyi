@@ -7,8 +7,8 @@
     <artifactId>aicyi-midware-message-core</artifactId>
 
     <packaging>jar</packaging>
-    <name>message core</name>
-    <description>message core</description>
+    <name>aicyi midware message core</name>
+    <description>aicyi midware message core</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>
