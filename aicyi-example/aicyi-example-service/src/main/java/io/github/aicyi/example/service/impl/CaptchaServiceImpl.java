@@ -9,7 +9,7 @@ import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.CaptchaUtils;
 import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.example.domain.SendCaptchaParam;
-import io.github.aicyi.example.domain.constants.Constants;
+import io.github.aicyi.example.service.util.Constants;
 import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.domain.type.CaptchaType;
 import io.github.aicyi.example.domain.type.ExampleResultCode;

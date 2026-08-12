@@ -82,7 +82,7 @@ public class JwtRefreshAuthenticationTokenServiceTest extends BaseLoggerTest {
 
         UserInfo userInfo = UserInfo.of(user, UUIDUtils.generateV7Id());
 
-        Map<String, Object> attributes = Maps.of("test", "test").build();
+        Map<String, Object> attributes = Maps.ofStr("test", "test").build();
 
         TokenPair token = authenticationTokenService.createToken(userInfo, attributes);
 
@@ -126,7 +126,7 @@ public class JwtRefreshAuthenticationTokenServiceTest extends BaseLoggerTest {
 
         for (int i = 0; i < 3; i++) {
 
-            TokenPair token = authenticationTokenService.createToken(userInfo, Maps.of("deviceId", "设备：" + i).build());
+            TokenPair token = authenticationTokenService.createToken(userInfo, Maps.ofStr("deviceId", "设备：" + i).build());
 
             Map<String, Object> attributes = authenticationTokenService.getAttributes(token.getAccessToken());
 

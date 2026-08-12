@@ -48,7 +48,7 @@ public class RedisTokenServiceImplTest extends BaseLoggerTest {
 
         request = new TokenCreateRequest<>();
         request.setPrincipal(jwtInfo);
-        request.setAttributes(Maps.of("phone", RandomGenerator.generatePhoneNum()).build());
+        request.setAttributes(Maps.ofStr("phone", RandomGenerator.generatePhoneNum()).build());
         request.setTtl(1);
         request.setTimeUnit(TimeUnit.HOURS);
 

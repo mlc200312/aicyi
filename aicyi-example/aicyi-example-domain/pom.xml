@@ -17,19 +17,5 @@
     </parent>
 
     <dependencies>
-        <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>aicyi-commons-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-message-mail</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-message-sms</artifactId>
-        </dependency>
     </dependencies>
 </project>

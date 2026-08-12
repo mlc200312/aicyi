@@ -63,9 +63,9 @@ public class ExcelUtilsTest extends BaseLoggerTest {
 
     @Test
     public void test3() {
-        Map<Integer, Class<?>> classMap = Maps.of(0, BankExcel.class).and(1, BankExcel.class).and(2, BankExcel.class).build();
+        Map<Integer, Class<?>> classMap = Maps.<Integer, Class<?>>of(0, BankExcel.class).and(1, BankExcel.class).and(2, BankExcel.class).build();
         Map<Integer, List<?>> map = ExcelUtils.readMultiSheetExcel("src/test/resources/test/bank_insert.xlsx", classMap);
-        assert map != null && map.keySet().size() == 3;
+        assert map.size() == 3;
 
         log(JsonUtils.getInstance().toJson(map));
     }

@@ -19,24 +19,25 @@ public class UserSessionUtils implements InitializingBean {
 
     private static UserSessionUtils INSTANCE;
 
-    @Autowired(required = false)
     private Cache<String, UserInfo> userInfoRedisCache;
-    @Autowired(required = false)
     private UserService userService;
+
+    public UserSessionUtils(Cache<String, UserInfo> userInfoRedisCache, UserService userService) {
+        this.userInfoRedisCache = userInfoRedisCache;
+        this.userService = userService;
+    }
 
 
     public static UserInfo getUserInfo() {
 
         String userId = CurrentContextHolder.getUserId();
 
-        UserInfo userInfo = INSTANCE.userInfoRedisCache.get(userId, key -> {
+        return INSTANCE.userInfoRedisCache.get(userId, key -> {
 
             User user = INSTANCE.userService.getById(Long.valueOf(userId));
 
             return UserInfo.of(user, null);
         });
-
-        return userInfo;
     }
 
     @Override

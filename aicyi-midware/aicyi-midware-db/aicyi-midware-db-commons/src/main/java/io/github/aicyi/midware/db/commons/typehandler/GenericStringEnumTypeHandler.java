@@ -22,8 +22,8 @@ public class GenericStringEnumTypeHandler<E extends Enum<E> & StringEnumType> ex
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Class<E> type;
-    private Map<String, E> enumMap = new HashMap<>();
+    private final Class<E> type;
+    private final Map<String, E> enumMap = new HashMap<>();
 
     public GenericStringEnumTypeHandler(Class<E> type) {
         if (type == null) {

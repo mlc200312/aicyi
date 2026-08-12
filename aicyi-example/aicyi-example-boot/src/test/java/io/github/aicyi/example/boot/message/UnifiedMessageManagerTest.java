@@ -51,7 +51,8 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
     @Test
     @Override
     public void test() {
-        SmsMessage smsMessage = SmsMessage.of("15910436675", "SMS_REGISTER_CODE", Maps.of("code", "123456").and("expireMinutes", "1000").build());
+        Map<String, Object> map = Maps.ofStr("code", "123456").and("expireMinutes", "1000").build();
+        SmsMessage smsMessage = SmsMessage.of("15910436675", "SMS_REGISTER_CODE", map);
         smsMessage.setBusinessId(UUIDUtils.generateV7Id());
 
         MessageSendResult result = unifiedMessageManager.send(smsMessage);
@@ -64,7 +65,9 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
     public void test2() {
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        SmsMessage smsMessage = SmsMessage.of("15910436675", "SMS_PAYMENT_SUCCESS", Maps.of("orderNo", "123456").and("amount", "1000").build());
+        Map<String, Object> map = Maps.ofStr("orderNo", "123456").and("amount", "1000").build();
+
+        SmsMessage smsMessage = SmsMessage.of("15910436675", "SMS_PAYMENT_SUCCESS", map);
         unifiedMessageManager.sendAsync(smsMessage, new MessageSendCallback() {
             @Override
             public void onComplete(MessageSendResult result) {
@@ -117,13 +120,11 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
         templateParams.put("orderId", IdUtils.generateId() + "");
         templateParams.put("userName", "王五");
         templateParams.put("orderDate", DateTimeUtils.format(LocalDateTime.now(), DateTimeUtils.DATE_PATTERN));
-        Map<String, Object> build1 = Maps.of("", new Object())
-                .and("name", "笔记本电脑")
+        Map<String, Object> build1 = Maps.ofStr("name", "笔记本电脑")
                 .and("price", 5999.00)
                 .and("quantity", 1)
                 .build();
-        Map<String, Object> build2 = Maps.of("", new Object())
-                .and("name", "鼠标")
+        Map<String, Object> build2 = Maps.ofStr("name", "鼠标")
                 .and("price", 199.00)
                 .and("quantity", 2)
                 .build();
@@ -157,7 +158,7 @@ public class UnifiedMessageManagerTest extends BaseLoggerTest {
                 "    }\n" +
                 "}";
 
-        Map<String, Object> templateParams = JsonUtils.getInstance().fromJson(json, Map.class);
+        Map<String, Object> templateParams = JsonUtils.getInstance().fromJsonMap(json, String.class, Object.class);
 
         MailMessage mailMessage = MailMessage.of("15910436675@163.com", "EMAIL_PAYMENT_NOTICE", templateParams);
 

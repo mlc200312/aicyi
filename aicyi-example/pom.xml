@@ -33,7 +33,16 @@
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
             <artifactId>aicyi-commons-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>aicyi-commons-util</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>aicyi-commons-security</artifactId>
         </dependency>
 
         <dependency>

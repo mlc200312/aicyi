@@ -14,14 +14,18 @@ public final class Maps {
     }
 
     public static <K, V> MapBuilder<K, V> of(K key, V value) {
-        return (new HashMapBuilder()).and(key, value);
+        return new HashMapBuilder<K, V>().and(key, value);
+    }
+
+    public static MapBuilder<String, Object> ofStr(String key, Object value) {
+        return new HashMapBuilder<String, Object>().and(key, value);
     }
 
     private static class HashMapBuilder<K, V> implements MapBuilder<K, V> {
         private final Map<K, V> data;
 
         private HashMapBuilder() {
-            this.data = new HashMap();
+            this.data = new HashMap<>();
         }
 
         public MapBuilder<K, V> and(K key, V value) {
@@ -37,6 +41,6 @@ public final class Maps {
     public interface MapBuilder<K, V> {
         MapBuilder<K, V> and(K var1, V var2);
 
-        Map build();
+        Map<K, V> build();
     }
 }

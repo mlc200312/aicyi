@@ -51,14 +51,14 @@ public class MultiRedisTokenServiceImplTest extends BaseLoggerTest {
         request = new TokenCreateRequest<>();
 
         request.setPrincipal(jwtInfo);
-        request.setAttributes(Maps.of("phone", RandomGenerator.generatePhoneNum()).build());
+        request.setAttributes(Maps.ofStr("phone", RandomGenerator.generatePhoneNum()).build());
         request.setTtl(1);
         request.setTimeUnit(TimeUnit.HOURS);
 
         long refreshTtl = 3;
         TimeUnit refreshTimeUnit = TimeUnit.HOURS;
 
-        MultiRedisTokenServiceImpl multiRedisTokenService = new MultiRedisTokenServiceImpl<>(factory.getStringRedisTemplate(), JWTInfo.class, refreshTtl, refreshTimeUnit);
+        MultiRedisTokenServiceImpl<JWTInfo> multiRedisTokenService = new MultiRedisTokenServiceImpl<>(factory.getStringRedisTemplate(), JWTInfo.class, refreshTtl, refreshTimeUnit);
         multiRedisTokenService.setMultiTokenAllowed(true);
         multiRedisTokenService.setMultiTokenCount(3);
 
@@ -72,7 +72,7 @@ public class MultiRedisTokenServiceImplTest extends BaseLoggerTest {
         assert ttl > 0;
 
         boolean isValid = tokenService.isValid(token);
-        assert isValid == true;
+        assert isValid;
 
         String refresh = tokenService.refresh(token);
         JWTInfo principal = tokenService.parsePrincipal(refresh);

@@ -54,10 +54,10 @@ public class SmsMessage extends AbstractMessage<String> implements MessageConten
      */
     public static class Builder {
         private String content;
-        private List<String> phoneNumbers = new ArrayList<>();
+        private final List<String> phoneNumbers = new ArrayList<>();
         private String sign;
         private String templateId;
-        private Map<String, Object> templateParams = new HashMap<>();
+        private final Map<String, Object> templateParams = new HashMap<>();
 
         public Builder() {
             // 空构造

@@ -22,8 +22,8 @@ public class GenericEnumTypeHandler<E extends Enum<E> & EnumType> extends BaseTy
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Class<E> type;
-    private Map<Integer, E> enumMap = new HashMap<>();
+    private final Class<E> type;
+    private final Map<Integer, E> enumMap = new HashMap<>();
 
     public GenericEnumTypeHandler(Class<E> type) {
         if (type == null) {

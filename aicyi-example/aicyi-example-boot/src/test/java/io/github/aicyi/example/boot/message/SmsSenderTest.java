@@ -65,7 +65,7 @@ public class SmsSenderTest extends BaseLoggerTest {
     @Test
     public void test3() {
 
-        Map<String, Object> templateParams = Maps.of("code", "123").and("expireMinutes", "1000").build();
+        Map<String, Object> templateParams = Maps.ofStr("code", "123").and("expireMinutes", "1000").build();
 
         SmsMessage smsMessage = SmsMessage.of(numbers, "SMS_LOGIN_CODE", templateParams);
 

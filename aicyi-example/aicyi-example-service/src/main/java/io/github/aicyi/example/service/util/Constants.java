@@ -1,4 +1,4 @@
-package io.github.aicyi.example.domain.constants;
+package io.github.aicyi.example.service.util;
 
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.util.Maps;
@@ -7,6 +7,7 @@ import io.github.aicyi.midware.message.mail.model.MailMessage;
 import io.github.aicyi.midware.message.sms.model.SmsMessage;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -15,18 +16,8 @@ import java.util.Map;
  **/
 public class Constants {
 
-    public static final Long CAPTCHA_EXPIRE = 3 * 60 * 1000L;
-    public static final Long DEFAULT_CAPTCHA_EXPIRE = 15 * 60 * 1000L;
-
     public static String getCaptchaKey(String uuid) {
         return String.format("captcha:", uuid);
-    }
-
-    public static final Long getCaptchaExpire(CaptchaType captchaType) {
-        switch (captchaType) {
-            default:
-                return DEFAULT_CAPTCHA_EXPIRE;
-        }
     }
 
     public static String getCaptchaKey(CaptchaType captchaType, String uuid) {
@@ -44,9 +35,9 @@ public class Constants {
         }
     }
 
-    public static MessageContent getEmailMessageContent(CaptchaType captchaType, String captcha, String email) {
+    public static MessageContent<String> getEmailMessageContent(CaptchaType captchaType, String captcha, String email) {
         Map<String, Object> templateParams = Maps
-                .of("code", captcha)
+                .ofStr("code", captcha)
                 .and("expireMinutes", "10")
                 .build();
         switch (captchaType) {
@@ -59,16 +50,14 @@ public class Constants {
         }
     }
 
-    public static MessageContent getSmsMessageContent(CaptchaType captchaType, String captcha, String phone) {
-        switch (captchaType) {
-            case UPDATE_PASSWORD_CAPTCHA_TYPE:
-                Map<String, Object> templateParams = Maps
-                        .of("code", captcha)
-                        .and("expireMinutes", "10")
-                        .build();
-                return SmsMessage.of(phone, "SMS_LOGIN_CODE", templateParams);
-            default:
-                throw new IllegalArgumentException("captchaType is not support");
+    public static MessageContent<String> getSmsMessageContent(CaptchaType captchaType, String captcha, String phone) {
+        if (Objects.requireNonNull(captchaType) == CaptchaType.UPDATE_PASSWORD_CAPTCHA_TYPE) {
+            Map<String, Object> templateParams = Maps
+                    .ofStr("code", captcha)
+                    .and("expireMinutes", "10")
+                    .build();
+            return SmsMessage.of(phone, "SMS_LOGIN_CODE", templateParams);
         }
+        throw new IllegalArgumentException("captchaType is not support");
     }
 }
