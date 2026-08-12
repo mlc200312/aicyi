@@ -3,11 +3,12 @@ package io.github.aicyi.midware.message.core.sender;
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.core.message.MessageSendCallback;
 import io.github.aicyi.commons.core.message.MessageSender;
-import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.core.message.MessageContent;
-import io.github.aicyi.midware.message.core.exception.MessageSendException;
+import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.lang.model.MessageSendResult;
+import io.github.aicyi.midware.message.core.exception.MessageSendException;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -34,12 +35,13 @@ public abstract class AbstractMessageSender implements MessageSender {
 
     @Override
     public void sendAsync(MessageContent content, MessageSendCallback callback) {
+        Objects.requireNonNull(callback, "回调对象不能为 null");
         CompletableFuture.runAsync(() -> {
             try {
                 MessageSendResult result = send(content);
                 callback.onComplete(result);
             } catch (Exception e) {
-                callback.onError(e);
+                notifyError(callback, e);
             }
         });
     }
@@ -63,8 +65,22 @@ public abstract class AbstractMessageSender implements MessageSender {
             throw new UnsupportedOperationException("不支持的消息类型");
         }
 
-        if (content == null || content.getContent() == null) {
+        if (content.getContent() == null) {
             throw new IllegalArgumentException("消息内容不能为空");
+        }
+    }
+
+    /**
+     * 安全地通知回调发生异常，避免回调本身抛异常导致异步任务异常终止
+     *
+     * @param callback 回调对象
+     * @param e        异常
+     */
+    private void notifyError(MessageSendCallback callback, Exception e) {
+        try {
+            callback.onError(e);
+        } catch (Exception ex) {
+            logger.error(ex, "消息发送回调 onError 处理失败");
         }
     }
 }

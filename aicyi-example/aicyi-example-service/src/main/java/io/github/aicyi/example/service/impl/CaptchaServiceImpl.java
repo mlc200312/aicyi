@@ -21,9 +21,9 @@ import io.github.aicyi.commons.core.message.MessageSendCallback;
 import io.github.aicyi.commons.lang.model.MessageSendResult;
 import io.github.aicyi.midware.message.core.sender.UnifiedMessageManager;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
@@ -36,16 +36,14 @@ import java.util.function.Function;
  * @date 17:38
  **/
 @Service
+@RequiredArgsConstructor
 public class CaptchaServiceImpl implements CaptchaService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private UnifiedMessageManager unifiedMessageManager;
-    @Autowired
-    private Cache<String, String> stringCache;
-    @Autowired
-    private UserService userService;
+    private final UnifiedMessageManager unifiedMessageManager;
+    private final Cache<String, String> stringCache;
+    private final UserService userService;
 
     @Override
     public String saveCaptcha() {
@@ -134,7 +132,7 @@ public class CaptchaServiceImpl implements CaptchaService {
 
             @Override
             public void onError(Exception e) {
-                e.printStackTrace();
+                logger.error(e, "验证码消息发送失败");
             }
         });
         return uuid;
