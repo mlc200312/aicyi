@@ -23,7 +23,7 @@ public class DistributedLockTest extends BaseLoggerTest {
     @Autowired
     private DistributedLockManager distributedLockManager;
 
-    private static int LOCK = 1;
+    private static final int LOCK = 1;
 
     @Before
     @Override
