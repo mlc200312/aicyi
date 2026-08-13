@@ -204,7 +204,7 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
     /**
      * 校验RefreshToken
      *
-     * @param refreshToken
+     * @param refreshToken 刷新Token
      */
     protected void validateRefreshToken(String refreshToken) {
 
@@ -222,9 +222,9 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
     /**
      * 构建TokenPair
      *
-     * @param accessToken
-     * @param refreshToken
-     * @return
+     * @param accessToken  访问Token
+     * @param refreshToken 刷新Token
+     * @return TokenPair
      */
     protected TokenPair buildTokenPair(String accessToken, String refreshToken) {
 

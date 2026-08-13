@@ -1,10 +1,9 @@
 package io.github.aicyi.example.service.impl;
 
 import io.github.aicyi.commons.core.BeanMapper;
-import io.github.aicyi.commons.core.token.AuthenticationTokenService;
+import io.github.aicyi.commons.core.token.AuthenticationTokens;
 import io.github.aicyi.commons.lang.model.TokenPair;
 import io.github.aicyi.commons.lang.exception.BusinessException;
-import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.example.domain.*;
 import io.github.aicyi.example.domain.entity.base.User;
@@ -30,7 +29,6 @@ public class AuthServiceImpl implements AuthService {
 
     private final BeanMapper beanMapper;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationTokenService<IJWTInfo> tokenService;
     private final UserService userService;
     private final CaptchaService captchaService;
 
@@ -56,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 生成token
-        TokenPair token = tokenService.createToken(UserInfo.of(user, UUIDUtils.generateV7Id()), null);
+        TokenPair token = AuthenticationTokens.createToken(UserInfo.of(user, UUIDUtils.generateV7Id()), null);
 
         // 返回登录结果
         LoginResult result = new LoginResult();

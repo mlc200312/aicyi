@@ -3,7 +3,6 @@ package io.github.aicyi.midware.web;
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.core.token.AuthenticationTokenService;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +23,7 @@ import java.util.Map;
  * 根据注解属性按需装配：
  * <ul>
  *     <li>{@link GlobalExceptionHandler}：全局异常处理器</li>
+ *     <li>{@link AuthenticationTokenServiceRegistrar}：将容器中的 Token 服务注册到 AuthenticationTokens 工具</li>
  *     <li>{@link AuthInterceptor}：身份验证拦截器（含请求开始时间标记与请求日志输出）</li>
  *     <li>{@link CachingRequestBodyFilter}：请求体缓存过滤器，保证请求体在记录日志时可读</li>
  * </ul>
@@ -72,27 +72,30 @@ public class RestApiConfiguration implements WebMvcConfigurer, ImportAware {
     }
 
     /**
-     * 身份验证拦截器
-     * <p>
-     * 开启鉴权且容器中存在 {@code AuthenticationTokenService<IJWTInfo>} Bean 时具备鉴权能力；
-     * 否则降级为仅标记请求开始时间与输出请求日志（需开启请求日志）；两项能力均未开启时不创建
+     * Token 服务注册器，将容器中的 {@code AuthenticationTokenService} Bean 注册到 AuthenticationTokens 工具，
+     * 供拦截器与业务代码静态调用；容器中不存在该 Bean 时静默跳过
      */
     @Bean
-    public AuthInterceptor authInterceptor(ObjectProvider<AuthenticationTokenService<IJWTInfo>> tokenServiceProvider) {
+    public AuthenticationTokenServiceRegistrar authenticationTokenServiceRegistrar(ObjectProvider<AuthenticationTokenService<?>> tokenServiceProvider) {
+        return new AuthenticationTokenServiceRegistrar(tokenServiceProvider);
+    }
 
-        AuthenticationTokenService<IJWTInfo> tokenService = null;
-        if (enableAuth) {
-            tokenService = tokenServiceProvider.getIfAvailable();
-            if (tokenService == null) {
-                LOGGER.warn("enableAuth is true but no AuthenticationTokenService bean found, auth interceptor degraded to request log only");
-            }
-        }
-
-        if (tokenService == null && !enableRequestLog) {
+    /**
+     * 身份验证拦截器
+     * <p>
+     * 通过 AuthenticationTokens 工具完成鉴权，未开启鉴权或 Token 服务未注册时降级为仅记录请求日志
+     */
+    @Bean
+    public AuthInterceptor authInterceptor() {
+        if (!enableAuth && !enableRequestLog) {
             return null;
         }
 
-        return new AuthInterceptor(tokenService, enableRequestLog);
+        if (enableAuth) {
+            LOGGER.info("auth interceptor enabled, token service resolved via AuthenticationTokens at runtime");
+        }
+
+        return new AuthInterceptor(enableRequestLog);
     }
 
     /**

@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.web;
 
-import io.github.aicyi.commons.core.token.AuthenticationTokenService;
+import io.github.aicyi.commons.core.token.AuthenticationTokens;
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;
@@ -21,23 +21,19 @@ import java.util.Objects;
  **/
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private final AuthenticationTokenService<IJWTInfo> tokenService;
-
     /**
      * 是否记录请求信息日志（含请求开始时间标记）
      */
     private final boolean recordRequestLog;
 
-    public AuthInterceptor(AuthenticationTokenService<IJWTInfo> tokenService) {
-        this(tokenService, true);
+    public AuthInterceptor() {
+        this(true);
     }
 
     /**
-     * @param tokenService     Token 服务，为 null 时不进行身份验证，仅承担请求日志职责
      * @param recordRequestLog 是否记录请求信息日志
      */
-    public AuthInterceptor(AuthenticationTokenService<IJWTInfo> tokenService, boolean recordRequestLog) {
-        this.tokenService = tokenService;
+    public AuthInterceptor(boolean recordRequestLog) {
         this.recordRequestLog = recordRequestLog;
     }
 
@@ -49,8 +45,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             WebRequestLogRecorder.markStart(request);
         }
 
-        // 未配置 Token 服务时不进行身份验证，直接放行
-        if (tokenService == null || !(handler instanceof HandlerMethod)) {
+        // Token 服务未注册时不进行身份验证，直接放行
+        if (!AuthenticationTokens.isRegistered() || !(handler instanceof HandlerMethod)) {
             return true;
         }
 
@@ -71,11 +67,11 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String accessToken = authorization.replace("Bearer ", "");
 
-        if (!tokenService.validateAccessToken(accessToken)) {
+        if (!AuthenticationTokens.validateAccessToken(accessToken)) {
             throw new UnauthorizedException();
         }
 
-        IJWTInfo jwtInfo = tokenService.parsePrincipal(accessToken);
+        IJWTInfo jwtInfo = AuthenticationTokens.parsePrincipal(accessToken);
 
         CurrentContextHolder.setUserId(jwtInfo.getId());
         CurrentContextHolder.setUsername(jwtInfo.getUniqueName());

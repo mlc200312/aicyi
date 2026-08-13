@@ -1,9 +1,8 @@
 package io.github.aicyi.example.web;
 
-import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.lang.IResponse;
 import io.github.aicyi.commons.core.BeanMapper;
-import io.github.aicyi.commons.core.token.AuthenticationTokenService;
+import io.github.aicyi.commons.core.token.AuthenticationTokens;
 import io.github.aicyi.commons.lang.model.TokenPair;
 import io.github.aicyi.example.domain.LoginParam;
 import io.github.aicyi.example.domain.LoginResult;
@@ -33,7 +32,6 @@ public class AuthController {
 
     private final BeanMapper beanMapper;
     private final AuthService authService;
-    private final AuthenticationTokenService<IJWTInfo> tokenService;
 
     @ApiOperation(value = "注册", notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -55,7 +53,7 @@ public class AuthController {
     @ApiOperation(value = "刷新Token接口", notes = "刷新Token接口")
     @RequestMapping(value = "/refresh-token", method = RequestMethod.POST)
     public IResponse<TokenPair> refreshToken(@Validated @RequestBody RefreshTokenReq req) {
-        TokenPair tokenPair = tokenService.refreshToken(req.getRefreshToken());
+        TokenPair tokenPair = AuthenticationTokens.refreshToken(req.getRefreshToken());
         return Response.success(tokenPair);
     }
 
