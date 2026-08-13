@@ -70,7 +70,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception e) throws Exception {
 
         try {
-            WebRequestLogRecorder.record(request, response, e);
+            WebRequestLogRecorder.record(request, response);
         } finally {
             CurrentContextHolder.remove();
         }
