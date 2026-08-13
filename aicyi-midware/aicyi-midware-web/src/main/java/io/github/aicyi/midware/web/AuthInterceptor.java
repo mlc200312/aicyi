@@ -4,7 +4,9 @@ import io.github.aicyi.commons.core.token.AuthenticationTokenService;
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;
+import io.github.aicyi.midware.web.util.WebRequestLogRecorder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -19,14 +21,17 @@ import java.util.Objects;
  **/
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private AuthenticationTokenService<IJWTInfo> tokenService;
+    private final AuthenticationTokenService<IJWTInfo> tokenService;
 
     public AuthInterceptor(AuthenticationTokenService<IJWTInfo> tokenService) {
         this.tokenService = tokenService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
+
+        // 标记请求开始时间，用于计算响应耗时
+        WebRequestLogRecorder.markStart(request);
 
         if (!(handler instanceof HandlerMethod)) {
             return true;
@@ -62,7 +67,12 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) throws Exception {
-        CurrentContextHolder.remove();
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception e) throws Exception {
+
+        try {
+            WebRequestLogRecorder.record(request, response, e);
+        } finally {
+            CurrentContextHolder.remove();
+        }
     }
 }

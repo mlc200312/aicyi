@@ -10,14 +10,14 @@ public interface Logger {
     /**
      * 是否启用了调试
      *
-     * @return
+     * @return boolean
      */
     boolean isDebugEnabled();
 
     /**
      * 是否启用了跟踪
      *
-     * @return
+     * @return boolean
      */
     boolean isTraceEnabled();
 
@@ -31,17 +31,17 @@ public interface Logger {
     /**
      * 跟踪
      *
-     * @param format
-     * @param arg
+     * @param format 格式
+     * @param arg    参数
      */
     void trace(String format, Object... arg);
 
     /**
      * 跟踪
      *
-     * @param cause
-     * @param format
-     * @param arg
+     * @param cause  异常
+     * @param format 格式
+     * @param arg    参数
      */
     void trace(Throwable cause, String format, Object... arg);
 
@@ -55,17 +55,17 @@ public interface Logger {
     /**
      * 调试
      *
-     * @param format
-     * @param arg
+     * @param format 格式
+     * @param arg    参数
      */
     void debug(String format, Object... arg);
 
     /**
      * 调试
      *
-     * @param cause
-     * @param format
-     * @param arg
+     * @param cause  异常
+     * @param format 格式
+     * @param arg    参数
      */
     void debug(Throwable cause, String format, Object... arg);
 
@@ -79,17 +79,17 @@ public interface Logger {
     /**
      * 信息
      *
-     * @param format
-     * @param arg
+     * @param format 格式
+     * @param arg    参数
      */
     void info(String format, Object... arg);
 
     /**
      * 信息
      *
-     * @param cause
-     * @param format
-     * @param arg
+     * @param cause  异常
+     * @param format 格式
+     * @param arg    参数
      */
     void info(Throwable cause, String format, Object... arg);
 
@@ -103,17 +103,17 @@ public interface Logger {
     /**
      * 警告
      *
-     * @param format
-     * @param arg
+     * @param format 格式
+     * @param arg    参数
      */
     void warn(String format, Object... arg);
 
     /**
      * 警告
      *
-     * @param cause
-     * @param format
-     * @param arg
+     * @param cause  异常
+     * @param format 格式
+     * @param arg    参数
      */
     void warn(Throwable cause, String format, Object... arg);
 
@@ -127,17 +127,17 @@ public interface Logger {
     /**
      * 错误
      *
-     * @param format
-     * @param arg
+     * @param format 格式
+     * @param arg    参数
      */
     void error(String format, Object... arg);
 
     /**
      * 错误
      *
-     * @param cause
-     * @param format
-     * @param arg
+     * @param cause  异常
+     * @param format 格式
+     * @param arg    参数
      */
     void error(Throwable cause, String format, Object... arg);
 }

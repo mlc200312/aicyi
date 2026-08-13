@@ -64,8 +64,8 @@ public interface AuthenticationTokenService<P> {
     /**
      * 获取自定义属性
      *
-     * @param accessToken
-     * @return
+     * @param accessToken AccessToken
+     * @return Map<String,Object>
      */
     Map<String, Object> getAttributes(String accessToken);
 }
