@@ -162,15 +162,15 @@ public class GlobalExceptionHandler {
     /**
      * 提供对标准Spring MVC异常的处理
      *
-     * @param ex      the target exception
+     * @param e       the target exception
      * @param request the current request
      */
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<Response<Void>> handleException(Exception ex, WebRequest request) {
+    public final ResponseEntity<Response<Void>> handleException(Exception e, WebRequest request) {
 
-        logger.error(ex, "handleException cause: {}", ex.getMessage());
+        logger.error(e, "handleException cause: {}", e.getMessage());
 
-        request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, ex, WebRequest.SCOPE_REQUEST);
+        request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, e, WebRequest.SCOPE_REQUEST);
 
         return new ResponseEntity<>(Response.failure(CommonResultCode.SYSTEM_ERROR), null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
