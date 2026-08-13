@@ -3,13 +3,13 @@ package io.github.aicyi.example.web;
 import io.github.aicyi.commons.lang.IResponse;
 import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.example.domain.UserInfo;
-import io.github.aicyi.example.service.util.UserSessionUtils;
+import io.github.aicyi.example.service.util.UserSessions;
 import io.github.aicyi.example.web.vo.UserInfoResp;
 import io.github.aicyi.midware.web.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "用户控制器", tags = {"用户控制器"})
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private BeanMapper beanMapper;
+    private final BeanMapper beanMapper;
 
     @ApiOperation(value = "查询用户信息", notes = "查询用户信息")
     @ApiImplicitParam(
@@ -36,7 +36,7 @@ public class UserController {
     @RequestMapping(value = "/get-user-info", method = RequestMethod.GET)
     public IResponse<UserInfoResp> getUserInfo() {
 
-        UserInfo userInfo = UserSessionUtils.getUserInfo();
+        UserInfo userInfo = UserSessions.getUserInfo();
 
         UserInfoResp resp = beanMapper.map(userInfo, UserInfoResp.class);
 

@@ -13,7 +13,7 @@ import io.github.aicyi.example.service.StudentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +29,11 @@ import java.util.List;
 @Api(value = "学生控制器", tags = {"学生控制器"})
 @RestController
 @RequestMapping("/student")
+@RequiredArgsConstructor
 public class StudentController {
 
-    @Autowired
-    private BeanMapper beanMapper;
-    @Autowired
-    private StudentService studentService;
+    private final BeanMapper beanMapper;
+    private final StudentService studentService;
 
     @ApiOperation(value = "查询学生", notes = "查询学生")
     @ApiImplicitParam(

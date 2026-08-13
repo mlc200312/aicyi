@@ -6,7 +6,6 @@ import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.service.UserService;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,14 +14,14 @@ import org.springframework.stereotype.Component;
  * @date 16:29
  **/
 @Component
-public class UserSessionUtils implements InitializingBean {
+public class UserSessions implements InitializingBean {
 
-    private static UserSessionUtils INSTANCE;
+    private static UserSessions INSTANCE;
 
     private Cache<String, UserInfo> userInfoRedisCache;
     private UserService userService;
 
-    public UserSessionUtils(Cache<String, UserInfo> userInfoRedisCache, UserService userService) {
+    public UserSessions(Cache<String, UserInfo> userInfoRedisCache, UserService userService) {
         this.userInfoRedisCache = userInfoRedisCache;
         this.userService = userService;
     }

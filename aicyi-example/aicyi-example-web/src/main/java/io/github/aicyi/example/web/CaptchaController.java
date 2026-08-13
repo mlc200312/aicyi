@@ -9,6 +9,7 @@ import io.github.aicyi.midware.web.IgnoreAuth;
 import io.github.aicyi.midware.web.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +30,11 @@ import java.util.Objects;
 @Api(value = "验证码控制器", tags = {"验证码控制器"})
 @RestController
 @RequestMapping("/captcha")
+@RequiredArgsConstructor
 public class CaptchaController {
 
-    @Autowired
-    private BeanMapper beanMapper;
-    @Autowired
-    private CaptchaService captchaService;
+    private final BeanMapper beanMapper;
+    private final CaptchaService captchaService;
 
     @ApiOperation(value = "生成验证码", notes = "生成验证码")
     @RequestMapping(value = "/get-captcha", method = RequestMethod.GET)

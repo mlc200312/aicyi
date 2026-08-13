@@ -32,4 +32,8 @@ public abstract class BaseException extends RuntimeException {
     public String getCodeAsString() {
         return String.valueOf(code);
     }
+
+    public Integer getStatus() {
+        return Integer.valueOf(getCodeAsString().substring(0, 3));
+    }
 }

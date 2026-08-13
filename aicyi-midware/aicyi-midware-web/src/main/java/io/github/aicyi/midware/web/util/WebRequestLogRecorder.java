@@ -3,6 +3,7 @@ package io.github.aicyi.midware.web.util;
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.midware.web.CachedBodyRequestWrapper;
 import io.github.aicyi.midware.web.WebRequestLog;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -48,6 +49,11 @@ public final class WebRequestLogRecorder {
      */
     private static final String REQUEST_ID_ATTRIBUTE = WebRequestLogRecorder.class.getName() + ".requestId";
 
+    /**
+     * 异常已记录日志标记属性名（仅模块内部约定，外部请通过 {@link #markErrorLogged(HttpServletRequest)} 标记）
+     */
+    private static final String ERROR_LOGGED_ATTRIBUTE = WebRequestLogRecorder.class.getName() + ".errorLogged";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WebRequestLogRecorder.class);
 
     private WebRequestLogRecorder() {
@@ -73,6 +79,25 @@ public final class WebRequestLogRecorder {
     }
 
     /**
+     * 标记请求异常日志已输出（如全局异常处理器已记录），供 {@link #record} 判断以避免重复输出完整异常日志
+     *
+     * @param request HTTP 请求
+     */
+    public static void markErrorLogged(HttpServletRequest request) {
+        request.setAttribute(ERROR_LOGGED_ATTRIBUTE, Boolean.TRUE);
+    }
+
+    /**
+     * 判断请求异常日志是否已输出
+     *
+     * @param request HTTP 请求
+     * @return 已通过 {@link #logError(HttpServletRequest, Exception)} 或 {@link #markErrorLogged(HttpServletRequest)} 标记时返回 true
+     */
+    public static boolean isErrorLogged(HttpServletRequest request) {
+        return Boolean.TRUE.equals(request.getAttribute(ERROR_LOGGED_ATTRIBUTE));
+    }
+
+    /**
      * 解析请求 ID
      * <p>
      * 优先取请求属性，其次取 {@value #REQUEST_ID_HEADER} Header，最后自动生成。
@@ -95,59 +120,74 @@ public final class WebRequestLogRecorder {
     }
 
     /**
-     * 组装请求日志
-     *
-     * @param request  HTTP 请求
-     * @param response HTTP 响应
-     * @param error    请求处理异常，可为 null
-     * @return 请求日志
-     */
-    public static WebRequestLog create(HttpServletRequest request,
-                                       HttpServletResponse response,
-                                       Exception error) {
-
-        return WebRequestLog.builder()
-                .requestId(getRequestId(request))
-                .request(buildRequestInfo(request))
-                .response(buildResponseInfo(response))
-                .costTime(resolveCostTime(request))
-                .success(isSuccessful(response, error))
-                .errorMessage(buildErrorMessage(error))
-                .build();
-    }
-
-    /**
-     * 记录请求日志：成功输出 INFO，失败输出 ERROR 并附带异常堆栈
-     *
-     * @param request  HTTP 请求
-     * @param response HTTP 响应
-     * @param error    请求处理异常，可为 null
-     */
-    public static void record(HttpServletRequest request,
-                              HttpServletResponse response,
-                              Exception error) {
-
-        WebRequestLog requestLog = create(request, response, error);
-
-        if (Boolean.TRUE.equals(requestLog.getSuccess())) {
-            LOGGER.info(requestLog);
-        } else if (error != null) {
-            LOGGER.error(error, "{}", requestLog);
-        } else {
-            LOGGER.error(requestLog);
-        }
-    }
-
-    /**
      * 构建请求信息
+     *
+     * @param request HTTP 请求
+     * @return 请求信息
      */
-    private static WebRequestLog.RequestInfo buildRequestInfo(HttpServletRequest request) {
+    public static WebRequestLog.RequestInfo buildRequestInfo(HttpServletRequest request) {
         return WebRequestLog.RequestInfo.builder()
                 .url(request.getRequestURL().toString())
                 .method(request.getMethod())
                 .queryParams(resolveQueryParams(request))
                 .body(resolveBody(request))
                 .build();
+    }
+
+    /**
+     * 组装请求日志
+     *
+     * @param request  HTTP 请求
+     * @param response HTTP 响应
+     * @return 请求日志
+     */
+    public static WebRequestLog create(HttpServletRequest request, HttpServletResponse response) {
+
+        return WebRequestLog.builder()
+                .requestId(getRequestId(request))
+                .request(buildRequestInfo(request))
+                .response(buildResponseInfo(response))
+                .costTime(resolveCostTime(request))
+                .success(isSuccessful(response))
+                .errorMessage(null)
+                .build();
+    }
+
+
+    /**
+     * 记录请求日志：成功输出 INFO，失败输出 ERROR 并附带异常堆栈
+     * <p>
+     * 若异常已被异常处理器记录（见 {@link #logError(HttpServletRequest, Exception)}），
+     * 则不再重复输出完整异常日志，仅以 INFO 输出一条简要生命周期日志（含耗时与状态码）。
+     *
+     * @param request  HTTP 请求
+     * @param response HTTP 响应
+     */
+    public static void record(HttpServletRequest request, HttpServletResponse response) {
+
+        WebRequestLog requestLog = create(request, response);
+
+        if (Boolean.TRUE.equals(requestLog.getSuccess())) {
+            LOGGER.info(requestLog);
+        } else if (isErrorLogged(request)) {
+            // 异常详情已由异常处理器输出，此处仅记录请求生命周期概要，避免重复输出完整异常日志
+            LOGGER.info("error already logged, requestId: {}, costTime: {}ms, statusCode: {}",
+                    requestLog.getRequestId(), requestLog.getCostTime(),
+                    requestLog.getResponse() != null ? requestLog.getResponse().getStatusCode() : null);
+        } else {
+            LOGGER.error(requestLog);
+        }
+    }
+
+    /**
+     * 记录异常请求日志：输出请求 ID、请求信息与异常堆栈，适用于异常处理器等无法获取响应的场景
+     *
+     * @param request HTTP 请求
+     * @param error   异常
+     */
+    public static void logError(HttpServletRequest request, Exception error) {
+        LOGGER.error(error, "requestId: {}, request: {}", getRequestId(request), buildRequestInfo(request));
+        markErrorLogged(request);
     }
 
     /**
@@ -177,20 +217,24 @@ public final class WebRequestLogRecorder {
     }
 
     /**
-     * 解析请求体，仅当请求经过 {@link ContentCachingRequestWrapper} 包装时才可读取
+     * 解析请求体
+     * <p>
+     * 优先从 {@link CachedBodyRequestWrapper} 预缓存读取（任意阶段可用），
+     * 兼容 {@link ContentCachingRequestWrapper} 懒缓存（仅在请求体已被消费后有效）。
      */
     private static String resolveBody(HttpServletRequest request) {
-        if (!(request instanceof ContentCachingRequestWrapper)) {
-            return "";
+        if (request instanceof CachedBodyRequestWrapper) {
+            byte[] bodyBytes = ((CachedBodyRequestWrapper) request).getContentAsByteArray();
+            return bodyBytes.length == 0 ? "" : new String(bodyBytes, resolveCharset(request.getCharacterEncoding()));
         }
 
-        ContentCachingRequestWrapper wrapper = (ContentCachingRequestWrapper) request;
-        byte[] bodyBytes = wrapper.getContentAsByteArray();
-        if (bodyBytes.length == 0) {
-            return "";
+        if (request instanceof ContentCachingRequestWrapper) {
+            ContentCachingRequestWrapper wrapper = (ContentCachingRequestWrapper) request;
+            byte[] bodyBytes = wrapper.getContentAsByteArray();
+            return bodyBytes.length == 0 ? "" : new String(bodyBytes, resolveCharset(wrapper.getCharacterEncoding()));
         }
 
-        return new String(bodyBytes, resolveCharset(wrapper.getCharacterEncoding()));
+        return "";
     }
 
     /**
@@ -224,17 +268,7 @@ public final class WebRequestLogRecorder {
     /**
      * 判断请求是否成功：无异常且响应状态码小于 400
      */
-    private static boolean isSuccessful(HttpServletResponse response, Exception error) {
-        return error == null && response.getStatus() < 400;
-    }
-
-    /**
-     * 构建异常信息
-     */
-    private static String buildErrorMessage(Exception error) {
-        if (error == null) {
-            return null;
-        }
-        return String.format("%s: %s", error.getClass().getSimpleName(), error.getMessage());
+    private static boolean isSuccessful(HttpServletResponse response) {
+        return response.getStatus() < 400;
     }
 }

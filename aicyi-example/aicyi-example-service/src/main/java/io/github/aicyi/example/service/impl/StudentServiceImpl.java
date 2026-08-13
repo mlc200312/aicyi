@@ -17,11 +17,11 @@ import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.domain.type.ExampleResultCode;
 import io.github.aicyi.example.service.StudentService;
 import io.github.aicyi.example.service.UserService;
-import io.github.aicyi.example.service.util.UserSessionUtils;
+import io.github.aicyi.example.service.util.UserSessions;
 import io.github.aicyi.midware.db.commons.BaseEntityUtils;
 import io.github.aicyi.midware.db.commons.PageUtils;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,23 +39,19 @@ import java.util.stream.Collectors;
  * @date 17:52
  **/
 @Service
+@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
-    @Autowired
-    private BeanMapper beanMapper;
-    @Autowired
-    private IdGenerator idGenerator;
-    @Autowired
-    private StudentMapper studentMapper;
-    @Autowired
-    private StudentCustomMapper studentCustomMapper;
-    @Autowired
-    private UserService userService;
+    private final BeanMapper beanMapper;
+    private final IdGenerator idGenerator;
+    private final StudentMapper studentMapper;
+    private final StudentCustomMapper studentCustomMapper;
+    private final UserService userService;
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public void add(StudentBean bean) {
-        UserInfo userInfo = UserSessionUtils.getUserInfo();
+        UserInfo userInfo = UserSessions.getUserInfo();
         StudentBean student = getByUserId(userInfo.getUserId());
         if (Objects.nonNull(student)) {
             return;
