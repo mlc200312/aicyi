@@ -33,8 +33,8 @@ public interface AuthenticationTokenService<P> {
     /**
      * 获取在线RefreshToken
      *
-     * @param principal
-     * @return
+     * @param principal Principal
+     * @return RefreshToken集合
      */
     Set<String> getRefreshTokens(P principal);
 

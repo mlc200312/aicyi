@@ -23,17 +23,34 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private final AuthenticationTokenService<IJWTInfo> tokenService;
 
+    /**
+     * 是否记录请求信息日志（含请求开始时间标记）
+     */
+    private final boolean recordRequestLog;
+
     public AuthInterceptor(AuthenticationTokenService<IJWTInfo> tokenService) {
+        this(tokenService, true);
+    }
+
+    /**
+     * @param tokenService     Token 服务，为 null 时不进行身份验证，仅承担请求日志职责
+     * @param recordRequestLog 是否记录请求信息日志
+     */
+    public AuthInterceptor(AuthenticationTokenService<IJWTInfo> tokenService, boolean recordRequestLog) {
         this.tokenService = tokenService;
+        this.recordRequestLog = recordRequestLog;
     }
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
 
-        // 标记请求开始时间，用于计算响应耗时
-        WebRequestLogRecorder.markStart(request);
+        if (recordRequestLog) {
+            // 标记请求开始时间，用于计算响应耗时
+            WebRequestLogRecorder.markStart(request);
+        }
 
-        if (!(handler instanceof HandlerMethod)) {
+        // 未配置 Token 服务时不进行身份验证，直接放行
+        if (tokenService == null || !(handler instanceof HandlerMethod)) {
             return true;
         }
 
@@ -70,7 +87,9 @@ public class AuthInterceptor implements HandlerInterceptor {
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception e) throws Exception {
 
         try {
-            WebRequestLogRecorder.record(request, response);
+            if (recordRequestLog) {
+                WebRequestLogRecorder.record(request, response);
+            }
         } finally {
             CurrentContextHolder.remove();
         }

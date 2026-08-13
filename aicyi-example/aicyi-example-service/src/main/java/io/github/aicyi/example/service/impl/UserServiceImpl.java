@@ -8,9 +8,9 @@ import io.github.aicyi.example.domain.entity.base.UserExample;
 import io.github.aicyi.example.service.UserService;
 import io.github.aicyi.midware.db.commons.BaseEntityUtils;
 import io.github.aicyi.midware.db.commons.PageUtils;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,11 +26,10 @@ import java.util.Objects;
  * @date 15:06
  **/
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private IdGenerator idGenerator;
-    @Autowired
-    private UserMapper userMapper;
+    private final IdGenerator idGenerator;
+    private final UserMapper userMapper;
 
     @Override
     public void save(User user) {

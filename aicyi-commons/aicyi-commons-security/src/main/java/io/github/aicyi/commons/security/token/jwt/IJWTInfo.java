@@ -10,21 +10,21 @@ public interface IJWTInfo {
     /**
      * 获取用户ID
      *
-     * @return
+     * @return 用户ID
      */
     String getId();
 
     /**
      * 获取用户名
      *
-     * @return
+     * @return 用户名
      */
     String getUniqueName();
 
     /**
      * 获取设备ID
      *
-     * @return
+     * @return 设备ID
      */
     String getDeviceId();
 }

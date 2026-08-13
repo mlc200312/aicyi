@@ -6,15 +6,11 @@ import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.token.AuthenticationConfig;
 import io.github.aicyi.midware.redis.token.JwtRefreshAuthenticationTokenService;
-import io.github.aicyi.midware.web.AuthInterceptor;
-import io.github.aicyi.midware.web.CachingRequestBodyFilter;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -23,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Mr.Min
  * @description Web相关配置
+ * <p>
+ * 权限拦截与请求信息日志由启动类上的 {@code @EnableRestApi} 注解自动装配
  * @date 11:48
  **/
 @Configuration
@@ -32,14 +30,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     public WebConfiguration(EnhancedRedisTemplateFactory templateFactory) {
         this.templateFactory = templateFactory;
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-
-        AuthInterceptor authInterceptor = getAuthInterceptor();
-
-        registry.addInterceptor(authInterceptor).excludePathPatterns("/webjars/**", "/v2/api-docs");
     }
 
     @Override
@@ -79,19 +69,5 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .build();
 
         return new JwtRefreshAuthenticationTokenService<>(config, templateFactory.getStringRedisTemplate(), UserInfo.class);
-    }
-
-    @Bean
-    public AuthInterceptor getAuthInterceptor() {
-        return new AuthInterceptor(tokenService());
-    }
-
-    @Bean
-    public FilterRegistrationBean<CachingRequestBodyFilter> cachingRequestBodyFilter() {
-        FilterRegistrationBean<CachingRequestBodyFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new CachingRequestBodyFilter());
-        registrationBean.addUrlPatterns("/*"); // 拦截所有请求
-        registrationBean.setOrder(1); // 设置过滤器优先级
-        return registrationBean;
     }
 }

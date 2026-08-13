@@ -5,6 +5,8 @@ import io.github.aicyi.commons.util.CurrentContextHolder;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.example.domain.entity.base.User;
 import io.github.aicyi.example.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
  * @date 16:29
  **/
 @Component
+@RequiredArgsConstructor
 public class UserSessions implements InitializingBean {
 
     private static UserSessions INSTANCE;
@@ -21,15 +24,14 @@ public class UserSessions implements InitializingBean {
     private Cache<String, UserInfo> userInfoRedisCache;
     private UserService userService;
 
-    public UserSessions(Cache<String, UserInfo> userInfoRedisCache, UserService userService) {
-        this.userInfoRedisCache = userInfoRedisCache;
-        this.userService = userService;
-    }
-
 
     public static UserInfo getUserInfo() {
 
         String userId = CurrentContextHolder.getUserId();
+
+        if (StringUtils.isBlank(userId)) {
+            return null;
+        }
 
         return INSTANCE.userInfoRedisCache.get(userId, key -> {
 

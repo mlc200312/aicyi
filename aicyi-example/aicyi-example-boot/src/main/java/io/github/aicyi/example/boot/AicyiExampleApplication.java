@@ -15,7 +15,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication(scanBasePackages = {"io.github.aicyi.example"})
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableConfigurationProperties
-@EnableRestApi
+@EnableRestApi(excludePathPatterns = {"/webjars/**", "/v2/api-docs"})
 @MapperScan(basePackages = {"io.github.aicyi.example.dao.mapper"})
 public class AicyiExampleApplication {
 

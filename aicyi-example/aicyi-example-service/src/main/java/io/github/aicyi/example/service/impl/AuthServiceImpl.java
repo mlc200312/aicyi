@@ -13,7 +13,7 @@ import io.github.aicyi.example.domain.type.ExampleResultCode;
 import io.github.aicyi.example.service.AuthService;
 import io.github.aicyi.example.service.CaptchaService;
 import io.github.aicyi.example.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +25,14 @@ import java.util.Objects;
  * @date 20:03
  **/
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private BeanMapper beanMapper;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthenticationTokenService<IJWTInfo> tokenService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CaptchaService captchaService;
+    private final BeanMapper beanMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationTokenService<IJWTInfo> tokenService;
+    private final UserService userService;
+    private final CaptchaService captchaService;
 
     @Override
     public void register(RegisterParam param) {
