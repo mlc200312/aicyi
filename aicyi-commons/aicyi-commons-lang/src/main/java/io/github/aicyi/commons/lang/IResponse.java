@@ -10,14 +10,14 @@ public interface IResponse<V> extends IResult<String, V> {
     /**
      * 时间戳
      *
-     * @return
+     * @return 时间戳
      */
     Long getTimestamp();
 
     /**
      * 状态
      *
-     * @return
+     * @return 状态
      */
     boolean getStatus();
 }

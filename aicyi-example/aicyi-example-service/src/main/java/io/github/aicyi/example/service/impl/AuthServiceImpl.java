@@ -4,7 +4,6 @@ import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.commons.core.token.AuthenticationTokenService;
 import io.github.aicyi.commons.lang.model.TokenPair;
 import io.github.aicyi.commons.lang.exception.BusinessException;
-import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.example.domain.*;
@@ -57,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
         User user = validate(param.getUsername(), param.getPassword());
 
         if (Objects.isNull(user)) {
-            throw new UnauthorizedException("用户名或密码错误");
+            throw new BusinessException("用户名或密码错误");
         }
 
         // 生成token
