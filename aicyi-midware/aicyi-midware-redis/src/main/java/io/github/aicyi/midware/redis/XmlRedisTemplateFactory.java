@@ -1,5 +1,6 @@
 package io.github.aicyi.midware.redis;
 
+import io.github.aicyi.commons.util.Assert;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.OxmSerializer;
@@ -8,7 +9,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -40,7 +40,8 @@ public class XmlRedisTemplateFactory {
 
     public XmlRedisTemplateFactory(@NonNull RedisConnectionFactory redisConnectionFactory) {
 
-        this.redisConnectionFactory = Objects.requireNonNull(redisConnectionFactory);
+        Assert.notNull(redisConnectionFactory, "redisConnectionFactory");
+        this.redisConnectionFactory = redisConnectionFactory;
     }
 
     // =========================================================

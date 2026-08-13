@@ -15,7 +15,7 @@ import io.github.aicyi.midware.web.IgnoreAuth;
 import io.github.aicyi.midware.web.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,14 +28,12 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "授权控制器", tags = {"授权控制器"})
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private BeanMapper beanMapper;
-    @Autowired
-    private AuthService authService;
-    @Autowired
-    private AuthenticationTokenService<IJWTInfo> tokenService;
+    private final BeanMapper beanMapper;
+    private final AuthService authService;
+    private final AuthenticationTokenService<IJWTInfo> tokenService;
 
     @ApiOperation(value = "注册", notes = "注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)

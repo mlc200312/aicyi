@@ -6,9 +6,9 @@ import io.github.aicyi.commons.core.message.MessageSender;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.lang.model.MessageSendResult;
+import io.github.aicyi.commons.util.Assert;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -35,7 +35,7 @@ public abstract class AbstractMessageSender implements MessageSender {
 
     @Override
     public void sendAsync(MessageContent content, MessageSendCallback callback) {
-        Objects.requireNonNull(callback, "回调对象不能为 null");
+        Assert.notNull(callback, "callback");
         CompletableFuture.runAsync(() -> {
             try {
                 MessageSendResult result = send(content);

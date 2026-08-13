@@ -1,10 +1,12 @@
 package io.github.aicyi.midware.web;
 
 import io.github.aicyi.commons.core.logging.Logger;
+import io.github.aicyi.commons.lang.exception.BaseException;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 import io.github.aicyi.commons.logging.LoggerFactory;
+import io.github.aicyi.commons.util.Assert;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -18,9 +20,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.util.WebUtils;
 
 import javax.validation.ConstraintViolationException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -33,124 +35,128 @@ public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
-     * 业务异常处理
+     * IllegalArgumentException 异常处理
      *
      * @param e the target exception
-     * @return
-     */
-    @ExceptionHandler(BusinessException.class)
-    public final Response<Void> handleBusinessException(BusinessException e) {
-
-        logger.error(e, "handleException cause: {}", e.getMessage());
-
-        return Response.failure(e.getCodeAsString(), e.getMessage());
-    }
-
-    /**
-     * 业务异常处理
-     *
-     * @param e the target exception
-     * @return
-     */
-    @ExceptionHandler(UnauthorizedException.class)
-    public final Response<Void> handleBusinessException(UnauthorizedException e) {
-
-        logger.error(e, "handleException cause: {}", e.getMessage());
-
-        return Response.failure(e.getCodeAsString(), e.getMessage());
-    }
-
-    /**
-     * 参数异常处理
-     *
-     * @param e the target exception
-     * @return
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public final Response<Void> handleIllegalArgumentException(IllegalArgumentException e) {
 
-        logger.error(e, "handleException cause: {}", e.getMessage());
+        logger.error(e, "handleIllegalArgumentException cause: {}", e.getMessage());
 
         return Response.failure(CommonResultCode.PARAM_ERROR);
     }
 
 
     /**
-     * 参数异常处理
+     * MethodArgumentNotValidException 异常处理
      *
      * @param e
-     * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Response handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public Response<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+
         List<String> messageList = new ArrayList<>(5);
-        Object request = e.getBindingResult().getTarget();
-        e.getBindingResult().getAllErrors().forEach(err -> messageList
-                .add(
-                        ((DefaultMessageSourceResolvable) Objects.requireNonNull(err.getArguments())[0]).getDefaultMessage() + ":" + err.getDefaultMessage()
-                )
+
+        Method method = e.getParameter().getMethod();
+
+        Assert.notNull(method, "method");
+
+        e.getBindingResult().getAllErrors().forEach(err -> {
+
+                    Object[] arguments = err.getArguments();
+
+                    Assert.notNull(arguments, "arguments");
+
+                    messageList
+                            .add(
+                                    ((DefaultMessageSourceResolvable) arguments[0]).getDefaultMessage() + ":" + err.getDefaultMessage()
+                            );
+                }
         );
-        String op = e.getParameter().getContainingClass().getSimpleName() + "." + e.getParameter().getMethod().getName();
 
         String message = String.join(",", messageList);
 
-        logger.error(e, "handleException cause: {}：", e.getMessage());
+        logger.error(e, "handleMethodArgumentNotValidException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
 
     /**
-     * 参数异常处理
+     * BindException 异常处理
      *
      * @param e
-     * @return
      */
     @ExceptionHandler({BindException.class})
-    public Response handleBindException(BindException e) {
+    public Response<Void> handleBindException(BindException e) {
+
         List<String> messageList = new ArrayList<>();
-        Object request = e.getBindingResult().getTarget();
-        e.getBindingResult().getAllErrors().forEach(err -> messageList
-                .add(((DefaultMessageSourceResolvable) Objects.requireNonNull(err.getArguments())[0]).getDefaultMessage() + ":" + err.getDefaultMessage())
+
+        e.getBindingResult().getAllErrors().forEach(err -> {
+
+                    Object[] arguments = err.getArguments();
+
+                    Assert.notNull(arguments, "arguments");
+
+                    messageList
+                            .add(((DefaultMessageSourceResolvable) arguments[0]).getDefaultMessage() + ":" + err.getDefaultMessage());
+                }
         );
 
         String message = String.join(",", messageList);
 
-        logger.error(e, "handleException cause: {}：", e.getMessage());
+        logger.error(e, "handleBindException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
 
     /**
+     * ConstraintViolationException 异常处理
+     *
      * @param e
-     * @return
      */
     @ExceptionHandler({ConstraintViolationException.class})
-    public Response handleConstraintViolationException(ConstraintViolationException e) {
+    public Response<Void> handleConstraintViolationException(ConstraintViolationException e) {
+
         List<String> messageList = new ArrayList<>();
+
         e.getConstraintViolations().forEach(err -> messageList
                 .add(((PathImpl) err.getPropertyPath()).getLeafNode().getName() + ":" + err.getMessage())
         );
 
         String message = String.join(",", messageList);
 
-        logger.error(e, "handleException cause: {}：", e.getMessage());
+        logger.error(e, "handleConstraintViolationException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
     }
 
     /**
+     * MissingServletRequestParameterException 异常处理
+     *
      * @param e
-     * @return
-     * @RequestParam 异常
      */
     @ExceptionHandler({MissingServletRequestParameterException.class})
-    public Response handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+    public Response<Void> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
 
         String message = String.format("%s is required", e.getParameterName());
 
-        logger.error(e, "handleException cause: {}：", e.getMessage());
+        logger.error(e, "handleMissingServletRequestParameterException cause: {}：", e.getMessage());
 
         return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
+    }
+
+    /**
+     * BaseException 异常处理
+     *
+     * @param e the target exception
+     */
+    @ExceptionHandler(BaseException.class)
+    public final Response<Void> handleBaseException(BaseException e) {
+
+        logger.error(e, "handleBaseException cause: {}", e.getMessage());
+
+        return Response.failure(e.getCodeAsString(), e.getMessage());
     }
 
     /**

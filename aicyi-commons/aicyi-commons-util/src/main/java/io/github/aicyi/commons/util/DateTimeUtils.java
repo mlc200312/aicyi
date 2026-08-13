@@ -197,7 +197,7 @@ public final class DateTimeUtils {
 
     public static String format(LocalDateTime time, String pattern) {
 
-        Objects.requireNonNull(time);
+        Assert.notNull(time, "time");
 
         return formatter(pattern).format(time);
     }

@@ -3,10 +3,10 @@ package io.github.aicyi.midware.message.core.sender;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageSendCallback;
 import io.github.aicyi.commons.lang.model.MessageSendResult;
+import io.github.aicyi.commons.util.Assert;
 import io.github.aicyi.midware.message.core.model.MessagePriority;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +48,7 @@ public interface UnifiedMessageManager {
      * @return 发送结果列表
      */
     default List<MessageSendResult> sendBatch(List<MessageContent> contents) {
-        Objects.requireNonNull(contents, "消息内容列表不能为 null");
+        Assert.notNull(contents, "消息内容列表");
         return contents.stream()
                 .map(this::send)
                 .collect(Collectors.toList());

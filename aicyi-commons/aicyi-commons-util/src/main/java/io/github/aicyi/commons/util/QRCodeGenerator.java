@@ -19,7 +19,6 @@ import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Mr.Min
@@ -27,7 +26,7 @@ import java.util.Objects;
  * @date 2025/9/28
  **/
 public class QRCodeGenerator {
-    private String content;
+    private final String content;
     private int size = 300;
     private String format = "PNG";
     private Color frontColor = Color.BLACK;
@@ -37,7 +36,8 @@ public class QRCodeGenerator {
     private int margin = 1;
 
     public QRCodeGenerator(String content) {
-        this.content = Objects.requireNonNull(content);
+        Assert.notNull(content, "content");
+        this.content = content;
     }
 
     public QRCodeGenerator size(int size) {

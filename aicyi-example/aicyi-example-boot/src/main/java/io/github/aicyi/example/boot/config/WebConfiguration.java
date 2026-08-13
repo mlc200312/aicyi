@@ -7,6 +7,8 @@ import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.token.AuthenticationConfig;
 import io.github.aicyi.midware.redis.token.JwtRefreshAuthenticationTokenService;
 import io.github.aicyi.midware.web.AuthInterceptor;
+import io.github.aicyi.midware.web.CachingRequestBodyFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -82,5 +84,14 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Bean
     public AuthInterceptor getAuthInterceptor() {
         return new AuthInterceptor(tokenService());
+    }
+
+    @Bean
+    public FilterRegistrationBean<CachingRequestBodyFilter> cachingRequestBodyFilter() {
+        FilterRegistrationBean<CachingRequestBodyFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new CachingRequestBodyFilter());
+        registrationBean.addUrlPatterns("/*"); // 拦截所有请求
+        registrationBean.setOrder(1); // 设置过滤器优先级
+        return registrationBean;
     }
 }

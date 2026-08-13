@@ -1,6 +1,7 @@
 package io.github.aicyi.midware.redis;
 
 import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.util.Assert;
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,7 +11,6 @@ import org.springframework.lang.NonNull;
 
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -67,8 +67,10 @@ public class EnhancedRedisTemplateFactory {
 
     public EnhancedRedisTemplateFactory(@NonNull RedisConnectionFactory redisConnectionFactory, @NonNull JsonCodec jsonCodec) {
 
-        this.redisConnectionFactory = Objects.requireNonNull(redisConnectionFactory);
-        this.jsonCodec = Objects.requireNonNull(jsonCodec);
+        Assert.notNull(redisConnectionFactory, "redisConnectionFactory");
+        Assert.notNull(jsonCodec, "jsonCodec");
+        this.redisConnectionFactory = redisConnectionFactory;
+        this.jsonCodec = jsonCodec;
     }
 
     public EnhancedRedisTemplateFactory(@NonNull RedisConnectionFactory redisConnectionFactory) {
