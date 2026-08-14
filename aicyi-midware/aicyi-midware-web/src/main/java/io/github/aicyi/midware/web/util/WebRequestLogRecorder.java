@@ -101,6 +101,7 @@ public final class WebRequestLogRecorder {
      * 解析请求 ID
      * <p>
      * 优先取请求属性，其次取 {@value #REQUEST_ID_HEADER} Header，最后自动生成。
+     * 首次解析结果会回填请求属性，保证同一请求在任意阶段（如异常处理器与拦截器）获取的 ID 一致。
      *
      * @param request HTTP 请求
      * @return 请求 ID
@@ -113,10 +114,13 @@ public final class WebRequestLogRecorder {
 
         String headerRequestId = request.getHeader(REQUEST_ID_HEADER);
         if (StringUtils.isNotBlank(headerRequestId)) {
+            request.setAttribute(REQUEST_ID_ATTRIBUTE, headerRequestId);
             return headerRequestId;
         }
 
-        return UUIDUtils.generateV7Id();
+        String generatedRequestId = UUIDUtils.generateV7Id();
+        request.setAttribute(REQUEST_ID_ATTRIBUTE, generatedRequestId);
+        return generatedRequestId;
     }
 
     /**

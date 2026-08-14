@@ -2,13 +2,12 @@ package io.github.aicyi.midware.web;
 
 import io.github.aicyi.commons.lang.exception.BaseException;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
-import io.github.aicyi.commons.util.Assert;
 import io.github.aicyi.midware.web.util.WebRequestLogRecorder;
 import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -53,12 +52,12 @@ public class GlobalExceptionHandler {
 
         e.getBindingResult().getAllErrors().forEach(err -> {
 
-                    Object[] arguments = err.getArguments();
+                    // 字段校验失败取字段名，对象级校验失败取对象名
+                    String name = err instanceof FieldError
+                            ? ((FieldError) err).getField()
+                            : err.getObjectName();
 
-                    Assert.notNull(arguments, "arguments");
-
-                    messageList
-                            .add(((DefaultMessageSourceResolvable) arguments[0]).getDefaultMessage() + ":" + err.getDefaultMessage());
+                    messageList.add(name + ":" + err.getDefaultMessage());
                 }
         );
 
