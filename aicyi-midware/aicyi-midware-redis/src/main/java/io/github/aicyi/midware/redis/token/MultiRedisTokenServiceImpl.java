@@ -128,7 +128,7 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
     /**
      * 剔除老设备
      *
-     * @param principalId
+     * @param principalId 用户ID
      */
     private void kickOutOldestToken(String principalId) {
 
@@ -151,13 +151,24 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
 
         redisTemplate.opsForZSet().remove(principalId, oldestToken);
 
-        logger.info("剔除设备：{}", oldestToken);
+        logger.info("剔除设备：{}", maskToken(oldestToken));
+    }
+
+    /**
+     * Token 脱敏：仅保留前 8 位用于问题定位，避免凭证明文入日志
+     */
+    private static String maskToken(String token) {
+        if (token == null || token.length() <= 8) {
+            return "***";
+        }
+
+        return token.substring(0, 8) + "***";
     }
 
     /**
      * 删除已过期Token
      *
-     * @param principalId
+     * @param principalId 用户ID
      */
     private void removeExpiredTokens(String principalId) {
 

@@ -85,7 +85,7 @@ public class RedissonDistributedLock implements DistributedLock {
     @Override
     public boolean tryLock(Duration waitTime, Duration leaseTime) throws InterruptedException {
         Assert.notNull(waitTime, "waitTime");
-        Assert.notNull(waitTime, "leaseTime");
+        Assert.notNull(leaseTime, "leaseTime");
 
         validateDuration(waitTime, "waitTime");
         validateDuration(leaseTime, "leaseTime");

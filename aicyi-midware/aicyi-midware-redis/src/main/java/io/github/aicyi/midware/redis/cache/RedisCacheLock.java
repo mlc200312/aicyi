@@ -6,6 +6,8 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -29,7 +31,11 @@ public class RedisCacheLock implements CacheLock {
     }
 
     private final StringRedisTemplate template;
-    private final ThreadLocal<String> lockValue = new ThreadLocal<>();
+
+    /**
+     * 按锁 key 持有各自的随机值，避免同一线程持有多个锁时互相覆盖
+     */
+    private final ThreadLocal<Map<String, String>> lockValues = ThreadLocal.withInitial(HashMap::new);
 
     public RedisCacheLock(StringRedisTemplate template) {
         this.template = template;
@@ -42,7 +48,7 @@ public class RedisCacheLock implements CacheLock {
         Boolean success = template.opsForValue().setIfAbsent(key, value, ttl);
 
         if (Boolean.TRUE.equals(success)) {
-            lockValue.set(value);
+            lockValues.get().put(key, value);
             return true;
         }
 
@@ -51,7 +57,13 @@ public class RedisCacheLock implements CacheLock {
 
     @Override
     public void unlock(String key) {
-        String expected = lockValue.get();
+        Map<String, String> values = lockValues.get();
+
+        String expected = values.remove(key);
+
+        if (values.isEmpty()) {
+            lockValues.remove();
+        }
 
         if (expected == null) {
             return;
@@ -62,7 +74,5 @@ public class RedisCacheLock implements CacheLock {
                 Collections.singletonList(key),
                 expected
         );
-
-        lockValue.remove();
     }
 }
