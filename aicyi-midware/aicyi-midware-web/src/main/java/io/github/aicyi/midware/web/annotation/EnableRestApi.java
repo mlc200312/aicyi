@@ -40,7 +40,7 @@ public @interface EnableRestApi {
      * 是否开启身份验证拦截，默认开启
      * <p>
      * 开启后未标注 {@link IgnoreAuth} 的接口必须携带合法 Bearer Token；
-     * 容器中不存在 {@code AuthenticationTokenService<IJWTInfo>} Bean 时自动降级为仅记录请求日志
+     * 容器中不存在 {@code AuthenticationTokenService} Bean 时启动即失败，防止鉴权配置遗漏流入生产
      */
     boolean enableAuth() default true;
 
