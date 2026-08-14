@@ -4,7 +4,6 @@ import io.github.aicyi.commons.core.token.AuthenticationTokens;
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;
-import io.github.aicyi.midware.web.util.WebRequestLogRecorder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.web.method.HandlerMethod;
@@ -17,33 +16,14 @@ import java.util.Objects;
 /**
  * @author Mr.Min
  * @description 身份验证拦截器
+ * <p>
+ * 校验 Bearer Token 并写入当前用户上下文；请求日志职责由 {@link RequestLogInterceptor} 独立承担
  * @date 2021/5/2
  **/
 public class AuthInterceptor implements HandlerInterceptor {
 
-    /**
-     * 是否记录请求信息日志（含请求开始时间标记）
-     */
-    private final boolean recordRequestLog;
-
-    public AuthInterceptor() {
-        this(true);
-    }
-
-    /**
-     * @param recordRequestLog 是否记录请求信息日志
-     */
-    public AuthInterceptor(boolean recordRequestLog) {
-        this.recordRequestLog = recordRequestLog;
-    }
-
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
-
-        if (recordRequestLog) {
-            // 标记请求开始时间，用于计算响应耗时
-            WebRequestLogRecorder.markStart(request);
-        }
 
         // Token 服务未注册时不进行身份验证，直接放行
         if (!AuthenticationTokens.isRegistered() || !(handler instanceof HandlerMethod)) {
@@ -80,14 +60,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception e) throws Exception {
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler, Exception e) {
 
-        try {
-            if (recordRequestLog) {
-                WebRequestLogRecorder.record(request, response);
-            }
-        } finally {
-            CurrentContextHolder.remove();
-        }
+        CurrentContextHolder.remove();
     }
 }

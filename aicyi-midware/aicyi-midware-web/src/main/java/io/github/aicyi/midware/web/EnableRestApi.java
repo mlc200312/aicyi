@@ -10,10 +10,11 @@ import java.lang.annotation.*;
  * <p>
  * 标注在 Spring Boot 启动类或任意配置类上，自动装配以下能力：
  * <ul>
- *     <li>{@link AuthInterceptor}：身份验证拦截（依赖容器中的 {@code AuthenticationTokenService<IJWTInfo>} Bean，
- *     接口可通过 {@link IgnoreAuth} 跳过鉴权），同时标记请求开始时间</li>
+ *     <li>{@link AuthInterceptor}：身份验证拦截（依赖 AuthenticationTokens 工具，
+ *     接口可通过 {@link IgnoreAuth} 跳过鉴权），可通过 {@link #enableAuth()} 关闭</li>
+ *     <li>{@link RequestLogInterceptor}：请求信息日志，请求结束时输出完整 {@link WebRequestLog}（入参、出参、耗时），
+ *     可通过 {@link #enableRequestLog()} 关闭</li>
  *     <li>{@link CachingRequestBodyFilter}：请求体缓存过滤器，使请求体在任意阶段可重复读取</li>
- *     <li>请求信息日志：请求结束时由拦截器输出完整 {@link WebRequestLog}（入参、出参、耗时）</li>
  *     <li>{@link GlobalExceptionHandler}：全局异常处理器，统一异常响应并记录异常请求日志，
  *     可通过 {@link #enableGlobalExceptionHandler()} 关闭</li>
  * </ul>
@@ -22,7 +23,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
-@Import({RestApiConfiguration.class})
+@Import({RestApiWebMvcConfiguration.class, RestApiExceptionConfiguration.class, RestApiAuthenticationConfiguration.class})
 public @interface EnableRestApi {
 
     /**
@@ -41,12 +42,12 @@ public @interface EnableRestApi {
     boolean enableAuth() default true;
 
     /**
-     * 是否开启请求信息日志与请求体缓存过滤器，默认开启
+     * 是否开启请求信息日志（{@link RequestLogInterceptor}），默认开启
      */
     boolean enableRequestLog() default true;
 
     /**
      * 拦截器排除路径（Ant 风格），匹配的路径不进行身份验证，如静态资源、接口文档
      */
-    String[] excludePathPatterns() default {};
+    String[] authExcludePathPatterns() default {};
 }
