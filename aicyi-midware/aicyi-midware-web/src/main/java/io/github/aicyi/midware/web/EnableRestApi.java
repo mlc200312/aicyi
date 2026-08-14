@@ -14,7 +14,8 @@ import java.lang.annotation.*;
  *     接口可通过 {@link IgnoreAuth} 跳过鉴权），同时标记请求开始时间</li>
  *     <li>{@link CachingRequestBodyFilter}：请求体缓存过滤器，使请求体在任意阶段可重复读取</li>
  *     <li>请求信息日志：请求结束时由拦截器输出完整 {@link WebRequestLog}（入参、出参、耗时）</li>
- *     <li>{@link GlobalExceptionHandler}：全局异常处理器，统一异常响应并记录异常请求日志</li>
+ *     <li>{@link GlobalExceptionHandler}：全局异常处理器，统一异常响应并记录异常请求日志，
+ *     可通过 {@link #enableGlobalExceptionHandler()} 关闭</li>
  * </ul>
  * @date 2020-02-19
  **/
@@ -23,6 +24,13 @@ import java.lang.annotation.*;
 @Documented
 @Import({RestApiConfiguration.class})
 public @interface EnableRestApi {
+
+    /**
+     * 是否注入 {@link GlobalExceptionHandler} 全局异常处理器，默认注入
+     * <p>
+     * 设为 false 时不注入，适用于业务方自定义统一异常处理（如已有其他 {@code @RestControllerAdvice}）的场景
+     */
+    boolean enableGlobalExceptionHandler() default true;
 
     /**
      * 是否开启身份验证拦截，默认开启

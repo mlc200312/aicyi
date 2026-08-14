@@ -41,6 +41,8 @@ public class RestApiConfiguration implements WebMvcConfigurer, ImportAware {
 
     private final ObjectProvider<AuthInterceptor> authInterceptorProvider;
 
+    private boolean enableGlobalExceptionHandler = true;
+
     private boolean enableAuth = true;
 
     private boolean enableRequestLog = true;
@@ -58,16 +60,21 @@ public class RestApiConfiguration implements WebMvcConfigurer, ImportAware {
             return;
         }
         AnnotationAttributes annotationAttributes = AnnotationAttributes.fromMap(attributes);
+        this.enableGlobalExceptionHandler = annotationAttributes.getBoolean("enableGlobalExceptionHandler");
         this.enableAuth = annotationAttributes.getBoolean("enableAuth");
         this.enableRequestLog = annotationAttributes.getBoolean("enableRequestLog");
         this.excludePathPatterns = annotationAttributes.getStringArray("excludePathPatterns");
     }
 
     /**
-     * 全局异常处理器，统一异常响应并记录异常请求日志
+     * 全局异常处理器，统一异常响应并记录异常请求日志；
+     * {@code enableGlobalExceptionHandler = false} 时不注入
      */
     @Bean
     public GlobalExceptionHandler globalExceptionHandler() {
+        if (!enableGlobalExceptionHandler) {
+            return null;
+        }
         return new GlobalExceptionHandler();
     }
 
@@ -77,6 +84,9 @@ public class RestApiConfiguration implements WebMvcConfigurer, ImportAware {
      */
     @Bean
     public AuthenticationTokenServiceRegistrar authenticationTokenServiceRegistrar(ObjectProvider<AuthenticationTokenService<?>> tokenServiceProvider) {
+        if (!enableAuth) {
+            return null;
+        }
         return new AuthenticationTokenServiceRegistrar(tokenServiceProvider);
     }
 
