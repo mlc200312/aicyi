@@ -5,7 +5,7 @@ import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.example.service.util.UserSessions;
 import io.github.aicyi.example.web.vo.UserInfoResp;
-import io.github.aicyi.midware.web.Response;
+import io.github.aicyi.midware.web.model.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

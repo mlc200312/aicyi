@@ -1,6 +1,6 @@
 package io.github.aicyi.example.boot;
 
-import io.github.aicyi.midware.web.EnableRestApi;
+import io.github.aicyi.midware.web.annotation.EnableRestApi;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

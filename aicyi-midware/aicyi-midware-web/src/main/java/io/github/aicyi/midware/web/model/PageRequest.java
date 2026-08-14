@@ -1,8 +1,6 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.midware.web.model;
 
 import io.github.aicyi.commons.lang.model.BaseBean;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -12,14 +10,12 @@ import javax.validation.constraints.Positive;
  * @description 分页请求对象
  * @date 15:12
  **/
-@ApiModel("分页请求对象")
 public class PageRequest extends BaseBean {
     /**
      * 当前页码
      */
     @Positive
     @NotNull
-    @ApiModelProperty(value = "当前页码", example = "1")
     private Integer page;
 
     /**
@@ -27,7 +23,6 @@ public class PageRequest extends BaseBean {
      */
     @Positive
     @NotNull
-    @ApiModelProperty(value = "每页条数", example = "10")
     private Integer size;
 
     public Integer getPage() {

@@ -1,7 +1,6 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.midware.web.model;
 
 import io.github.aicyi.commons.lang.model.BaseBean;
-import io.swagger.annotations.ApiModel;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.List;
  * @description 分页响应对象
  * @date 14:24
  **/
-@ApiModel("分页响应对象")
 public class PageResponse<E> extends BaseBean {
     /**
      * 当前页数据列表
@@ -107,12 +105,11 @@ public class PageResponse<E> extends BaseBean {
     /**
      * 构建分页结果
      *
-     * @param list
-     * @param page
-     * @param size
-     * @param total
-     * @param <E>
-     * @return
+     * @param list  当前页数据列表
+     * @param page  当前页码（从 1 开始）
+     * @param size  每页条数
+     * @param total 总记录数
+     * @return 分页结果
      */
     public static <E> PageResponse<E> build(List<E> list, int page, int size, long total) {
         PageResponse<E> pageResponse = new PageResponse<>();
@@ -121,7 +118,7 @@ public class PageResponse<E> extends BaseBean {
         pageResponse.setSize(size);
         pageResponse.setTotal(total);
 
-        long pages = (total + size - 1) / size;
+        long pages = size > 0 ? (total + size - 1) / size : 0;
         pageResponse.setPages(pages);
         pageResponse.setHasPrev(page > 1);
         pageResponse.setHasNext(page < pages);
@@ -131,9 +128,9 @@ public class PageResponse<E> extends BaseBean {
     /**
      * 构建分页结果
      *
-     * @param <E>
-     * @param page
-     * @return
+     * @param list 当前页数据列表
+     * @param page Spring Data 分页对象
+     * @return 分页结果
      */
     public static <E> PageResponse<E> build(List<E> list, Page page) {
         return build(list, page.getNumber() + 1, page.getSize(), page.getTotalElements());

@@ -5,12 +5,11 @@ import io.github.aicyi.commons.core.BeanMapper;
 import io.github.aicyi.example.domain.SendCaptchaParam;
 import io.github.aicyi.example.service.CaptchaService;
 import io.github.aicyi.example.web.vo.*;
-import io.github.aicyi.midware.web.IgnoreAuth;
-import io.github.aicyi.midware.web.Response;
+import io.github.aicyi.midware.web.annotation.IgnoreAuth;
+import io.github.aicyi.midware.web.model.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

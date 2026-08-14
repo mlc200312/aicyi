@@ -1,7 +1,7 @@
 package io.github.aicyi.example.consumer.aop;
 
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
-import io.github.aicyi.midware.web.Response;
+import io.github.aicyi.midware.web.model.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.MessageHandlingException;

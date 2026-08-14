@@ -1,5 +1,6 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.midware.web.annotation;
 
+import io.github.aicyi.midware.web.config.RestApiConfigurationRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -8,26 +9,28 @@ import java.lang.annotation.*;
  * @author Mr.Min
  * @description Web 能力开启注解
  * <p>
- * 标注在 Spring Boot 启动类或任意配置类上，自动装配以下能力：
+ * 标注在 Spring Boot 启动类或任意配置类上，通过 {@link RestApiConfigurationRegistrar} 按需装配以下能力：
  * <ul>
- *     <li>{@link AuthInterceptor}：身份验证拦截（依赖 AuthenticationTokens 工具，
+ *     <li>鉴权拦截器：身份验证拦截（依赖 AuthenticationTokens 工具，
  *     接口可通过 {@link IgnoreAuth} 跳过鉴权），可通过 {@link #enableAuth()} 关闭</li>
- *     <li>{@link RequestLogInterceptor}：请求信息日志，请求结束时输出完整 {@link WebRequestLog}（入参、出参、耗时），
+ *     <li>请求日志拦截器：请求信息日志，请求结束时输出完整请求日志（入参、出参、耗时），
  *     可通过 {@link #enableRequestLog()} 关闭</li>
- *     <li>{@link CachingRequestBodyFilter}：请求体缓存过滤器，使请求体在任意阶段可重复读取</li>
- *     <li>{@link GlobalExceptionHandler}：全局异常处理器，统一异常响应并记录异常请求日志，
+ *     <li>请求体缓存过滤器：使请求体在任意阶段可重复读取</li>
+ *     <li>全局异常处理器：统一异常响应并记录异常请求日志，
  *     可通过 {@link #enableGlobalExceptionHandler()} 关闭</li>
  * </ul>
+ * <p>
+ * 注意：同一应用中请仅在一处标注本注解，重复标注时仅首个声明生效并输出告警日志
  * @date 2020-02-19
  **/
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
-@Import({RestApiWebMvcConfiguration.class, RestApiExceptionConfiguration.class, RestApiAuthenticationConfiguration.class})
+@Import(RestApiConfigurationRegistrar.class)
 public @interface EnableRestApi {
 
     /**
-     * 是否注入 {@link GlobalExceptionHandler} 全局异常处理器，默认注入
+     * 是否注入全局异常处理器，默认注入
      * <p>
      * 设为 false 时不注入，适用于业务方自定义统一异常处理（如已有其他 {@code @RestControllerAdvice}）的场景
      */
@@ -42,7 +45,7 @@ public @interface EnableRestApi {
     boolean enableAuth() default true;
 
     /**
-     * 是否开启请求信息日志（{@link RequestLogInterceptor}），默认开启
+     * 是否开启请求信息日志，默认开启
      */
     boolean enableRequestLog() default true;
 

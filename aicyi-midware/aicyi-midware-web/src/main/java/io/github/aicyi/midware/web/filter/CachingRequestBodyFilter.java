@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.midware.web.filter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

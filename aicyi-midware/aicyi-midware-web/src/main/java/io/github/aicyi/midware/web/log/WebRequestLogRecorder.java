@@ -1,10 +1,9 @@
-package io.github.aicyi.midware.web.util;
+package io.github.aicyi.midware.web.log;
 
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.UUIDUtils;
-import io.github.aicyi.midware.web.CachedBodyRequestWrapper;
-import io.github.aicyi.midware.web.WebRequestLog;
+import io.github.aicyi.midware.web.filter.CachedBodyRequestWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
@@ -12,21 +11,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Web 请求日志记录器
  * <p>
  * 负责将一次 HTTP 请求的入参、出参、耗时与异常信息组装为 {@link WebRequestLog} 并按结果级别输出。
  * <p>
+ * 日志安全：敏感参数（如 password、token 等）自动脱敏，请求体超长时自动截断，防止敏感信息泄露与日志膨胀。
+ * <p>
  * 典型用法：
  * <pre>
  *     // 请求进入时标记开始时间（如拦截器 preHandle）
  *     WebRequestLogRecorder.markStart(request);
  *     // 请求结束时记录日志（如拦截器 afterCompletion）
- *     WebRequestLogRecorder.record(request, response, error);
+ *     WebRequestLogRecorder.record(request, response);
  * </pre>
  *
  * @author Mr.Min
@@ -53,6 +57,24 @@ public final class WebRequestLogRecorder {
      * 异常已记录日志标记属性名（仅模块内部约定，外部请通过 {@link #markErrorLogged(HttpServletRequest)} 标记）
      */
     private static final String ERROR_LOGGED_ATTRIBUTE = WebRequestLogRecorder.class.getName() + ".errorLogged";
+
+    /**
+     * 日志输出的请求体最大长度，超出部分截断
+     */
+    private static final int MAX_LOG_BODY_LENGTH = 2048;
+
+    /**
+     * 敏感参数名关键字（小写匹配），命中的参数值以 ****** 代替
+     */
+    private static final List<String> SENSITIVE_KEYWORDS = Arrays.asList(
+            "password", "pwd", "passwd", "secret", "token", "credential", "authorization");
+
+    /**
+     * 请求体敏感字段匹配模式（JSON 风格键值对），命中键的值替换为 ******
+     */
+    private static final Pattern SENSITIVE_BODY_PATTERN = Pattern.compile(
+            "(\"[^\"]*(?:password|pwd|passwd|secret|token|credential|authorization)[^\"]*\"\\s*:\\s*\")[^\"]*(\")",
+            Pattern.CASE_INSENSITIVE);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebRequestLogRecorder.class);
 
@@ -204,7 +226,7 @@ public final class WebRequestLogRecorder {
     }
 
     /**
-     * 解析 Query 参数，多值参数保留数组形式
+     * 解析 Query 参数，多值参数保留数组形式，敏感参数值脱敏
      */
     private static Map<String, Object> resolveQueryParams(HttpServletRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();
@@ -214,19 +236,32 @@ public final class WebRequestLogRecorder {
         }
 
         Map<String, Object> queryParams = new LinkedHashMap<>(parameterMap.size());
-        parameterMap.forEach((name, values) ->
-                queryParams.put(name, values != null && values.length == 1 ? values[0] : values));
+        parameterMap.forEach((name, values) -> {
+            if (isSensitiveName(name)) {
+                queryParams.put(name, "******");
+            } else {
+                queryParams.put(name, values != null && values.length == 1 ? values[0] : values);
+            }
+        });
 
         return queryParams;
     }
 
     /**
-     * 解析请求体
+     * 解析请求体并做脱敏与截断
      * <p>
      * 优先从 {@link CachedBodyRequestWrapper} 预缓存读取（任意阶段可用），
      * 兼容 {@link ContentCachingRequestWrapper} 懒缓存（仅在请求体已被消费后有效）。
      */
     private static String resolveBody(HttpServletRequest request) {
+        String body = readBody(request);
+        return truncateBody(maskSensitiveBody(body));
+    }
+
+    /**
+     * 读取原始请求体文本
+     */
+    private static String readBody(HttpServletRequest request) {
         if (request instanceof CachedBodyRequestWrapper) {
             byte[] bodyBytes = ((CachedBodyRequestWrapper) request).getContentAsByteArray();
             return bodyBytes.length == 0 ? "" : new String(bodyBytes, resolveCharset(request.getCharacterEncoding()));
@@ -239,6 +274,40 @@ public final class WebRequestLogRecorder {
         }
 
         return "";
+    }
+
+    /**
+     * 判断参数名是否命中敏感关键字
+     */
+    private static boolean isSensitiveName(String name) {
+        if (StringUtils.isBlank(name)) {
+            return false;
+        }
+
+        String lowerCaseName = name.toLowerCase();
+        return SENSITIVE_KEYWORDS.stream().anyMatch(lowerCaseName::contains);
+    }
+
+    /**
+     * 对请求体中 JSON 风格的敏感字段值脱敏
+     */
+    private static String maskSensitiveBody(String body) {
+        if (StringUtils.isBlank(body)) {
+            return body;
+        }
+
+        return SENSITIVE_BODY_PATTERN.matcher(body).replaceAll("$1******$2");
+    }
+
+    /**
+     * 请求体超长时截断，防止日志膨胀
+     */
+    private static String truncateBody(String body) {
+        if (StringUtils.isEmpty(body) || body.length() <= MAX_LOG_BODY_LENGTH) {
+            return body;
+        }
+
+        return body.substring(0, MAX_LOG_BODY_LENGTH) + "...(truncated, totalLength=" + body.length() + ")";
     }
 
     /**

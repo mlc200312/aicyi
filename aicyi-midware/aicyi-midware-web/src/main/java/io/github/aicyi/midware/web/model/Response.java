@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.midware.web.model;
 
 import io.github.aicyi.commons.lang.model.BaseBean;
 import io.github.aicyi.commons.lang.IResponse;

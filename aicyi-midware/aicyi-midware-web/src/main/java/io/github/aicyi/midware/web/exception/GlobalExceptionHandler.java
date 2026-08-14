@@ -1,9 +1,9 @@
-package io.github.aicyi.midware.web;
+package io.github.aicyi.midware.web.exception;
 
 import io.github.aicyi.commons.lang.exception.BaseException;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
-import io.github.aicyi.midware.web.util.WebRequestLogRecorder;
-import org.hibernate.validator.internal.engine.path.PathImpl;
+import io.github.aicyi.midware.web.log.WebRequestLogRecorder;
+import io.github.aicyi.midware.web.model.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +81,7 @@ public class GlobalExceptionHandler {
         List<String> messageList = new ArrayList<>();
 
         e.getConstraintViolations().forEach(err -> messageList
-                .add(((PathImpl) err.getPropertyPath()).getLeafNode().getName() + ":" + err.getMessage())
+                .add(resolvePropertyName(err.getPropertyPath()) + ":" + err.getMessage())
         );
 
         String message = String.join(",", messageList);
@@ -88,6 +89,21 @@ public class GlobalExceptionHandler {
         WebRequestLogRecorder.logError(request, e);
 
         return new ResponseEntity<>(Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message), null, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 解析约束违反的属性名：取属性路径的叶子节点名，仅依赖标准 {@link Path} API，不耦合具体校验实现
+     */
+    private static String resolvePropertyName(Path propertyPath) {
+        if (propertyPath == null) {
+            return "";
+        }
+
+        String name = null;
+        for (Path.Node node : propertyPath) {
+            name = node.getName();
+        }
+        return name != null ? name : propertyPath.toString();
     }
 
     /**
@@ -116,7 +132,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return new ResponseEntity<>(Response.failure(e.getCodeAsString(), e.getMessage()), null, e.getStatus());
+        return new ResponseEntity<>(Response.failure(e.getCodeAsString(), e.getMessage()), null, resolveHttpStatus(e));
     }
 
     /**
@@ -131,5 +147,20 @@ public class GlobalExceptionHandler {
         WebRequestLogRecorder.logError(request, e);
 
         return new ResponseEntity<>(Response.failure(CommonResultCode.SYSTEM_ERROR), null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 解析业务异常对应的 HTTP 状态码；从业务 code 推导出的状态码非法时回退 500，避免响应阶段二次异常
+     */
+    private static HttpStatus resolveHttpStatus(BaseException e) {
+        try {
+            HttpStatus status = HttpStatus.resolve(e.getStatus());
+            if (status != null) {
+                return status;
+            }
+        } catch (Exception ignored) {
+            // 业务 code 推导状态码失败（如位数不足），回退默认状态码
+        }
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 }
