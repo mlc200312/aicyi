@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.web.auth;
 
-import io.github.aicyi.commons.core.token.AuthenticationTokens;
+import io.github.aicyi.commons.core.token.AuthenticationTokenService;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
 import io.github.aicyi.commons.util.CurrentContextHolder;
 import io.github.aicyi.midware.web.annotation.IgnoreAuth;
@@ -19,7 +19,7 @@ import java.util.Objects;
  * @description 身份验证拦截器
  * <p>
  * 校验 Bearer Token 并通过 {@link AuthenticatedPrincipalHandler} 写入当前用户上下文；
- * 请求日志职责由请求日志拦截器独立承担
+ * Token 服务通过容器注入（不依赖静态注册状态），请求日志职责由请求日志拦截器独立承担
  * @date 2021/5/2
  **/
 public class AuthInterceptor implements HandlerInterceptor {
@@ -29,19 +29,24 @@ public class AuthInterceptor implements HandlerInterceptor {
      */
     private static final String BEARER_PREFIX = "Bearer ";
 
+    private final ObjectProvider<AuthenticationTokenService<?>> tokenServiceProvider;
+
     private final ObjectProvider<AuthenticatedPrincipalHandler> principalHandlerProvider;
 
     private final AuthenticatedPrincipalHandler defaultPrincipalHandler = new JwtPrincipalHandler();
 
-    public AuthInterceptor(ObjectProvider<AuthenticatedPrincipalHandler> principalHandlerProvider) {
+    public AuthInterceptor(ObjectProvider<AuthenticationTokenService<?>> tokenServiceProvider,
+                           ObjectProvider<AuthenticatedPrincipalHandler> principalHandlerProvider) {
+        this.tokenServiceProvider = tokenServiceProvider;
         this.principalHandlerProvider = principalHandlerProvider;
     }
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
 
+        AuthenticationTokenService<?> tokenService = tokenServiceProvider.getIfAvailable();
         // Token 服务未注册时不进行身份验证，直接放行
-        if (!AuthenticationTokens.isRegistered() || !(handler instanceof HandlerMethod)) {
+        if (tokenService == null || !(handler instanceof HandlerMethod)) {
             return true;
         }
 
@@ -67,11 +72,11 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new UnauthorizedException();
         }
 
-        if (!AuthenticationTokens.validateAccessToken(accessToken)) {
+        if (!tokenService.validateAccessToken(accessToken)) {
             throw new UnauthorizedException();
         }
 
-        Object principal = AuthenticationTokens.parsePrincipal(accessToken);
+        Object principal = tokenService.parsePrincipal(accessToken);
 
         // 通过 SPI 写入用户上下文，默认处理 IJWTInfo 主体，业务可替换
         principalHandlerProvider.getIfAvailable(() -> defaultPrincipalHandler).handle(principal);

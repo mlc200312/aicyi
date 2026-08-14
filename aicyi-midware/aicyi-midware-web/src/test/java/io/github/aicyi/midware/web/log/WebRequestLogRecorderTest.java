@@ -1,6 +1,7 @@
 package io.github.aicyi.midware.web.log;
 
 import io.github.aicyi.midware.web.filter.CachedBodyRequestWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -48,6 +49,26 @@ class WebRequestLogRecorderTest {
         assertEquals("header-id", WebRequestLogRecorder.getRequestId(request));
         // 回填后再次获取保持一致
         assertEquals("header-id", WebRequestLogRecorder.getRequestId(request));
+    }
+
+    @Test
+    void getRequestIdRejectsMaliciousHeader() {
+        // 含控制字符（日志注入）拒绝采纳，自动生成
+        MockHttpServletRequest controlCharRequest = new MockHttpServletRequest();
+        controlCharRequest.addHeader(WebRequestLogRecorder.REQUEST_ID_HEADER, "id\nfake-log-line");
+        String generated = WebRequestLogRecorder.getRequestId(controlCharRequest);
+        assertTrue(StringUtils.isNotBlank(generated));
+        assertFalse("id\nfake-log-line".equals(generated));
+
+        // 超长拒绝采纳，自动生成
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 100; i++) {
+            sb.append('a');
+        }
+        MockHttpServletRequest longRequest = new MockHttpServletRequest();
+        longRequest.addHeader(WebRequestLogRecorder.REQUEST_ID_HEADER, sb.toString());
+        String longGenerated = WebRequestLogRecorder.getRequestId(longRequest);
+        assertTrue(longGenerated.length() <= 64);
     }
 
     @Test

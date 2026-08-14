@@ -1,5 +1,6 @@
 package io.github.aicyi.midware.web.filter;
 
+import io.github.aicyi.midware.web.util.CharsetUtils;
 import org.springframework.util.StreamUtils;
 
 import javax.servlet.ReadListener;
@@ -11,8 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * 请求体预缓存包装器
@@ -79,7 +78,7 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public BufferedReader getReader() {
-        return new BufferedReader(new InputStreamReader(getInputStream(), resolveCharset(getCharacterEncoding())));
+        return new BufferedReader(new InputStreamReader(getInputStream(), CharsetUtils.resolveCharset(getCharacterEncoding())));
     }
 
     /**
@@ -97,20 +96,6 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
         String lowerCaseContentType = contentType.toLowerCase();
         return !lowerCaseContentType.startsWith("multipart/")
                 && !lowerCaseContentType.startsWith("application/x-www-form-urlencoded");
-    }
-
-    /**
-     * 解析字符集，非法或未指定时回退 UTF-8
-     */
-    private static Charset resolveCharset(String encoding) {
-        if (encoding == null || encoding.isEmpty()) {
-            return StandardCharsets.UTF_8;
-        }
-        try {
-            return Charset.forName(encoding);
-        } catch (Exception e) {
-            return StandardCharsets.UTF_8;
-        }
     }
 
     /**

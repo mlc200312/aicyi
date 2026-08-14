@@ -5,13 +5,12 @@ import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.JsonSensitiveMaskUtil;
 import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.midware.web.filter.CachedBodyRequestWrapper;
+import io.github.aicyi.midware.web.util.CharsetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -62,6 +61,11 @@ public final class WebRequestLogRecorder {
      * 日志输出的请求体最大长度，超出部分截断
      */
     private static final int MAX_LOG_BODY_LENGTH = 2048;
+
+    /**
+     * 外部传入请求 ID 的最大长度，超出则拒绝采纳并自动生成，防止恶意超长 Header 污染日志
+     */
+    private static final int MAX_REQUEST_ID_LENGTH = 64;
 
     /**
      * 敏感参数名关键字（小写匹配），命中的参数值以 ****** 代替
@@ -115,7 +119,7 @@ public final class WebRequestLogRecorder {
     /**
      * 解析请求 ID
      * <p>
-     * 优先取请求属性，其次取 {@value #REQUEST_ID_HEADER} Header，最后自动生成。
+     * 优先取请求属性，其次取 {@value #REQUEST_ID_HEADER} Header（需通过安全校验），最后自动生成。
      * 首次解析结果会回填请求属性，保证同一请求在任意阶段（如异常处理器与拦截器）获取的 ID 一致。
      *
      * @param request HTTP 请求
@@ -128,7 +132,7 @@ public final class WebRequestLogRecorder {
         }
 
         String headerRequestId = request.getHeader(REQUEST_ID_HEADER);
-        if (StringUtils.isNotBlank(headerRequestId)) {
+        if (isAcceptableRequestId(headerRequestId)) {
             request.setAttribute(REQUEST_ID_ATTRIBUTE, headerRequestId);
             return headerRequestId;
         }
@@ -136,6 +140,28 @@ public final class WebRequestLogRecorder {
         String generatedRequestId = UUIDUtils.generateV7Id();
         request.setAttribute(REQUEST_ID_ATTRIBUTE, generatedRequestId);
         return generatedRequestId;
+    }
+
+    /**
+     * 校验外部传入的请求 ID 是否可采纳
+     * <p>
+     * 拒绝空值、超长（防日志膨胀）与含控制字符（防日志注入）的值，不合法时回退自动生成
+     *
+     * @param requestId 外部请求 ID
+     * @return 可采纳时返回 true
+     */
+    private static boolean isAcceptableRequestId(String requestId) {
+        if (StringUtils.isBlank(requestId) || requestId.length() > MAX_REQUEST_ID_LENGTH) {
+            return false;
+        }
+
+        for (int i = 0; i < requestId.length(); i++) {
+            char c = requestId.charAt(i);
+            if (c <= 0x1F || c == 0x7F) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -257,13 +283,13 @@ public final class WebRequestLogRecorder {
     private static String readBody(HttpServletRequest request) {
         if (request instanceof CachedBodyRequestWrapper) {
             byte[] bodyBytes = ((CachedBodyRequestWrapper) request).getContentAsByteArray();
-            return bodyBytes.length == 0 ? "" : new String(bodyBytes, resolveCharset(request.getCharacterEncoding()));
+            return bodyBytes.length == 0 ? "" : new String(bodyBytes, CharsetUtils.resolveCharset(request.getCharacterEncoding()));
         }
 
         if (request instanceof ContentCachingRequestWrapper) {
             ContentCachingRequestWrapper wrapper = (ContentCachingRequestWrapper) request;
             byte[] bodyBytes = wrapper.getContentAsByteArray();
-            return bodyBytes.length == 0 ? "" : new String(bodyBytes, resolveCharset(wrapper.getCharacterEncoding()));
+            return bodyBytes.length == 0 ? "" : new String(bodyBytes, CharsetUtils.resolveCharset(wrapper.getCharacterEncoding()));
         }
 
         return "";
@@ -301,20 +327,6 @@ public final class WebRequestLogRecorder {
         }
 
         return body.substring(0, MAX_LOG_BODY_LENGTH) + "...(truncated, totalLength=" + body.length() + ")";
-    }
-
-    /**
-     * 解析字符集，非法或未指定时回退 UTF-8
-     */
-    private static Charset resolveCharset(String encoding) {
-        if (StringUtils.isBlank(encoding)) {
-            return StandardCharsets.UTF_8;
-        }
-        try {
-            return Charset.forName(encoding);
-        } catch (Exception e) {
-            return StandardCharsets.UTF_8;
-        }
     }
 
     /**
