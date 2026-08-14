@@ -2,6 +2,7 @@ package io.github.aicyi.midware.web.log;
 
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
+import io.github.aicyi.commons.util.JsonSensitiveMaskUtil;
 import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.midware.web.filter.CachedBodyRequestWrapper;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +17,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Web 请求日志记录器
@@ -68,13 +68,6 @@ public final class WebRequestLogRecorder {
      */
     private static final List<String> SENSITIVE_KEYWORDS = Arrays.asList(
             "password", "pwd", "passwd", "secret", "token", "credential", "authorization");
-
-    /**
-     * 请求体敏感字段匹配模式（JSON 风格键值对），命中键的值替换为 ******
-     */
-    private static final Pattern SENSITIVE_BODY_PATTERN = Pattern.compile(
-            "(\"[^\"]*(?:password|pwd|passwd|secret|token|credential|authorization)[^\"]*\"\\s*:\\s*\")[^\"]*(\")",
-            Pattern.CASE_INSENSITIVE);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebRequestLogRecorder.class);
 
@@ -296,7 +289,7 @@ public final class WebRequestLogRecorder {
             return body;
         }
 
-        return SENSITIVE_BODY_PATTERN.matcher(body).replaceAll("$1******$2");
+        return JsonSensitiveMaskUtil.maskJsonBody(body);
     }
 
     /**
