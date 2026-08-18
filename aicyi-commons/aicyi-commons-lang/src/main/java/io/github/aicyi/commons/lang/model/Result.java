@@ -14,6 +14,12 @@ public class Result<D> extends BaseBean implements IResult<Integer, D> {
     private String message;
     private D data;
 
+    /**
+     * 保留无参构造器，支持 Jackson 等框架反序列化；业务代码请使用静态工厂方法创建
+     */
+    protected Result() {
+    }
+
     private Result(Integer code, String message) {
         this.code = code;
         this.message = message;

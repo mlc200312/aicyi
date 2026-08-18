@@ -1,6 +1,5 @@
 package io.github.aicyi.commons.core.token;
 
-import io.github.aicyi.commons.lang.model.TokenCreateRequest;
 
 import java.util.Map;
 import java.util.Set;

@@ -2,7 +2,7 @@ package io.github.aicyi.midware.message.core.sender;
 
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageSendCallback;
-import io.github.aicyi.commons.lang.model.MessageSendResult;
+import io.github.aicyi.commons.core.message.MessageSendResult;
 import io.github.aicyi.commons.lang.Assert;
 import io.github.aicyi.midware.message.core.model.MessagePriority;
 

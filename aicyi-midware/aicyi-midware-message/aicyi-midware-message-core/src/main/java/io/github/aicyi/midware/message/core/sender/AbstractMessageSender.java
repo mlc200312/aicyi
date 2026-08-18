@@ -5,7 +5,7 @@ import io.github.aicyi.commons.core.message.MessageSendCallback;
 import io.github.aicyi.commons.core.message.MessageSender;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.lang.model.MessageSendResult;
+import io.github.aicyi.commons.core.message.MessageSendResult;
 import io.github.aicyi.commons.lang.Assert;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 
@@ -27,9 +27,7 @@ public abstract class AbstractMessageSender implements MessageSender {
             return doSend(content);
         } catch (MessageSendException e) {
             logger.error(e, "发送消息失败");
-            return MessageSendResult.builder()
-                    .messageId(content.getMessageId())
-                    .buildFailure(e.getCode(), e.getMessage());
+            return MessageSendResult.failure(content.getMessageId(), e.getCode(), e.getMessage());
         }
     }
 

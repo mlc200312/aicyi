@@ -4,15 +4,15 @@ import io.github.aicyi.commons.lang.EnumType;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 布尔类型枚举
  * @date 13:13
  **/
 public enum BooleanType implements EnumType {
     FALSE(0, "否"),
     TRUE(1, "是");
 
-    private int code;
-    private String description;
+    private final int code;
+    private final String description;
 
     BooleanType(int code, String description) {
         this.code = code;

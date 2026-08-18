@@ -3,7 +3,7 @@ package io.github.aicyi.example.web;
 import io.github.aicyi.commons.lang.model.Result;
 import io.github.aicyi.commons.core.mapper.BeanMapper;
 import io.github.aicyi.commons.core.token.AuthenticationTokens;
-import io.github.aicyi.commons.lang.model.TokenPair;
+import io.github.aicyi.commons.core.token.TokenPair;
 import io.github.aicyi.example.domain.LoginParam;
 import io.github.aicyi.example.domain.LoginResult;
 import io.github.aicyi.example.domain.RegisterParam;

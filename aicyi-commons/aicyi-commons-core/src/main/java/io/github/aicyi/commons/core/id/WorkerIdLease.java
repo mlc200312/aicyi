@@ -1,4 +1,6 @@
-package io.github.aicyi.commons.lang.model;
+package io.github.aicyi.commons.core.id;
+
+import io.github.aicyi.commons.lang.model.BaseBean;
 
 /**
  * @author Mr.Min

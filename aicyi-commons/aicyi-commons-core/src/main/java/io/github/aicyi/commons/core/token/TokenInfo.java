@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.lang.model;
+package io.github.aicyi.commons.core.token;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ import java.util.Map;
  * @description Token会话
  * @date 16:44
  **/
-public class TokenInfo<P> implements io.github.aicyi.commons.core.token.TokenSession<P> {
+public class TokenInfo<P> implements TokenSession<P> {
 
     /**
      * RefreshToken

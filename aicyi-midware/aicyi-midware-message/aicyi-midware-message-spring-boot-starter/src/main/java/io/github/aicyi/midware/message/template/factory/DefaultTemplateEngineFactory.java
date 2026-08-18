@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.template.factory;
 
-import io.github.aicyi.commons.lang.type.TemplateEngineType;
+import io.github.aicyi.commons.core.template.TemplateEngineType;
 import io.github.aicyi.commons.core.template.TemplateEngine;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 

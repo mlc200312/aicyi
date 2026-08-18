@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.lang.type;
+package io.github.aicyi.commons.core.template;
 
 import io.github.aicyi.commons.lang.StringEnumType;
 
@@ -31,8 +31,8 @@ public enum TemplateEngineType implements StringEnumType {
      */
     MUSTACHE("Mustache", "Mustache");
 
-    private String code;
-    private String description;
+    private final String code;
+    private final String description;
 
     TemplateEngineType(String code, String description) {
         this.code = code;

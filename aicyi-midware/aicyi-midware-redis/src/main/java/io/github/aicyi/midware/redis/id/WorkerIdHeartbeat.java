@@ -3,7 +3,7 @@ package io.github.aicyi.midware.redis.id;
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.core.id.WorkerIdAllocator;
-import io.github.aicyi.commons.lang.model.WorkerIdLease;
+import io.github.aicyi.commons.core.id.WorkerIdLease;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

@@ -2,7 +2,7 @@ package io.github.aicyi.example.boot.token;
 
 import io.github.aicyi.commons.core.mapper.BeanMapper;
 import io.github.aicyi.commons.core.token.AuthenticationTokenService;
-import io.github.aicyi.commons.lang.model.TokenPair;
+import io.github.aicyi.commons.core.token.TokenPair;
 import io.github.aicyi.commons.security.SecretKeyUtils;
 import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.example.boot.AicyiExampleApplication;

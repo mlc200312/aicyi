@@ -1,13 +1,9 @@
 package io.github.aicyi.commons.core.token;
 
-import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.lang.exception.TokenException;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
-import io.github.aicyi.commons.lang.model.TokenCreateRequest;
 import io.github.aicyi.commons.lang.Assert;
-import io.github.aicyi.commons.lang.model.TokenInfo;
-import io.github.aicyi.commons.logging.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Map;
@@ -22,8 +18,6 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractTokenService<P> implements TokenService<String, P> {
 
     protected static final long DEFAULT_TTL = TimeUnit.DAYS.toSeconds(7);
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final long refreshTtl;
 

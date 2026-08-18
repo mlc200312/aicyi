@@ -16,4 +16,8 @@ public class UnauthorizedException extends BaseException {
     public UnauthorizedException(String message) {
         super(CommonResultCode.UNAUTHORIZED.getCode(), message);
     }
+
+    public UnauthorizedException(String message, Throwable cause) {
+        super(CommonResultCode.UNAUTHORIZED.getCode(), message, cause);
+    }
 }

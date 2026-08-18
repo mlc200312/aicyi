@@ -2,7 +2,7 @@ package io.github.aicyi.midware.redis.token;
 
 import io.github.aicyi.commons.core.cache.CacheConfig;
 import io.github.aicyi.commons.security.MessageDigestUtils;
-import io.github.aicyi.commons.lang.model.TokenInfo;
+import io.github.aicyi.commons.core.token.TokenInfo;
 import io.github.aicyi.commons.core.token.TokenSession;
 import io.github.aicyi.commons.core.token.AbstractTokenService;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;

@@ -1,6 +1,6 @@
 package io.github.aicyi.example.boot.redis;
 
-import io.github.aicyi.commons.lang.model.TokenCreateRequest;
+import io.github.aicyi.commons.core.token.TokenCreateRequest;
 import io.github.aicyi.commons.core.token.TokenService;
 import io.github.aicyi.commons.security.token.jwt.JWTInfo;
 import io.github.aicyi.commons.util.Maps;

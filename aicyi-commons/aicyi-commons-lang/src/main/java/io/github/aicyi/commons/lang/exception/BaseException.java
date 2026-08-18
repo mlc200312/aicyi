@@ -4,7 +4,7 @@ import io.github.aicyi.commons.lang.IResultCode;
 
 /**
  * @author Mr.Min
- * @description 业务异常类
+ * @description 异常基类：持有错误码，子类为各业务/系统异常
  * @date 2026/4/21
  **/
 public abstract class BaseException extends RuntimeException {
@@ -38,8 +38,11 @@ public abstract class BaseException extends RuntimeException {
      * 错误码位数不足或非法时返回 null，由调用方决定回退策略
      */
     public Integer getStatus() {
+        if (code == null) {
+            return null;
+        }
         String codeAsString = getCodeAsString();
-        if (codeAsString == null || codeAsString.length() < 3) {
+        if (codeAsString.length() < 3) {
             return null;
         }
         try {

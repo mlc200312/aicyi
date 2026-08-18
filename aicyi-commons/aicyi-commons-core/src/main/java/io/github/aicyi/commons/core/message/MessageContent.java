@@ -1,6 +1,5 @@
 package io.github.aicyi.commons.core.message;
 
-import io.github.aicyi.commons.lang.type.MessageType;
 
 /**
  * @author Mr.Min

@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.redis.id;
 
 import io.github.aicyi.commons.core.id.WorkerIdAllocator;
-import io.github.aicyi.commons.lang.model.WorkerIdLease;
+import io.github.aicyi.commons.core.id.WorkerIdLease;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 

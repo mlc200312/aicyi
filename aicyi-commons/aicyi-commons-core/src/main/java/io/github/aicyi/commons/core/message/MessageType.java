@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.lang.type;
+package io.github.aicyi.commons.core.message;
 
 import io.github.aicyi.commons.lang.StringEnumType;
 
@@ -15,8 +15,8 @@ public enum MessageType implements StringEnumType {
     WECHAT_MP("wechat_mp", "微信公众号") // 新增微信公众号消息
     ;
 
-    private String code;
-    private String description;
+    private final String code;
+    private final String description;
 
     MessageType(String code, String description) {
         this.code = code;

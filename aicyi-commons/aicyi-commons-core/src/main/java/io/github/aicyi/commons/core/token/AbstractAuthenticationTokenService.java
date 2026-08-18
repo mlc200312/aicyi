@@ -3,8 +3,6 @@ package io.github.aicyi.commons.core.token;
 import io.github.aicyi.commons.core.PrincipalSerializer;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
-import io.github.aicyi.commons.lang.model.TokenCreateRequest;
-import io.github.aicyi.commons.lang.model.TokenPair;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;

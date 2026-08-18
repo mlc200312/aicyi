@@ -1,8 +1,10 @@
 package io.github.aicyi.midware.redis.token;
 
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
-import io.github.aicyi.commons.lang.model.TokenCreateRequest;
+import io.github.aicyi.commons.core.token.TokenCreateRequest;
 import io.github.aicyi.commons.lang.Assert;
+import io.github.aicyi.commons.logging.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 
@@ -18,6 +20,8 @@ import java.util.concurrent.TimeUnit;
  * @date 17:07
  **/
 public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenServiceImpl<P> implements RedisTokenService<P> {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 用户Token集合前缀

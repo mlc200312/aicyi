@@ -9,7 +9,7 @@ import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.service.channel.MessageChannels;
 import io.github.aicyi.midware.message.mail.model.MailMessage;
 import io.github.aicyi.midware.message.mq.model.MqMessage;
-import io.github.aicyi.commons.lang.model.MessageSendResult;
+import io.github.aicyi.commons.core.message.MessageSendResult;
 import io.github.aicyi.commons.core.message.MessageSendCallback;
 import io.github.aicyi.midware.message.core.sender.UnifiedMessageManager;
 import io.github.aicyi.example.fixture.util.BaseLoggerTest;

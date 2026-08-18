@@ -2,7 +2,7 @@ package io.github.aicyi.midware.message.factory;
 
 import io.github.aicyi.commons.core.message.MessageSender;
 import io.github.aicyi.midware.message.core.sender.MessageSenderFactory;
-import io.github.aicyi.commons.lang.type.MessageType;
+import io.github.aicyi.commons.core.message.MessageType;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -2,7 +2,7 @@ package io.github.aicyi.midware.message.mail.sender.impl;
 
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.midware.message.core.model.MessageFormat;
-import io.github.aicyi.commons.lang.type.TemplateEngineType;
+import io.github.aicyi.commons.core.template.TemplateEngineType;
 import io.github.aicyi.midware.message.core.template.AbstractTemplateSender;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
