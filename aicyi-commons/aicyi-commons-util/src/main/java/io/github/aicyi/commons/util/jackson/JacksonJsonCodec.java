@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.aicyi.commons.lang.EnumType;
-import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.codec.JsonCodec;
 import io.github.aicyi.commons.lang.StringEnumType;
 
 import java.io.IOException;
@@ -107,7 +107,7 @@ public final class JacksonJsonCodec implements JsonCodec {
     @Override
     public JavaType createParameterizedType(Class<?> rawType, Type... parameterTypes) {
         JavaType[] javaTypes = Arrays.stream(parameterTypes)
-                .map(type -> createJavaType(type))
+                .map(this::createJavaType)
                 .toArray(JavaType[]::new);
 
         return objectMapper.getTypeFactory().constructParametricType(rawType, javaTypes);

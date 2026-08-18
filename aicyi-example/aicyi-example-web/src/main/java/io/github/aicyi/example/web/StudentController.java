@@ -1,11 +1,10 @@
 package io.github.aicyi.example.web;
 
-import io.github.aicyi.commons.lang.IResponse;
-import io.github.aicyi.commons.core.BeanMapper;
+import io.github.aicyi.commons.lang.model.Result;
+import io.github.aicyi.commons.core.mapper.BeanMapper;
 import io.github.aicyi.example.domain.StudentQuery;
 import io.github.aicyi.example.web.vo.AddStudentReq;
 import io.github.aicyi.midware.web.model.PageResponse;
-import io.github.aicyi.midware.web.model.Response;
 import io.github.aicyi.example.domain.StudentBean;
 import io.github.aicyi.example.web.vo.StudentReq;
 import io.github.aicyi.example.web.vo.StudentResp;
@@ -44,10 +43,10 @@ public class StudentController {
             dataTypeClass = String.class
     )
     @RequestMapping(value = "/get-by-id", method = RequestMethod.GET)
-    public IResponse<StudentResp> getById(@RequestParam String id) {
+    public Result<StudentResp> getById(@RequestParam String id) {
         StudentBean bean = studentService.getById(Long.valueOf(id));
         StudentResp resp = beanMapper.map(bean, StudentResp.class);
-        return Response.success(resp);
+        return Result.success(resp);
     }
 
     @ApiOperation(value = "按手机号查询学生", notes = "按手机号查询学生")
@@ -59,10 +58,10 @@ public class StudentController {
             dataTypeClass = String.class
     )
     @RequestMapping(value = "/get-by-mobile", method = RequestMethod.GET)
-    public IResponse<StudentResp> getByMobile(@RequestParam String mobile) {
+    public Result<StudentResp> getByMobile(@RequestParam String mobile) {
         StudentBean bean = studentService.getByMobile(mobile);
         StudentResp resp = beanMapper.map(bean, StudentResp.class);
-        return Response.success(resp);
+        return Result.success(resp);
     }
 
     @ApiOperation(value = "分页查询学生", notes = "分页查询学生")
@@ -74,11 +73,11 @@ public class StudentController {
             dataTypeClass = String.class
     )
     @RequestMapping(value = "/paged-list", method = RequestMethod.GET)
-    public IResponse<PageResponse<StudentResp>> pagedList(@Validated @ModelAttribute StudentReq req) {
+    public Result<PageResponse<StudentResp>> pagedList(@Validated @ModelAttribute StudentReq req) {
         StudentQuery query = beanMapper.map(req, StudentQuery.class);
         Page<StudentBean> page = studentService.pagedList(query);
         List<StudentResp> respList = beanMapper.mapList(page.getContent(), StudentResp.class);
-        return Response.success(PageResponse.build(respList, page));
+        return Result.success(PageResponse.build(respList, page));
     }
 
     @ApiOperation(value = "新增学生", notes = "新增学生")
@@ -90,9 +89,9 @@ public class StudentController {
             dataTypeClass = String.class
     )
     @RequestMapping(value = "/add-student", method = RequestMethod.POST)
-    public IResponse<Void> addStudent(@Validated @RequestBody AddStudentReq req) {
+    public Result<Void> addStudent(@Validated @RequestBody AddStudentReq req) {
         StudentBean bean = beanMapper.map(req, StudentBean.class);
         studentService.add(bean);
-        return Response.success();
+        return Result.success();
     }
 }

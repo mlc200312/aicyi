@@ -14,7 +14,7 @@ public enum LoggerType {
     BIZ("BIZ"),
     DAO("DAO");
 
-    private String name;
+    private final String name;
 
     LoggerType(String name) {
         this.name = name;

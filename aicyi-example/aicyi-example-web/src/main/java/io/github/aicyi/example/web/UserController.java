@@ -1,11 +1,10 @@
 package io.github.aicyi.example.web;
 
-import io.github.aicyi.commons.lang.IResponse;
-import io.github.aicyi.commons.core.BeanMapper;
+import io.github.aicyi.commons.lang.model.Result;
+import io.github.aicyi.commons.core.mapper.BeanMapper;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.example.service.util.UserSessions;
 import io.github.aicyi.example.web.vo.UserInfoResp;
-import io.github.aicyi.midware.web.model.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -34,12 +33,12 @@ public class UserController {
             dataTypeClass = String.class
     )
     @RequestMapping(value = "/get-user-info", method = RequestMethod.GET)
-    public IResponse<UserInfoResp> getUserInfo() {
+    public Result<UserInfoResp> getUserInfo() {
 
         UserInfo userInfo = UserSessions.getUserInfo();
 
         UserInfoResp resp = beanMapper.map(userInfo, UserInfoResp.class);
 
-        return Response.success(resp);
+        return Result.success(resp);
     }
 }

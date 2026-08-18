@@ -1,13 +1,14 @@
 package io.github.aicyi.midware.redis.token;
 
 import io.github.aicyi.commons.core.cache.CacheConfig;
+import io.github.aicyi.commons.security.MessageDigestUtils;
 import io.github.aicyi.commons.security.token.TokenInfo;
 import io.github.aicyi.commons.security.token.TokenSession;
 import io.github.aicyi.commons.security.token.AbstractTokenService;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.util.UUIDUtils;
-import io.github.aicyi.commons.util.serializer.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.commons.util.serializer.CacheWrapperCodec;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -69,9 +70,12 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
                 .globalPrefix("cache")
                 .cacheName("token")
                 .ttl(Duration.ofMillis(refreshTimeUnit.toMillis(refreshTtl)))
-                .serializer(new CacheWrapperPrincipalSerializer<>(TokenInfo.class, principalType))
                 .build();
-        this.tokenCache = new RedisCache<>(redisTemplate, cacheConfig);
+        this.tokenCache = new RedisCache<>(
+                redisTemplate,
+                cacheConfig,
+                new CacheWrapperCodec<>(TokenInfo.class, principalType)
+        );
         this.redisTemplate = redisTemplate;
     }
 
@@ -85,9 +89,15 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
         return TOKEN_KEY_PREFIX + token;
     }
 
+    /**
+     * Principal Token集合Key
+     * <p>
+     * 默认基于 Principal 内容的 SHA-256 摘要，避免 hashCode 碰撞导致不同用户共享 Token 集合；
+     * 子类应优先覆写为稳定的业务 ID（如 userId）
+     */
     @Override
     protected String getPrincipalId(P principal) {
-        return PRINCIPAL_TOKENS_PREFIX + principal.hashCode();
+        return PRINCIPAL_TOKENS_PREFIX + MessageDigestUtils.generateSha256(String.valueOf(principal));
     }
 
     @Override

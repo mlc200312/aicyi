@@ -1,13 +1,14 @@
-package io.github.aicyi.commons.lang.model;
+package io.github.aicyi.commons.core.cache;
 
 import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author Mr.Min
- * @description 缓存统计类
+ * @description 缓存统计类（LongAdder 不实现 Serializable，故不继承 BaseBean）。
+ * 外部读取请使用 long 求值 getter（hitCount() 等），避免通过 LongAdder getter 篡改计数
  * @date 2026/5/22
  **/
-public class CacheStats extends BaseBean {
+public class CacheStats {
     private final LongAdder hitCount = new LongAdder();
     private final LongAdder missCount = new LongAdder();
     private final LongAdder loadSuccessCount = new LongAdder();
@@ -17,32 +18,32 @@ public class CacheStats extends BaseBean {
 
     private final LongAdder totalLoadTimeNanos = new LongAdder();
 
-    public LongAdder getHitCount() {
-        return hitCount;
+    public long hitCount() {
+        return hitCount.sum();
     }
 
-    public LongAdder getMissCount() {
-        return missCount;
+    public long missCount() {
+        return missCount.sum();
     }
 
-    public LongAdder getLoadSuccessCount() {
-        return loadSuccessCount;
+    public long loadSuccessCount() {
+        return loadSuccessCount.sum();
     }
 
-    public LongAdder getLoadFailureCount() {
-        return loadFailureCount;
+    public long loadFailureCount() {
+        return loadFailureCount.sum();
     }
 
-    public LongAdder getPutCount() {
-        return putCount;
+    public long putCount() {
+        return putCount.sum();
     }
 
-    public LongAdder getEvictCount() {
-        return evictCount;
+    public long evictCount() {
+        return evictCount.sum();
     }
 
-    public LongAdder getTotalLoadTimeNanos() {
-        return totalLoadTimeNanos;
+    public long totalLoadTimeNanos() {
+        return totalLoadTimeNanos.sum();
     }
 
     public void recordHit() {
@@ -85,5 +86,20 @@ public class CacheStats extends BaseBean {
 
         return count == 0 ? 0 :
                 totalLoadTimeNanos.sum() / count / 1_000_000;
+    }
+
+    /**
+     * 生成当前计数的不可变快照，外部对快照的修改不影响源统计
+     */
+    public CacheStats snapshot() {
+        CacheStats copy = new CacheStats();
+        copy.hitCount.add(hitCount.sum());
+        copy.missCount.add(missCount.sum());
+        copy.loadSuccessCount.add(loadSuccessCount.sum());
+        copy.loadFailureCount.add(loadFailureCount.sum());
+        copy.putCount.add(putCount.sum());
+        copy.evictCount.add(evictCount.sum());
+        copy.totalLoadTimeNanos.add(totalLoadTimeNanos.sum());
+        return copy;
     }
 }

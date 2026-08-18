@@ -12,14 +12,14 @@ public interface TemplateRequest {
     /**
      * 获取模版ID
      *
-     * @return
+     * @return 模板标识
      */
     String getTemplateId();
 
     /**
      * 获取模版参数
      *
-     * @return
+     * @return 模板渲染参数
      */
     Map<String, Object> getTemplateParams();
 }

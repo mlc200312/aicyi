@@ -19,10 +19,10 @@ import java.util.Objects;
  * StringFormat.format("Hello {}, age {}", "Tom", 18);
  * -> Hello Tom, age 18
  *
- * StringFormat.formatNamed(
- *      "Hello ${name}, age ${age}",
- *      Map.of("name", "Tom", "age", 18)
- * );
+ * Map<String, Object> params = new HashMap<>();
+ * params.put("name", "Tom");
+ * params.put("age", 18);
+ * StringFormat.formatNamed("Hello ${name}, age ${age}", params);
  * -> Hello Tom, age 18
  *
  * StringFormat.escape:
@@ -102,7 +102,7 @@ public final class StringFormat {
      * <pre>
      * formatNamed(
      *      "Hello ${name}",
-     *      Map.of("name", "Tom")
+     *      Collections.singletonMap("name", "Tom")
      * )
      * -> Hello Tom
      * </pre>

@@ -1,11 +1,11 @@
-package io.github.aicyi.commons.core;
+package io.github.aicyi.commons.core.mapper;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
  * @author Mr.Min
- * @description 统一的 mapper 接口定义
+ * @description 统一的对象映射接口定义
  * @date 17:06
  **/
 public interface BeanMapper {

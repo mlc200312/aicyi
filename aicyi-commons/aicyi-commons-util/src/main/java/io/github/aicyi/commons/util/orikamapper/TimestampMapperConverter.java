@@ -15,11 +15,17 @@ public class TimestampMapperConverter extends BidirectionalConverter<Timestamp, 
 
     @Override
     public String convertTo(Timestamp timestamp, Type<String> type, MappingContext mappingContext) {
-        return timestamp.getTime() + "";
+        if (timestamp == null) {
+            return null;
+        }
+        return String.valueOf(timestamp.getTime());
     }
 
     @Override
     public Timestamp convertFrom(String dateStr, Type<Timestamp> date, MappingContext mappingContext) {
-        return new Timestamp(Long.parseLong(dateStr));
+        if (dateStr == null || dateStr.trim().isEmpty()) {
+            return null;
+        }
+        return new Timestamp(Long.parseLong(dateStr.trim()));
     }
 }

@@ -3,19 +3,15 @@ package io.github.aicyi.commons.security;
 import io.github.aicyi.commons.lang.model.Pair;
 import org.apache.commons.codec.binary.Base64;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -24,7 +20,11 @@ import java.security.spec.X509EncodedKeySpec;
  * @description RSA 非对称加密算法
  * @date 2019-05-14
  **/
-public class RsaUtils {
+public final class RsaUtils {
+
+    private RsaUtils() {
+    }
+
     /**
      * RSA算法
      */
@@ -43,9 +43,7 @@ public class RsaUtils {
     public static final String SHA256_WITH_RSA = "SHA256WithRSA";
 
     /**
-     * 生成密钥对。注意这里是生成密钥对KeyPair，再由密钥对获取公私钥
-     *
-     * @return
+     * 生成密钥对，返回 Pair(公钥编码, 私钥编码)
      */
     public static Pair<byte[], byte[]> generateKeyPair() {
         try {
@@ -54,51 +52,36 @@ public class RsaUtils {
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
             RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
             RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-            return new Pair(publicKey.getEncoded(), privateKey.getEncoded());
+            return new Pair<>(publicKey.getEncoded(), privateKey.getEncoded());
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("generate RSA key pair failed", e);
         }
-        return null;
     }
 
     /**
      * 还原公钥，X509EncodedKeySpec 用于构建公钥的规范
-     *
-     * @param keyBytes
-     * @return
      */
     public static PublicKey restorePublicKey(byte[] keyBytes) {
-        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(keyBytes);
         try {
-            return KeyFactory.getInstance(KEY_ALGORITHM).generatePublic(x509EncodedKeySpec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
+            return KeyFactory.getInstance(KEY_ALGORITHM).generatePublic(new X509EncodedKeySpec(keyBytes));
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException("restore RSA public key failed", e);
         }
-        return null;
     }
 
     /**
      * 还原私钥，PKCS8EncodedKeySpec 用于构建私钥的规范
-     *
-     * @param keyBytes
-     * @return
      */
     public static PrivateKey restorePrivateKey(byte[] keyBytes) {
-        PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(keyBytes);
         try {
-            return KeyFactory.getInstance(KEY_ALGORITHM).generatePrivate(pkcs8EncodedKeySpec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
+            return KeyFactory.getInstance(KEY_ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(keyBytes));
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException("restore RSA private key failed", e);
         }
-        return null;
     }
 
     /**
-     * 加密，三步走。
-     *
-     * @param content
-     * @param publicKey
-     * @return
+     * 公钥加密，返回 Base64 密文
      */
     public static String encrypt(String content, PublicKey publicKey) {
         try {
@@ -106,20 +89,13 @@ public class RsaUtils {
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] encryptBytes = cipher.doFinal(content.getBytes(StandardCharsets.UTF_8));
             return Base64.encodeBase64String(encryptBytes);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException |
-                 BadPaddingException e) {
-            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException("RSA encrypt failed", e);
         }
-        return null;
-
     }
 
     /**
-     * 解密，三步走。
-     *
-     * @param content
-     * @param privateKey
-     * @return
+     * 私钥解密，入参为 Base64 密文
      */
     public static String decrypt(String content, PrivateKey privateKey) {
         try {
@@ -127,116 +103,77 @@ public class RsaUtils {
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] decodeBase64 = Base64.decodeBase64(content.getBytes(StandardCharsets.UTF_8));
             byte[] decryptBytes = cipher.doFinal(decodeBase64);
-            return new String(decryptBytes);
-        } catch (NoSuchAlgorithmException |
-                 NoSuchPaddingException |
-                 InvalidKeyException |
-                 IllegalBlockSizeException |
-                 BadPaddingException e) {
-            e.printStackTrace();
+            return new String(decryptBytes, StandardCharsets.UTF_8);
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException("RSA decrypt failed", e);
         }
-        return null;
     }
 
     /**
-     * 签名
-     *
-     * @param content
-     * @param privateKey
-     * @return
-     * @throws Exception
+     * 私钥签名，返回 Base64 签名值
      */
-    public static String sign(String content, PrivateKey privateKey) throws Exception {
-        //根据指定算法获取签名工具
-        Signature signature = Signature.getInstance(SHA256_WITH_RSA);
-        //用私钥初始化签名工具
-        signature.initSign(privateKey);
-        //添加要签名的数据
-        signature.update(content.getBytes(StandardCharsets.UTF_8));
-        //计算签名结果（签名信息）
-        byte[] bytes = signature.sign();
-        //Base64编码
-        return Base64.encodeBase64String(bytes);
-    }
-
-    /**
-     * 验签
-     *
-     * @param content
-     * @param sign
-     * @param publicKey
-     * @return
-     * @throws Exception
-     */
-    public static boolean verify(String content, String sign, PublicKey publicKey) throws Exception {
-        //根据指定算法获取签名工具
-        Signature signature = Signature.getInstance(SHA256_WITH_RSA);
-        //用公钥初始化签名工具
-        signature.initVerify(publicKey);
-        //添加要校验的数据
-        signature.update(content.getBytes(StandardCharsets.UTF_8));
-        //Base64解码
-        byte[] decodeBase64 = Base64.decodeBase64(sign);
-        //校验数据的签名是否正确
-        return signature.verify(decodeBase64);
-    }
-
-    /**
-     * 签名文件
-     *
-     * @param file
-     * @param privateKey
-     * @return
-     * @throws Exception
-     */
-    public static String signFile(File file, PrivateKey privateKey) throws Exception {
-        //根据指定算法获取签名工具
-        Signature signature = Signature.getInstance(SHA256_WITH_RSA);
-        //用私钥初始化签名工具
-        signature.initSign(privateKey);
-        getInputStream(file, signature);
-        //计算签名结果（签名信息）
-        byte[] bytes = signature.sign();
-        //Base64编码
-        return Base64.encodeBase64String(bytes);
-    }
-
-    /**
-     * 校验文件
-     *
-     * @param file
-     * @param sign
-     * @param publicKey
-     * @return
-     * @throws Exception
-     */
-    public static boolean verifyFile(File file, byte[] sign, PublicKey publicKey) throws Exception {
-        //根据指定算法获取签名工具
-        Signature signature = Signature.getInstance(SHA256_WITH_RSA);
-        signature.initVerify(publicKey);
-        getInputStream(file, signature);
-        //Base64解码
-        byte[] decodeBase64 = Base64.decodeBase64(sign);
-        //校验数据的签名是否正确
-        return signature.verify(decodeBase64);
-    }
-
-    private static void getInputStream(File file, Signature signature) throws IOException, SignatureException {
-        InputStream in = null;
+    public static String sign(String content, PrivateKey privateKey) {
         try {
-            in = new FileInputStream(file);
-            byte[] buffer = new byte[1024];
+            Signature signature = Signature.getInstance(SHA256_WITH_RSA);
+            signature.initSign(privateKey);
+            signature.update(content.getBytes(StandardCharsets.UTF_8));
+            return Base64.encodeBase64String(signature.sign());
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException("RSA sign failed", e);
+        }
+    }
+
+    /**
+     * 公钥验签
+     */
+    public static boolean verify(String content, String sign, PublicKey publicKey) {
+        try {
+            Signature signature = Signature.getInstance(SHA256_WITH_RSA);
+            signature.initVerify(publicKey);
+            signature.update(content.getBytes(StandardCharsets.UTF_8));
+            return signature.verify(Base64.decodeBase64(sign));
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException("RSA verify failed", e);
+        }
+    }
+
+    /**
+     * 文件签名，返回 Base64 签名值
+     */
+    public static String signFile(File file, PrivateKey privateKey) {
+        try {
+            Signature signature = Signature.getInstance(SHA256_WITH_RSA);
+            signature.initSign(privateKey);
+            updateSignatureFromFile(file, signature);
+            return Base64.encodeBase64String(signature.sign());
+        } catch (GeneralSecurityException | IOException e) {
+            throw new IllegalStateException("RSA sign file failed", e);
+        }
+    }
+
+    /**
+     * 文件验签
+     */
+    public static boolean verifyFile(File file, byte[] sign, PublicKey publicKey) {
+        try {
+            Signature signature = Signature.getInstance(SHA256_WITH_RSA);
+            signature.initVerify(publicKey);
+            updateSignatureFromFile(file, signature);
+            return signature.verify(Base64.decodeBase64(sign));
+        } catch (GeneralSecurityException | IOException e) {
+            throw new IllegalStateException("RSA verify file failed", e);
+        }
+    }
+
+    /**
+     * 流式读取文件内容并更新到签名对象，避免大文件整体载入内存
+     */
+    private static void updateSignatureFromFile(File file, Signature signature) throws IOException, SignatureException {
+        try (InputStream in = Files.newInputStream(file.toPath())) {
+            byte[] buffer = new byte[4096];
             int len;
             while ((len = in.read(buffer)) != -1) {
                 signature.update(buffer, 0, len);
-            }
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception e) {
-                // 忽略
             }
         }
     }

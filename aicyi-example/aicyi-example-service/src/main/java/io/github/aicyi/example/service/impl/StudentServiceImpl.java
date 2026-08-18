@@ -1,6 +1,6 @@
 package io.github.aicyi.example.service.impl;
 
-import io.github.aicyi.commons.core.BeanMapper;
+import io.github.aicyi.commons.core.mapper.BeanMapper;
 import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.type.BooleanType;

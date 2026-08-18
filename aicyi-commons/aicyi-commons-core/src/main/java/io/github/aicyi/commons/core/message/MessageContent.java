@@ -11,21 +11,21 @@ public interface MessageContent<T> {
     /**
      * 消息内容
      *
-     * @return
+     * @return 消息体
      */
     T getContent();
 
     /**
-     * 消息内容
+     * 消息类型
      *
-     * @return
+     * @return 消息类型枚举
      */
     MessageType getMessageType();
 
     /**
      * 消息ID
      *
-     * @return
+     * @return 全局唯一消息标识
      */
     String getMessageId();
 }

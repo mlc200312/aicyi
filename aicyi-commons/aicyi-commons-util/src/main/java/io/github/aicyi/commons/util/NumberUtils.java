@@ -112,7 +112,7 @@ public final class NumberUtils {
     }
 
     /**
-     * String转int
+     * String转int，非法格式时返回默认值
      *
      * @param value
      * @param defaultValue
@@ -122,6 +122,10 @@ public final class NumberUtils {
         if (value == null || value.trim().isEmpty()) {
             return defaultValue;
         }
-        return Integer.parseInt(value);
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 }

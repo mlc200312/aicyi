@@ -2,7 +2,7 @@ package io.github.aicyi.commons.core.logging;
 
 /**
  * @author Mr.Min
- * @description 通用接日志口
+ * @description 通用日志接口（屏蔽具体日志门面实现，参数顺序为 cause 在前、format 在后）
  * @date 2019-06-23
  **/
 public interface Logger {
@@ -24,7 +24,7 @@ public interface Logger {
     /**
      * 跟踪
      *
-     * @param obj
+     * @param obj 日志对象
      */
     void trace(Object obj);
 
@@ -48,7 +48,7 @@ public interface Logger {
     /**
      * 调试
      *
-     * @param obj
+     * @param obj 日志对象
      */
     void debug(Object obj);
 
@@ -72,7 +72,7 @@ public interface Logger {
     /**
      * 信息
      *
-     * @param obj
+     * @param obj 日志对象
      */
     void info(Object obj);
 
@@ -96,7 +96,7 @@ public interface Logger {
     /**
      * 警告
      *
-     * @param obj
+     * @param obj 日志对象
      */
     void warn(Object obj);
 
@@ -120,7 +120,7 @@ public interface Logger {
     /**
      * 错误
      *
-     * @param obj
+     * @param obj 日志对象
      */
     void error(Object obj);
 

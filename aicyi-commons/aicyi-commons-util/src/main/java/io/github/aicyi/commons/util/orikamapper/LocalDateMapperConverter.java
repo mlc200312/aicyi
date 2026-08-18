@@ -14,24 +14,30 @@ import java.time.format.DateTimeFormatter;
  * @date 11:35
  **/
 public class LocalDateMapperConverter extends BidirectionalConverter<LocalDate, String> {
-    private final String pattern;
+
+    private final DateTimeFormatter formatter;
 
     public LocalDateMapperConverter() {
-        pattern = DateTimeUtils.DATE_PATTERN;
+        this(DateTimeUtils.DATE_PATTERN);
     }
 
-    public LocalDateMapperConverter(String pattern, MappingContext mappingContext) {
-        this.pattern = pattern;
+    public LocalDateMapperConverter(String pattern) {
+        this.formatter = DateTimeFormatter.ofPattern(pattern);
     }
-
 
     @Override
     public String convertTo(LocalDate date, Type<String> type, MappingContext mappingContext) {
-        return date.format(DateTimeFormatter.ofPattern(pattern));
+        if (date == null) {
+            return null;
+        }
+        return date.format(formatter);
     }
 
     @Override
     public LocalDate convertFrom(String dateStr, Type<LocalDate> type, MappingContext mappingContext) {
-        return DateTimeFormatter.ofPattern(pattern).parse(dateStr, LocalDate::from);
+        if (dateStr == null || dateStr.trim().isEmpty()) {
+            return null;
+        }
+        return LocalDate.parse(dateStr.trim(), formatter);
     }
 }

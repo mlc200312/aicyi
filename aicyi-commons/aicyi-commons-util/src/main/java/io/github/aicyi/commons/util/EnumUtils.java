@@ -11,25 +11,28 @@ import java.util.Objects;
 
 /**
  * @author Mr.Min
- * @description 枚举工具类
+ * @description 枚举工具类（继承自 lang3 无语义，已移除）
  * @date 2025/8/8
  **/
-public class EnumUtils extends org.apache.commons.lang3.EnumUtils {
+public final class EnumUtils {
+
+    private EnumUtils() {
+    }
 
     public static <E extends Enum<?>> E valueOf(Class<E> enumClass, Object value, Method method) {
         E[] es = enumClass.getEnumConstants();
         for (E e : es) {
-            Object evalue;
+            Object obj;
             try {
                 method.setAccessible(true);
-                evalue = method.invoke(e);
+                obj = method.invoke(e);
             } catch (InvocationTargetException | IllegalAccessException var10) {
                 throw new IllegalArgumentException("Error: NoSuchMethod in " + enumClass.getName() + ".  Cause:", var10);
             }
-            if (value instanceof Number && evalue instanceof Number && (new BigDecimal(String.valueOf(value))).compareTo(new BigDecimal(String.valueOf(evalue))) == 0) {
+            if (value instanceof Number && obj instanceof Number && (new BigDecimal(String.valueOf(value))).compareTo(new BigDecimal(String.valueOf(obj))) == 0) {
                 return e;
             }
-            if (Objects.equals(evalue, value)) {
+            if (Objects.equals(obj, value)) {
                 return e;
             }
         }
@@ -57,7 +60,7 @@ public class EnumUtils extends org.apache.commons.lang3.EnumUtils {
      * @return
      */
     public static <E extends Enum<?> & StringEnumType> E getType(Class<E> enumClass, String code) {
-        return Arrays.stream(enumClass.getEnumConstants()).filter(e -> e.getCode().equals(code)).findAny().orElse(null);
+        return Arrays.stream(enumClass.getEnumConstants()).filter(e -> Objects.equals(code, e.getCode())).findAny().orElse(null);
     }
 
     /**

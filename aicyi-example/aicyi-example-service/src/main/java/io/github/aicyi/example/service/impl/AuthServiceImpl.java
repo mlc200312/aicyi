@@ -1,6 +1,6 @@
 package io.github.aicyi.example.service.impl;
 
-import io.github.aicyi.commons.core.BeanMapper;
+import io.github.aicyi.commons.core.mapper.BeanMapper;
 import io.github.aicyi.commons.core.token.AuthenticationTokens;
 import io.github.aicyi.commons.lang.model.TokenPair;
 import io.github.aicyi.commons.lang.exception.BusinessException;

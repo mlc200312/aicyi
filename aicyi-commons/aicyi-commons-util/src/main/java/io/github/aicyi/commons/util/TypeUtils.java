@@ -1,7 +1,10 @@
 package io.github.aicyi.commons.util;
 
-import org.apache.commons.collections4.SetUtils;
+import io.github.aicyi.commons.lang.Assert;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -9,24 +12,24 @@ import java.util.Set;
  * @description 类型工具类
  * @date 2026/4/27
  **/
-public class TypeUtils {
+public final class TypeUtils {
 
-    private static final Set<Class<?>> PRIMITIVE_TYPES = SetUtils.hashSet(
-            byte.class, short.class, int.class, long.class,
-            float.class, double.class, char.class, boolean.class
-    );
+    private TypeUtils() {
+    }
 
-    private static final Set<Class<?>> WRAPPER_TYPES = SetUtils.hashSet(
+    private static final Set<Class<?>> WRAPPER_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             Byte.class, Short.class, Integer.class, Long.class,
             Float.class, Double.class, Character.class, Boolean.class,
             Void.class
-    );
+    )));
 
     public static boolean isPrimitive(Class<?> clazz) {
+        Assert.notNull(clazz, "clazz");
         return clazz.isPrimitive();
     }
 
     public static boolean isWrapperType(Class<?> clazz) {
+        Assert.notNull(clazz, "clazz");
         return WRAPPER_TYPES.contains(clazz);
     }
 
@@ -35,6 +38,7 @@ public class TypeUtils {
     }
 
     public static Class<?> wrapPrimitiveType(Class<?> clazz) {
+        Assert.notNull(clazz, "clazz");
         if (!clazz.isPrimitive()) return clazz;
 
         if (clazz == int.class) return Integer.class;
@@ -47,10 +51,11 @@ public class TypeUtils {
         if (clazz == short.class) return Short.class;
         if (clazz == void.class) return Void.class;
 
-        throw new IllegalArgumentException("未知的基本类型: " + clazz);
+        throw new IllegalArgumentException("unknown primitive type: " + clazz);
     }
 
     public static Class<?> unwrapWrapperType(Class<?> clazz) {
+        Assert.notNull(clazz, "clazz");
         if (!WRAPPER_TYPES.contains(clazz)) return clazz;
 
         if (clazz == Integer.class) return int.class;
@@ -63,6 +68,6 @@ public class TypeUtils {
         if (clazz == Short.class) return short.class;
         if (clazz == Void.class) return void.class;
 
-        throw new IllegalArgumentException("未知的包装类型: " + clazz);
+        throw new IllegalArgumentException("unknown wrapper type: " + clazz);
     }
 }

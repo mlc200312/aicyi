@@ -1,7 +1,7 @@
 package io.github.aicyi.commons.util.serializer;
 
 
-import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.codec.JsonCodec;
 import io.github.aicyi.commons.core.PrincipalSerializer;
 import io.github.aicyi.commons.util.JsonUtils;
 
@@ -30,27 +30,11 @@ public class JsonCodecPrincipalSerializer<P> implements PrincipalSerializer<P> {
 
     @Override
     public String serialize(P principal) {
-
-        try {
-
-            return jsonCodec.toJson(principal);
-
-        } catch (Exception e) {
-
-            throw new RuntimeException(e);
-        }
+        return jsonCodec.toJson(principal);
     }
 
     @Override
     public P deserialize(String value) {
-
-        try {
-
-            return jsonCodec.fromJson(value, principalType);
-
-        } catch (Exception e) {
-
-            throw new RuntimeException(e);
-        }
+        return jsonCodec.fromJson(value, principalType);
     }
 }

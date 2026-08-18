@@ -4,8 +4,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Token创建请求
+ *
  * @author Mr.Min
- * @description
  * @date 2026/5/11
  **/
 public class TokenCreateRequest<P> extends BaseBean {

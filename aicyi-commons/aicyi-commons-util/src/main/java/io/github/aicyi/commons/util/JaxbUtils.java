@@ -8,13 +8,24 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Mr.Min
  * @description xml 工具类
  * @date 2019-06-19
  **/
-public class JaxbUtils {
+public final class JaxbUtils {
+
+    /**
+     * JAXBContext 创建开销大且线程安全，按类型缓存复用
+     */
+    private static final ConcurrentMap<Class<?>, JAXBContext> CONTEXT_CACHE = new ConcurrentHashMap<>();
+
+    private JaxbUtils() {
+    }
 
     /**
      * 实体Bean转化成Xml
@@ -25,10 +36,13 @@ public class JaxbUtils {
      * @throws JAXBException
      */
     public static <T> String bean2Xml(T bean) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(bean.getClass());
+        if (bean == null) {
+            throw new IllegalArgumentException("bean can not be null");
+        }
+        JAXBContext context = getContext(bean.getClass());
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty(Marshaller.JAXB_ENCODING, "GBK");
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         StringWriter writer = new StringWriter();
         marshaller.marshal(bean, writer);
         return writer.toString();
@@ -44,10 +58,12 @@ public class JaxbUtils {
      * @throws JAXBException
      */
     public static <T> T xml2Bean(InputStream stream, Class<T> clazz) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(clazz);
+        if (stream == null) {
+            throw new IllegalArgumentException("xml stream can not be null");
+        }
+        JAXBContext context = getContext(clazz);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        Object bean = unmarshaller.unmarshal(stream);
-        return (T) bean;
+        return (T) unmarshaller.unmarshal(stream);
     }
 
     /**
@@ -60,10 +76,12 @@ public class JaxbUtils {
      * @throws JAXBException
      */
     public static <T> T xmlPath2Bean(String xmlPath, Class<T> clazz) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(clazz);
+        if (xmlPath == null || xmlPath.trim().isEmpty()) {
+            throw new IllegalArgumentException("xml path can not be blank");
+        }
+        JAXBContext context = getContext(clazz);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        Object bean = unmarshaller.unmarshal(new File(xmlPath));
-        return (T) bean;
+        return (T) unmarshaller.unmarshal(new File(xmlPath));
     }
 
     /**
@@ -76,26 +94,21 @@ public class JaxbUtils {
      * @throws JAXBException
      */
     public static <T> T xml2Bean(String xml, Class<T> clazz) throws JAXBException {
-        InputStream xmlInputStream = getXMLInputStream(xml);
-        return xml2Bean(xmlInputStream, clazz);
-    }
-
-    /**
-     * 获取Xml文件流
-     *
-     * @param xml
-     * @return
-     */
-    private static InputStream getXMLInputStream(String xml) {
         if (xml == null || xml.trim().isEmpty()) {
-            return null;
+            throw new IllegalArgumentException("xml can not be blank");
         }
-        try {
-            return new ByteArrayInputStream(xml.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return xml2Bean(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)), clazz);
     }
 
+    private static JAXBContext getContext(Class<?> clazz) throws JAXBException {
+        JAXBContext context = CONTEXT_CACHE.get(clazz);
+        if (context == null) {
+            context = JAXBContext.newInstance(clazz);
+            JAXBContext existing = CONTEXT_CACHE.putIfAbsent(clazz, context);
+            if (existing != null) {
+                context = existing;
+            }
+        }
+        return context;
+    }
 }

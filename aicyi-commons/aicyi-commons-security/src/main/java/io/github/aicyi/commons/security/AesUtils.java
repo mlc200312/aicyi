@@ -3,104 +3,116 @@ package io.github.aicyi.commons.security;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 
 /**
  * @author Mr.Min
- * @description AES算法进行加密
+ * @description AES 加解密工具（AES/GCM/NoPadding）
+ * <p>
+ * 加密输出格式为 Base64(IV || 密文)，IV 为每次加密随机生成的 12 字节；
+ * 密钥必须为 16/24/32 字节（UTF-8 编码后长度）
  * @date 2021/5/5
  **/
-public class AesUtils {
+public final class AesUtils {
+
+    private AesUtils() {
+    }
+
     /**
      * 加密算法
      */
     private static final String ALGORITHM = "AES";
     /**
-     * 秘钥长度
+     * GCM 模式（认证加密，替代已废弃的 ECB 模式）
      */
-    private static final Integer KEY_LENGTH = 128;
+    private static final String TRANSFORMATION = "AES/GCM/NoPadding";
     /**
-     * 默认编码
+     * GCM IV 长度（字节）
      */
-    private static final String CHARSET = "utf-8";
+    private static final int GCM_IV_LENGTH = 12;
     /**
-     * 算法
+     * GCM 认证标签长度（比特）
      */
-    private static final String ALGORITHM_STR = "AES/ECB/PKCS5Padding";
+    private static final int GCM_TAG_LENGTH = 128;
+    /**
+     * 随机数生成器
+     */
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     /**
-     * AES加密
+     * AES 加密
      *
      * @param content    待加密的内容
-     * @param encryptKey 加密密钥
-     * @return 加密后的base 64 code
+     * @param encryptKey 加密密钥（UTF-8 编码后长度必须为 16/24/32 字节）
+     * @return 加密后的 Base64 字符串（IV || 密文）；入参为空白时原样返回
      */
-    public static String aesEncrypt(String content, String encryptKey) throws Exception {
-        return content == null || content.trim().isEmpty() ? content : base64Encode(aesEncryptToBytes(content, encryptKey));
-    }
+    public static String aesEncrypt(String content, String encryptKey) {
+        if (content == null || content.trim().isEmpty()) {
+            return content;
+        }
+        try {
+            byte[] iv = new byte[GCM_IV_LENGTH];
+            SECURE_RANDOM.nextBytes(iv);
 
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+            cipher.init(Cipher.ENCRYPT_MODE, buildSecretKey(encryptKey), new GCMParameterSpec(GCM_TAG_LENGTH, iv));
+            byte[] cipherBytes = cipher.doFinal(content.getBytes(StandardCharsets.UTF_8));
 
-    /**
-     * AES解密
-     *
-     * @param encryptStr 待解密的base 64 code
-     * @param decryptKey 解密密钥
-     * @return 解密后的string
-     */
-    public static String aesDecrypt(String encryptStr, String decryptKey) throws Exception {
-        return encryptStr == null || encryptStr.trim().isEmpty() ? encryptStr : aesDecryptByBytes(base64Decode(encryptStr), decryptKey);
-    }
-
-    /**
-     * base 64 encode
-     *
-     * @param bytes 待编码的byte[]
-     * @return 编码后的base 64 code
-     */
-    private static String base64Encode(byte[] bytes) {
-        return Base64.encodeBase64String(bytes);
+            byte[] result = new byte[iv.length + cipherBytes.length];
+            System.arraycopy(iv, 0, result, 0, iv.length);
+            System.arraycopy(cipherBytes, 0, result, iv.length, cipherBytes.length);
+            return Base64.encodeBase64String(result);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalStateException("AES encrypt failed", e);
+        }
     }
 
     /**
-     * base 64 decode
+     * AES 解密
      *
-     * @param base64Code 待解码的base 64 code
-     * @return 解码后的byte[]
+     * @param encryptStr 待解密的 Base64 字符串（IV || 密文）
+     * @param decryptKey 解密密钥（UTF-8 编码后长度必须为 16/24/32 字节）
+     * @return 解密后的明文；入参为空白时原样返回
      */
-    private static byte[] base64Decode(String base64Code) {
-        return Base64.decodeBase64(base64Code);
+    public static String aesDecrypt(String encryptStr, String decryptKey) {
+        if (encryptStr == null || encryptStr.trim().isEmpty()) {
+            return encryptStr;
+        }
+        try {
+            byte[] decoded = Base64.decodeBase64(encryptStr);
+            if (decoded.length <= GCM_IV_LENGTH) {
+                throw new IllegalArgumentException("invalid AES cipher text length: " + decoded.length);
+            }
+            byte[] iv = new byte[GCM_IV_LENGTH];
+            System.arraycopy(decoded, 0, iv, 0, GCM_IV_LENGTH);
+
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+            cipher.init(Cipher.DECRYPT_MODE, buildSecretKey(decryptKey), new GCMParameterSpec(GCM_TAG_LENGTH, iv));
+            byte[] plainBytes = cipher.doFinal(decoded, GCM_IV_LENGTH, decoded.length - GCM_IV_LENGTH);
+            return new String(plainBytes, StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalStateException("AES decrypt failed", e);
+        }
     }
 
-
     /**
-     * AES加密
-     *
-     * @param content    待加密的内容
-     * @param encryptKey 加密密钥
-     * @return 加密后的byte[]
+     * 构建 AES 密钥，校验密钥长度必须为 16/24/32 字节
      */
-    private static byte[] aesEncryptToBytes(String content, String encryptKey) throws Exception {
-        KeyGenerator instance = KeyGenerator.getInstance(ALGORITHM);
-        instance.init(KEY_LENGTH);
-        Cipher cipher = Cipher.getInstance(ALGORITHM_STR);
-        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptKey.getBytes(), ALGORITHM));
-        return cipher.doFinal(content.getBytes(CHARSET));
-    }
-
-    /**
-     * AES解密
-     *
-     * @param encryptBytes 待解密的byte[]
-     * @param decryptKey   解密密钥
-     * @return 解密后的String
-     */
-    private static String aesDecryptByBytes(byte[] encryptBytes, String decryptKey) throws Exception {
-        KeyGenerator instance = KeyGenerator.getInstance(ALGORITHM);
-        instance.init(KEY_LENGTH);
-        Cipher cipher = Cipher.getInstance(ALGORITHM_STR);
-        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(decryptKey.getBytes(), ALGORITHM));
-        byte[] decryptBytes = cipher.doFinal(encryptBytes);
-        return new String(decryptBytes);
+    private static SecretKeySpec buildSecretKey(String key) {
+        if (key == null) {
+            throw new IllegalArgumentException("AES key may not be null");
+        }
+        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+        if (keyBytes.length != 16 && keyBytes.length != 24 && keyBytes.length != 32) {
+            throw new IllegalArgumentException("AES key length must be 16/24/32 bytes, actual: " + keyBytes.length);
+        }
+        return new SecretKeySpec(keyBytes, ALGORITHM);
     }
 }

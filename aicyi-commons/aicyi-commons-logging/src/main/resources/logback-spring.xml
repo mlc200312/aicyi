@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL，如果设置为WARN，则低于WARN的信息都不会输出 -->
-<!-- scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true -->
-<!-- scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
+<!-- scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true，扫描间隔默认1分钟 -->
 <!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
-<configuration scan="true" scanPeriod="10 seconds">
+<configuration scan="true">
 
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"></include>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-    <contextName>logback</contextName>
-    <!-- name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义变量后，可以使“${}”来使用变量。 -->
-    <property name="log.path" value="./logs"/>
-    <!-- 日志最大的历史 15天 -->
-    <property name="maxHistory" value="15"/>
-    <!-- 日志最大的大小 10MB -->
-    <property name="maxFileSize" value="10MB"/>
+    <!-- 可通过应用配置覆盖：aicyi.logging.path / aicyi.logging.max-history / aicyi.logging.max-file-size -->
+    <springProperty scope="context" name="log.path" source="aicyi.logging.path" defaultValue="./logs"/>
+    <springProperty scope="context" name="maxHistory" source="aicyi.logging.max-history" defaultValue="15"/>
+    <springProperty scope="context" name="maxFileSize" source="aicyi.logging.max-file-size" defaultValue="10MB"/>
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
 
     <!-- 彩色日志 -->
     <!-- 彩色日志依赖的渲染类 -->
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
-    <conversionRule conversionWord="wex"
-                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
     <conversionRule conversionWord="wex"
                     converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
     <!-- 彩色日志格式 -->
@@ -55,8 +49,6 @@
     </appender>
 
     <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/error.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -65,12 +57,10 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
@@ -84,8 +74,6 @@
     </appender>
 
     <appender name="warnAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/warn.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -94,12 +82,10 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/warn/warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
@@ -113,8 +99,6 @@
     </appender>
 
     <appender name="accessAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/access.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -123,20 +107,16 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/access/access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="clientAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/client.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -145,20 +125,16 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/client/client.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="performanceAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/performance.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -167,20 +143,16 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/performance/performance.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="scheduleAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/schedule.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -189,20 +161,16 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/schedule/schedule.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="messageAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/message.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -211,20 +179,16 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/message.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="bizAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/biz.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -233,20 +197,16 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/biz.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="daoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/dao.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -255,20 +215,16 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/dao/dao.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="allAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--如果是 true，日志会被安全的写入文件，即使其他的FileAppender也在向此文件做写入操作，效率低，默认是 false。-->
-        <Prudent>false</Prudent>
         <file>${log.path}/all.log</file>
         <encoder>
             <!--日志文件输出格式-->
@@ -277,59 +233,49 @@
             <charset>UTF-8</charset>
         </encoder>
 
-        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/all/all.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>${maxFileSize}</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
-    <!-- mybatis日志打印-->
-    <logger name="org.apache.ibatis" level="DEBUG"/>
-    <logger name="java.sql" level="DEBUG"/>
-
-    <logger name="ACCESS" level="info">
+    <!-- 分类日志 logger（与 LoggerType 对应），additivity 关闭避免重复写入 all -->
+    <logger name="ACCESS" level="info" additivity="false">
         <appender-ref ref="accessAppender"/>
     </logger>
 
-    <logger name="CLIENT" level="info">
+    <logger name="CLIENT" level="info" additivity="false">
         <appender-ref ref="clientAppender"/>
     </logger>
 
-    <logger name="PERFORMANCE" level="info">
+    <logger name="PERFORMANCE" level="info" additivity="false">
         <appender-ref ref="performanceAppender"/>
     </logger>
 
-    <logger name="SCHEDULE" level="info">
+    <logger name="SCHEDULE" level="info" additivity="false">
         <appender-ref ref="scheduleAppender"/>
     </logger>
 
-    <logger name="MESSAGE" level="info">
+    <logger name="MESSAGE" level="info" additivity="false">
         <appender-ref ref="messageAppender"/>
     </logger>
 
-    <logger name="BIZ" level="info">
+    <logger name="BIZ" level="info" additivity="false">
         <appender-ref ref="bizAppender"/>
     </logger>
 
-    <logger name="DAO" level="info">
+    <logger name="DAO" level="info" additivity="false">
         <appender-ref ref="daoAppender"/>
     </logger>
 
+    <!-- 单一 root：控制台 + 全量日志 + WARN/ERROR 分级落盘（warn/error appender 自带级别过滤器） -->
     <root level="info">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="allAppender"/>
-    </root>
-
-    <root level="warn">
         <appender-ref ref="warnAppender"/>
-    </root>
-
-    <root level="error">
         <appender-ref ref="errorAppender"/>
     </root>
 

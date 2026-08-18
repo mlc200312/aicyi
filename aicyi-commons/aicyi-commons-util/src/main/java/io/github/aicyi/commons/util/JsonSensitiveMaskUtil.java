@@ -8,23 +8,25 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 /**
  * JSON报文敏感信息脱敏
  * 相比正则：支持嵌套、数组、数字、布尔、null；不会被转义引号破坏结构
  */
-public class JsonSensitiveMaskUtil {
+public final class JsonSensitiveMaskUtil {
+
+    private JsonSensitiveMaskUtil() {
+    }
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
-     * 敏感key集合，全部转小写匹配，可按需扩展
+     * 敏感词集合，key转小写后做包含匹配（如 access_token 命中 token），可按需扩展
      */
-    private static final Set<String> SENSITIVE_KEY_SET = new HashSet<>(
-            Arrays.asList("password", "pwd", "passwd", "secret", "token", "credential", "authorization")
+    private static final List<String> SENSITIVE_WORDS = Arrays.asList(
+            "password", "pwd", "passwd", "secret", "token", "credential", "authorization"
     );
 
     /**
@@ -58,7 +60,7 @@ public class JsonSensitiveMaskUtil {
                 String fieldName = fieldNames.next();
                 JsonNode childNode = objectNode.get(fieldName);
 
-                // key忽略大小写匹配敏感词
+                // key忽略大小写、包含匹配敏感词
                 if (isSensitiveKey(fieldName)) {
                     // 不管原来是什么类型(string/number/boolean/null)，统一替换为掩码字符串
                     objectNode.put(fieldName, "******");
@@ -78,28 +80,15 @@ public class JsonSensitiveMaskUtil {
     }
 
     /**
-     * 判断是否敏感key，忽略大小写
+     * 判断是否敏感key，忽略大小写，包含匹配
      */
     private static boolean isSensitiveKey(String fieldName) {
         String lowerKey = fieldName.toLowerCase();
-        return SENSITIVE_KEY_SET.contains(lowerKey);
-    }
-
-    // ==========测试示例==========
-    public static void main(String[] args) {
-        String testJson = "{\n" +
-                "  \"password\": \"123456\",\n" +
-                "  \"Pwd\": 888888,\n" +
-                "  \"access_token\": \"abc123xyz\",\n" +
-                "  \"info\": {\n" +
-                "    \"secret\": \"my-secret-key\",\n" +
-                "    \"username\": \"zhangsan\"\n" +
-                "  },\n" +
-                "  \"list\": [\n" +
-                "    {\"credential\":\"hello123\"}\n" +
-                "  ]\n" +
-                "}";
-        String mask = maskJsonBody(testJson);
-        System.out.println(mask);
+        for (String word : SENSITIVE_WORDS) {
+            if (lowerKey.contains(word)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

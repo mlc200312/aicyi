@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.util;
 
-import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.codec.JsonCodec;
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 
 /**
@@ -8,16 +8,15 @@ import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
  * @description Json 工具类
  * @date 2025/8/5
  **/
-public class JsonUtils {
+public final class JsonUtils {
 
     private JsonUtils() {
     }
 
-    private static class SingletonInner {
-        private static final JsonCodec INSTANCE = JacksonJsonCodec.DEFAULT;
-    }
-
+    /**
+     * 获取全局默认 JsonCodec 实例
+     */
     public static JsonCodec getInstance() {
-        return SingletonInner.INSTANCE;
+        return JacksonJsonCodec.DEFAULT;
     }
 }

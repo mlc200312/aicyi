@@ -12,18 +12,18 @@ import ma.glasnost.orika.metadata.Type;
 public class String2LongMapperConverter extends BidirectionalConverter<String, Long> {
 
     @Override
-    public Long convertTo(String var1, Type<Long> type, MappingContext mappingContext) {
-        if (var1 == null || var1.trim().isEmpty()) {
+    public Long convertTo(String source, Type<Long> type, MappingContext mappingContext) {
+        if (source == null || source.trim().isEmpty()) {
             return null;
         }
-        return Long.parseLong(var1);
+        return Long.parseLong(source.trim());
     }
 
     @Override
-    public String convertFrom(Long var1, Type<String> type, MappingContext mappingContext) {
-        if (var1 == null) {
+    public String convertFrom(Long source, Type<String> type, MappingContext mappingContext) {
+        if (source == null) {
             return null;
         }
-        return String.valueOf(var1);
+        return String.valueOf(source);
     }
 }

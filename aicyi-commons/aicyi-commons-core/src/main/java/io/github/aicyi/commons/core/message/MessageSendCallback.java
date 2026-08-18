@@ -9,16 +9,16 @@ import io.github.aicyi.commons.lang.model.MessageSendResult;
  **/
 public interface MessageSendCallback {
     /**
-     * 成功
+     * 发送成功回调
      *
-     * @param result
+     * @param result 发送结果
      */
     void onComplete(MessageSendResult result);
 
     /**
-     * 失败
+     * 发送失败回调
      *
-     * @param e
+     * @param e 发送异常
      */
     void onError(Exception e);
 }

@@ -1,5 +1,6 @@
 package io.github.aicyi.midware.redis.cache;
 
+import io.github.aicyi.commons.core.cache.CacheLockHandle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -12,20 +13,19 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
  * RedisCacheLock 单元测试
  * <p>
- * 重点回归：同一线程持有多个锁时，锁值不能互相覆盖
+ * 重点回归：每个句柄持有独立凭证，解锁时使用各自的凭证
  */
 class RedisCacheLockTest {
 
@@ -44,7 +44,7 @@ class RedisCacheLockTest {
     }
 
     @Test
-    void multipleLocksKeepDistinctValues() {
+    void handlesKeepDistinctValues() {
 
         // 记录每次加锁使用的随机值
         List<String> issued = new ArrayList<>();
@@ -60,22 +60,41 @@ class RedisCacheLockTest {
             return 1L;
         }).when(template).execute(any(RedisScript.class), anyList(), any());
 
-        assertTrue(lock.tryLock("lock:a", Duration.ofSeconds(10)));
-        assertTrue(lock.tryLock("lock:b", Duration.ofSeconds(10)));
+        CacheLockHandle handleA = lock.tryLock("lock:a", Duration.ofSeconds(10));
+        CacheLockHandle handleB = lock.tryLock("lock:b", Duration.ofSeconds(10));
+        assertNotNull(handleA);
+        assertNotNull(handleB);
 
-        // 解锁 a 必须使用 a 自己的值，而不是被 b 覆盖
-        lock.unlock("lock:a");
+        // 解锁 a 必须使用 a 自己的凭证
+        handleA.unlock();
         assertEquals(issued.get(0), unlockedValue.get());
 
-        // 随后解锁 b 仍能使用 b 自己的值
-        lock.unlock("lock:b");
+        // 随后解锁 b 仍使用 b 自己的凭证
+        handleB.unlock();
         assertEquals(issued.get(1), unlockedValue.get());
     }
 
     @Test
-    void unlockWithoutHoldingDoesNothing() {
-        lock.unlock("lock:a");
+    void handleWorksWithTryWithResources() {
 
-        verify(template, never()).execute(any(RedisScript.class), anyList(), any());
+        AtomicReference<Object> unlockedValue = new AtomicReference<>();
+        doAnswer(inv -> {
+            unlockedValue.set(inv.getArgument(2));
+            return 1L;
+        }).when(template).execute(any(RedisScript.class), anyList(), any());
+
+        try (CacheLockHandle handle = lock.tryLock("lock:a", Duration.ofSeconds(10))) {
+            assertNotNull(handle);
+        }
+
+        // close() 触发 unlock，脚本被执行且携带凭证
+        assertNotNull(unlockedValue.get());
+    }
+
+    @Test
+    void tryLockFailureReturnsNull() {
+        when(valueOps.setIfAbsent(anyString(), anyString(), any(Duration.class))).thenReturn(false);
+
+        assertNull(lock.tryLock("lock:a", Duration.ofSeconds(10)));
     }
 }

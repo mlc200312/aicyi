@@ -1,18 +1,18 @@
 package io.github.aicyi.commons.util;
 
-import io.github.aicyi.commons.core.logging.Logger;
-import io.github.aicyi.commons.logging.LoggerFactory;
+import io.github.aicyi.commons.lang.Assert;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.*;
 
 /**
  * @author Mr.Min
- * @description 反射工具类，提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
+ * @description 反射工具类，提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真类等工具函数.
  * @date 2025/10/15
  **/
-public class ReflectionUtils {
+public final class ReflectionUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReflectionUtils.class);
 
@@ -21,6 +21,9 @@ public class ReflectionUtils {
     private static final String GETTER_PREFIX = "get";
 
     private static final String CGLIB_CLASS_SEPARATOR = "$$";
+
+    private ReflectionUtils() {
+    }
 
     /**
      * 调用Getter方法.
@@ -68,20 +71,18 @@ public class ReflectionUtils {
      * @param fieldName
      * @return
      */
-    public static Object getFieldValue(final Object obj, final String fieldName) {
+    public static Object getFieldValue(Object obj, String fieldName) {
         Field field = getAccessibleField(obj, fieldName);
 
         if (field == null) {
             throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
         }
 
-        Object result = null;
         try {
-            result = field.get(obj);
+            return field.get(obj);
         } catch (IllegalAccessException e) {
-            LOGGER.error("抛出不可访问异常{}", e.getMessage());
+            throw convertReflectionExceptionToUnchecked(e);
         }
-        return result;
     }
 
     /**
@@ -91,17 +92,16 @@ public class ReflectionUtils {
      * @param fieldName
      * @param value
      */
-    public static void setFieldValue(final Object obj, final String fieldName, final Object value) {
+    public static void setFieldValue(Object obj, String fieldName, Object value) {
         Field field = getAccessibleField(obj, fieldName);
 
         if (field == null) {
-            LOGGER.error("Could not find field [" + fieldName + "] on target [" + obj + "]");
-            return;
+            throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
         }
         try {
             field.set(obj, convert(value, field.getType()));
         } catch (IllegalAccessException e) {
-            LOGGER.error("抛出不可访问异常:{}", e.getMessage());
+            throw convertReflectionExceptionToUnchecked(e);
         }
     }
 
@@ -144,8 +144,7 @@ public class ReflectionUtils {
      * @param args
      * @return
      */
-    public static Object invokeMethod(final Object obj, final String methodName, final Class<?>[] parameterTypes,
-                                      final Object[] args) {
+    public static Object invokeMethod(Object obj, String methodName, Class<?>[] parameterTypes, Object[] args) {
         Method method = getAccessibleMethod(obj, methodName, parameterTypes);
         if (method == null) {
             throw new IllegalArgumentException("Could not find method [" + methodName + "] on target [" + obj + "]");
@@ -168,7 +167,7 @@ public class ReflectionUtils {
      * @param args
      * @return
      */
-    public static Object invokeMethodByName(final Object obj, final String methodName, final Object[] args) {
+    public static Object invokeMethodByName(Object obj, String methodName, Object[] args) {
         Method method = getAccessibleMethodByName(obj, methodName);
         if (method == null) {
             throw new IllegalArgumentException("Could not find method [" + methodName + "] on target [" + obj + "]");
@@ -189,9 +188,9 @@ public class ReflectionUtils {
      * @param fieldName
      * @return
      */
-    public static Field getAccessibleField(final Object obj, final String fieldName) {
-        Validate.notNull(obj, "object can't be null");
-        Validate.notBlank(fieldName, "fieldName can't be blank");
+    public static Field getAccessibleField(Object obj, String fieldName) {
+        Assert.notNull(obj, "object");
+        Assert.notBlank(fieldName, "fieldName");
         for (Class<?> superClass = obj.getClass(); superClass != Object.class; superClass = superClass.getSuperclass()) {
             try {
                 Field field = superClass.getDeclaredField(fieldName);
@@ -199,7 +198,6 @@ public class ReflectionUtils {
                 return field;
             } catch (NoSuchFieldException e) {
                 // Field不在当前类定义,继续向上转型
-                continue;// new add
             }
         }
         return null;
@@ -216,9 +214,9 @@ public class ReflectionUtils {
      * @param parameterTypes
      * @return
      */
-    public static Method getAccessibleMethod(final Object obj, final String methodName, final Class<?>... parameterTypes) {
-        Validate.notNull(obj, "object can't be null");
-        Validate.notBlank(methodName, "methodName can't be blank");
+    public static Method getAccessibleMethod(Object obj, String methodName, Class<?>... parameterTypes) {
+        Assert.notNull(obj, "object");
+        Assert.notBlank(methodName, "methodName");
 
         for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
             try {
@@ -227,7 +225,6 @@ public class ReflectionUtils {
                 return method;
             } catch (NoSuchMethodException e) {
                 // Method不在当前类定义,继续向上转型
-                continue;// new add
             }
         }
         return null;
@@ -243,9 +240,9 @@ public class ReflectionUtils {
      * @param methodName
      * @return
      */
-    public static Method getAccessibleMethodByName(final Object obj, final String methodName) {
-        Validate.notNull(obj, "object can't be null");
-        Validate.notBlank(methodName, "methodName can't be blank");
+    public static Method getAccessibleMethodByName(Object obj, String methodName) {
+        Assert.notNull(obj, "object");
+        Assert.notBlank(methodName, "methodName");
 
         for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
             Method[] methods = searchType.getDeclaredMethods();
@@ -285,14 +282,13 @@ public class ReflectionUtils {
     /**
      * 通过反射, 获得Class定义中声明的泛型参数的类型, 注意泛型必须定义在父类处
      * 如无法找到, 返回Object.class.
-     * eg.
      *
      * @param clazz The class to introspect
      * @return the first generic declaration, or Object.class if cannot be determined
      */
     @SuppressWarnings("unchecked")
-    public static <T> Class<T> getClassGenericType(final Class clazz) {
-        return getClassGenericType(clazz, 0);
+    public static <T> Class<T> getClassGenericType(Class<?> clazz) {
+        return (Class<T>) getClassGenericType(clazz, 0);
     }
 
     /**
@@ -303,7 +299,7 @@ public class ReflectionUtils {
      * @param index the Index of the generic declaration,start from 0.
      * @return the index generic declaration, or Object.class if cannot be determined
      */
-    public static Class getClassGenericType(final Class clazz, final int index) {
+    public static Class<?> getClassGenericType(Class<?> clazz, int index) {
 
         Type genType = clazz.getGenericSuperclass();
 
@@ -323,20 +319,19 @@ public class ReflectionUtils {
             return Object.class;
         }
 
-        return (Class) params[index];
+        return (Class<?>) params[index];
     }
 
     public static Class<?> getUserClass(Object instance) {
-        Assert.notNull(instance, "Instance must not be null");
-        Class clazz = instance.getClass();
-        if (clazz != null && clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
+        Assert.notNull(instance, "instance");
+        Class<?> clazz = instance.getClass();
+        if (clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
             Class<?> superClass = clazz.getSuperclass();
             if (superClass != null && !Object.class.equals(superClass)) {
                 return superClass;
             }
         }
         return clazz;
-
     }
 
     /**
@@ -364,12 +359,7 @@ public class ReflectionUtils {
      * @param fieldName 属性名
      * @return 有属性返回true，无属性返回false
      */
-    public static boolean hasField(final Object obj, final String fieldName) {
-        Field field = getAccessibleField(obj, fieldName);
-        if (field == null) {
-            return false;
-        }
-        return true;
-
+    public static boolean hasField(Object obj, String fieldName) {
+        return getAccessibleField(obj, fieldName) != null;
     }
 }

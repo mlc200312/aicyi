@@ -3,13 +3,13 @@ package io.github.aicyi.example.boot.redis;
 import io.github.aicyi.commons.core.cache.Cache;
 import io.github.aicyi.commons.core.cache.CacheConfig;
 import io.github.aicyi.commons.core.cache.CacheLock;
-import io.github.aicyi.commons.core.cache.DefaultCacheLock;
+import io.github.aicyi.commons.core.cache.DistributedCacheLock;
 import io.github.aicyi.commons.core.lock.DistributedLockManager;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import io.github.aicyi.commons.util.serializer.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.commons.util.serializer.CacheWrapperCodec;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
 import io.github.aicyi.example.fixture.util.BaseLoggerTest;
@@ -58,12 +58,16 @@ public class RedisCacheTest extends BaseLoggerTest {
                 .cacheName("message_template")
                 .ttl(Duration.ofDays(1))
                 .cacheNull(false)
-                .serializer(new CacheWrapperPrincipalSerializer<>(MessageTemplate.class))
                 .build();
 
-        CacheLock cacheLock = new DefaultCacheLock(distributedLockManager);
+        CacheLock cacheLock = new DistributedCacheLock(distributedLockManager);
 
-        redisCache = new RedisCache<>(stringRedisTemplate, cacheConfig, cacheLock);
+        redisCache = new RedisCache<>(
+                stringRedisTemplate,
+                cacheConfig,
+                new CacheWrapperCodec<>(MessageTemplate.class),
+                cacheLock
+        );
     }
 
     @Test
@@ -104,13 +108,13 @@ public class RedisCacheTest extends BaseLoggerTest {
 
         assert testPutAll.size() == 3;
 
-        cache.evictAll(map.keySet());
+        long cnt = cache.evictBatch(map.keySet());
 
         Map<String, String> evictAll = cache.getAll(map.keySet());
 
         assert MapUtils.isEmpty(evictAll);
 
-        log(cache.stats().hitRate());
+        log(cnt, cache.stats().hitRate());
     }
 
     @Test

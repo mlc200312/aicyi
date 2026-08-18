@@ -1,6 +1,5 @@
 package io.github.aicyi.midware.redis;
 
-import io.github.aicyi.commons.util.Assert;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.OxmSerializer;
@@ -16,32 +15,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description Xml RedisTemplate 工厂
  * @date 2026/5/27
  **/
-public class XmlRedisTemplateFactory {
-
-    /**
-     * Redis连接工厂
-     */
-    private final RedisConnectionFactory redisConnectionFactory;
-
-    /**
-     * RedisTemplate 缓存
-     */
-    private final Map<String, RedisTemplate<?, ?>> templateCache = new ConcurrentHashMap<>();
+public class XmlRedisTemplateFactory extends AbstractRedisTemplateFactory {
 
     /**
      * XML Serializer 缓存
      */
     private final Map<String, RedisSerializer<?>> xmlSerializerCache = new ConcurrentHashMap<>();
 
-    /**
-     * String Serializer（单例）
-     */
-    private final RedisSerializer<String> stringSerializer = RedisSerializer.string();
-
     public XmlRedisTemplateFactory(@NonNull RedisConnectionFactory redisConnectionFactory) {
-
-        Assert.notNull(redisConnectionFactory, "redisConnectionFactory");
-        this.redisConnectionFactory = redisConnectionFactory;
+        super(redisConnectionFactory);
     }
 
     // =========================================================
@@ -58,7 +40,7 @@ public class XmlRedisTemplateFactory {
         return cast(
                 templateCache.computeIfAbsent(
                         cacheKey,
-                        key -> createTemplate(getOrCreateXmlSerializer(clazz))
+                        key -> createTemplate(getOrCreateXmlSerializer(clazz), true)
                 )
         );
     }
@@ -73,9 +55,7 @@ public class XmlRedisTemplateFactory {
         return cast(
                 templateCache.computeIfAbsent(
                         cacheKey,
-                        key -> createTemplate(
-                                getOrCreateXmlSerializer(packagesToScan)
-                        )
+                        key -> createTemplate(getOrCreateXmlSerializer(packagesToScan), true)
                 )
         );
     }
@@ -83,34 +63,6 @@ public class XmlRedisTemplateFactory {
     // =========================================================
     // INTERNAL
     // =========================================================
-
-    /**
-     * 创建 RedisTemplate
-     */
-    private RedisTemplate<String, Object> createTemplate(RedisSerializer<?> valueSerializer) {
-
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-
-        template.setConnectionFactory(redisConnectionFactory);
-
-        // key serializer
-        template.setKeySerializer(stringSerializer);
-        template.setHashKeySerializer(stringSerializer);
-
-        // value serializer
-        template.setValueSerializer(valueSerializer);
-        template.setHashValueSerializer(valueSerializer);
-
-        // default serializer
-        template.setDefaultSerializer(valueSerializer);
-
-        // 是否开启事务（按需开启）
-        // template.setEnableTransactionSupport(true);
-
-        template.afterPropertiesSet();
-
-        return template;
-    }
 
     /**
      * 获取 XML Serializer（Class）
@@ -157,26 +109,11 @@ public class XmlRedisTemplateFactory {
     }
 
     /**
-     * 泛型转换
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T cast(Object obj) {
-        return (T) obj;
-    }
-
-    // =========================================================
-    // GETTER
-    // =========================================================
-
-    public RedisConnectionFactory getRedisConnectionFactory() {
-        return redisConnectionFactory;
-    }
-
-    /**
      * 清空缓存（测试场景可用）
      */
+    @Override
     public void clearCache() {
-        templateCache.clear();
+        super.clearCache();
         xmlSerializerCache.clear();
     }
 }

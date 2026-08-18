@@ -39,7 +39,7 @@ public final class Maps {
     }
 
     public interface MapBuilder<K, V> {
-        MapBuilder<K, V> and(K var1, V var2);
+        MapBuilder<K, V> and(K key, V value);
 
         Map<K, V> build();
     }

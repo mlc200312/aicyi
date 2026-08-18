@@ -3,7 +3,6 @@ package io.github.aicyi.commons.util.jackson;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -13,7 +12,6 @@ import java.sql.Timestamp;
  * @description 时间戳序列化
  * @date 2025/8/8
  **/
-@JsonSerialize(using = TimestampJsonSerializer.class)
 public class TimestampJsonSerializer extends JsonSerializer<Timestamp> {
 
     @Override

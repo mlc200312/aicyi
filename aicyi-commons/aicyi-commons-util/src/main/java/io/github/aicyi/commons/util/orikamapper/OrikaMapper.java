@@ -1,7 +1,7 @@
 package io.github.aicyi.commons.util.orikamapper;
 
-import io.github.aicyi.commons.core.BeanMapper;
-import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.mapper.BeanMapper;
+import io.github.aicyi.commons.core.codec.JsonCodec;
 import io.github.aicyi.commons.util.JsonUtils;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;

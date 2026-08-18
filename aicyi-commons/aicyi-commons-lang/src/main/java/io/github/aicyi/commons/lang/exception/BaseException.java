@@ -33,7 +33,19 @@ public abstract class BaseException extends RuntimeException {
         return String.valueOf(code);
     }
 
+    /**
+     * 从错误码推导 HTTP 状态码（取前 3 位，错误码规范为 3 位 HTTP 段 + 2 位序号）；
+     * 错误码位数不足或非法时返回 null，由调用方决定回退策略
+     */
     public Integer getStatus() {
-        return Integer.valueOf(getCodeAsString().substring(0, 3));
+        String codeAsString = getCodeAsString();
+        if (codeAsString == null || codeAsString.length() < 3) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(codeAsString.substring(0, 3));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

@@ -22,6 +22,11 @@ public class RedisCoordinatedSnowflakeIdGenerator implements IdGenerator {
 
     private volatile SnowflakeIdGenerator snowflake;
 
+    /**
+     * 当前 snowflake 对应的租约，用于感知租约失效/换新（恢复后 workerId 可能变化）
+     */
+    private volatile WorkerIdLease activeLease;
+
     public RedisCoordinatedSnowflakeIdGenerator(
             WorkerIdManager workerIdManager,
             int datacenterId,
@@ -35,12 +40,23 @@ public class RedisCoordinatedSnowflakeIdGenerator implements IdGenerator {
     }
 
     private SnowflakeIdGenerator getSnowflake() {
-        if (snowflake != null) {
-            return snowflake;
+
+        WorkerIdLease currentLease = workerIdManager.getLease();
+
+        // 租约未就绪或已丢失：拒绝发号，避免与其他节点的 workerId 冲突产生重复 ID
+        if (currentLease == null || !workerIdManager.isLeaseValid()) {
+            this.snowflake = null;
+            throw new IllegalStateException("WorkerId lease not ready, refuse to generate id");
+        }
+
+        SnowflakeIdGenerator current = snowflake;
+
+        if (current != null && currentLease == activeLease) {
+            return current;
         }
 
         synchronized (this) {
-            if (snowflake == null) {
+            if (snowflake == null || workerIdManager.getLease() != activeLease) {
                 init();
             }
         }
@@ -63,6 +79,8 @@ public class RedisCoordinatedSnowflakeIdGenerator implements IdGenerator {
                 epoch,
                 clockBackwardToleranceMs
         );
+
+        this.activeLease = lease;
 
         logger.info("Snowflake initialized workerId={}, datacenterId={}", workerId, datacenterId
         );

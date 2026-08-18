@@ -2,13 +2,13 @@ package io.github.aicyi.midware.redis.token;
 
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.lang.model.TokenCreateRequest;
-import io.github.aicyi.commons.lang.exception.TokenExpiredException;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.lang.Assert;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +23,24 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
      * 用户Token集合前缀
      */
     private static final String USER_TOKENS_KEY_PREFIX = "security:user:tokens:";
+
+    /**
+     * 原子裁剪脚本：保留 score 最新的 maxTokens 个成员，返回被移除的旧成员
+     */
+    private static final DefaultRedisScript<List> TRIM_SCRIPT;
+
+    static {
+        TRIM_SCRIPT = new DefaultRedisScript<>();
+        TRIM_SCRIPT.setResultType(List.class);
+        TRIM_SCRIPT.setScriptText(
+                "local stop = -(tonumber(ARGV[1]) + 1) " +
+                        "local members = redis.call('ZRANGE', KEYS[1], 0, stop) " +
+                        "if #members > 0 then " +
+                        "   redis.call('ZREM', KEYS[1], unpack(members)) " +
+                        "end " +
+                        "return members"
+        );
+    }
 
     /**
      * 是否允许多设备登录
@@ -90,21 +108,14 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
 
         removeExpiredTokens(principalId);
 
-        if (isMultiTokenAllowed) {
+        String token = super.create(request);
 
-            Long currentDeviceCount = redisTemplate.opsForZSet().zCard(principalId);
+        // 写入后再原子裁剪，消除 zCard 判断与写入之间的并发窗口；单设备模式等价于保留最新 1 个
+        int maxTokens = isMultiTokenAllowed ? multiTokenCount : 1;
 
-            if (currentDeviceCount != null && currentDeviceCount >= multiTokenCount) {
+        trimTokens(principalId, maxTokens);
 
-                kickOutOldestToken(principalId);
-            }
-
-        } else {
-
-            revokeAll(principal);
-        }
-
-        return super.create(request);
+        return token;
     }
 
     @Override
@@ -126,32 +137,30 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
     }
 
     /**
-     * 剔除老设备
+     * 原子裁剪：保留最新的 maxTokens 个 Token，超出的最旧 Token 会话同步失效
      *
-     * @param principalId 用户ID
+     * @param principalId 用户Token集合Key
+     * @param maxTokens   保留的最大Token数量
      */
-    private void kickOutOldestToken(String principalId) {
+    private void trimTokens(String principalId, int maxTokens) {
 
-        Set<ZSetOperations.TypedTuple<String>> tuples = redisTemplate.opsForZSet().rangeWithScores(principalId, 0, 0);
+        List<String> removed = redisTemplate.execute(
+                TRIM_SCRIPT,
+                Collections.singletonList(principalId),
+                String.valueOf(maxTokens)
+        );
 
-        if (tuples == null || tuples.isEmpty()) {
-
+        if (removed.isEmpty()) {
             return;
         }
 
-        ZSetOperations.TypedTuple<String> tuple = tuples.iterator().next();
+        for (String oldToken : removed) {
 
-        String oldestToken = tuple.getValue();
+            // 会话失效（集合成员已由脚本移除，无需重复 ZREM）
+            tokenCache.evict(getTokenId(oldToken));
 
-        if (oldestToken == null) {
-            return;
+            logger.info("剔除设备：{}", maskToken(oldToken));
         }
-
-        super.revoke(oldestToken);
-
-        redisTemplate.opsForZSet().remove(principalId, oldestToken);
-
-        logger.info("剔除设备：{}", maskToken(oldestToken));
     }
 
     /**
@@ -185,8 +194,9 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
 
                 isValid(token);
 
-            } catch (TokenExpiredException e) {
+            } catch (Exception e) {
 
+                // 过期与非法 Token 均从集合中清理，避免单个 Token 异常中断整个清理流程
                 redisTemplate.opsForZSet().remove(principalId, token);
             }
         }

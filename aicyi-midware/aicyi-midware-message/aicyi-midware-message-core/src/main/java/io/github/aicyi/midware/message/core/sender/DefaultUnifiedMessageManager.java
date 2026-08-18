@@ -4,7 +4,7 @@ import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageSendCallback;
 import io.github.aicyi.commons.core.message.MessageSender;
 import io.github.aicyi.commons.lang.model.MessageSendResult;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.lang.Assert;
 import io.github.aicyi.midware.message.core.model.MessagePriority;
 
 /**
@@ -27,17 +27,17 @@ public class DefaultUnifiedMessageManager implements UnifiedMessageManager {
     }
 
     @Override
-    public MessageSendResult send(MessageContent content) {
+    public MessageSendResult send(MessageContent<?> content) {
         return getSender(content).send(content);
     }
 
     @Override
-    public void sendAsync(MessageContent content, MessageSendCallback callback) {
+    public void sendAsync(MessageContent<?> content, MessageSendCallback callback) {
         getSender(content).sendAsync(content, callback);
     }
 
     @Override
-    public MessageSendResult send(MessageContent content, MessagePriority priority) {
+    public MessageSendResult send(MessageContent<?> content, MessagePriority priority) {
         // TODO 当前实现暂未根据 priority 区分发送策略，后续可扩展优先级队列或差异化发送逻辑
         Assert.notNull(priority, "消息优先级");
         return send(content);
@@ -49,7 +49,7 @@ public class DefaultUnifiedMessageManager implements UnifiedMessageManager {
      * @param content 消息内容
      * @return 消息发送器
      */
-    private MessageSender getSender(MessageContent content) {
+    private MessageSender getSender(MessageContent<?> content) {
         MessageSender sender = senderFactory.getSender(content.getMessageType());
         if (sender == null) {
             throw new IllegalStateException("未找到消息类型 " + content.getMessageType() + " 对应的发送器");

@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.message.mail.config;
 
 import io.github.aicyi.commons.lang.model.BaseBean;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.lang.Assert;
 
 /**
  * @author Mr.Min

@@ -1,4 +1,4 @@
-package io.github.aicyi.commons.core;
+package io.github.aicyi.commons.core.codec;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -39,14 +39,14 @@ public interface JsonCodec {
      * Deserialize JSON array to list.
      */
     default <E> List<E> fromJsonList(String json, Type elementType) {
-        return fromJson(json, createCollectionType(List.class, elementType));
+        return fromJson(json, createParameterizedType(List.class, elementType));
     }
 
     /**
      * Deserialize JSON object to map.
      */
     default <K, V> Map<K, V> fromJsonMap(String json, Type keyType, Type valueType) {
-        return fromJson(json, createMapType(Map.class, keyType, valueType));
+        return fromJson(json, createParameterizedType(Map.class, keyType, valueType));
     }
 
     /**
@@ -62,7 +62,7 @@ public interface JsonCodec {
     /**
      * Create collection type.
      */
-    default Type createCollectionType(Class<? extends Collection> collectionType, Type elementType) {
+    default Type createCollectionType(Class<? extends Collection<?>> collectionType, Type elementType) {
 
         return createParameterizedType(collectionType, elementType);
     }
@@ -70,7 +70,7 @@ public interface JsonCodec {
     /**
      * Create map type.
      */
-    default Type createMapType(Class<? extends Map> mapType, Type keyType, Type valueType) {
+    default Type createMapType(Class<? extends Map<?, ?>> mapType, Type keyType, Type valueType) {
 
         return createParameterizedType(mapType, keyType, valueType);
     }

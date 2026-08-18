@@ -1,12 +1,13 @@
 package io.github.aicyi.midware.redis;
 
-import io.github.aicyi.commons.core.JsonCodec;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.core.codec.JsonCodec;
+import io.github.aicyi.commons.lang.Assert;
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.*;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.lang.NonNull;
 
 import java.lang.reflect.Type;
@@ -17,23 +18,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * 企业级增强版 RedisTemplate 工厂
  * <p>
  * 优化点：
- * 1. RedisTemplate 缓存复用
+ * 1. RedisTemplate 缓存复用（Class 与 Type 均缓存）
  * 2. Serializer 缓存
- * 3. 消除重复代码
+ * 3. 消除重复代码（公共逻辑下沉至 {@link AbstractRedisTemplateFactory}）
  * 4. ObjectMapper 隔离
  * 5. 支持 Class / Type
- * 6. XML Serializer 缓存
- * 7. 泛型增强
- * 8. 更好的扩展性
+ * 6. 泛型增强
+ * 7. 更好的扩展性
  *
  * @author Mr.Min
  */
-public class EnhancedRedisTemplateFactory {
-
-    /**
-     * Redis连接工厂
-     */
-    private final RedisConnectionFactory redisConnectionFactory;
+public class EnhancedRedisTemplateFactory extends AbstractRedisTemplateFactory {
 
     /**
      * 独立 JsonCodec，避免外部污染
@@ -41,36 +36,29 @@ public class EnhancedRedisTemplateFactory {
     private final JsonCodec jsonCodec;
 
     /**
-     * RedisTemplate 缓存
-     */
-    private final Map<String, RedisTemplate<?, ?>> templateCache = new ConcurrentHashMap<>();
-
-    /**
-     * value Serializer 缓存
+     * value Serializer 缓存（按 Type 名称）
      */
     private final Map<String, RedisSerializer<?>> valueSerializerCache = new ConcurrentHashMap<>();
 
     /**
-     * 通用 Generic Serializer（单例）
+     * 通用 Generic Serializer（单例，使用工厂注入的 JsonCodec）
      */
-    private final JsonCodecRedisSerializer genericJsonSerializer = new JsonCodecRedisSerializer(Object.class);
+    private final JsonCodecRedisSerializer<Object> genericJsonSerializer;
 
     /**
      * JDK Serializer（单例）
      */
     private final JdkSerializationRedisSerializer jdkSerializer = new JdkSerializationRedisSerializer();
 
-    /**
-     * String Serializer（单例）
-     */
-    private final RedisSerializer<String> stringSerializer = RedisSerializer.string();
-
     public EnhancedRedisTemplateFactory(@NonNull RedisConnectionFactory redisConnectionFactory, @NonNull JsonCodec jsonCodec) {
 
-        Assert.notNull(redisConnectionFactory, "redisConnectionFactory");
+        super(redisConnectionFactory);
+
         Assert.notNull(jsonCodec, "jsonCodec");
-        this.redisConnectionFactory = redisConnectionFactory;
         this.jsonCodec = jsonCodec;
+
+        this.genericJsonSerializer = new JsonCodecRedisSerializer<>(Object.class);
+        this.genericJsonSerializer.setJsonCodec(jsonCodec);
     }
 
     public EnhancedRedisTemplateFactory(@NonNull RedisConnectionFactory redisConnectionFactory) {
@@ -101,31 +89,21 @@ public class EnhancedRedisTemplateFactory {
      * JSON RedisTemplate（Class）
      */
     public <T> RedisTemplate<String, T> getJsonRedisTemplate(Class<T> clazz) {
+        return getJsonRedisTemplate((Type) clazz);
+    }
 
-        String cacheKey = "json:" + clazz.getName();
+    /**
+     * JSON RedisTemplate（Type，按类型名称缓存复用）
+     */
+    public <T> RedisTemplate<String, T> getJsonRedisTemplate(Type type) {
+
+        String cacheKey = "json:" + type.getTypeName();
 
         return cast(
                 templateCache.computeIfAbsent(
                         cacheKey,
-                        key -> {
-
-                            RedisSerializer<?> serializer = getOrCreateValueSerializer(clazz);
-
-                            return createTemplate(serializer);
-                        }
+                        key -> createTemplate(getOrCreateValueSerializer(type), false)
                 )
-        );
-    }
-
-    /**
-     * JSON RedisTemplate（Type）
-     */
-    public <T> RedisTemplate<String, T> getJsonRedisTemplate(Type type) {
-
-        RedisSerializer<?> serializer = getOrCreateValueSerializer(type);
-
-        return cast(
-                createTemplate(serializer)
         );
     }
 
@@ -134,7 +112,7 @@ public class EnhancedRedisTemplateFactory {
      */
     public RedisTemplate<String, Object> getGenericJsonRedisTemplate() {
 
-        return (RedisTemplate<String, Object>) getRedisTemplate(SerializerType.JSON);
+        return getRedisTemplate(SerializerType.JSON);
     }
 
     // =========================================================
@@ -151,9 +129,7 @@ public class EnhancedRedisTemplateFactory {
         return cast(
                 templateCache.computeIfAbsent(
                         cacheKey,
-                        key -> createTemplate(
-                                resolveSerializer(serializerType)
-                        )
+                        key -> createTemplate(resolveSerializer(serializerType), false)
                 )
         );
     }
@@ -163,52 +139,19 @@ public class EnhancedRedisTemplateFactory {
     // =========================================================
 
     /**
-     * 创建 RedisTemplate
-     */
-    private <T> RedisTemplate<String, T> createTemplate(RedisSerializer<T> valueSerializer) {
-
-        RedisTemplate<String, T> template = new RedisTemplate<>();
-
-        template.setConnectionFactory(redisConnectionFactory);
-
-        // key serializer
-        template.setKeySerializer(stringSerializer);
-        template.setHashKeySerializer(stringSerializer);
-
-        // value serializer
-        template.setValueSerializer(valueSerializer);
-        template.setHashValueSerializer(valueSerializer);
-
-        // default serializer
-        template.setEnableDefaultSerializer(false);
-
-        // 是否开启事务（按需开启）
-        // template.setEnableTransactionSupport(true);
-
-        template.afterPropertiesSet();
-
-        return template;
-    }
-
-    /**
-     * 获取 XML Serializer（Class）
+     * 获取 JSON Serializer（按 Type 名称缓存）
      */
     private RedisSerializer<?> getOrCreateValueSerializer(Type type) {
 
-        JsonCodecRedisSerializer<?> serializer = new JsonCodecRedisSerializer<>(type);
-
-        serializer.setJsonCodec(jsonCodec);
-
-        if (type instanceof Class) {
-            return cast(
-                    valueSerializerCache.computeIfAbsent(
-                            type.getTypeName(),
-                            key -> serializer
-                    )
-            );
-        }
         return cast(
-                serializer
+                valueSerializerCache.computeIfAbsent(
+                        type.getTypeName(),
+                        key -> {
+                            JsonCodecRedisSerializer<?> serializer = new JsonCodecRedisSerializer<>(type);
+                            serializer.setJsonCodec(jsonCodec);
+                            return serializer;
+                        }
+                )
         );
     }
 
@@ -230,21 +173,9 @@ public class EnhancedRedisTemplateFactory {
         }
     }
 
-    /**
-     * 泛型转换
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T cast(Object obj) {
-        return (T) obj;
-    }
-
     // =========================================================
     // GETTER
     // =========================================================
-
-    public RedisConnectionFactory getRedisConnectionFactory() {
-        return redisConnectionFactory;
-    }
 
     public JsonCodec getJsonCodec() {
         return jsonCodec;
@@ -253,7 +184,9 @@ public class EnhancedRedisTemplateFactory {
     /**
      * 清空缓存（测试场景可用）
      */
+    @Override
     public void clearCache() {
-        templateCache.clear();
+        super.clearCache();
+        valueSerializerCache.clear();
     }
 }

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -18,10 +17,11 @@ import java.util.Date;
  * @description 时间类型序列化
  * @date 21:05
  **/
-public class DateJsonSerializer extends com.fasterxml.jackson.databind.JsonSerializer<Date> implements ContextualSerializer {
-    private String pattern;
+public class DateJsonSerializer extends JsonSerializer<Date> implements ContextualSerializer {
+    private final String pattern;
 
     public DateJsonSerializer() {
+        this.pattern = null;
     }
 
     public DateJsonSerializer(String pattern) {

@@ -1,15 +1,17 @@
 package io.github.aicyi.commons.util;
 
+import io.github.aicyi.commons.lang.Assert;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.math.NumberUtils.isDigits;
 
@@ -40,13 +42,15 @@ public final class DateTimeUtils {
             DATE_TIME_MILLIS_PATTERN
     };
 
+    private static final Set<String> CACHED_PATTERNS = Collections.unmodifiableSet(
+            new HashSet<>(Arrays.asList(PATTERNS)));
+
     private static final Map<String, DateTimeFormatter> FORMATTERS = new ConcurrentHashMap<>(8);
 
     private static DateTimeFormatter formatter(String pattern) {
 
-        List<String> patternList = Arrays.stream(PATTERNS).collect(Collectors.toList());
-
-        if (patternList.contains(pattern)) {
+        // 仅内置 pattern 入缓存，避免外部任意 pattern 撑大缓存
+        if (CACHED_PATTERNS.contains(pattern)) {
 
             return FORMATTERS.computeIfAbsent(pattern, DateTimeFormatter::ofPattern);
         }
@@ -153,19 +157,26 @@ public final class DateTimeUtils {
         // yyyy-MM-dd
         if (len == 10) {
 
-            return LocalDate.parse(text, formatter(DATE_PATTERN)).atStartOfDay();
+            try {
+
+                return LocalDate.parse(text, formatter(DATE_PATTERN)).atStartOfDay();
+
+            } catch (DateTimeParseException e) {
+
+                return null;
+            }
         }
 
         // yyyy-MM-dd HH:mm:ss
         if (len == 19) {
 
-            return LocalDateTime.parse(text, formatter(DATE_TIME_PATTERN));
+            return parseQuietly(text, DATE_TIME_PATTERN);
         }
 
         // yyyy-MM-dd HH:mm:ss.SSS
         if (len == 23) {
 
-            return LocalDateTime.parse(text, formatter(DATE_TIME_MILLIS_PATTERN));
+            return parseQuietly(text, DATE_TIME_MILLIS_PATTERN);
         }
 
         // offset datetime
@@ -179,18 +190,22 @@ public final class DateTimeUtils {
         } catch (Exception ignored) {
         }
 
-        // local datetime
-        for (DateTimeFormatter formatter : FORMATTERS.values()) {
-
-            try {
-
-                return LocalDateTime.parse(text, formatter);
-
-            } catch (Exception ignored) {
-            }
-        }
-
         return null;
+    }
+
+    /**
+     * 自动解析内部使用：解析失败返回 null，不向上抛异常
+     */
+    private static LocalDateTime parseQuietly(String text, String pattern) {
+
+        try {
+
+            return LocalDateTime.parse(text, formatter(pattern));
+
+        } catch (DateTimeParseException e) {
+
+            return null;
+        }
     }
 
     // ========================= format =========================

@@ -2,7 +2,7 @@ package io.github.aicyi.example.boot.config;
 
 import io.github.aicyi.commons.core.cache.Cache;
 import io.github.aicyi.commons.core.cache.CacheConfig;
-import io.github.aicyi.commons.util.serializer.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.commons.util.serializer.CacheWrapperCodec;
 import io.github.aicyi.example.domain.UserInfo;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
 import io.github.aicyi.midware.redis.cache.*;
@@ -48,10 +48,9 @@ public class RedisConfiguration {
                 .globalPrefix("aicyi.cache")
                 .cacheName("string")
                 .ttl(Duration.ofMinutes(10))
-                .serializer(new CacheWrapperPrincipalSerializer<>(String.class))
                 .build();
 
-        return new RedisCache<>(stringRedisTemplate, cacheConfig);
+        return new RedisCache<>(stringRedisTemplate, cacheConfig, new CacheWrapperCodec<>(String.class));
     }
 
     @Bean
@@ -63,9 +62,8 @@ public class RedisConfiguration {
                 .globalPrefix("aicyi.cache")
                 .cacheName("userInfo")
                 .ttl(Duration.ofMinutes(10))
-                .serializer(new CacheWrapperPrincipalSerializer<>(UserInfo.class))
                 .build();
 
-        return new RedisCache<>(stringRedisTemplate, cacheConfig);
+        return new RedisCache<>(stringRedisTemplate, cacheConfig, new CacheWrapperCodec<>(UserInfo.class));
     }
 }

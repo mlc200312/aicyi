@@ -8,7 +8,7 @@ import io.github.aicyi.midware.message.template.cache.TemplateLocalCache;
 import io.github.aicyi.midware.message.template.cache.TemplateRemoteCache;
 import io.github.aicyi.midware.message.template.mapper.MessageTemplateMapper;
 import io.github.aicyi.midware.redis.EnhancedRedisTemplateFactory;
-import io.github.aicyi.commons.util.serializer.CacheWrapperPrincipalSerializer;
+import io.github.aicyi.commons.util.serializer.CacheWrapperCodec;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
 import io.github.aicyi.midware.redis.cache.RedissonCacheLock;
@@ -50,12 +50,16 @@ public class TemplateAutoConfiguration {
                 .cacheName("message_template")
                 .ttl(Duration.ofDays(1))
                 .cacheNull(true)
-                .serializer(new CacheWrapperPrincipalSerializer<>(MessageTemplate.class))
                 .build();
 
         RedissonCacheLock redissonCacheLock = new RedissonCacheLock(redissonClient);
 
-        RedisCache<MessageTemplate> messageTemplateCache = new RedisCache<>(stringRedisTemplate, cacheConfig, redissonCacheLock);
+        RedisCache<MessageTemplate> messageTemplateCache = new RedisCache<>(
+                stringRedisTemplate,
+                cacheConfig,
+                new CacheWrapperCodec<>(MessageTemplate.class),
+                redissonCacheLock
+        );
 
         // 本地缓存
         TemplateLocalCache templateLocalCache = new TemplateLocalCache();

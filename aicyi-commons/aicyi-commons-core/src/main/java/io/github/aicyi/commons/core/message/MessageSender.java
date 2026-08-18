@@ -15,7 +15,7 @@ public interface MessageSender {
      * @param content 消息对象
      * @return 发送结果
      */
-    MessageSendResult send(MessageContent content);
+    MessageSendResult send(MessageContent<?> content);
 
     /**
      * 异步发送消息
@@ -23,7 +23,7 @@ public interface MessageSender {
      * @param content  消息内容
      * @param callback 发送结果回调
      */
-    void sendAsync(MessageContent content, MessageSendCallback callback);
+    void sendAsync(MessageContent<?> content, MessageSendCallback callback);
 
     /**
      * 是否支持该消息类型

@@ -19,7 +19,12 @@
     <dependencies>
         <dependency>
             <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>aicyi-commons-util</artifactId>
+            <artifactId>aicyi-commons-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>aicyi-commons-logging</artifactId>
         </dependency>
 
         <dependency>

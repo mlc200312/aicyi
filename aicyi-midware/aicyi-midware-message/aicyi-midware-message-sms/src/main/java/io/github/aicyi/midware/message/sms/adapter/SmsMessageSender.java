@@ -22,7 +22,7 @@ public class SmsMessageSender extends AbstractMessageSender {
     }
 
     @Override
-    protected void validate(MessageContent content) {
+    protected void validate(MessageContent<?> content) {
         if (!supports(content.getMessageType())) {
             throw new UnsupportedOperationException("不支持的消息类型");
         }
@@ -39,7 +39,7 @@ public class SmsMessageSender extends AbstractMessageSender {
     }
 
     @Override
-    protected MessageSendResult doSend(MessageContent content) throws MessageSendException {
+    protected MessageSendResult doSend(MessageContent<?> content) throws MessageSendException {
 
         SmsMessage message = (SmsMessage) content;
 

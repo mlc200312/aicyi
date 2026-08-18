@@ -1,7 +1,7 @@
 
 package io.github.aicyi.example.boot.redis;
 
-import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.codec.JsonCodec;
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import io.github.aicyi.example.boot.AicyiExampleApplication;
 import io.github.aicyi.example.domain.StudentBean;
@@ -175,7 +175,7 @@ class EnhancedRedisTemplateFactoryTest {
     }
 
     @Test
-    @DisplayName("Type RedisTemplate 默认不缓存")
+    @DisplayName("Type RedisTemplate 应缓存复用")
     void shouldNotReuseJsonRedisTemplateByType() {
 
         Type type = new com.fasterxml.jackson.core.type.TypeReference<List<UserBean>>() {
@@ -185,7 +185,7 @@ class EnhancedRedisTemplateFactoryTest {
 
         RedisTemplate<String, List<UserBean>> template2 = factory.getJsonRedisTemplate(type);
 
-        Assertions.assertNotSame(template1, template2);
+        Assertions.assertSame(template1, template2);
     }
 
     // =========================================================

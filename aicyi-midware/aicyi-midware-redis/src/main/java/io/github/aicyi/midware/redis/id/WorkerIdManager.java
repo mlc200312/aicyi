@@ -54,20 +54,33 @@ public class WorkerIdManager implements SmartLifecycle {
 
     private void markLeaseLost() {
 
-        logger.error("WorkerId lease LOST! workerId={}", lease.getWorkerId());
+        logger.error("WorkerId lease LOST! workerId={}", lease != null ? lease.getWorkerId() : null);
+
+        leaseValid = false;
 
         if (autoRecover) {
-
-            start();
-        } else {
-
-            leaseValid = false;
+            try {
+                start();
+                logger.info("WorkerId recovered, new workerId={}", lease.getWorkerId());
+            } catch (Exception e) {
+                logger.error("WorkerId auto recover failed", e);
+            }
         }
-
     }
 
+    /**
+     * 幂等启动：重复调用会先停止旧心跳再重新申请租约
+     */
     @Override
-    public void start() {
+    public synchronized void start() {
+
+        if (heartbeat != null) {
+            // 租约丢失场景下 release 会被服务端以 token 不匹配拒绝，无害
+            heartbeat.stop();
+            heartbeat = null;
+        }
+
+        leaseValid = false;
 
         lease = allocator.allocate();
 
@@ -87,11 +100,12 @@ public class WorkerIdManager implements SmartLifecycle {
     }
 
     @Override
-    public void stop() {
+    public synchronized void stop() {
         leaseValid = false;
 
         if (heartbeat != null) {
             heartbeat.stop();
+            heartbeat = null;
         }
 
         running = false;

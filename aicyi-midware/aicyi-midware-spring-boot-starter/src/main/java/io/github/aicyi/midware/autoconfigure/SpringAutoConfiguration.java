@@ -4,7 +4,7 @@ import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.util.jackson.JacksonJsonCodec;
 import io.github.aicyi.midware.utils.IdUtils;
 import io.github.aicyi.midware.utils.SpringEnvironmentHelper;
-import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.codec.JsonCodec;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

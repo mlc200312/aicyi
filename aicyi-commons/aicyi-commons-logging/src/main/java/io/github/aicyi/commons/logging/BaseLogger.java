@@ -10,37 +10,31 @@ import io.github.aicyi.commons.core.logging.Logger;
 public abstract class BaseLogger implements Logger {
     protected String name;
 
+    /**
+     * 构造时持有 slf4j logger，避免每条日志重复查找
+     */
+    private final org.slf4j.Logger logger;
+
     public BaseLogger(String name) {
         this.name = name;
+        this.logger = org.slf4j.LoggerFactory.getLogger(name);
     }
 
     public BaseLogger(Class<?> clazz) {
-        this.name = clazz.getName();
+        this(clazz.getName());
     }
 
     public BaseLogger(LoggerType type) {
-        this.name = type.getName();
+        this(type.getName());
     }
 
     protected org.slf4j.Logger getLogger() {
-        return org.slf4j.LoggerFactory.getLogger(this.name);
+        return this.logger;
     }
 
     protected abstract String formatMessage(Object obj);
 
     protected abstract String formatMessage(String format, Object... args);
-
-    private boolean isInfoEnabled() {
-        return getLogger().isInfoEnabled();
-    }
-
-    private boolean isWarnEnabled() {
-        return getLogger().isWarnEnabled();
-    }
-
-    private boolean isErrorEnabled() {
-        return getLogger().isErrorEnabled();
-    }
 
     @Override
     public boolean isDebugEnabled() {
@@ -103,7 +97,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void info(Object obj) {
         org.slf4j.Logger logger = getLogger();
-        if (isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             logger.info(formatMessage(obj));
         }
     }
@@ -111,7 +105,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void info(String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             logger.info(formatMessage(format, args));
         }
     }
@@ -119,7 +113,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void info(Throwable cause, String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             logger.info(formatMessage(format, args), cause);
         }
     }
@@ -127,7 +121,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void warn(Object obj) {
         org.slf4j.Logger logger = getLogger();
-        if (isWarnEnabled()) {
+        if (logger.isWarnEnabled()) {
             logger.warn(formatMessage(obj));
         }
     }
@@ -135,7 +129,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void warn(String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (isWarnEnabled()) {
+        if (logger.isWarnEnabled()) {
             logger.warn(formatMessage(format, args));
         }
     }
@@ -143,7 +137,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void warn(Throwable cause, String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (isWarnEnabled()) {
+        if (logger.isWarnEnabled()) {
             logger.warn(formatMessage(format, args), cause);
         }
     }
@@ -151,7 +145,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void error(Object obj) {
         org.slf4j.Logger logger = getLogger();
-        if (isErrorEnabled()) {
+        if (logger.isErrorEnabled()) {
             logger.error(formatMessage(obj));
         }
     }
@@ -159,7 +153,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void error(String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (isErrorEnabled()) {
+        if (logger.isErrorEnabled()) {
             logger.error(formatMessage(format, args));
         }
     }
@@ -167,7 +161,7 @@ public abstract class BaseLogger implements Logger {
     @Override
     public void error(Throwable cause, String format, Object... args) {
         org.slf4j.Logger logger = getLogger();
-        if (isErrorEnabled()) {
+        if (logger.isErrorEnabled()) {
             logger.error(formatMessage(format, args), cause);
         }
     }

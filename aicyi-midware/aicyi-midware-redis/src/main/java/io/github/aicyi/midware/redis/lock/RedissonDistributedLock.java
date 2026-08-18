@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.redis.lock;
 
 import io.github.aicyi.commons.core.lock.DistributedLock;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.lang.Assert;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 

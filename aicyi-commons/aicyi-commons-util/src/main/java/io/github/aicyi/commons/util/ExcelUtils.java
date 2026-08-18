@@ -11,17 +11,16 @@ import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import io.github.aicyi.commons.lang.Assert;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -84,6 +83,7 @@ public class ExcelUtils {
         return () -> new ExcelBatchReader<>(filePath, clazz, batchSize);
     }
 
+
     /**
      * 读取Excel文件（默认分批大小）
      *
@@ -106,23 +106,25 @@ public class ExcelUtils {
         Map<Integer, List<?>> result = new HashMap<>();
         try (ExcelReader excelReader = EasyExcel.read(filePath).build()) {
             for (Map.Entry<Integer, Class<?>> entry : sheetClasses.entrySet()) {
-                Integer sheetNo = entry.getKey();
-                Class<?> clazz = entry.getValue();
-                List<?> batch = new ArrayList<>();
-                ReadSheet readSheet = EasyExcel
-                        .readSheet(sheetNo)
-                        .head(clazz)
-                        .registerReadListener(new ExcelListener() {
-                            @Override
-                            protected void processBatch(List batchData) {
-                                batch.addAll(batchData);
-                            }
-                        }).build();
-                excelReader.read(readSheet);
-                result.put(sheetNo, batch);
+                result.put(entry.getKey(), readSheetData(excelReader, entry.getKey(), entry.getValue()));
             }
         }
         return result;
+    }
+
+    private static <T> List<T> readSheetData(ExcelReader excelReader, Integer sheetNo, Class<T> clazz) {
+        List<T> data = new ArrayList<>();
+        ReadSheet readSheet = EasyExcel
+                .readSheet(sheetNo)
+                .head(clazz)
+                .registerReadListener(new ExcelListener<T>() {
+                    @Override
+                    protected void processBatch(List<T> batchData) {
+                        data.addAll(batchData);
+                    }
+                }).build();
+        excelReader.read(readSheet);
+        return data;
     }
 
     /**
@@ -193,59 +195,12 @@ public class ExcelUtils {
     }
 
     /**
-     * 带样式的导出
-     *
-     * @param response  HttpServletResponse
-     * @param fileName  文件名
-     * @param sheetName sheet名称
-     * @param data      数据列表
-     * @param clazz     数据模型类
-     */
-    public static <T> void exportToResponse(HttpServletResponse response, String fileName, String sheetName, List<T> data, Class<T> clazz) throws IOException {
-        HorizontalCellStyleStrategy cellStyle = createCellStyle();
-        exportToResponse(response, fileName, sheetName, data, clazz, cellStyle);
-    }
-
-    /**
-     * 带样式的导出
-     *
-     * @param response  HttpServletResponse
-     * @param fileName  文件名
-     * @param sheetName sheet名称
-     * @param data      数据列表
-     * @param clazz     数据模型类
-     */
-    public static <T> void exportToResponse(HttpServletResponse response, String fileName, String sheetName, List<T> data, Class<T> clazz, WriteHandler writeHandler) throws IOException {
-        setResponse(response, fileName);
-        ExcelWriterSheetBuilder sheetBuilder = EasyExcel.write(response.getOutputStream(), clazz).sheet(1, sheetName);
-        if (writeHandler != null) {
-            sheetBuilder.registerWriteHandler(writeHandler);
-        }
-        sheetBuilder.doWrite(data);
-    }
-
-    /**
      * 设置默认样式策略
      *
-     * @return
+     * @return 默认样式策略
      */
     private static HorizontalCellStyleStrategy createCellStyle() {
         return new AutoColumnWidthAndWrapHandler();
-    }
-
-
-    /**
-     * HttpServletResponse 设置
-     *
-     * @param response
-     * @param fileName
-     * @throws IOException
-     */
-    private static void setResponse(HttpServletResponse response, String fileName) throws IOException {
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + encodedFileName + ".xlsx");
     }
 
     /**
@@ -293,62 +248,32 @@ public class ExcelUtils {
      * @date 2026/4/21
      **/
     private static class ExcelBatchReader<T> implements Iterator<List<T>> {
-        private final String filePath;
-        private final Class<T> clazz;
-        private final int batchSize;
-        private ExcelReader excelReader;
-        private List<T> nextBatch;
+        private final Iterator<List<T>> batchIterator;
 
         public ExcelBatchReader(String filePath, Class<T> clazz, int batchSize) {
-            this.filePath = filePath;
-            this.clazz = clazz;
-            this.batchSize = batchSize;
-            this.excelReader = EasyExcel.read(filePath).build();
-            this.nextBatch = readNextBatch();
-        }
-
-        public String getFilePath() {
-            return filePath;
+            Assert.notBlank(filePath, "filePath");
+            Assert.notNull(clazz, "clazz");
+            Assert.positive(batchSize, "batchSize");
+            // 单次遍历文件，由监听器按 batchSize 累批，避免旧实现每批重复重读整个文件
+            List<List<T>> batches = new ArrayList<>();
+            ExcelListener<T> listener = new ExcelListener<T>(batchSize) {
+                @Override
+                protected void processBatch(List<T> batchData) {
+                    batches.add(batchData);
+                }
+            };
+            EasyExcel.read(filePath, clazz, listener).sheet().doRead();
+            this.batchIterator = batches.iterator();
         }
 
         @Override
         public boolean hasNext() {
-            return nextBatch != null && !nextBatch.isEmpty();
+            return batchIterator.hasNext();
         }
 
         @Override
         public List<T> next() {
-            List<T> currentBatch = nextBatch;
-            nextBatch = readNextBatch();
-            if (currentBatch == null) {
-                throw new NoSuchElementException();
-            }
-            return currentBatch;
-        }
-
-        private List<T> readNextBatch() {
-            if (excelReader == null) {
-                return Collections.emptyList();
-            }
-
-            List<T> batch = new ArrayList<>();
-            ExcelListener<T> listener = new ExcelListener<T>(batchSize) {
-                @Override
-                protected void processBatch(List<T> batchData) {
-                    batch.addAll(batchData);
-                }
-
-                @Override
-                protected void onCompleted() {
-                    excelReader.finish();
-                    excelReader = null;
-                }
-            };
-
-            ReadSheet readSheet = EasyExcel.readSheet(0).head(clazz).registerReadListener(listener).build();
-            excelReader.read(readSheet);
-
-            return batch;
+            return batchIterator.next();
         }
     }
 

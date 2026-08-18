@@ -5,7 +5,7 @@ import io.github.aicyi.commons.lang.exception.TokenException;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.lang.model.TokenCreateRequest;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.lang.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,27 +49,21 @@ public abstract class AbstractTokenService<P> implements TokenService<String, P>
 
         Assert.notNull(request.getPrincipal(), "principal");
 
-        try {
-            // 1.创建Token
-            String token = createToken();
+        // 1.创建Token
+        String token = createToken();
 
-            // 2.保存TokenSession
-            long ttl = getDefaultTtl(request);
+        // 2.保存TokenSession
+        long ttl = getDefaultTtl(request);
 
-            TokenSession<P> session = newTokenSession(request, token, ttl);
+        TokenSession<P> session = newTokenSession(request, token, ttl);
 
-            saveTokenSession(session, ttl);
+        saveTokenSession(session, ttl);
 
-            // 3.缓存PrincipalToken
-            cachePrincipalToken(session.getPrincipal(), session.getToken(), ttl);
+        // 3.缓存PrincipalToken
+        cachePrincipalToken(session.getPrincipal(), session.getToken(), ttl);
 
-            // 4.返回Token
-            return token;
-
-        } catch (Exception e) {
-
-            throw new RuntimeException("create redis token failed", e);
-        }
+        // 4.返回Token
+        return token;
     }
 
     @Override
@@ -122,10 +116,7 @@ public abstract class AbstractTokenService<P> implements TokenService<String, P>
         // 1.获取Token信息
         TokenSession<P> session = requireTokenSession(token);
 
-        // 2.删除Token信息
-        revoke(token);
-
-        // 3.构造TokenCreateRequest
+        // 2.构造TokenCreateRequest
         TokenCreateRequest<P> request = new TokenCreateRequest<>();
 
         request.setPrincipal(session.getPrincipal());
@@ -136,8 +127,13 @@ public abstract class AbstractTokenService<P> implements TokenService<String, P>
 
         request.setTimeUnit(getRefreshTimeUnit());
 
-        // 4.创建Token
-        return create(request);
+        // 3.先创建新Token：创建失败时旧Token仍可用，避免用户被意外踢出
+        String newToken = create(request);
+
+        // 4.新Token生效后再吊销旧Token
+        revoke(token);
+
+        return newToken;
     }
 
     protected abstract String createToken();
@@ -176,11 +172,18 @@ public abstract class AbstractTokenService<P> implements TokenService<String, P>
     }
 
     /**
-     * 获取默认TTL
+     * 获取默认TTL（秒）：request 未指定有效时间或时间单位时回退默认值
      */
     protected long getDefaultTtl(TokenCreateRequest<P> request) {
 
-        return request.getTtl() > 0 ? request.getTimeUnit().toSeconds(request.getTtl()) : DEFAULT_TTL;
+        if (request.getTtl() <= 0) {
+
+            return DEFAULT_TTL;
+        }
+
+        TimeUnit timeUnit = request.getTimeUnit() == null ? TimeUnit.SECONDS : request.getTimeUnit();
+
+        return timeUnit.toSeconds(request.getTtl());
     }
 
     /**

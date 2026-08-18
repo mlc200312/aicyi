@@ -8,9 +8,9 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import io.github.aicyi.commons.lang.Assert;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -138,10 +138,5 @@ public class QRCodeGenerator {
     public void generateToStream(OutputStream outputStream) throws IOException, WriterException {
         BufferedImage image = generateImage();
         ImageIO.write(image, format, outputStream);
-    }
-
-    public void generateToResponse(HttpServletResponse response) throws IOException, WriterException {
-        response.setContentType("image/" + format.toLowerCase());
-        generateToStream(response.getOutputStream());
     }
 }

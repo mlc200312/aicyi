@@ -1,18 +1,16 @@
 package io.github.aicyi.midware.redis.cache;
 
-import io.github.aicyi.commons.core.PrincipalSerializer;
 import io.github.aicyi.commons.core.cache.CacheConfig;
-import io.github.aicyi.commons.lang.model.CacheWrapper;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.lang.Assert;
 
 import java.time.Duration;
 
 /**
  * @author Mr.Min
- * @description 缓存配置类
+ * @description 缓存配置类（仅策略属性，序列化器由 RedisCache 构造注入）
  * @date 2025/8/12
  **/
-public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>> {
+public final class RedisCacheConfig implements CacheConfig {
 
     /**
      * 全局缓存前缀
@@ -40,7 +38,7 @@ public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>>
     private final boolean ttlJitter;
 
     /**
-     * 10 = ±10%
+     * 10 = 0~+10% 正向抖动
      */
     private final int jitterPercent;
 
@@ -54,11 +52,6 @@ public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>>
      */
     private final Duration waitTimeout;
 
-    /**
-     * 缓存值序列化器
-     */
-    private PrincipalSerializer<CacheWrapper<Object>> serializer;
-
     private RedisCacheConfig(Builder builder) {
         this.globalPrefix = builder.globalPrefix;
         this.cacheName = builder.cacheName;
@@ -68,7 +61,6 @@ public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>>
         this.jitterPercent = builder.jitterPercent;
         this.lockTtl = builder.lockTtl;
         this.waitTimeout = builder.waitTimeout;
-        this.serializer = builder.serializer;
 
         validate();
     }
@@ -83,9 +75,11 @@ public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>>
         Assert.notNull(ttl, "ttl");
         Assert.notNull(lockTtl, "lockTtl");
         Assert.notNull(waitTimeout, "waitTimeout");
-        Assert.notNegative(ttl.toMillis(), "ttl");
+        // 正数校验：0 值会在运行时触发 Redis 非法参数（SET PX 0）或使锁/等待逻辑失效
+        Assert.check(ttl.toMillis() > 0, "ttl must be positive");
+        Assert.check(lockTtl.toMillis() > 0, "lockTtl must be positive");
+        Assert.check(waitTimeout.toMillis() > 0, "waitTimeout must be positive");
         Assert.check(jitterPercent >= 0 && jitterPercent <= 50, "jitterPercent must be between 0 and 50");
-        Assert.notNull(serializer, "serializer");
     }
 
     public String getGlobalPrefix() {
@@ -100,6 +94,7 @@ public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>>
         return ttl;
     }
 
+    @Override
     public boolean isCacheNull() {
         return cacheNull;
     }
@@ -120,10 +115,6 @@ public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>>
         return waitTimeout;
     }
 
-    public PrincipalSerializer<CacheWrapper<Object>> getSerializer() {
-        return serializer;
-    }
-
     public static final class Builder {
 
         private String globalPrefix;
@@ -137,7 +128,7 @@ public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>>
         private boolean ttlJitter = true;
 
         /**
-         * 10 = ±10%
+         * 10 = 0~+10% 正向抖动
          */
         private int jitterPercent = 10;
 
@@ -150,11 +141,6 @@ public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>>
          * 等待缓存回填
          */
         private Duration waitTimeout = Duration.ofSeconds(3);
-
-        /**
-         * 缓存值序列化器
-         */
-        private PrincipalSerializer<CacheWrapper<Object>> serializer;
 
         private Builder() {
         }
@@ -196,11 +182,6 @@ public final class RedisCacheConfig implements CacheConfig<CacheWrapper<Object>>
 
         public Builder waitTimeout(Duration waitTimeout) {
             this.waitTimeout = waitTimeout;
-            return this;
-        }
-
-        public Builder serializer(PrincipalSerializer<CacheWrapper<Object>> serializer) {
-            this.serializer = serializer;
             return this;
         }
 

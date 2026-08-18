@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.util.orikamapper;
 
-import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.codec.JsonCodec;
 import io.github.aicyi.commons.lang.model.BaseBean;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;

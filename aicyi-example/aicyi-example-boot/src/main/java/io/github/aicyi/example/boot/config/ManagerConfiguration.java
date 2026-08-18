@@ -1,6 +1,6 @@
 package io.github.aicyi.example.boot.config;
 
-import io.github.aicyi.commons.core.BeanMapper;
+import io.github.aicyi.commons.core.mapper.BeanMapper;
 import io.github.aicyi.commons.util.orikamapper.OrikaMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

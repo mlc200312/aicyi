@@ -3,7 +3,7 @@ package io.github.aicyi.midware.message.core.sender;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageSendCallback;
 import io.github.aicyi.commons.lang.model.MessageSendResult;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.lang.Assert;
 import io.github.aicyi.midware.message.core.model.MessagePriority;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface UnifiedMessageManager {
      * @param content 消息内容，不能为 null
      * @return 发送结果
      */
-    MessageSendResult send(MessageContent content);
+    MessageSendResult send(MessageContent<?> content);
 
     /**
      * 异步发送消息
@@ -30,7 +30,7 @@ public interface UnifiedMessageManager {
      * @param content  消息内容，不能为 null
      * @param callback 发送结果回调，不能为 null
      */
-    void sendAsync(MessageContent content, MessageSendCallback callback);
+    void sendAsync(MessageContent<?> content, MessageSendCallback callback);
 
     /**
      * 按优先级发送消息
@@ -39,7 +39,7 @@ public interface UnifiedMessageManager {
      * @param priority 消息优先级，不能为 null
      * @return 发送结果
      */
-    MessageSendResult send(MessageContent content, MessagePriority priority);
+    MessageSendResult send(MessageContent<?> content, MessagePriority priority);
 
     /**
      * 批量发送消息
@@ -47,7 +47,7 @@ public interface UnifiedMessageManager {
      * @param contents 消息内容列表，不能为 null
      * @return 发送结果列表
      */
-    default List<MessageSendResult> sendBatch(List<MessageContent> contents) {
+    default List<MessageSendResult> sendBatch(List<MessageContent<?>> contents) {
         Assert.notNull(contents, "消息内容列表");
         return contents.stream()
                 .map(this::send)

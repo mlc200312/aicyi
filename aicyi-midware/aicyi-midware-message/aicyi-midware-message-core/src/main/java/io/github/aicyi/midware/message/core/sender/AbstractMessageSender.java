@@ -6,7 +6,7 @@ import io.github.aicyi.commons.core.message.MessageSender;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.lang.model.MessageSendResult;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.lang.Assert;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 
 import java.util.concurrent.CompletableFuture;
@@ -21,7 +21,7 @@ public abstract class AbstractMessageSender implements MessageSender {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public MessageSendResult send(MessageContent content) {
+    public MessageSendResult send(MessageContent<?> content) {
         try {
             validate(content);
             return doSend(content);
@@ -34,7 +34,7 @@ public abstract class AbstractMessageSender implements MessageSender {
     }
 
     @Override
-    public void sendAsync(MessageContent content, MessageSendCallback callback) {
+    public void sendAsync(MessageContent<?> content, MessageSendCallback callback) {
         Assert.notNull(callback, "callback");
         CompletableFuture.runAsync(() -> {
             try {
@@ -49,18 +49,18 @@ public abstract class AbstractMessageSender implements MessageSender {
     /**
      * 发送
      *
-     * @param content
-     * @return
-     * @throws MessageSendException
+     * @param content 消息内容
+     * @return 发送结果
+     * @throws MessageSendException 发送异常
      */
-    protected abstract MessageSendResult doSend(MessageContent content) throws MessageSendException;
+    protected abstract MessageSendResult doSend(MessageContent<?> content) throws MessageSendException;
 
     /**
      * 校验消息内容
      *
-     * @param content
+     * @param content 消息内容
      */
-    protected void validate(MessageContent content) {
+    protected void validate(MessageContent<?> content) {
         if (!supports(content.getMessageType())) {
             throw new UnsupportedOperationException("不支持的消息类型");
         }

@@ -53,12 +53,17 @@
     </dependencyManagement>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- 仅管理版本，由可执行应用模块（如 boot）自行声明，避免库模块被 repackage -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -109,7 +114,8 @@
                 <!--<targetPath>${build.outputDirectory}</targetPath> -->
 
                 <!-- maven default生命周期，process-resources阶段执行maven-resources-plugin插件的resources目标处理主资源目下的资源文件时，是否对主资源目录开启资源过滤 -->
-                <filtering>true</filtering>
+                <!-- 默认关闭过滤，避免误替换资源文件中的 ${...} 占位符；需要时由子模块按需开启 -->
+                <filtering>false</filtering>
             </resource>
         </resources>
     </build>

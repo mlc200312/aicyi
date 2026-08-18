@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.utils;
 
-import io.github.aicyi.commons.core.JsonCodec;
+import io.github.aicyi.commons.core.codec.JsonCodec;
 import io.github.aicyi.commons.util.JsonUtils;
 import io.github.aicyi.commons.util.jackson.JacksonTypeFactory;
 import org.springframework.beans.factory.InitializingBean;

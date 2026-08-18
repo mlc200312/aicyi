@@ -22,11 +22,6 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
     private static final String PRINCIPAL_CLAIM = "principal";
 
     /**
-     * RefreshToken Claim名称
-     */
-    private static final String REFRESH_TOKEN_CLAIM = "refresh_token";
-
-    /**
      * 刷新Token服务
      */
     private final TokenService<String, P> refreshTokenService;
@@ -65,18 +60,22 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
             TokenService<String, P> refreshTokenService,
             TokenProvider<String> accessTokenProvider,
             PrincipalSerializer<P> serializer,
-            Long refreshTokenTtl,
+            long refreshTokenTtl,
             TimeUnit refreshTokenTimeUnit,
-            Long accessTokenTtl,
+            long accessTokenTtl,
             TimeUnit accessTokenTimeUnit
     ) {
-        this.refreshTokenService = refreshTokenService;
-        this.accessTokenProvider = accessTokenProvider;
-        this.serializer = serializer;
+        if (refreshTokenTtl <= 0 || accessTokenTtl <= 0) {
+            throw new IllegalArgumentException("token ttl must be positive");
+        }
+
+        this.refreshTokenService = Objects.requireNonNull(refreshTokenService, "refreshTokenService");
+        this.accessTokenProvider = Objects.requireNonNull(accessTokenProvider, "accessTokenProvider");
+        this.serializer = Objects.requireNonNull(serializer, "serializer");
         this.refreshTokenTtl = refreshTokenTtl;
-        this.refreshTokenTimeUnit = refreshTokenTimeUnit;
+        this.refreshTokenTimeUnit = Objects.requireNonNull(refreshTokenTimeUnit, "refreshTokenTimeUnit");
         this.accessTokenTtl = accessTokenTtl;
-        this.accessTokenTimeUnit = accessTokenTimeUnit;
+        this.accessTokenTimeUnit = Objects.requireNonNull(accessTokenTimeUnit, "accessTokenTimeUnit");
     }
 
     public long getRefreshTokenTtl() {
@@ -115,8 +114,8 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
 
         String refreshToken = refreshTokenService.create(request);
 
-        // 2. 生成AccessToken
-        String accessToken = createAccessToken(principal, attributes, refreshToken);
+        // 2. 生成AccessToken（不内嵌 refreshToken，避免 access token 泄露后被直接换取新 token）
+        String accessToken = createAccessToken(principal, attributes);
 
         // 3. 返回TokenPair
         return buildTokenPair(accessToken, refreshToken);
@@ -134,7 +133,7 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
         Map<String, Object> attributes = refreshTokenService.parseAttributes(refreshToken);
 
         // 3. 重新生成AccessToken
-        String accessToken = createAccessToken(principal, attributes, refreshToken);
+        String accessToken = createAccessToken(principal, attributes);
 
         // 4. 返回TokenPair
         return buildTokenPair(accessToken, refreshToken);
@@ -179,26 +178,25 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
             return Collections.emptyMap();
         }
 
-        attributes.remove(PRINCIPAL_CLAIM);
+        // 拷贝后过滤：provider 返回的 Map 可能是不可变实现，不得直接 remove
+        Map<String, Object> result = new HashMap<>(attributes);
 
-        attributes.remove(REFRESH_TOKEN_CLAIM);
+        result.remove(PRINCIPAL_CLAIM);
 
-        return attributes;
+        return result;
     }
 
-    protected String createAccessToken(P principal, Map<String, Object> attributes, String refreshToken) {
+    protected String createAccessToken(P principal, Map<String, Object> attributes) {
 
-        attributes = attributes == null ? new HashMap<>() : new HashMap<>(attributes);
+        Map<String, Object> claims = attributes == null ? new HashMap<>() : new HashMap<>(attributes);
 
         String tokenId = generateTokenId();
 
         String principalJson = serializer.serialize(principal);
 
-        attributes.put(PRINCIPAL_CLAIM, principalJson);
+        claims.put(PRINCIPAL_CLAIM, principalJson);
 
-        attributes.put(REFRESH_TOKEN_CLAIM, refreshToken);
-
-        return accessTokenProvider.create(tokenId, attributes, accessTokenTtl, accessTokenTimeUnit);
+        return accessTokenProvider.create(tokenId, claims, accessTokenTtl, accessTokenTimeUnit);
     }
 
     /**

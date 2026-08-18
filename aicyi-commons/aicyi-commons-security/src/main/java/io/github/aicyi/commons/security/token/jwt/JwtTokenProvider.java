@@ -1,14 +1,15 @@
 package io.github.aicyi.commons.security.token.jwt;
 
+import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.core.token.TokenProvider;
 import io.github.aicyi.commons.lang.exception.TokenException;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.lang.exception.TokenParseException;
-import io.github.aicyi.commons.util.Assert;
+import io.github.aicyi.commons.lang.Assert;
+import io.github.aicyi.commons.logging.LoggerFactory;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.apache.commons.compress.utils.Sets;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -24,11 +25,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class JwtTokenProvider implements TokenProvider<String> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
+
+    /**
+     * 未指定有效期时的默认过期时间，避免产生永久 token
+     */
+    private static final long DEFAULT_TTL_MILLIS = TimeUnit.HOURS.toMillis(2);
+
     /**
      * JWT标准Claim
      */
     private static final Set<String> STANDARD_CLAIM_NAMES =
-            Sets.newHashSet(
+            new HashSet<>(Arrays.asList(
                     Claims.SUBJECT,
                     Claims.ISSUER,
                     Claims.ID,
@@ -36,7 +44,7 @@ public class JwtTokenProvider implements TokenProvider<String> {
                     Claims.ISSUED_AT,
                     Claims.NOT_BEFORE,
                     Claims.AUDIENCE
-            );
+            ));
 
     /**
      * JWT签名Key
@@ -116,17 +124,27 @@ public class JwtTokenProvider implements TokenProvider<String> {
                 .setIssuer(issuer)
                 .setSubject(subject)
                 .setIssuedAt(now)
-                .signWith(secretKey, SignatureAlgorithm.HS256);
+                .signWith(secretKey, Jwts.SIG.HS256);
 
         if (attributes != null && !attributes.isEmpty()) {
 
             builder.addClaims(attributes);
         }
 
+        long ttlMillis;
         if (ttl != null && timeUnit != null) {
 
-            builder.setExpiration(new Date(now.getTime() + timeUnit.toMillis(ttl)));
+            ttlMillis = timeUnit.toMillis(ttl);
+
+        } else {
+
+            // 未指定有效期时使用默认过期时间，避免签发永久有效 token
+            LOGGER.warn("create token [{}] without ttl, use default expiration: {}ms", tokenId, DEFAULT_TTL_MILLIS);
+
+            ttlMillis = DEFAULT_TTL_MILLIS;
         }
+
+        builder.setExpiration(new Date(now.getTime() + ttlMillis));
 
         return builder.compact();
     }
@@ -177,9 +195,9 @@ public class JwtTokenProvider implements TokenProvider<String> {
 
             throw new TokenInvalidException("invalid token signature", e);
 
-        } catch (Throwable cause) {
+        } catch (JwtException | IllegalArgumentException e) {
 
-            throw new TokenParseException("invalid token", cause);
+            throw new TokenParseException("invalid token", e);
         }
     }
 
@@ -261,12 +279,17 @@ public class JwtTokenProvider implements TokenProvider<String> {
      *
      * @param token
      * @param unit
-     * @return
+     * @return 负值表示已过期；-1 表示未设置有效期（永久有效）
      */
     @Override
     public long getRemainingTtl(String token, TimeUnit unit) {
 
         Date expiration = getExpiration(token);
+
+        if (expiration == null) {
+
+            return -1;
+        }
 
         long millis = expiration.getTime() - System.currentTimeMillis();
 

@@ -1,9 +1,9 @@
 package io.github.aicyi.midware.web.exception;
 
 import io.github.aicyi.commons.lang.exception.BaseException;
+import io.github.aicyi.commons.lang.model.Result;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 import io.github.aicyi.midware.web.log.WebRequestLogRecorder;
-import io.github.aicyi.midware.web.model.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author Mr.Min
  * @description 全局异常处理器，实现 API 接口统一异常响应，并记录异常请求信息日志
  * <p>
- * 固定状态码的异常直接返回 {@link Response} 并以 {@link ResponseStatus} 声明状态码；
+ * 统一返回 {@link Result}（Integer code）；固定状态码的异常以 {@link ResponseStatus} 声明状态码，
  * 状态码需动态推导的异常（如 {@link BaseException}）返回 {@link ResponseEntity}
  * @date 2021/5/2
  **/
@@ -41,11 +41,11 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response<Void> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
+    public Result<Void> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), e.getMessage());
+        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage());
     }
 
     /**
@@ -56,11 +56,11 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response<Void> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
+    public Result<Void> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), "request body is not readable");
+        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), "request body is not readable");
     }
 
     /**
@@ -71,11 +71,11 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public Response<Void> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+    public Result<Void> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), e.getMessage());
+        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage());
     }
 
     /**
@@ -86,11 +86,11 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public Response<Void> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
+    public Result<Void> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e, HttpServletRequest request) {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), e.getMessage());
+        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage());
     }
 
     /**
@@ -101,7 +101,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response<Void> handleBindException(BindException e, HttpServletRequest request) {
+    public Result<Void> handleBindException(BindException e, HttpServletRequest request) {
 
         List<String> messageList = new ArrayList<>(5);
 
@@ -120,7 +120,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
+        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message);
     }
 
     /**
@@ -131,7 +131,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response<Void> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
+    public Result<Void> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
 
         List<String> messageList = new ArrayList<>();
 
@@ -143,7 +143,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
+        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message);
     }
 
     /**
@@ -154,13 +154,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response<Void> handleMissingServletRequestParameterException(MissingServletRequestParameterException e, HttpServletRequest request) {
+    public Result<Void> handleMissingServletRequestParameterException(MissingServletRequestParameterException e, HttpServletRequest request) {
 
         String message = String.format("%s is required", e.getParameterName());
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Response.failure(String.valueOf(CommonResultCode.PARAM_ERROR.getCode()), message);
+        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message);
     }
 
     /**
@@ -170,12 +170,12 @@ public class GlobalExceptionHandler {
      * @param request HTTP 请求
      */
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<Response<Void>> handleBaseException(BaseException e, HttpServletRequest request) {
+    public ResponseEntity<Result<Void>> handleBaseException(BaseException e, HttpServletRequest request) {
 
         WebRequestLogRecorder.logError(request, e);
 
         return ResponseEntity.status(resolveHttpStatus(e))
-                .body(Response.failure(e.getCodeAsString(), e.getMessage()));
+                .body(Result.failure(e.getCode(), e.getMessage()));
     }
 
     /**
@@ -186,11 +186,11 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Response<Void> handleException(Exception e, HttpServletRequest request) {
+    public Result<Void> handleException(Exception e, HttpServletRequest request) {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Response.failure(CommonResultCode.SYSTEM_ERROR);
+        return Result.failure(CommonResultCode.SYSTEM_ERROR);
     }
 
     /**
@@ -209,16 +209,15 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 解析业务异常对应的 HTTP 状态码；从业务 code 推导出的状态码非法时回退 500，避免响应阶段二次异常
+     * 解析业务异常对应的 HTTP 状态码；业务 code 位数不足或推导出的状态码非法时回退 500，避免响应阶段二次异常
      */
     private static HttpStatus resolveHttpStatus(BaseException e) {
-        try {
-            HttpStatus status = HttpStatus.resolve(e.getStatus());
-            if (status != null) {
-                return status;
+        Integer status = e.getStatus();
+        if (status != null) {
+            HttpStatus resolved = HttpStatus.resolve(status);
+            if (resolved != null) {
+                return resolved;
             }
-        } catch (Exception ignored) {
-            // 业务 code 推导状态码失败（如位数不足），回退默认状态码
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }

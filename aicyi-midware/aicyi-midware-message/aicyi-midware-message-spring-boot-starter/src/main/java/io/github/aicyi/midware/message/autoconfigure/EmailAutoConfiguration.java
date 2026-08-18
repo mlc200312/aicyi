@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
-import io.github.aicyi.commons.core.template.DefualtTemplateEngine;
+import io.github.aicyi.commons.core.template.DefaultTemplateEngine;
 import io.github.aicyi.commons.lang.type.TemplateEngineType;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
@@ -63,7 +63,7 @@ public class EmailAutoConfiguration {
         FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine();
 
         TemplateEngineFactory factory = new DefaultTemplateEngineFactory();
-        factory.register(TemplateEngineType.SIMPLE, new DefualtTemplateEngine());
+        factory.register(TemplateEngineType.SIMPLE, new DefaultTemplateEngine());
         factory.register(TemplateEngineType.THYMELEAF, thymeleafTemplateEngine);
         factory.register(TemplateEngineType.FREEMARKER, freeMarkerTemplateEngine);
         return factory;

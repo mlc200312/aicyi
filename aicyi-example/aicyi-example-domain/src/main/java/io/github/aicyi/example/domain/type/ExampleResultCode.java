@@ -4,11 +4,15 @@ import io.github.aicyi.commons.lang.IResultCode;
 
 /**
  * @author Mr.Min
- * @description 业务描述
+ * @description 示例业务错误码枚举（遵守 3 位 HTTP 段 + 2 位序号规则）
  * @date 11:47
  **/
 public enum ExampleResultCode implements IResultCode {
-    OBJECT_NOT_FOUND(200102, "对象不存在");
+    OBJECT_NOT_FOUND(40401, "对象不存在"),
+
+    MESSAGE_SEND_FAILURE(50301, "消息发送失败"),
+    MESSAGE_CONVERSION_FAILURE(40010, "消息转换失败"),
+    MESSAGE_HANDLING_FAILURE(40011, "消息处理失败");
 
     private final Integer code;
     private final String message;

@@ -1,13 +1,12 @@
 package io.github.aicyi.midware.redis.cache;
 
 import io.github.aicyi.commons.core.cache.CacheLock;
+import io.github.aicyi.commons.core.cache.CacheLockHandle;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -32,47 +31,27 @@ public class RedisCacheLock implements CacheLock {
 
     private final StringRedisTemplate template;
 
-    /**
-     * 按锁 key 持有各自的随机值，避免同一线程持有多个锁时互相覆盖
-     */
-    private final ThreadLocal<Map<String, String>> lockValues = ThreadLocal.withInitial(HashMap::new);
-
     public RedisCacheLock(StringRedisTemplate template) {
         this.template = template;
     }
 
+    /**
+     * 句柄闭包持有唯一凭证，无需 ThreadLocal，支持跨线程释放
+     */
     @Override
-    public boolean tryLock(String key, Duration ttl) {
+    public CacheLockHandle tryLock(String key, Duration ttl) {
         String value = UUID.randomUUID().toString();
 
         Boolean success = template.opsForValue().setIfAbsent(key, value, ttl);
 
-        if (Boolean.TRUE.equals(success)) {
-            lockValues.get().put(key, value);
-            return true;
+        if (!Boolean.TRUE.equals(success)) {
+            return null;
         }
 
-        return false;
-    }
-
-    @Override
-    public void unlock(String key) {
-        Map<String, String> values = lockValues.get();
-
-        String expected = values.remove(key);
-
-        if (values.isEmpty()) {
-            lockValues.remove();
-        }
-
-        if (expected == null) {
-            return;
-        }
-
-        template.execute(
+        return () -> template.execute(
                 UNLOCK_SCRIPT,
                 Collections.singletonList(key),
-                expected
+                value
         );
     }
 }

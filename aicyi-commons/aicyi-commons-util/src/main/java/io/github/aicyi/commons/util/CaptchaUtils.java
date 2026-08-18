@@ -7,14 +7,23 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  * @author Mr.Min
  * @description 验证码工具类
  * @date 2025/9/29
  **/
-public class CaptchaUtils {
+public final class CaptchaUtils {
+
+    private CaptchaUtils() {
+    }
+
+    /**
+     * 验证码为安全敏感场景，必须使用密码学安全随机源，避免 java.util.Random 可预测被枚举碰撞
+     */
+    private static final SecureRandom RANDOM = new SecureRandom();
+
     // 验证码字符集
     private static final String CHAR_SET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz";
     private static final int DEFAULT_WIDTH = 150;
@@ -33,10 +42,12 @@ public class CaptchaUtils {
      * @return 验证码字符串
      */
     public static String randomCaptcha(int length) {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
+        if (length <= 0) {
+            throw new IllegalArgumentException("captcha length must be positive");
+        }
+        StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
-            sb.append(CHAR_SET.charAt(random.nextInt(CHAR_SET.length())));
+            sb.append(CHAR_SET.charAt(RANDOM.nextInt(CHAR_SET.length())));
         }
         return sb.toString();
     }
@@ -59,6 +70,12 @@ public class CaptchaUtils {
      * @return BufferedImage对象
      */
     public static BufferedImage generateImage(String code, int width, int height) {
+        if (code == null || code.isEmpty()) {
+            throw new IllegalArgumentException("captcha code can not be blank");
+        }
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("captcha image size must be positive");
+        }
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = image.createGraphics();
 
@@ -127,14 +144,13 @@ public class CaptchaUtils {
      * @param height
      */
     private static void addNoise(Graphics2D g, int width, int height) {
-        Random random = new Random();
         int noiseCount = width * height / 30; // 计算噪点数量
 
         // 创建噪点图像
         BufferedImage noiseImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         for (int i = 0; i < noiseCount; i++) {
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
+            int x = RANDOM.nextInt(width);
+            int y = RANDOM.nextInt(height);
             int rgb = getRandomColor().getRGB();
             noiseImage.setRGB(x, y, rgb);
         }
@@ -152,7 +168,6 @@ public class CaptchaUtils {
      * @param height
      */
     private static void drawDistortedText(Graphics2D g, String code, int width, int height) {
-        Random random = new Random();
         int charWidth = width / code.length();
 
         for (int i = 0; i < code.length(); i++) {
@@ -164,14 +179,14 @@ public class CaptchaUtils {
 
             // 字符位置
             int x = charWidth * i + charWidth / 4;
-            int y = height / 2 + random.nextInt(height / 4);
+            int y = height / 2 + RANDOM.nextInt(height / 4);
 
             // 创建扭曲变换
             AffineTransform transform = new AffineTransform();
-            double shearX = random.nextDouble() * 0.3 - 0.15;
-            double shearY = random.nextDouble() * 0.3 - 0.15;
+            double shearX = RANDOM.nextDouble() * 0.3 - 0.15;
+            double shearY = RANDOM.nextDouble() * 0.3 - 0.15;
             transform.shear(shearX, shearY);
-            transform.rotate(random.nextDouble() * 0.3 - 0.15, x, y);
+            transform.rotate(RANDOM.nextDouble() * 0.3 - 0.15, x, y);
             g.setTransform(transform);
 
             // 绘制字符
@@ -190,15 +205,14 @@ public class CaptchaUtils {
      * @param height
      */
     private static void addInterferenceLines(Graphics2D g, int width, int height) {
-        Random random = new Random();
         for (int i = 0; i < 5; i++) {
-            int x1 = random.nextInt(width / 2);
-            int y1 = random.nextInt(height);
-            int x2 = random.nextInt(width / 2) + width / 2;
-            int y2 = random.nextInt(height);
+            int x1 = RANDOM.nextInt(width / 2);
+            int y1 = RANDOM.nextInt(height);
+            int x2 = RANDOM.nextInt(width / 2) + width / 2;
+            int y2 = RANDOM.nextInt(height);
 
             g.setColor(getRandomColor());
-            g.setStroke(new BasicStroke(1 + random.nextFloat()));
+            g.setStroke(new BasicStroke(1 + RANDOM.nextFloat()));
             g.drawLine(x1, y1, x2, y2);
         }
     }
@@ -209,8 +223,7 @@ public class CaptchaUtils {
      * @return
      */
     private static Font getRandomFont() {
-        Random random = new Random();
-        return FONTS[random.nextInt(FONTS.length)];
+        return FONTS[RANDOM.nextInt(FONTS.length)];
     }
 
     /**
@@ -219,8 +232,7 @@ public class CaptchaUtils {
      * @return
      */
     private static Color getRandomColor() {
-        Random random = new Random();
-        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        return new Color(RANDOM.nextInt(256), RANDOM.nextInt(256), RANDOM.nextInt(256));
     }
 
     /**
@@ -229,10 +241,9 @@ public class CaptchaUtils {
      * @return
      */
     private static Color getRandomLightColor() {
-        Random random = new Random();
-        return new Color(200 + random.nextInt(56),
-                200 + random.nextInt(56),
-                200 + random.nextInt(56));
+        return new Color(200 + RANDOM.nextInt(56),
+                200 + RANDOM.nextInt(56),
+                200 + RANDOM.nextInt(56));
     }
 
     /**
@@ -241,9 +252,8 @@ public class CaptchaUtils {
      * @return
      */
     private static Color getRandomDarkColor() {
-        Random random = new Random();
-        return new Color(random.nextInt(150),
-                random.nextInt(150),
-                random.nextInt(150));
+        return new Color(RANDOM.nextInt(150),
+                RANDOM.nextInt(150),
+                RANDOM.nextInt(150));
     }
 }

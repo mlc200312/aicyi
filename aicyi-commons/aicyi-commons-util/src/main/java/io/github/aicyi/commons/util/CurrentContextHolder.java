@@ -8,28 +8,31 @@ import java.util.Map;
  * @description 当前线程上下文
  * @date 2026/5/26
  **/
-public class CurrentContextHolder {
+public final class CurrentContextHolder {
+
     public static final String CONTEXT_KEY_USER_ID = "currentUserId";
     public static final String CONTEXT_KEY_USERNAME = "currentUserName";
 
-    public static final ThreadLocal<Map<String, Object>> threadLocal = new ThreadLocal<Map<String, Object>>();
+    private static final ThreadLocal<Map<String, Object>> CONTEXT = new ThreadLocal<>();
+
+    private CurrentContextHolder() {
+    }
 
     public static void set(String key, Object value) {
-        Map<String, Object> map = threadLocal.get();
+        Map<String, Object> map = CONTEXT.get();
         if (map == null) {
             map = new HashMap<>();
-            threadLocal.set(map);
+            CONTEXT.set(map);
         }
         map.put(key, value);
     }
 
+    /**
+     * 读取上下文值（只读，不产生初始化副作用；线程池场景请务必在请求结束时调用 remove）
+     */
     public static Object get(String key) {
-        Map<String, Object> map = threadLocal.get();
-        if (map == null) {
-            map = new HashMap<>();
-            threadLocal.set(map);
-        }
-        return map.get(key);
+        Map<String, Object> map = CONTEXT.get();
+        return map == null ? null : map.get(key);
     }
 
     private static String returnObjectValue(Object value) {
@@ -37,17 +40,15 @@ public class CurrentContextHolder {
     }
 
     public static void remove() {
-        threadLocal.remove();
+        CONTEXT.remove();
     }
 
     public static String getUserId() {
-        Object value = get(CONTEXT_KEY_USER_ID);
-        return returnObjectValue(value);
+        return returnObjectValue(get(CONTEXT_KEY_USER_ID));
     }
 
     public static String getUsername() {
-        Object value = get(CONTEXT_KEY_USERNAME);
-        return returnObjectValue(value);
+        return returnObjectValue(get(CONTEXT_KEY_USERNAME));
     }
 
     public static void setUserId(String userID) {

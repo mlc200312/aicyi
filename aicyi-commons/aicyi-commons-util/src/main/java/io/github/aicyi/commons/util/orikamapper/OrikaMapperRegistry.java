@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.util.orikamapper;
 
-import io.github.aicyi.commons.core.BeanMapper;
+import io.github.aicyi.commons.core.mapper.BeanMapper;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
 import org.apache.commons.collections4.CollectionUtils;
 

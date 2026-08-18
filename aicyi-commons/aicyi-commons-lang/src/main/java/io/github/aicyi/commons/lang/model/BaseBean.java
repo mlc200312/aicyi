@@ -8,8 +8,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.io.Serializable;
 
 /**
+ * Bean 基类
+ *
+ * <p>基于反射提供 equals/hashCode/toString 的默认实现，子类无需重复编写。
+ *
+ * <p><b>注意：</b>反射 toString 会输出全部字段，若子类包含敏感字段
+ * （如密码、token、手机号等），必须覆写 toString 做脱敏处理。
+ * 反射实现性能有限，高频热点路径上的大对象建议自行覆写。
+ *
  * @author Mr.Min
- * @description 业务描述
  * @date 2025/8/5
  **/
 public class BaseBean implements Serializable {

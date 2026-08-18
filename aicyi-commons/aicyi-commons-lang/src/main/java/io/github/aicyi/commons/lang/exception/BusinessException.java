@@ -14,7 +14,15 @@ public class BusinessException extends BaseException {
         super(resultCode);
     }
 
+    public BusinessException(IResultCode resultCode, Throwable cause) {
+        super(resultCode.getCode(), resultCode.getMessage(), cause);
+    }
+
     public BusinessException(String message) {
         super(CommonResultCode.BUSINESS_ERROR.getCode(), message);
+    }
+
+    public BusinessException(String message, Throwable cause) {
+        super(CommonResultCode.BUSINESS_ERROR.getCode(), message, cause);
     }
 }

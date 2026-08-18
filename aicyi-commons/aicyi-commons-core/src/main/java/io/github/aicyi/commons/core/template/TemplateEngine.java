@@ -11,9 +11,9 @@ public interface TemplateEngine {
     /**
      * 处理模版
      *
-     * @param template
-     * @param templateParams
-     * @return
+     * @param template       模板文本
+     * @param templateParams 模板参数
+     * @return 渲染后的文本
      */
     String process(String template, Map<String, Object> templateParams);
 }
