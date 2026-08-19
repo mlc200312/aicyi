@@ -10,14 +10,14 @@ public interface IEnumType<K> {
     /**
      * 枚举代码
      *
-     * @return
+     * @return 枚举代码
      */
     K getCode();
 
     /**
      * 描述
      *
-     * @return
+     * @return 描述
      */
     String getDescription();
 }
