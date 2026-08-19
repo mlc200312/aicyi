@@ -33,11 +33,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
         <!-- JaxbUtils 使用 javax.xml.bind：JDK 8 由运行时自带，JDK 9+ 已移除，
              显式声明保证升级 JDK 后不报 ClassNotFound -->
         <dependency>

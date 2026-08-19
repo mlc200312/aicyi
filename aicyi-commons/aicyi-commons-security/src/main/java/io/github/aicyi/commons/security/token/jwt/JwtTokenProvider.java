@@ -1,13 +1,11 @@
 package io.github.aicyi.commons.security.token.jwt;
 
-import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.core.token.TokenProvider;
 import io.github.aicyi.commons.lang.exception.TokenException;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.lang.exception.TokenParseException;
 import io.github.aicyi.commons.lang.Assert;
-import io.github.aicyi.commons.logging.LoggerFactory;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
@@ -38,8 +36,6 @@ import java.util.concurrent.TimeUnit;
  * @date 2025/05/14
  */
 public class JwtTokenProvider implements TokenProvider<String> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     /**
      * 未指定有效期时的默认过期时间，避免产生永久 token
@@ -152,9 +148,6 @@ public class JwtTokenProvider implements TokenProvider<String> {
             ttlMillis = timeUnit.toMillis(ttl);
 
         } else {
-
-            // 未指定有效期时使用默认过期时间，避免签发永久有效 token
-            LOGGER.warn("create token [{}] without ttl, use default expiration: {}ms", tokenId, DEFAULT_TTL_MILLIS);
 
             ttlMillis = DEFAULT_TTL_MILLIS;
         }
