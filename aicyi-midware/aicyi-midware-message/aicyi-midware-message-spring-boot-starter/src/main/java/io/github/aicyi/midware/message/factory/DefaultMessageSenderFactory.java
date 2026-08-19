@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public class DefaultMessageSenderFactory implements MessageSenderFactory {
 
-    private Map<MessageType, MessageSender> senderMap = new ConcurrentHashMap<>();
+    private final Map<MessageType, MessageSender> senderMap = new ConcurrentHashMap<>();
 
     @Override
     public MessageSender getSender(MessageType messageType) {

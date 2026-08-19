@@ -1,6 +1,7 @@
 package io.github.aicyi.midware.message.mail.adapter;
 
 
+import io.github.aicyi.midware.message.core.exception.MessageResultCode;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageType;
@@ -24,17 +25,19 @@ public class EmailMessageSender extends AbstractMessageSender {
     @Override
     protected void validate(MessageContent<?> content) {
         if (!supports(content.getMessageType())) {
-            throw new UnsupportedOperationException("不支持的消息类型");
+            throw new MessageSendException(MessageResultCode.MESSAGE_NOT_SUPPORTED,
+                    "不支持的消息类型: " + content.getMessageType());
         }
 
         if (!(content instanceof MailMessage)) {
-            throw new IllegalArgumentException("不支持的消息类型");
+            throw new MessageSendException(MessageResultCode.MESSAGE_PARAM_ERROR,
+                    "不支持的消息类型: " + content.getClass().getSimpleName());
         }
 
         MailMessage message = (MailMessage) content;
 
         if (!message.isValid()) {
-            throw new IllegalArgumentException("消息参数错误");
+            throw new MessageSendException(MessageResultCode.MESSAGE_PARAM_ERROR, "消息参数错误");
         }
     }
 

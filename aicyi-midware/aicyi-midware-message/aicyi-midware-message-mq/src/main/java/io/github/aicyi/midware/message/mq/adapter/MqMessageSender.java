@@ -1,5 +1,6 @@
 package io.github.aicyi.midware.message.mq.adapter;
 
+import io.github.aicyi.midware.message.core.exception.MessageResultCode;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageType;
@@ -23,17 +24,19 @@ public class MqMessageSender extends AbstractMessageSender {
     @Override
     protected void validate(MessageContent<?> content) {
         if (!supports(content.getMessageType())) {
-            throw new UnsupportedOperationException("不支持的消息类型");
+            throw new MessageSendException(MessageResultCode.MESSAGE_NOT_SUPPORTED,
+                    "不支持的消息类型: " + content.getMessageType());
         }
 
         if (!(content instanceof MqMessage)) {
-            throw new IllegalArgumentException("不支持的消息类型");
+            throw new MessageSendException(MessageResultCode.MESSAGE_PARAM_ERROR,
+                    "不支持的消息类型: " + content.getClass().getSimpleName());
         }
 
         MqMessage message = (MqMessage) content;
 
         if (!message.isValid()) {
-            throw new IllegalArgumentException("消息参数错误");
+            throw new MessageSendException(MessageResultCode.MESSAGE_PARAM_ERROR, "消息参数错误");
         }
     }
 
@@ -53,7 +56,7 @@ public class MqMessageSender extends AbstractMessageSender {
         }
 
         if (!isSucc) {
-            throw new MessageSendException("UNKNOWN_ERROR", "发送MQ消息失败");
+            throw new MessageSendException(MessageResultCode.MESSAGE_SEND_ERROR, "发送MQ消息失败");
         }
 
         return MessageSendResult.success(message.getMessageId(), message.getBusinessId());

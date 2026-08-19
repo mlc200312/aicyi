@@ -1,5 +1,6 @@
 package io.github.aicyi.midware.message.sms.sender.impl;
 
+import io.github.aicyi.midware.message.core.exception.MessageResultCode;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import com.twilio.Twilio;
 import com.twilio.exception.ApiException;
@@ -37,7 +38,7 @@ public class TwilioSmsSender extends AbstractSmsSender {
 
             return twilioMessage.getErrorCode() == null;
         } catch (ApiException e) {
-            throw new MessageSendException("短信发送失败：" + e.getMessage(), e);
+            throw new MessageSendException(MessageResultCode.MESSAGE_SEND_ERROR, "短信发送失败：" + e.getMessage(), e);
         }
     }
 }

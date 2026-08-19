@@ -88,6 +88,21 @@
             <scope>provided</scope>
         </dependency>
 
+        <!--其中spring-boot-configuration-processor的作用是编译时生成spring-configuration-metadata.json，此文件主要给IDE使用。如当配置此jar相关配置属性在application.yml，你可以用ctrl+鼠标左键点击属性名，IDE会跳转到你配置此属性的类中。-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- cache：仅模板缓存能力使用，标为 optional 不强制传递给使用方 -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- FreeMarker 模板引擎 -->
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -101,20 +116,6 @@
             <artifactId>thymeleaf</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
-        </dependency>
-
-        <!--其中spring-boot-configuration-processor的作用是编译时生成spring-configuration-metadata.json，此文件主要给IDE使用。如当配置此jar相关配置属性在application.yml，你可以用ctrl+鼠标左键点击属性名，IDE会跳转到你配置此属性的类中。-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- cache -->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
         </dependency>
     </dependencies>
 </project>

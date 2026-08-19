@@ -2,11 +2,13 @@ package io.github.aicyi.midware.message.sms.sender.impl;
 
 import com.yunpian.sdk.YunpianClient;
 import com.yunpian.sdk.model.Result;
+import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.commons.util.Maps;
+import io.github.aicyi.midware.message.core.exception.MessageResultCode;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
+import io.github.aicyi.midware.message.core.template.TemplateProvider;
 
 import javax.annotation.PreDestroy;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,10 +18,10 @@ import java.util.Map;
  **/
 public class YunPianSmsSender extends AbstractSmsSender {
 
-    private YunpianClient client;
+    private final YunpianClient client;
 
-    public YunPianSmsSender(String apikey) {
-        super();
+    public YunPianSmsSender(String apikey, TemplateProvider templateProvider, TemplateEngineFactory factory) {
+        super(templateProvider, factory);
         this.client = new YunpianClient(apikey).init();
     }
 
@@ -27,7 +29,7 @@ public class YunPianSmsSender extends AbstractSmsSender {
     public boolean send(String phoneNumber, String messageContent, String sign) {
 
         // 构建参数
-        Map param = Maps
+        Map<String, String> param = Maps
                 .of(YunpianClient.MOBILE, phoneNumber)
                 .and(YunpianClient.TEXT, messageContent)
                 .build();
@@ -36,7 +38,7 @@ public class YunPianSmsSender extends AbstractSmsSender {
         Result result = client.sms().single_send(param);
 
         if (!result.isSucc()) {
-            throw new MessageSendException("UNKNOWN_ERROR", "短信发送失败：" + result.getMsg());
+            throw new MessageSendException(MessageResultCode.MESSAGE_SEND_ERROR, "短信发送失败：" + result.getMsg());
         }
 
         return true;

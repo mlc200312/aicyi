@@ -5,7 +5,8 @@ import io.github.aicyi.midware.message.core.sender.TextMessageSender;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.sms.model.Carrier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mr.Min

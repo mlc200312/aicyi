@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public class DefaultTemplateEngineFactory implements TemplateEngineFactory {
 
-    private Map<TemplateEngineType, TemplateEngine> engineMap = new ConcurrentHashMap<>();
+    private final Map<TemplateEngineType, TemplateEngine> engineMap = new ConcurrentHashMap<>();
 
     @Override
     public TemplateEngine getTemplateEngine(TemplateEngineType engineType) {

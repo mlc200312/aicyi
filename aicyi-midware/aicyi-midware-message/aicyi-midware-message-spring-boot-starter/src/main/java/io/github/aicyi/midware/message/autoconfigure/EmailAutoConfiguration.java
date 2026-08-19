@@ -1,8 +1,7 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
-import io.github.aicyi.commons.core.template.DefaultTemplateEngine;
-import io.github.aicyi.commons.core.template.TemplateEngineType;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
+import io.github.aicyi.commons.core.template.TemplateEngineType;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.mail.config.MailConfig;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
@@ -10,10 +9,9 @@ import io.github.aicyi.midware.message.mail.sender.impl.JavaMailEmailSender;
 import io.github.aicyi.midware.message.template.engine.FreeMarkerTemplateEngine;
 import io.github.aicyi.midware.message.template.engine.ThymeleafTemplateEngine;
 import io.github.aicyi.midware.message.properties.MessageProperties;
-import io.github.aicyi.midware.message.template.factory.DefaultTemplateEngineFactory;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +20,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 @AutoConfiguration
+@ConditionalOnClass(EmailSender.class)
 @ConditionalOnProperty(
         prefix = "aicyi.message.email",
         name = "enabled",
@@ -36,18 +35,18 @@ public class EmailAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public EmailSender defaultEmailSender(MessageProperties messageProperties) {
+    public EmailSender defaultEmailSender(MessageProperties messageProperties, TemplateEngineFactory templateEngineFactory) {
         // 创建邮件发送者
         MailConfig mailConfig = getMailConfig(messageProperties);
 
-        // 创建模板引擎工厂
-        TemplateEngineFactory factory = getTemplateEngineFactory();
+        // 在共享模板引擎工厂上补充邮件渠道所需引擎
+        registerTemplateEngines(templateEngineFactory);
 
-        return new JavaMailEmailSender(templateProvider, factory, mailConfig);
+        return new JavaMailEmailSender(templateProvider, templateEngineFactory, mailConfig);
     }
 
-    // 创建模板引擎
-    private static @NotNull TemplateEngineFactory getTemplateEngineFactory() {
+    // 注册邮件渠道模板引擎（Thymeleaf / FreeMarker）
+    private static void registerTemplateEngines(TemplateEngineFactory factory) {
         org.thymeleaf.TemplateEngine templateEngine = new org.thymeleaf.TemplateEngine();
         StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
         stringTemplateResolver.setCacheable(true);
@@ -62,15 +61,12 @@ public class EmailAutoConfiguration {
         // 创建FreeMarker模板引擎
         FreeMarkerTemplateEngine freeMarkerTemplateEngine = new FreeMarkerTemplateEngine();
 
-        TemplateEngineFactory factory = new DefaultTemplateEngineFactory();
-        factory.register(TemplateEngineType.SIMPLE, new DefaultTemplateEngine());
         factory.register(TemplateEngineType.THYMELEAF, thymeleafTemplateEngine);
         factory.register(TemplateEngineType.FREEMARKER, freeMarkerTemplateEngine);
-        return factory;
     }
 
     // 获取邮件配置
-    private static @NotNull MailConfig getMailConfig(MessageProperties messageProperties) {
+    private static MailConfig getMailConfig(MessageProperties messageProperties) {
         MessageProperties.EmailProperties emailProperties = messageProperties.getEmail();
         return MailConfig.builder()
                 .host(emailProperties.getHost())

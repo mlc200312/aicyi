@@ -5,6 +5,8 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import io.github.aicyi.commons.core.template.TemplateEngine;
+import io.github.aicyi.midware.message.core.exception.MessageResultCode;
+import io.github.aicyi.midware.message.core.exception.MessageSendException;
 
 import java.io.StringWriter;
 import java.util.Map;
@@ -37,7 +39,7 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
         try {
             Template freemarkerTemplate;
 
-            if (template.endsWith("ftl")) {
+            if (template.endsWith(".ftl")) {
 
                 freemarkerTemplate = configuration.getTemplate(template);
             } else {
@@ -51,7 +53,8 @@ public class FreeMarkerTemplateEngine implements TemplateEngine {
 
             return writer.toString();
         } catch (Exception e) {
-            throw new RuntimeException("模板渲染失败: " + template, e);
+            // 异常消息仅携带模板标识，避免大段模板内容随异常外泄
+            throw new MessageSendException(MessageResultCode.TEMPLATE_RENDER_ERROR, "模板渲染失败", e);
         }
     }
 }

@@ -39,7 +39,7 @@ public class TemplateCacheManager implements TemplateProvider {
         }
 
         // 2. Redis
-//        template = redisCache.get(templateCode);
+        template = remoteCache.get(templateCode);
 
         if (template != null) {
 

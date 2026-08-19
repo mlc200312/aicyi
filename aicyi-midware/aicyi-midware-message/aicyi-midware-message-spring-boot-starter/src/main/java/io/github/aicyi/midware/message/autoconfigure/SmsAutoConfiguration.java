@@ -1,7 +1,5 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
-import io.github.aicyi.commons.core.template.DefaultTemplateEngine;
-import io.github.aicyi.commons.core.template.TemplateEngineType;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 import io.github.aicyi.midware.message.mail.sender.EmailSender;
@@ -10,14 +8,16 @@ import io.github.aicyi.midware.message.sms.sender.SmsSender;
 import io.github.aicyi.midware.message.sms.sender.impl.DefaultSmsSender;
 import io.github.aicyi.midware.message.sms.sender.impl.TwilioSmsSender;
 import io.github.aicyi.midware.message.sms.sender.impl.YunPianSmsSender;
-import io.github.aicyi.midware.message.template.factory.DefaultTemplateEngineFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
-@AutoConfiguration
+@AutoConfiguration(after = EmailAutoConfiguration.class)
+@ConditionalOnClass(SmsSender.class)
 @ConditionalOnProperty(
         prefix = "aicyi.message.sms",
         name = "enabled",
@@ -36,17 +36,14 @@ public class SmsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(EmailSender.class)
     @ConditionalOnProperty(
             prefix = "aicyi.message.sms",
             name = "provider",
             havingValue = "default")
-    public SmsSender defaultSmsSender() {
-
-        TemplateEngineFactory factory = new DefaultTemplateEngineFactory();
-
-        factory.register(TemplateEngineType.SIMPLE, new DefaultTemplateEngine());
-
-        return new DefaultSmsSender(templateProvider, factory, emailSender);
+    public SmsSender defaultSmsSender(TemplateEngineFactory templateEngineFactory) {
+        // default 实现为邮件网关转短信，必须存在 EmailSender（由 EmailAutoConfiguration 提供）
+        return new DefaultSmsSender(templateProvider, templateEngineFactory, emailSender);
     }
 
     @Bean
@@ -55,14 +52,10 @@ public class SmsAutoConfiguration {
             prefix = "aicyi.message.sms",
             name = "provider",
             havingValue = "twilio")
-    public SmsSender twilioSmsSender(MessageProperties messageProperties) {
+    public SmsSender twilioSmsSender(MessageProperties messageProperties, TemplateEngineFactory templateEngineFactory) {
         MessageProperties.SmsProperties smsProperties = messageProperties.getSms();
 
-        TemplateEngineFactory factory = new DefaultTemplateEngineFactory();
-
-        factory.register(TemplateEngineType.SIMPLE, new DefaultTemplateEngine());
-
-        return new TwilioSmsSender(smsProperties.getUsername(), smsProperties.getPassword(), smsProperties.getFrom(), templateProvider, factory);
+        return new TwilioSmsSender(smsProperties.getUsername(), smsProperties.getPassword(), smsProperties.getFrom(), templateProvider, templateEngineFactory);
     }
 
     @Bean
@@ -71,10 +64,10 @@ public class SmsAutoConfiguration {
             prefix = "aicyi.message.sms",
             name = "provider",
             havingValue = "yunPian")
-    public SmsSender yunPianSmsSender(MessageProperties messageProperties) {
+    public SmsSender yunPianSmsSender(MessageProperties messageProperties, TemplateEngineFactory templateEngineFactory) {
 
         MessageProperties.SmsProperties smsProperties = messageProperties.getSms();
 
-        return new YunPianSmsSender(smsProperties.getUsername());
+        return new YunPianSmsSender(smsProperties.getUsername(), templateProvider, templateEngineFactory);
     }
 }

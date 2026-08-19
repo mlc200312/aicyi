@@ -1,6 +1,7 @@
 package io.github.aicyi.midware.rabbitmq;
 
 import io.github.aicyi.commons.core.logging.Logger;
+import io.github.aicyi.midware.message.core.exception.MessageResultCode;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.Maps;
@@ -44,12 +45,15 @@ public class StreamMqSender implements MqSender {
             boolean isSucc = streamBridge.send(channel, springMessage);
 
             if (!isSucc) {
-                throw new MessageSendException("UNKNOWN_ERROR", "发送MQ消息失败");
+                throw new MessageSendException(MessageResultCode.MESSAGE_SEND_ERROR, "发送MQ消息失败");
             }
 
+        } catch (MessageSendException e) {
+            logger.error(e, "发送MQ消息失败 - destination: {}, properties: {}", channel, headers);
+            throw e;
         } catch (Exception e) {
             logger.error(e, "发送MQ消息失败 - destination: {}, properties: {}", channel, headers);
-            throw new MessageSendException("发送MQ消息失败:" + e.getMessage(), e);
+            throw new MessageSendException(MessageResultCode.MESSAGE_SEND_ERROR, "发送MQ消息失败:" + e.getMessage(), e);
         }
         return true;
     }

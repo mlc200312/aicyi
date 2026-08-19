@@ -36,9 +36,18 @@ public class DefaultUnifiedMessageManager implements UnifiedMessageManager {
         getSender(content).sendAsync(content, callback);
     }
 
+    /**
+     * 按优先级发送消息
+     * <p>
+     * 注意：当前版本实现暂未根据 priority 区分发送策略，实际行为等价于 {@link #send(MessageContent)}，
+     * 保留该参数以便后续扩展优先级队列或差异化发送逻辑
+     *
+     * @param content  消息内容
+     * @param priority 消息优先级（当前版本仅校验非空，不影响发送行为）
+     * @return 发送结果
+     */
     @Override
     public MessageSendResult send(MessageContent<?> content, MessagePriority priority) {
-        // TODO 当前实现暂未根据 priority 区分发送策略，后续可扩展优先级队列或差异化发送逻辑
         Assert.notNull(priority, "消息优先级");
         return send(content);
     }

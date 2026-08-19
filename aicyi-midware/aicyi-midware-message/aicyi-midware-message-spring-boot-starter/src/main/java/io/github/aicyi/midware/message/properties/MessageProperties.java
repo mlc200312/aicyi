@@ -142,7 +142,7 @@ public class MessageProperties {
 
     public static class MqProperties {
         private boolean enabled;
-        private String provider;
+        private String provider = "rabbitMq";
 
         public boolean isEnabled() {
             return enabled;

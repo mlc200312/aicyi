@@ -35,17 +35,15 @@
             <artifactId>aicyi-midware-message-core</artifactId>
         </dependency>
 
-        <!-- 当前最新稳定版 (仍为9.x系列) -->
+        <!-- 版本由 aicyi-base-dependencies 统一管理，禁止子模块复写 version -->
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
-            <version>9.14.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.yunpian.sdk</groupId>
             <artifactId>yunpian-java-sdk</artifactId>
-            <version>1.2.5</version>
         </dependency>
     </dependencies>
 </project>

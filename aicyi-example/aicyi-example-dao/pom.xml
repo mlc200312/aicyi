@@ -28,6 +28,12 @@
             <artifactId>aicyi-midware-db-commons</artifactId>
         </dependency>
 
+        <!-- message starter 中模板本地缓存能力为可选依赖，测试工程显式引入 -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
