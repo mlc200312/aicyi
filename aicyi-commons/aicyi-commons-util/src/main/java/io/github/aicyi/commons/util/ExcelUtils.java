@@ -5,15 +5,14 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
-import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import io.github.aicyi.commons.lang.Assert;
+import io.github.aicyi.commons.lang.exception.SystemException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -21,18 +20,27 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @author Mr.Min
  * @description Excel工具类
  * @date 11:19
  **/
-public class ExcelUtils {
+public final class ExcelUtils {
     /**
      * 默认读取的批处理大小
      */
     private static final int DEFAULT_BATCH_SIZE = 1000;
+
+    private ExcelUtils() {
+    }
 
     /**
      * 从字节数组读取Excel
@@ -45,7 +53,7 @@ public class ExcelUtils {
         try (ByteArrayInputStream in = new ByteArrayInputStream(bytes)) {
             return EasyExcel.read(in).head(clazz).sheet().doReadSync();
         } catch (IOException e) {
-            throw new RuntimeException("读取Excel失败", e);
+            throw new SystemException("读取Excel失败", e);
         }
     }
 
@@ -72,7 +80,35 @@ public class ExcelUtils {
     }
 
     /**
-     * 读取Excel文件（分批读取）
+     * 读取Excel文件（分批回调，内存受控，适合大数据量）
+     * <p>
+     * 每读满一批即回调 batchConsumer，全程不累积全量数据；
+     * 参数非法在调用时立即抛出
+     *
+     * @param filePath      文件路径
+     * @param clazz         数据模型类
+     * @param batchSize     每批大小
+     * @param batchConsumer 批次数据消费者
+     */
+    public static <T> void readExcelInBatches(String filePath, Class<T> clazz, int batchSize, Consumer<List<T>> batchConsumer) {
+        Assert.notBlank(filePath, "filePath");
+        Assert.notNull(clazz, "clazz");
+        Assert.positive(batchSize, "batchSize");
+        Assert.notNull(batchConsumer, "batchConsumer");
+        readExcelWithListener(filePath, clazz, new ExcelListener<T>(batchSize) {
+            @Override
+            protected void processBatch(List<T> batchData) {
+                batchConsumer.accept(batchData);
+            }
+        });
+    }
+
+    /**
+     * 读取Excel文件（分批迭代）
+     * <p>
+     * 注意：返回的迭代器在创建时即一次性完成全文件解析并将全部批次载入内存，
+     * 仅适合中小数据量；大文件请改用
+     * {@link #readExcelInBatches(String, Class, int, Consumer)} 回调式 API
      *
      * @param filePath  文件路径
      * @param clazz     数据模型类
@@ -80,12 +116,16 @@ public class ExcelUtils {
      * @return 分批数据迭代器
      */
     public static <T> Iterable<List<T>> readExcelInBatches(String filePath, Class<T> clazz, int batchSize) {
+        Assert.notBlank(filePath, "filePath");
+        Assert.notNull(clazz, "clazz");
+        Assert.positive(batchSize, "batchSize");
         return () -> new ExcelBatchReader<>(filePath, clazz, batchSize);
     }
 
-
     /**
      * 读取Excel文件（默认分批大小）
+     * <p>
+     * 注意：同 {@link #readExcelInBatches(String, Class, int)}，迭代器会全量载入内存
      *
      * @param filePath 文件路径
      * @param clazz    数据模型类
@@ -159,7 +199,7 @@ public class ExcelUtils {
             sheetBuilder.doWrite(data);
             return out.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException("导出Excel失败", e);
+            throw new SystemException("导出Excel失败", e);
         }
     }
 
@@ -244,17 +284,14 @@ public class ExcelUtils {
 
     /**
      * @author Mr.Min
-     * @description Excel分批读取器
+     * @description Excel分批读取器（构造时全量解析入内存，仅供中小数据量的迭代器式 API 使用）
      * @date 2026/4/21
      **/
     private static class ExcelBatchReader<T> implements Iterator<List<T>> {
         private final Iterator<List<T>> batchIterator;
 
         public ExcelBatchReader(String filePath, Class<T> clazz, int batchSize) {
-            Assert.notBlank(filePath, "filePath");
-            Assert.notNull(clazz, "clazz");
-            Assert.positive(batchSize, "batchSize");
-            // 单次遍历文件，由监听器按 batchSize 累批，避免旧实现每批重复重读整个文件
+            // 单次遍历文件，由监听器按 batchSize 累批，避免每批重复重读整个文件
             List<List<T>> batches = new ArrayList<>();
             ExcelListener<T> listener = new ExcelListener<T>(batchSize) {
                 @Override
@@ -280,35 +317,55 @@ public class ExcelUtils {
     /**
      * @author Mr.Min
      * @description 自动列宽和换行处理程序
+     * <p>
+     * 换行通过内容样式 {@link WriteCellStyle#setWrapped(Boolean)} 声明，
+     * 不在单元格级别修改共享 CellStyle（POI 样式为 workbook 级共享对象，
+     * 运行时修改会污染所有复用该样式的单元格）；
+     * 自动列宽默认开启，大数据量导出可通过构造器关闭以提升性能
      * @date 2026/4/21
      **/
     public static class AutoColumnWidthAndWrapHandler extends HorizontalCellStyleStrategy {
 
+        private final boolean autoSizeEnabled;
+
         public AutoColumnWidthAndWrapHandler() {
+            this(true);
+        }
+
+        public AutoColumnWidthAndWrapHandler(boolean autoSizeEnabled) {
+            this.autoSizeEnabled = autoSizeEnabled;
+
             // 定义表头样式
             WriteCellStyle headWriteCellStyle = new WriteCellStyle();
             headWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-            // 定义内容样式
+            // 定义内容样式（样式对象级别声明换行，避免逐单元格修改共享样式）
             WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
             contentWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.LEFT);
+            contentWriteCellStyle.setWrapped(Boolean.TRUE);
 
             setHeadWriteCellStyle(headWriteCellStyle);
 
-            setContentWriteCellStyleList(ListUtils.newArrayList(new WriteCellStyle[]{contentWriteCellStyle}));
+            setContentWriteCellStyleList(Collections.singletonList(contentWriteCellStyle));
         }
 
         public AutoColumnWidthAndWrapHandler(WriteCellStyle headWriteCellStyle, WriteCellStyle contentWriteCellStyle) {
             super(headWriteCellStyle, contentWriteCellStyle);
+            this.autoSizeEnabled = true;
         }
 
         @Override
         public void afterCellDispose(CellWriteHandlerContext context) {
-            Sheet sheet = context.getWriteSheetHolder().getSheet();
+            super.afterCellDispose(context);
 
+            if (!autoSizeEnabled) {
+                return;
+            }
+
+            Sheet sheet = context.getWriteSheetHolder().getSheet();
             Cell cell = context.getCell();
 
-            // 关键点：先确保列被跟踪
+            // 关键点：先确保列被跟踪（SXSSF 模式下必须）
             if (sheet instanceof SXSSFSheet) {
                 ((SXSSFSheet) sheet).trackColumnForAutoSizing(cell.getColumnIndex());
             }
@@ -321,12 +378,6 @@ public class ExcelUtils {
             if (columnWidth < 3000) {
                 sheet.setColumnWidth(cell.getColumnIndex(), 3000);
             }
-
-            // 自动换行
-            CellStyle cellStyle = cell.getCellStyle();
-            cellStyle.setWrapText(true);
-
-            super.afterCellDispose(context);
         }
     }
 }

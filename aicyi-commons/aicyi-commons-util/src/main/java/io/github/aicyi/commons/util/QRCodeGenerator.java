@@ -11,7 +11,9 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import io.github.aicyi.commons.lang.Assert;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -125,18 +127,27 @@ public class QRCodeGenerator {
     public byte[] generateBytes() throws IOException, WriterException {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             BufferedImage image = generateImage();
-            ImageIO.write(image, format, outputStream);
+            checkWriteResult(ImageIO.write(image, format, outputStream));
             return outputStream.toByteArray();
         }
     }
 
     public void generateToFile(String filePath) throws IOException, WriterException {
         BufferedImage image = generateImage();
-        ImageIO.write(image, format, Paths.get(filePath).toFile());
+        checkWriteResult(ImageIO.write(image, format, Paths.get(filePath).toFile()));
     }
 
     public void generateToStream(OutputStream outputStream) throws IOException, WriterException {
         BufferedImage image = generateImage();
-        ImageIO.write(image, format, outputStream);
+        checkWriteResult(ImageIO.write(image, format, outputStream));
+    }
+
+    /**
+     * ImageIO.write 对不支持的格式仅返回 false 而不抛异常，需显式检查避免静默失败
+     */
+    private void checkWriteResult(boolean written) throws IOException {
+        if (!written) {
+            throw new IOException("no ImageWriter found for format: " + format);
+        }
     }
 }

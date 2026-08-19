@@ -26,8 +26,8 @@ public final class EnumUtils {
             try {
                 method.setAccessible(true);
                 obj = method.invoke(e);
-            } catch (InvocationTargetException | IllegalAccessException var10) {
-                throw new IllegalArgumentException("Error: NoSuchMethod in " + enumClass.getName() + ".  Cause:", var10);
+            } catch (InvocationTargetException | IllegalAccessException ex) {
+                throw new IllegalArgumentException("Error: NoSuchMethod in " + enumClass.getName() + ".  Cause:", ex);
             }
             if (value instanceof Number && obj instanceof Number && (new BigDecimal(String.valueOf(value))).compareTo(new BigDecimal(String.valueOf(obj))) == 0) {
                 return e;

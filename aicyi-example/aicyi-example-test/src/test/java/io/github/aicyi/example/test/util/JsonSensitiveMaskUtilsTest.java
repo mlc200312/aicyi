@@ -1,16 +1,16 @@
 package io.github.aicyi.example.test.util;
 
-import io.github.aicyi.commons.util.JsonSensitiveMaskUtil;
+import io.github.aicyi.commons.util.JsonSensitiveMaskUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * {@link JsonSensitiveMaskUtil} 测试类
+ * {@link JsonSensitiveMaskUtils} 测试类
  */
-@DisplayName("JsonSensitiveMaskUtil 敏感信息脱敏测试")
-public class JsonSensitiveMaskUtilTest {
+@DisplayName("JsonSensitiveMaskUtils 敏感信息脱敏测试")
+public class JsonSensitiveMaskUtilsTest {
 
     private static final String MASK = "******";
 
@@ -19,7 +19,7 @@ public class JsonSensitiveMaskUtilTest {
     public void testMaskTopLevel() {
         String json = "{\"username\":\"tom\",\"password\":\"123456\",\"age\":18}";
 
-        String masked = JsonSensitiveMaskUtil.maskJsonBody(json);
+        String masked = JsonSensitiveMaskUtils.maskJsonBody(json);
 
         assertTrue(masked.contains("\"password\":\"" + MASK + "\""));
         assertTrue(masked.contains("\"username\":\"tom\""));
@@ -31,7 +31,7 @@ public class JsonSensitiveMaskUtilTest {
     public void testMaskNestedObject() {
         String json = "{\"user\":{\"name\":\"tom\",\"accessToken\":\"abc\",\"info\":{\"secret\":\"s\"}}}";
 
-        String masked = JsonSensitiveMaskUtil.maskJsonBody(json);
+        String masked = JsonSensitiveMaskUtils.maskJsonBody(json);
 
         assertTrue(masked.contains("\"accessToken\":\"" + MASK + "\""));
         assertTrue(masked.contains("\"secret\":\"" + MASK + "\""));
@@ -43,7 +43,7 @@ public class JsonSensitiveMaskUtilTest {
     public void testMaskArray() {
         String json = "{\"list\":[{\"password\":\"1\"},{\"password\":\"2\"}]}";
 
-        String masked = JsonSensitiveMaskUtil.maskJsonBody(json);
+        String masked = JsonSensitiveMaskUtils.maskJsonBody(json);
 
         assertFalse(masked.contains("\"password\":\"1\""));
         assertFalse(masked.contains("\"password\":\"2\""));
@@ -55,7 +55,7 @@ public class JsonSensitiveMaskUtilTest {
     public void testMaskNonStringValue() {
         String json = "{\"pwd\":123456,\"token\":true,\"authorization\":null}";
 
-        String masked = JsonSensitiveMaskUtil.maskJsonBody(json);
+        String masked = JsonSensitiveMaskUtils.maskJsonBody(json);
 
         assertTrue(masked.contains("\"pwd\":\"" + MASK + "\""));
         assertTrue(masked.contains("\"token\":\"" + MASK + "\""));
@@ -67,7 +67,7 @@ public class JsonSensitiveMaskUtilTest {
     public void testKeyMatchCaseInsensitive() {
         String json = "{\"PASSWORD\":\"a\",\"userToken\":\"b\",\"X-Authorization\":\"c\"}";
 
-        String masked = JsonSensitiveMaskUtil.maskJsonBody(json);
+        String masked = JsonSensitiveMaskUtils.maskJsonBody(json);
 
         assertEquals(3, countOccurrences(masked, "\"" + MASK + "\""));
     }
@@ -77,7 +77,7 @@ public class JsonSensitiveMaskUtilTest {
     public void testNonSensitiveUntouched() {
         String json = "{\"name\":\"tom\",\"remark\":\"my token is here\"}";
 
-        String masked = JsonSensitiveMaskUtil.maskJsonBody(json);
+        String masked = JsonSensitiveMaskUtils.maskJsonBody(json);
 
         // 值中包含敏感词但key不敏感，不做脱敏
         assertTrue(masked.contains("\"remark\":\"my token is here\""));
@@ -88,10 +88,10 @@ public class JsonSensitiveMaskUtilTest {
     public void testNonJsonPassthrough() {
         String notJson = "this is not json {{";
 
-        assertEquals(notJson, JsonSensitiveMaskUtil.maskJsonBody(notJson));
-        assertNull(JsonSensitiveMaskUtil.maskJsonBody(null));
-        assertEquals("", JsonSensitiveMaskUtil.maskJsonBody(""));
-        assertEquals("  ", JsonSensitiveMaskUtil.maskJsonBody("  "));
+        assertEquals(notJson, JsonSensitiveMaskUtils.maskJsonBody(notJson));
+        assertNull(JsonSensitiveMaskUtils.maskJsonBody(null));
+        assertEquals("", JsonSensitiveMaskUtils.maskJsonBody(""));
+        assertEquals("  ", JsonSensitiveMaskUtils.maskJsonBody("  "));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class JsonSensitiveMaskUtilTest {
     public void testArrayRoot() {
         String json = "[{\"password\":\"1\",\"name\":\"a\"}]";
 
-        String masked = JsonSensitiveMaskUtil.maskJsonBody(json);
+        String masked = JsonSensitiveMaskUtils.maskJsonBody(json);
 
         assertTrue(masked.contains("\"password\":\"" + MASK + "\""));
         assertTrue(masked.contains("\"name\":\"a\""));

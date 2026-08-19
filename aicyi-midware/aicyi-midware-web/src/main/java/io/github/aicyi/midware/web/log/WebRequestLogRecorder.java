@@ -2,7 +2,7 @@ package io.github.aicyi.midware.web.log;
 
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.util.JsonSensitiveMaskUtil;
+import io.github.aicyi.commons.util.JsonSensitiveMaskUtils;
 import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.midware.web.filter.CachedBodyRequestWrapper;
 import io.github.aicyi.midware.web.util.CharsetUtils;
@@ -315,7 +315,7 @@ public final class WebRequestLogRecorder {
             return body;
         }
 
-        return JsonSensitiveMaskUtil.maskJsonBody(body);
+        return JsonSensitiveMaskUtils.maskJsonBody(body);
     }
 
     /**

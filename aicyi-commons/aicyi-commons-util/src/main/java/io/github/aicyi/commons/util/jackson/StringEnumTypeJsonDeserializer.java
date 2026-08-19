@@ -34,8 +34,14 @@ public class StringEnumTypeJsonDeserializer<E extends Enum<E> & StringEnumType> 
     public E deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
         if (enumClazz.isEnum() && StringEnumType.class.isAssignableFrom(enumClazz)) {
             String code = jsonParser.getValueAsString();
+            if (code == null) {
+                return null;
+            }
             Class<E> clazz = (Class<E>) enumClazz;
-            return Arrays.stream(clazz.getEnumConstants()).filter(e -> e.getCode().equals(code)).findAny().orElse(null);
+            return Arrays.stream(clazz.getEnumConstants()).filter(e -> e.getCode().equals(code)).findAny()
+                    // 未知 code 抛异常而非静默返回 null，避免上游脏数据被掩盖
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "unknown enum code [" + code + "] for " + enumClazz.getName()));
         }
         return null;
     }

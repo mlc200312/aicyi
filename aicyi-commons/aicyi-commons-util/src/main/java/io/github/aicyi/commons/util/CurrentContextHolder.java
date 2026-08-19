@@ -43,6 +43,16 @@ public final class CurrentContextHolder {
         CONTEXT.remove();
     }
 
+    /**
+     * 移除指定 key，保留上下文中的其他条目
+     */
+    public static void remove(String key) {
+        Map<String, Object> map = CONTEXT.get();
+        if (map != null) {
+            map.remove(key);
+        }
+    }
+
     public static String getUserId() {
         return returnObjectValue(get(CONTEXT_KEY_USER_ID));
     }

@@ -12,9 +12,12 @@ import java.util.Date;
  * 如需 lang3 的日期计算能力（addDays、truncate 等），请直接使用 org.apache.commons.lang3.time.DateUtils 的静态方法。
  * @date 14:27
  **/
-public class DateUtils {
+public final class DateUtils {
 
     private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    private DateUtils() {
+    }
 
     public static Date parseDate(String date, String pattern) {
         if (date == null || date.trim().isEmpty()) {

@@ -2,6 +2,7 @@ package io.github.aicyi.commons.util.jackson;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -33,9 +34,20 @@ public class EnumTypeJsonDeserializer<E extends Enum<E> & EnumType> extends Json
     @Override
     public E deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
         if (enumClazz.isEnum() && EnumType.class.isAssignableFrom(enumClazz)) {
-            int code = jsonParser.getValueAsInt();
+            // 严格取值：字符串 token 不再被 getValueAsInt 静默转为 0，避免误命中 code=0 的枚举
+            JsonToken token = jsonParser.currentToken();
+            if (token != JsonToken.VALUE_NUMBER_INT) {
+                deserializationContext.reportWrongTokenException(jsonParser,
+                        JsonToken.VALUE_NUMBER_INT, "enum code must be an integer for %s", enumClazz.getName());
+                // 不可达：reportWrongTokenException 必定抛出异常
+                return null;
+            }
+            int code = jsonParser.getIntValue();
             Class<E> clazz = (Class<E>) enumClazz;
-            return Arrays.stream(clazz.getEnumConstants()).filter(e -> e.getCode() == code).findAny().orElse(null);
+            return Arrays.stream(clazz.getEnumConstants()).filter(e -> e.getCode() == code).findAny()
+                    // 未知 code 抛异常而非静默返回 null，避免上游脏数据被掩盖
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "unknown enum code [" + code + "] for " + enumClazz.getName()));
         }
         return null;
     }
