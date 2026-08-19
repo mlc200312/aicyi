@@ -12,7 +12,7 @@ public enum MessageType implements StringEnumType {
     SMS("sms", "短信"),
     PUSH("push", "推送"),
     MQ("mq", "消息队列"),
-    WECHAT_MP("wechat_mp", "微信公众号") // 新增微信公众号消息
+    WECHAT_MP("wechat_mp", "微信公众号")
     ;
 
     private final String code;

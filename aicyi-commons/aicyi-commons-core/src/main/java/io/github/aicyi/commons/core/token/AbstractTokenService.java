@@ -145,8 +145,10 @@ public abstract class AbstractTokenService<P> implements TokenService<String, P>
     /**
      * 创建TokenSession
      *
-     * @param request
-     * @return
+     * @param request    token 创建请求（携带 principal 与有效期配置）
+     * @param token      新创建的会话 token
+     * @param ttlSeconds 会话有效期（秒）
+     * @return 新构建的 TokenSession 实例（尚未持久化，由 {@link #saveTokenSession} 落库）
      */
     protected TokenSession<P> newTokenSession(TokenCreateRequest<P> request, String token, long ttlSeconds) {
 

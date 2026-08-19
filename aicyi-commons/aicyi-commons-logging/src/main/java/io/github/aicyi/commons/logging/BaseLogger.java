@@ -48,6 +48,11 @@ public abstract class BaseLogger implements Logger {
 
     @Override
     public void trace(Object obj) {
+        if (obj instanceof Throwable) {
+            // Throwable 入参转带堆栈重载，避免 toString 丢堆栈
+            trace((Throwable) obj, "");
+            return;
+        }
         org.slf4j.Logger logger = getLogger();
         if (isTraceEnabled()) {
             logger.trace(formatMessage(obj));
@@ -72,6 +77,10 @@ public abstract class BaseLogger implements Logger {
 
     @Override
     public void debug(Object obj) {
+        if (obj instanceof Throwable) {
+            debug((Throwable) obj, "");
+            return;
+        }
         org.slf4j.Logger logger = getLogger();
         if (isDebugEnabled()) {
             logger.debug(formatMessage(obj));
@@ -96,6 +105,10 @@ public abstract class BaseLogger implements Logger {
 
     @Override
     public void info(Object obj) {
+        if (obj instanceof Throwable) {
+            info((Throwable) obj, "");
+            return;
+        }
         org.slf4j.Logger logger = getLogger();
         if (logger.isInfoEnabled()) {
             logger.info(formatMessage(obj));
@@ -120,6 +133,10 @@ public abstract class BaseLogger implements Logger {
 
     @Override
     public void warn(Object obj) {
+        if (obj instanceof Throwable) {
+            warn((Throwable) obj, "");
+            return;
+        }
         org.slf4j.Logger logger = getLogger();
         if (logger.isWarnEnabled()) {
             logger.warn(formatMessage(obj));
@@ -144,6 +161,10 @@ public abstract class BaseLogger implements Logger {
 
     @Override
     public void error(Object obj) {
+        if (obj instanceof Throwable) {
+            error((Throwable) obj, "");
+            return;
+        }
         org.slf4j.Logger logger = getLogger();
         if (logger.isErrorEnabled()) {
             logger.error(formatMessage(obj));

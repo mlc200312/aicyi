@@ -3,14 +3,17 @@ package io.github.aicyi.commons.security;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Mr.Min
  * @description SHA1、SHA-256、MD5 工具类
  * @date 2025/8/8
  **/
-public class MessageDigestUtils {
+public final class MessageDigestUtils {
+
+    private MessageDigestUtils() {
+    }
     public static String generateMd5(String str) {
         return generateMd5(getBytes(str));
     }
@@ -36,10 +39,6 @@ public class MessageDigestUtils {
     }
 
     private static byte[] getBytes(String text) {
-        try {
-            return text.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return text.getBytes(StandardCharsets.UTF_8);
     }
 }

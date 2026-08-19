@@ -35,7 +35,10 @@ public abstract class BaseException extends RuntimeException {
 
     /**
      * 从错误码推导 HTTP 状态码（取前 3 位，错误码规范为 3 位 HTTP 段 + 2 位序号）；
-     * 错误码位数不足或非法时返回 null，由调用方决定回退策略
+     * 错误码位数不足或非法时返回 null，由调用方决定回退策略。
+     * <p>
+     * 消费场景：供网关/跨系统调用方由异常错误码推导 HTTP 状态码。
+     * 应用内 REST 接口由全局异常处理器统一返回 HTTP 200 + 业务错误码（REST 规范），不消费本方法
      */
     public Integer getStatus() {
         if (code == null) {

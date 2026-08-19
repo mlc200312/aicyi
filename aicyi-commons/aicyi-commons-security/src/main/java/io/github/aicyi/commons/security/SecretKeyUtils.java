@@ -9,13 +9,16 @@ import java.util.Base64;
  * @description 密钥工具类
  * @date 17:10
  **/
-public class SecretKeyUtils {
+public final class SecretKeyUtils {
+
+    private SecretKeyUtils() {
+    }
 
     /**
      * 将SecretKey转换为Base64字符串
      *
-     * @param secretKey
-     * @return
+     * @param secretKey 密钥
+     * @return Base64 编码字符串
      */
     public static String asString(SecretKey secretKey) {
         byte[] encoded = secretKey.getEncoded();
@@ -25,21 +28,21 @@ public class SecretKeyUtils {
     /**
      * 将Base64字符串转换为SecretKey
      *
-     * @param base64Key
-     * @return
+     * @param base64Key Base64 编码密钥
+     * @param algorithm 密钥算法
+     * @return SecretKey
      */
     public static SecretKey toSecretKey(String base64Key, String algorithm) {
         // 解码Base64字符串
         byte[] keyBytes = Base64.getDecoder().decode(base64Key);
-        // 创建SecretKeySpec对象，指定算法为HmacSHA256
         return new SecretKeySpec(keyBytes, algorithm);
     }
 
     /**
-     * 将Base64字符串转换为SecretKey
+     * 将Base64字符串转换为HmacSHA256 SecretKey
      *
-     * @param base64Key
-     * @return
+     * @param base64Key Base64 编码密钥
+     * @return SecretKey
      */
     public static SecretKey toSecretKeyForHmacSHA256(String base64Key) {
         return toSecretKey(base64Key, "HmacSHA256");

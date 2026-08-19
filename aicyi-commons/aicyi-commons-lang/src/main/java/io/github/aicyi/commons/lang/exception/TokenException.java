@@ -1,5 +1,6 @@
 package io.github.aicyi.commons.lang.exception;
 
+import io.github.aicyi.commons.lang.IResultCode;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 
 /**
@@ -9,11 +10,19 @@ import io.github.aicyi.commons.lang.type.CommonResultCode;
  **/
 public abstract class TokenException extends BaseException {
 
+    protected TokenException(IResultCode resultCode, String message) {
+        super(resultCode.getCode(), message);
+    }
+
+    protected TokenException(IResultCode resultCode, String message, Throwable cause) {
+        super(resultCode.getCode(), message, cause);
+    }
+
     public TokenException(String message) {
-        super(CommonResultCode.UNAUTHORIZED.getCode(), message);
+        this(CommonResultCode.UNAUTHORIZED, message);
     }
 
     public TokenException(String message, Throwable cause) {
-        super(CommonResultCode.UNAUTHORIZED.getCode(), message, cause);
+        this(CommonResultCode.UNAUTHORIZED, message, cause);
     }
 }

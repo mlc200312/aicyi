@@ -10,7 +10,7 @@ import java.util.Map;
 public class TokenInfo<P> implements TokenSession<P> {
 
     /**
-     * RefreshToken
+     * 会话 token：唯一标识一次 token 会话，作为会话存储键使用
      */
     private String token;
 

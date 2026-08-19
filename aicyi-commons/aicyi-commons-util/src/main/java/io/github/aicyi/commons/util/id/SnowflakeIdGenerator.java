@@ -90,7 +90,7 @@ public class SnowflakeIdGenerator implements IdGenerator {
     /**
      * 时钟回拨容忍时间
      */
-    private long clockBackwardToleranceMs;
+    private final long clockBackwardToleranceMs;
 
     /**
      * 序列号

@@ -3,6 +3,8 @@ package io.github.aicyi.commons.util.orikamapper;
 import io.github.aicyi.commons.core.mapper.BeanMapper;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +31,13 @@ public enum OrikaMapperRegistry implements BeanMapper {
 
     INSTANCE;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrikaMapperRegistry.class);
+
+    /**
+     * 缓存条目数告警阈值：超出说明 MappingConfig 被动态构造，存在缓存无界增长风险
+     */
+    private static final int MAPPER_CACHE_WARN_THRESHOLD = 1024;
+
     /**
      * 默认Mapper
      */
@@ -36,6 +45,10 @@ public enum OrikaMapperRegistry implements BeanMapper {
 
     /**
      * 自定义Mapper缓存
+     * <p>
+     * 缓存键为（源类，目标类，MappingConfig 内容）三元组，条目数随映射组合数增长。
+     * MappingConfig 必须在初始化阶段静态定义并复用，禁止按请求动态构造新配置，
+     * 否则缓存将无界增长导致内存溢出
      */
     private static final ConcurrentMap<String, OrikaMapper> MAPPER_CACHE = new ConcurrentHashMap<>();
 
@@ -112,8 +125,14 @@ public enum OrikaMapperRegistry implements BeanMapper {
 
         String cacheKey = buildCacheKey(sourceType, destinationType, safeConfig);
 
-        return MAPPER_CACHE.computeIfAbsent(cacheKey, key -> createMapper(sourceType, destinationType, safeConfig)
-        );
+        return MAPPER_CACHE.computeIfAbsent(cacheKey, key -> {
+            if (MAPPER_CACHE.size() >= MAPPER_CACHE_WARN_THRESHOLD) {
+                LOGGER.warn("orika mapper cache size [{}] exceeds threshold [{}], "
+                        + "MappingConfig may be built dynamically, check for unbounded growth",
+                        MAPPER_CACHE.size(), MAPPER_CACHE_WARN_THRESHOLD);
+            }
+            return createMapper(sourceType, destinationType, safeConfig);
+        });
     }
 
     private <S, D> OrikaMapper createMapper(

@@ -25,16 +25,6 @@ class JWTInfoTest {
     }
 
     @Test
-    @DisplayName("四参构造器：isMainDevice 仅占位不影响字段值")
-    void testFourArgsConstructor() {
-        JWTInfo info = new JWTInfo("1001", "tester", "device-01", true);
-
-        assertEquals("1001", info.getId());
-        assertEquals("tester", info.getUniqueName());
-        assertEquals("device-01", info.getDeviceId());
-    }
-
-    @Test
     @DisplayName("无参构造器与 setter 可正常读写")
     void testNoArgConstructorAndSetters() {
         JWTInfo info = new JWTInfo();

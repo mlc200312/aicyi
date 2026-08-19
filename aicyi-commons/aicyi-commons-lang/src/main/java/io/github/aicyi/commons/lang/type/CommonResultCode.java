@@ -19,7 +19,8 @@ public enum CommonResultCode implements IResultCode {
     PARAM_ERROR(40001, "Bad Request"),
     BUSINESS_ERROR(40002, "Business Error"),
     UNAUTHORIZED(40101, "Unauthorized"),
-    FORBIDDEN(40301, "No Permission"),
+    TOKEN_EXPIRED(40102, "Token Expired"),
+    FORBIDDEN(40300, "No Permission"),
     NOT_FOUND(40401, "Not Found"),
 
     SYSTEM_ERROR(50001, "Internal Server Error");

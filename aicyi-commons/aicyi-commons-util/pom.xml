@@ -27,9 +27,22 @@
             <artifactId>aicyi-commons-core</artifactId>
         </dependency>
 
+        <!-- 直接使用的 API，必须显式声明，不依赖传递 -->
         <dependency>
-            <groupId>io.github.aicyi.commons</groupId>
-            <artifactId>aicyi-commons-logging</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- JaxbUtils 使用 javax.xml.bind：JDK 8 由运行时自带，JDK 9+ 已移除，
+             显式声明保证升级 JDK 后不报 ClassNotFound -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
         </dependency>
 
         <dependency>

@@ -27,7 +27,18 @@ import java.util.TimeZone;
  */
 public final class JacksonJsonCodec implements JsonCodec {
 
+    /**
+     * 全局默认实例（宽容模式：容忍单引号/未加引号字段名，忽略未知属性）。
+     * 面向互联网入参的兼容场景；校验类/反投毒等严格场景请用 {@link #strict()}
+     */
     public static final JacksonJsonCodec DEFAULT = new JacksonJsonCodec().enableLenientMode();
+
+    /**
+     * 创建严格模式实例：未知属性直接报错，不容忍非标准 JSON 语法
+     */
+    public static JacksonJsonCodec strict() {
+        return new JacksonJsonCodec();
+    }
 
     private final ObjectMapper objectMapper;
 

@@ -11,6 +11,7 @@
     <springProperty scope="context" name="log.path" source="aicyi.logging.path" defaultValue="./logs"/>
     <springProperty scope="context" name="maxHistory" source="aicyi.logging.max-history" defaultValue="15"/>
     <springProperty scope="context" name="maxFileSize" source="aicyi.logging.max-file-size" defaultValue="10MB"/>
+    <springProperty scope="context" name="totalSizeCap" source="aicyi.logging.total-size-cap" defaultValue="20GB"/>
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
 
     <!-- 彩色日志 -->
@@ -28,10 +29,11 @@
     white：白色
     highlight：日志级别高亮显示
     -->
+    <!-- traceId 由 midware-web TraceIdFilter 写入 MDC（key=traceId） -->
     <property name="CONSOLE_LOG_PATTERN"
-              value="%yellow(%d) [%t] %cyan([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-}]) %highlight([%-5level]) %magenta([%logger{15}]) - %highlight(%m) %n"/>
+              value="%yellow(%d) [%t] %cyan([${springAppName:-},%X{traceId:-}]) %highlight([%-5level]) %magenta([%logger{15}]) - %highlight(%m) %n"/>
     <property name="SIMPLE_CONSOLE_LOG_PATTERN"
-              value="%d [%t] [${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-}] [%p] [%c] - %m %n"/>
+              value="%d [%t] [${springAppName:-},%X{traceId:-}] [%p] [%c] - %m %n"/>
 
     <!--输出到控制台-->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -59,10 +61,13 @@
 
         <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 历史文件统一滚入与日志同名的子目录，避免与活动文件混放；旧路径历史文件不再维护，自然过期后清理 -->
+            <fileNamePattern>${log.path}/error/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <!--全量日志总容量上限，防止磁盘写满-->
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
 
         <!-- 此日志文件只记录ERROR级别的 -->
@@ -88,6 +93,7 @@
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
 
         <!-- 此日志文件只记录WARN级别的 -->
@@ -113,6 +119,7 @@
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -131,6 +138,7 @@
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -149,6 +157,7 @@
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -167,6 +176,7 @@
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -181,10 +191,12 @@
 
         <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/message.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 历史文件统一滚入子目录，避免与活动文件混放 -->
+            <fileNamePattern>${log.path}/message/message.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -199,10 +211,12 @@
 
         <!-- 日志记录器的滚动策略，按日期+大小滚动 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}/biz.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 历史文件统一滚入子目录，避免与活动文件混放 -->
+            <fileNamePattern>${log.path}/biz/biz.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -221,6 +235,7 @@
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
     </appender>
 
@@ -239,6 +254,7 @@
             <maxFileSize>${maxFileSize}</maxFileSize>
             <!--日志文件保留天数-->
             <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
         </rollingPolicy>
     </appender>
 

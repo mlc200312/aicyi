@@ -37,7 +37,7 @@ public class EnumTypeJsonDeserializer<E extends Enum<E> & EnumType> extends Json
             // 严格取值：字符串 token 不再被 getValueAsInt 静默转为 0，避免误命中 code=0 的枚举
             JsonToken token = jsonParser.currentToken();
             if (token != JsonToken.VALUE_NUMBER_INT) {
-                deserializationContext.reportWrongTokenException(jsonParser,
+                deserializationContext.reportWrongTokenException(this,
                         JsonToken.VALUE_NUMBER_INT, "enum code must be an integer for %s", enumClazz.getName());
                 // 不可达：reportWrongTokenException 必定抛出异常
                 return null;

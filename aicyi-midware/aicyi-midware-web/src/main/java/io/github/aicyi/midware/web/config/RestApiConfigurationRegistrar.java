@@ -7,6 +7,7 @@ import io.github.aicyi.midware.web.auth.AuthInterceptor;
 import io.github.aicyi.midware.web.auth.AuthenticationTokenServiceRegistrar;
 import io.github.aicyi.midware.web.exception.GlobalExceptionHandler;
 import io.github.aicyi.midware.web.filter.CachingRequestBodyFilter;
+import io.github.aicyi.midware.web.filter.TraceIdFilter;
 import io.github.aicyi.midware.web.log.RequestLogInterceptor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -28,6 +29,7 @@ import java.util.Map;
  * 读取注解属性并按需注册 Bean 定义，取代在各配置类中以 {@code @Bean} 返回 null 的条件装配方式：
  * <ul>
  *     <li>{@link RestApiWebMvcConfiguration}：拦截器聚合注册（始终注册，按拦截器 Bean 是否存在决定注册哪些拦截器）</li>
+ *     <li>{@link TraceIdFilter}：链路追踪过滤器（始终注册，最先执行，保证后续全部日志携带 traceId）</li>
  *     <li>{@link CachingRequestBodyFilter}：请求体缓存过滤器（始终注册）</li>
  *     <li>{@link RequestLogInterceptor}：请求信息日志拦截器，由 {@code enableRequestLog} 控制</li>
  *     <li>{@link AuthInterceptor}、{@link AuthenticationTokenServiceRegistrar}：鉴权能力，由 {@code enableAuth} 控制</li>
@@ -50,6 +52,11 @@ public class RestApiConfigurationRegistrar implements ImportBeanDefinitionRegist
      * 请求体缓存过滤器执行顺序
      */
     private static final int CACHING_FILTER_ORDER = 1;
+
+    /**
+     * 链路追踪过滤器执行顺序：最先执行，保证后续过滤器/拦截器/业务日志均携带 traceId
+     */
+    private static final int TRACE_FILTER_ORDER = 0;
 
     @Override
     public void registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, @NonNull BeanDefinitionRegistry registry) {
@@ -84,6 +91,9 @@ public class RestApiConfigurationRegistrar implements ImportBeanDefinitionRegist
                 .addIndexedArgumentValue(2, authExcludePathPatterns);
         registerBeanDefinition(registry, "restApiWebMvcConfiguration", mvcConfigurationBuilder);
 
+        // 链路追踪过滤器（始终注册，最先执行）
+        registerTraceIdFilter(registry);
+
         // 请求体缓存过滤器（始终注册）
         registerCachingRequestBodyFilter(registry);
 
@@ -108,6 +118,17 @@ public class RestApiConfigurationRegistrar implements ImportBeanDefinitionRegist
             registerBeanDefinition(registry, "globalExceptionHandler",
                     BeanDefinitionBuilder.genericBeanDefinition(GlobalExceptionHandler.class));
         }
+    }
+
+    /**
+     * 注册链路追踪过滤器
+     */
+    private void registerTraceIdFilter(BeanDefinitionRegistry registry) {
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(FilterRegistrationBean.class)
+                .addPropertyValue("filter", BeanDefinitionBuilder.genericBeanDefinition(TraceIdFilter.class).getBeanDefinition())
+                .addPropertyValue("urlPatterns", Collections.singletonList("/*"))
+                .addPropertyValue("order", TRACE_FILTER_ORDER);
+        registerBeanDefinition(registry, "traceIdFilter", builder);
     }
 
     /**

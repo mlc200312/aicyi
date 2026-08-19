@@ -4,7 +4,12 @@ import io.github.aicyi.commons.core.PrincipalSerializer;
 import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -163,6 +168,11 @@ public abstract class AbstractAuthenticationTokenService<P> implements Authentic
     public P parsePrincipal(String accessToken) {
 
         String principalJson = accessTokenProvider.getAttribute(accessToken, PRINCIPAL_CLAIM);
+
+        // claim 缺失时抛 Token 体系异常，避免透传 null 到反序列化器产生裸 IllegalArgumentException
+        if (principalJson == null || principalJson.isEmpty()) {
+            throw new TokenInvalidException("principal claim missing in access token");
+        }
 
         return serializer.deserialize(principalJson);
     }

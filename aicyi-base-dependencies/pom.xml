@@ -28,6 +28,17 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- jackson：必须先于 spring-boot-dependencies 导入——多 BOM 版本冲突时先声明者胜，
+                 若放在其后会被 Boot 内置的旧版 Jackson 覆盖导致 jackson.version 失效 -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- jackson end -->
+
             <!-- spring boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -255,16 +266,6 @@
                 <version>3.5.4</version>
             </dependency>
             <!-- google end -->
-
-            <!-- jackson -->
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!-- jackson end -->
 
             <!-- jwt -->
             <dependency>

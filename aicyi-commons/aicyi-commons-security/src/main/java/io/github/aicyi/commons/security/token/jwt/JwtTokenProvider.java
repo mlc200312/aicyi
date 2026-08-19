@@ -8,12 +8,26 @@ import io.github.aicyi.commons.lang.exception.TokenInvalidException;
 import io.github.aicyi.commons.lang.exception.TokenParseException;
 import io.github.aicyi.commons.lang.Assert;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -91,11 +105,11 @@ public class JwtTokenProvider implements TokenProvider<String> {
     }
 
     /**
-     * 创建Token
+     * 创建Token（未指定有效期时使用默认过期时间）
      *
-     * @param tokenId
-     * @param attributes
-     * @return
+     * @param tokenId    token 唯一标识（JWT jti）
+     * @param attributes 自定义 claim，可为 null
+     * @return 签名后的 JWT 字符串
      */
     @Override
     public String create(String tokenId, Map<String, Object> attributes) {
@@ -106,11 +120,11 @@ public class JwtTokenProvider implements TokenProvider<String> {
     /**
      * 创建Token
      *
-     * @param tokenId
-     * @param attributes
-     * @param ttl
-     * @param timeUnit
-     * @return
+     * @param tokenId    token 唯一标识（JWT jti）
+     * @param attributes 自定义 claim，可为 null
+     * @param ttl        有效期时长；与 timeUnit 任一为 null 时使用默认过期时间
+     * @param timeUnit   ttl 的时间单位
+     * @return 签名后的 JWT 字符串
      */
     @Override
     public String create(String tokenId, Map<String, Object> attributes, Long ttl, TimeUnit timeUnit) {
@@ -120,15 +134,16 @@ public class JwtTokenProvider implements TokenProvider<String> {
         Date now = new Date();
 
         JwtBuilder builder = Jwts.builder()
-                .setId(tokenId)
-                .setIssuer(issuer)
-                .setSubject(subject)
-                .setIssuedAt(now)
+                .id(tokenId)
+                .issuer(issuer)
+                .subject(subject)
+                .issuedAt(now)
                 .signWith(secretKey, Jwts.SIG.HS256);
 
         if (attributes != null && !attributes.isEmpty()) {
 
-            builder.addClaims(attributes);
+            // 合并式追加自定义 claim，不覆盖已设置的注册 claim
+            builder.claims().add(attributes).and();
         }
 
         long ttlMillis;
@@ -144,7 +159,7 @@ public class JwtTokenProvider implements TokenProvider<String> {
             ttlMillis = DEFAULT_TTL_MILLIS;
         }
 
-        builder.setExpiration(new Date(now.getTime() + ttlMillis));
+        builder.expiration(new Date(now.getTime() + ttlMillis));
 
         return builder.compact();
     }
@@ -152,8 +167,8 @@ public class JwtTokenProvider implements TokenProvider<String> {
     /**
      * Token是否有效
      *
-     * @param token
-     * @return
+     * @param token 待校验的 JWT 字符串
+     * @return true 验签与格式均通过；false 已过期/格式非法/签名不匹配
      */
     @Override
     public boolean isValid(String token) {
@@ -173,15 +188,15 @@ public class JwtTokenProvider implements TokenProvider<String> {
     /**
      * 解析Claims
      *
-     * @param token
-     * @return
+     * @param token 待解析的 JWT 字符串
+     * @return 载荷 claim 集合
      */
     @Override
     public Claims parseClaims(String token) {
 
         try {
 
-            return jwtParser.parseClaimsJws(token).getBody();
+            return jwtParser.parseSignedClaims(token).getPayload();
 
         } catch (ExpiredJwtException e) {
 
@@ -204,8 +219,8 @@ public class JwtTokenProvider implements TokenProvider<String> {
     /**
      * 获取自定义属性
      *
-     * @param token
-     * @return
+     * @param token 待解析的 JWT 字符串
+     * @return 剔除标准 claim 后的自定义 claim 集合；解析失败返回空 Map
      */
     @Override
     public Map<String, Object> getAttributes(String token) {
@@ -238,10 +253,10 @@ public class JwtTokenProvider implements TokenProvider<String> {
     /**
      * 获取指定属性
      *
-     * @param token
-     * @param attributeName
-     * @param <T>
-     * @return
+     * @param token         待解析的 JWT 字符串
+     * @param attributeName claim 名称
+     * @param <T>           claim 值类型，由调用方强转保证
+     * @return claim 值；不存在时返回 null
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -253,8 +268,8 @@ public class JwtTokenProvider implements TokenProvider<String> {
     /**
      * 获取Token ID
      *
-     * @param token
-     * @return
+     * @param token 待解析的 JWT 字符串
+     * @return JWT jti claim
      */
     @Override
     public String getTokenId(String token) {
@@ -265,8 +280,8 @@ public class JwtTokenProvider implements TokenProvider<String> {
     /**
      * 获取过期时间
      *
-     * @param token
-     * @return
+     * @param token 待解析的 JWT 字符串
+     * @return JWT exp claim 对应时间
      */
     @Override
     public Date getExpiration(String token) {
@@ -277,8 +292,8 @@ public class JwtTokenProvider implements TokenProvider<String> {
     /**
      * 获取剩余有效期
      *
-     * @param token
-     * @param unit
+     * @param token 待解析的 JWT 字符串
+     * @param unit  返回值的时长单位
      * @return 负值表示已过期；-1 表示未设置有效期（永久有效）
      */
     @Override
