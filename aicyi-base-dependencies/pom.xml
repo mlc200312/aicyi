@@ -18,6 +18,10 @@
         <spring-cloud.version>2021.0.9</spring-cloud.version>
         <spring-data.version>2.7.18</spring-data.version>
 
+        <!-- mybatis-spring-boot-starter 2.3.1 为支持 Java 8 的最新版本 -->
+        <mybatis-spring-boot.version>2.3.1</mybatis-spring-boot.version>
+        <pagehelper-spring-boot.version>1.4.3</pagehelper-spring-boot.version>
+
         <slf4j.version>1.7.36</slf4j.version>
         <hutool.version>5.8.47</hutool.version>
         <jackson.version>2.21.4</jackson.version>
@@ -303,6 +307,18 @@
                 <version>1.5.3.Final</version>
             </dependency>
             <!-- MapStruct 依赖 end -->
+            <!-- MyBatis + PageHelper（db 中间件，供 aicyi-midware-db 使用） -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper-spring-boot.version}</version>
+            </dependency>
+            <!-- MyBatis end -->
             <!-- ORM end -->
 
             <!-- cache -->
