@@ -5,9 +5,9 @@ import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.core.id.WorkerIdAllocator;
 import io.github.aicyi.commons.core.id.WorkerIdLease;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,9 +23,25 @@ public class WorkerIdHeartbeat {
     private final long heartbeatSeconds;
     private final Runnable onLeaseLost;
 
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(
-            r -> new Thread(r, "worker-id-heartbeat")
-    );
+    /**
+     * 懒初始化（构造期 lease 尚未赋值）：显式构造而非 Executors 工厂方法（阿里手册），
+     * 守护线程避免异常路径未 stop 时阻塞 JVM 退出
+     */
+    private ScheduledExecutorService scheduler;
+
+    private synchronized ScheduledExecutorService scheduler() {
+        if (scheduler == null) {
+            ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1, r -> {
+                Thread thread = new Thread(r, "worker-id-heartbeat-" + lease.getWorkerId());
+                thread.setDaemon(true);
+                return thread;
+            });
+            executor.setRemoveOnCancelPolicy(true);
+            scheduler = executor;
+        }
+
+        return scheduler;
+    }
 
     private ScheduledFuture<?> future;
 
@@ -46,7 +62,7 @@ public class WorkerIdHeartbeat {
     public void start() {
         long interval = heartbeatSeconds;
 
-        future = scheduler.scheduleAtFixedRate(() -> {
+        future = scheduler().scheduleAtFixedRate(() -> {
             try {
                 boolean ok = allocator.renew(lease);
 
@@ -70,7 +86,9 @@ public class WorkerIdHeartbeat {
             future.cancel(true);
         }
 
-        scheduler.shutdownNow();
+        if (scheduler != null) {
+            scheduler.shutdownNow();
+        }
 
         try {
             allocator.release(lease);
@@ -87,6 +105,8 @@ public class WorkerIdHeartbeat {
             future.cancel(true);
         }
 
-        scheduler.shutdownNow();
+        if (scheduler != null) {
+            scheduler.shutdownNow();
+        }
     }
 }

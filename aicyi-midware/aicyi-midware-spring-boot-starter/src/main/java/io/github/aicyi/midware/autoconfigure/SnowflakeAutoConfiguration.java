@@ -8,7 +8,6 @@ import io.github.aicyi.midware.properties.SnowflakeProperties;
 import io.github.aicyi.midware.redis.id.RedisCoordinatedSnowflakeIdGenerator;
 import io.github.aicyi.midware.redis.id.RedisWorkerIdAllocator;
 import io.github.aicyi.midware.redis.id.WorkerIdManager;
-import io.github.aicyi.midware.utils.IdUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -21,7 +20,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @EnableConfigurationProperties(SnowflakeProperties.class)
 @ConditionalOnClass(StringRedisTemplate.class)
 @ConditionalOnProperty(
-        prefix = "snowflake",
+        prefix = "aicyi.snowflake",
         name = "enabled",
         havingValue = "true",
         matchIfMissing = true

@@ -95,13 +95,14 @@ spring:
               bind-queue: false
               routing-key-expression: headers['routingKey'] # 动态路由键
 
-snowflake:
-  enabled: true
-  service-name: aicyi-example-boot
-  worker-id-bits: 5
-  datacenter-id: 0
-  ttl-seconds: 60
-  heartbeat-seconds: 20
-  auto-recover: true
-  clock-backward-tolerance-ms: 5
-  epoch: 1672531200000
+aicyi:
+  snowflake:
+    enabled: true
+    service-name: ${spring.applicationn.name}
+    worker-id-bits: 5
+    datacenter-id: 0
+    ttl-seconds: 60
+    heartbeat-seconds: 20
+    auto-recover: true
+    clock-backward-tolerance-ms: 5
+    epoch: 1672531200000

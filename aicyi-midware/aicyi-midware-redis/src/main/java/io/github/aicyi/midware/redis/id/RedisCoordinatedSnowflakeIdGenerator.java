@@ -64,7 +64,7 @@ public class RedisCoordinatedSnowflakeIdGenerator implements IdGenerator {
         return snowflake;
     }
 
-    public void init() {
+    private void init() {
         WorkerIdLease lease = workerIdManager.getLease();
 
         if (lease == null || !workerIdManager.isLeaseValid()) {
@@ -82,8 +82,7 @@ public class RedisCoordinatedSnowflakeIdGenerator implements IdGenerator {
 
         this.activeLease = lease;
 
-        logger.info("Snowflake initialized workerId={}, datacenterId={}", workerId, datacenterId
-        );
+        logger.info("Snowflake initialized workerId={}, datacenterId={}", workerId, datacenterId);
     }
 
     @Override

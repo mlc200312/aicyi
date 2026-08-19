@@ -78,7 +78,7 @@ public class XmlRedisTemplateFactory extends AbstractRedisTemplateFactory {
                     try {
                         marshaller.afterPropertiesSet();
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalStateException("Failed to init Jaxb2Marshaller for class: " + clazz.getName(), e);
                     }
 
                     return new OxmSerializer(marshaller, marshaller);
@@ -100,7 +100,7 @@ public class XmlRedisTemplateFactory extends AbstractRedisTemplateFactory {
                     try {
                         marshaller.afterPropertiesSet();
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalStateException("Failed to init Jaxb2Marshaller for package: " + packagesToScan, e);
                     }
 
                     return new OxmSerializer(marshaller, marshaller);

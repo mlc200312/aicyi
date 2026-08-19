@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @description Redis多Token管理实现
  * @date 17:07
  **/
-public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenServiceImpl<P> implements RedisTokenService<P> {
+public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenServiceImpl<P> {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -31,11 +31,11 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
     /**
      * 原子裁剪脚本：保留 score 最新的 maxTokens 个成员，返回被移除的旧成员
      */
-    private static final DefaultRedisScript<List> TRIM_SCRIPT;
+    private static final DefaultRedisScript<List<String>> TRIM_SCRIPT;
 
     static {
         TRIM_SCRIPT = new DefaultRedisScript<>();
-        TRIM_SCRIPT.setResultType(List.class);
+        TRIM_SCRIPT.setResultType((Class<List<String>>) (Class<?>) List.class);
         TRIM_SCRIPT.setScriptText(
                 "local stop = -(tonumber(ARGV[1]) + 1) " +
                         "local members = redis.call('ZRANGE', KEYS[1], 0, stop) " +
@@ -110,11 +110,10 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
 
         String principalId = getPrincipalId(principal);
 
-        removeExpiredTokens(principalId);
-
         String token = super.create(request);
 
-        // 写入后再原子裁剪，消除 zCard 判断与写入之间的并发窗口；单设备模式等价于保留最新 1 个
+        // 写入后再原子裁剪，消除 zCard 判断与写入之间的并发窗口；单设备模式等价于保留最新 1 个；
+        // 裁剪同时完成过期成员清理，无需前置逐 token 校验
         int maxTokens = isMultiTokenAllowed ? multiTokenCount : 1;
 
         trimTokens(principalId, maxTokens);
@@ -154,7 +153,7 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
                 String.valueOf(maxTokens)
         );
 
-        if (removed.isEmpty()) {
+        if (removed == null || removed.isEmpty()) {
             return;
         }
 
@@ -176,33 +175,5 @@ public class MultiRedisTokenServiceImpl<P extends IJWTInfo> extends RedisTokenSe
         }
 
         return token.substring(0, 8) + "***";
-    }
-
-    /**
-     * 删除已过期Token
-     *
-     * @param principalId 用户ID
-     */
-    private void removeExpiredTokens(String principalId) {
-
-        Set<String> tokens = redisTemplate.opsForZSet().range(principalId, 0, -1);
-
-        if (tokens == null || tokens.isEmpty()) {
-
-            return;
-        }
-
-        for (String token : tokens) {
-
-            try {
-
-                isValid(token);
-
-            } catch (Exception e) {
-
-                // 过期与非法 Token 均从集合中清理，避免单个 Token 异常中断整个清理流程
-                redisTemplate.opsForZSet().remove(principalId, token);
-            }
-        }
     }
 }

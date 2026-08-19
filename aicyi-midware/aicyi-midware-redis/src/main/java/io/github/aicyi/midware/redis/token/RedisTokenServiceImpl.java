@@ -11,6 +11,7 @@ import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.commons.util.serializer.CacheWrapperCodec;
 import io.github.aicyi.midware.redis.cache.RedisCache;
 import io.github.aicyi.midware.redis.cache.RedisCacheConfig;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.Duration;
@@ -133,7 +134,13 @@ public class RedisTokenServiceImpl<P> extends AbstractTokenService<P> implements
 
             return session;
 
+        } catch (DataAccessException e) {
+            // Redis 连接等基础设施异常向上抛出，避免 Redis 抖动时有效 Token 被误判为 invalid
+
+            throw e;
+
         } catch (Exception e) {
+            // 编解码失败等才判定为非法 Token
 
             throw new TokenInvalidException("invalid token", e);
         }

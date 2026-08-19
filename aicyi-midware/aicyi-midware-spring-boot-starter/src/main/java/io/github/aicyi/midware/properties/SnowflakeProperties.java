@@ -2,7 +2,7 @@ package io.github.aicyi.midware.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "snowflake")
+@ConfigurationProperties(prefix = "aicyi.snowflake")
 public class SnowflakeProperties {
 
     /**
@@ -34,10 +34,9 @@ public class SnowflakeProperties {
     private long ttlSeconds = 60;
 
     /**
-     * heartbeat 间隔
-     * 默认 ttl / 3
+     * heartbeat 间隔；未显式配置时按 ttlSeconds / 3 计算（见 getHeartbeatSeconds）
      */
-    private long heartbeatSeconds = ttlSeconds / 3;
+    private Long heartbeatSeconds;
 
     /**
      * lease 丢失后是否尝试自动恢复
@@ -99,10 +98,11 @@ public class SnowflakeProperties {
     }
 
     public long getHeartbeatSeconds() {
-        return heartbeatSeconds;
+        // 配置绑定发生在字段赋值之后，此处懒计算保证未显式配置时始终跟随 ttlSeconds
+        return heartbeatSeconds != null ? heartbeatSeconds : Math.max(ttlSeconds / 3, 1);
     }
 
-    public void setHeartbeatSeconds(long heartbeatSeconds) {
+    public void setHeartbeatSeconds(Long heartbeatSeconds) {
         this.heartbeatSeconds = heartbeatSeconds;
     }
 

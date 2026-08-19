@@ -18,6 +18,42 @@ import java.util.Collections;
  **/
 public class RedisWorkerIdAllocator implements WorkerIdAllocator {
 
+    /**
+     * token 一致才续约（静态单例，心跳高频调用避免重复构造）
+     */
+    private static final DefaultRedisScript<String> RENEW_SCRIPT;
+
+    /**
+     * token 一致才删除
+     */
+    private static final DefaultRedisScript<String> RELEASE_SCRIPT;
+
+    static {
+        RENEW_SCRIPT = new DefaultRedisScript<>();
+        RENEW_SCRIPT.setResultType(String.class);
+        RENEW_SCRIPT.setScriptText(
+                "local v = redis.call('GET', KEYS[1]) " +
+                        "if v == ARGV[1] then " +
+                        "   redis.call('EXPIRE', KEYS[1], ARGV[2]) " +
+                        "   return '1' " +
+                        "else " +
+                        "   return '0' " +
+                        "end"
+        );
+
+        RELEASE_SCRIPT = new DefaultRedisScript<>();
+        RELEASE_SCRIPT.setResultType(String.class);
+        RELEASE_SCRIPT.setScriptText(
+                "local v = redis.call('GET', KEYS[1]) " +
+                        "if v == ARGV[1] then " +
+                        "   redis.call('DEL', KEYS[1]) " +
+                        "   return '1' " +
+                        "else " +
+                        "   return '0' " +
+                        "end"
+        );
+    }
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
@@ -68,7 +104,7 @@ public class RedisWorkerIdAllocator implements WorkerIdAllocator {
     @Override
     public boolean renew(WorkerIdLease lease) {
         String result = redisTemplate.execute(
-                renewScript(),
+                RENEW_SCRIPT,
                 Collections.singletonList(buildKey(lease.getWorkerId())),
                 lease.getToken(),
                 String.valueOf(ttlSeconds)
@@ -87,7 +123,7 @@ public class RedisWorkerIdAllocator implements WorkerIdAllocator {
 
     @Override
     public boolean release(WorkerIdLease lease) {
-        String result = redisTemplate.execute(releaseScript(), Collections.singletonList(buildKey(lease.getWorkerId())), lease.getToken());
+        String result = redisTemplate.execute(RELEASE_SCRIPT, Collections.singletonList(buildKey(lease.getWorkerId())), lease.getToken());
 
         boolean success = "1".equals(result);
 
@@ -102,45 +138,5 @@ public class RedisWorkerIdAllocator implements WorkerIdAllocator {
 
     private String buildKey(int workerId) {
         return "worker:id:" + serviceName + ":" + workerId;
-    }
-
-    /**
-     * token 一致才续约
-     */
-    private DefaultRedisScript<String> renewScript() {
-        DefaultRedisScript<String> script = new DefaultRedisScript<>();
-        script.setResultType(String.class);
-
-        script.setScriptText(
-                "local v = redis.call('GET', KEYS[1]) " +
-                        "if v == ARGV[1] then " +
-                        "   redis.call('EXPIRE', KEYS[1], ARGV[2]) " +
-                        "   return '1' " +
-                        "else " +
-                        "   return '0' " +
-                        "end"
-        );
-
-        return script;
-    }
-
-    /**
-     * token 一致才删除
-     */
-    private DefaultRedisScript<String> releaseScript() {
-        DefaultRedisScript<String> script = new DefaultRedisScript<>();
-        script.setResultType(String.class);
-
-        script.setScriptText(
-                "local v = redis.call('GET', KEYS[1]) " +
-                        "if v == ARGV[1] then " +
-                        "   redis.call('DEL', KEYS[1]) " +
-                        "   return '1' " +
-                        "else " +
-                        "   return '0' " +
-                        "end"
-        );
-
-        return script;
     }
 }
