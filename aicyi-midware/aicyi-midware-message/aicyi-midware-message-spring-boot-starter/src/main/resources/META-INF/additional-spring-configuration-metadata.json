@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "aicyi.message.template.enabled",
+      "type": "java.lang.String",
+      "description": "Description for aicyi.message.template.enabled."
+  }
+] }

@@ -10,7 +10,7 @@ spring:
   profiles:
     active: test
   application:
-    name: aicyi-example-boot
+    name: aicyi-example
   #    datasource:
   #    dynamic:
   #      druid:
@@ -27,7 +27,7 @@ spring:
   #        test-while-idle: true
   # redis配置
   redis:
-    jedis:
+    Jedis:
       pool:
         max-active: 8
         max-wait: -1

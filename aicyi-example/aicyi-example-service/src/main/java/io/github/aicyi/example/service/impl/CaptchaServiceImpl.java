@@ -96,7 +96,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         }
     }
 
-    private String sendCaptcha(SendCaptchaParam param, Function<MessageContentParam, MessageContent> function) {
+    private String sendCaptcha(SendCaptchaParam param, Function<MessageContentParam, MessageContent<?>> function) {
         // 验证码校验
         validateCaptcha(CaptchaType.IMAGE_CAPTCHA_TYPE, param.getUuid(), param.getVerCode());
 
@@ -118,7 +118,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         messageContentParam.setEmail(user.getEmail());
         messageContentParam.setMobile(user.getMobile());
 
-        MessageContent messageContent = function.apply(messageContentParam);
+        MessageContent<?> messageContent = function.apply(messageContentParam);
 
         unifiedMessageManager.sendAsync(messageContent, new MessageSendCallback() {
             @Override

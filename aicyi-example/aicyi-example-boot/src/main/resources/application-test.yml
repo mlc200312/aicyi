@@ -64,6 +64,10 @@ spring:
 
 aicyi:
   message:
+
+    template:
+      enabled: true
+
     email:
       enabled: true
       host: smtp.163.com

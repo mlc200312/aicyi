@@ -12,8 +12,8 @@ public interface TemplateProvider {
     /**
      * 获取模版
      *
-     * @param templateCode
-     * @return
+     * @param templateCode 模版编号
+     * @return 模版
      */
     MessageTemplate getTemplate(String templateCode);
 }
