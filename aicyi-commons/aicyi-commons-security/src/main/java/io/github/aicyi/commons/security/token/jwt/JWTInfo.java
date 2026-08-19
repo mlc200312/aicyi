@@ -2,8 +2,6 @@ package io.github.aicyi.commons.security.token.jwt;
 
 import io.github.aicyi.commons.lang.model.BaseBean;
 
-import java.util.Objects;
-
 /**
  * @author Mr.Min
  * @description Jwt信息
@@ -48,19 +46,5 @@ public class JWTInfo extends BaseBean implements IJWTInfo {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        JWTInfo jwtInfo = (JWTInfo) o;
-        return Objects.equals(id, jwtInfo.id) && Objects.equals(uniqueName, jwtInfo.uniqueName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), id, uniqueName);
     }
 }
