@@ -2,7 +2,9 @@ package io.github.aicyi.midware.web.log;
 
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
+import io.github.aicyi.commons.logging.LoggerType;
 import io.github.aicyi.commons.util.JsonSensitiveMaskUtils;
+import io.github.aicyi.commons.util.NumberUtils;
 import io.github.aicyi.commons.util.UUIDUtils;
 import io.github.aicyi.midware.web.filter.CachedBodyRequestWrapper;
 import io.github.aicyi.midware.web.util.CharsetUtils;
@@ -75,6 +77,10 @@ public final class WebRequestLogRecorder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebRequestLogRecorder.class);
 
+    private static final Logger ACCESS_LOGGER = LoggerFactory.getLogger(LoggerType.ACCESS);
+
+    private static final Logger PERFORMANCE_LOGGER = LoggerFactory.getLogger(LoggerType.PERFORMANCE);
+
     private WebRequestLogRecorder() {
     }
 
@@ -104,6 +110,17 @@ public final class WebRequestLogRecorder {
      */
     public static void markErrorLogged(HttpServletRequest request) {
         request.setAttribute(ERROR_LOGGED_ATTRIBUTE, Boolean.TRUE);
+    }
+
+    /**
+     * 判断请求是否慢请求
+     *
+     * @param request HTTP 请求
+     * @return 慢请求时返回 true
+     */
+    public static boolean isSlowRequest(HttpServletRequest request) {
+        Long costTime = resolveCostTime(request);
+        return NumberUtils.isPositive(costTime) && costTime > 10000;
     }
 
     /**
@@ -212,11 +229,15 @@ public final class WebRequestLogRecorder {
 
         WebRequestLog requestLog = create(request, response);
 
+        if (isSlowRequest(request)) {
+            PERFORMANCE_LOGGER.info(requestLog);
+        }
+
         if (Boolean.TRUE.equals(requestLog.getSuccess())) {
-            LOGGER.info(requestLog);
+            ACCESS_LOGGER.info(requestLog);
         } else if (isErrorLogged(request)) {
             // 异常详情已由异常处理器输出，此处仅记录请求生命周期概要，避免重复输出完整异常日志
-            LOGGER.info("error already logged, requestId: {}, costTime: {}ms, statusCode: {}",
+            LOGGER.warn("error already logged, requestId: {}, costTime: {}ms, statusCode: {}",
                     requestLog.getRequestId(), requestLog.getCostTime(),
                     requestLog.getResponse() != null ? requestLog.getResponse().getStatusCode() : null);
         } else {

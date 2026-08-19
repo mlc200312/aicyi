@@ -8,11 +8,11 @@ import io.github.aicyi.commons.lang.IResultCode;
  * @date 11:47
  **/
 public enum ExampleResultCode implements IResultCode {
-    OBJECT_NOT_FOUND(40401, "对象不存在"),
+    OBJECT_NOT_FOUND(100001, "对象不存在"),
 
-    MESSAGE_SEND_FAILURE(50301, "消息发送失败"),
-    MESSAGE_CONVERSION_FAILURE(40010, "消息转换失败"),
-    MESSAGE_HANDLING_FAILURE(40011, "消息处理失败");
+    MESSAGE_SEND_FAILURE(100002, "消息发送失败"),
+    MESSAGE_CONVERSION_FAILURE(100002, "消息转换失败"),
+    MESSAGE_HANDLING_FAILURE(100003, "消息处理失败");
 
     private final Integer code;
     private final String message;

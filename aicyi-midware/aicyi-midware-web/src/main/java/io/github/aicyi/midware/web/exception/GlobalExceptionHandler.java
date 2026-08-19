@@ -164,18 +164,18 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * BaseException 异常处理（HTTP 状态码由业务 code 动态推导）
+     * BaseException 异常处理（HTTP 状态码200）
      *
      * @param e       异常
      * @param request HTTP 请求
      */
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<Result<Void>> handleBaseException(BaseException e, HttpServletRequest request) {
+    @ResponseStatus(HttpStatus.OK)
+    public Result<Void> handleBaseException(BaseException e, HttpServletRequest request) {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return ResponseEntity.status(resolveHttpStatus(e))
-                .body(Result.failure(e.getCode(), e.getMessage()));
+        return Result.failure(e.getCode(), e.getMessage());
     }
 
     /**
@@ -185,7 +185,7 @@ public class GlobalExceptionHandler {
      * @param request HTTP 请求
      */
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.OK)
     public Result<Void> handleException(Exception e, HttpServletRequest request) {
 
         WebRequestLogRecorder.logError(request, e);

@@ -10,6 +10,8 @@ import io.github.aicyi.commons.lang.type.CommonResultCode;
  **/
 public class BusinessException extends BaseException {
 
+    private static final Integer HTTP_STATUS_OK = 200;
+
     public BusinessException(IResultCode resultCode) {
         super(resultCode);
     }
@@ -24,5 +26,10 @@ public class BusinessException extends BaseException {
 
     public BusinessException(String message, Throwable cause) {
         super(CommonResultCode.BUSINESS_ERROR.getCode(), message, cause);
+    }
+
+    @Override
+    public Integer getStatus() {
+        return HTTP_STATUS_OK;
     }
 }
