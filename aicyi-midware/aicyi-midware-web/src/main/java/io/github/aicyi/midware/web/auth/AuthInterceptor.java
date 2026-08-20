@@ -55,7 +55,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         AuthenticationTokenService<?> tokenService = tokenServiceProvider.getIfAvailable();
         if (tokenService == null) {
             throw new IllegalStateException("AuthInterceptor requires an AuthenticationTokenService bean, but none is available. "
-                    + "Please provide one or disable auth via @EnableRestApi(enableAuth = false)");
+                    + "Please provide one or disable auth via @EnableMidwareWeb(enableAuth = false)");
         }
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;

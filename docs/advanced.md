@@ -19,11 +19,11 @@
 
 ### 启用方式
 
-在启动类添加 `@EnableRestApi` 注解，框架会自动注册全局异常处理器，所有 API 返回值统一为 `Response<T>` 格式。
+在启动类添加 `@EnableMidwareWeb` 注解，框架会注册全局异常处理器，所有 API 返回值统一为 `Result<D>` 格式。
 
 ```java
 @SpringBootApplication
-@EnableRestApi
+@EnableMidwareWeb
 public class YourApplication {
     public static void main(String[] args) {
         SpringApplication.run(YourApplication.class, args);
@@ -31,12 +31,14 @@ public class YourApplication {
 }
 ```
 
-### Response 结构
+### Result 结构
+
+`code` 为 Integer 类型，成功固定为 `0`；错误码为 5 位整数，前 3 位对齐 HTTP 状态码段（如 40001 → 400 段）。
 
 ```json
 {
-  "code": "200",
-  "message": "success",
+  "code": 0,
+  "message": "Success",
   "data": { ... }
 }
 ```
@@ -45,9 +47,9 @@ public class YourApplication {
 
 ```java
 @GetMapping("/user/{id}")
-public Response<UserVO> getUser(@PathVariable Long id) {
+public Result<UserVO> getUser(@PathVariable Long id) {
     UserVO user = userService.findById(id);
-    return Response.success(user);
+    return Result.success(user);
 }
 ```
 
@@ -58,19 +60,21 @@ public Response<UserVO> getUser(@PathVariable Long id) {
 throw new BusinessException(CommonResultCode.PARAM_ERROR, "用户名不能为空");
 
 // 或直接构造
-return Response.failure(CommonResultCode.PARAM_ERROR);
+return Result.failure(CommonResultCode.PARAM_ERROR);
 ```
 
 ### 预定义返回码
 
 | 返回码 | 说明 |
 |--------|------|
-| `SUCCESS` | 200 — 操作成功 |
-| `PARAM_ERROR` | 400 — 参数错误 |
-| `UNAUTHORIZED` | 401 — 未授权 |
-| `FORBIDDEN` | 403 — 禁止访问 |
-| `NOT_FOUND` | 404 — 资源不存在 |
-| `SYSTEM_ERROR` | 500 — 系统错误 |
+| `SUCCESS` | 0 — 操作成功 |
+| `PARAM_ERROR` | 40001 — 参数错误 |
+| `BUSINESS_ERROR` | 40002 — 业务错误（默认业务错误码） |
+| `UNAUTHORIZED` | 40101 — 未授权 |
+| `TOKEN_EXPIRED` | 40102 — Token 过期 |
+| `FORBIDDEN` | 40300 — 禁止访问 |
+| `NOT_FOUND` | 40401 — 资源不存在 |
+| `SYSTEM_ERROR` | 50001 — 系统错误 |
 
 ### 支持的异常类型
 
@@ -78,14 +82,15 @@ return Response.failure(CommonResultCode.PARAM_ERROR);
 
 | 异常类型 | 处理方式 |
 |----------|----------|
-| `BusinessException` | 返回业务错误码和消息 |
-| `UnauthorizedException` | 返回 401 |
-| `IllegalArgumentException` | 返回参数错误 |
-| `MethodArgumentNotValidException` | `@Valid` 校验失败，返回详细字段错误 |
-| `BindException` | 参数绑定失败 |
-| `ConstraintViolationException` | Bean Validation 校验失败 |
-| `MissingServletRequestParameterException` | 缺少必填参数 |
-| `Exception` | 兜底处理，返回 500 |
+| `IllegalArgumentException` | HTTP 400，返回 40001 与异常消息 |
+| `HttpMessageNotReadableException` | HTTP 400，请求体解析失败 |
+| `HttpRequestMethodNotSupportedException` | HTTP 405，请求方法不支持 |
+| `HttpMediaTypeNotSupportedException` | HTTP 415，媒体类型不支持 |
+| `BindException` | HTTP 400，`@Valid` 校验失败，返回详细字段错误 |
+| `ConstraintViolationException` | HTTP 400，Bean Validation 校验失败 |
+| `MissingServletRequestParameterException` | HTTP 400，缺少必填参数 |
+| `BaseException`（含 `BusinessException`、`UnauthorizedException` 等） | HTTP 200 + 业务错误码 |
+| `Exception` | 兜底处理，HTTP 200 + 50001，堆栈不外泄 |
 
 ---
 
@@ -93,30 +98,28 @@ return Response.failure(CommonResultCode.PARAM_ERROR);
 
 ### 配置
 
-```yaml
-# 在 application.yml 中配置 JWT 相关参数
-jwt:
-  access-token-expire: 7200          # access token 过期时间（秒），默认 2 小时
-  refresh-token-expire: 604800       # refresh token 过期时间（秒），默认 7 天
-  multi-token-count: 3               # 多设备同时登录数量
-```
+`@EnableMidwareWeb` 默认开启鉴权（`enableAuth = true`），框架自动注册鉴权拦截器，无需手工注册；
+容器中不存在 `AuthenticationTokenService` Bean 时启动即失败（fail-fast），因此业务方必须先定义 Token 服务 Bean。
 
-### 注册认证拦截器
+可直接使用 aicyi-midware-redis 提供的基于 Redis 刷新 Token 的实现：
 
 ```java
 @Configuration
-public class WebConfiguration implements WebMvcConfigurer {
+public class WebConfiguration {
 
-    @Autowired
-    private AuthenticationTokenService<IJWTInfo> tokenService;
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthInterceptor(tokenService))
-                .addPathPatterns("/**")
-                .excludePathPatterns("/auth/login", "/auth/register", "/swagger-ui/**");
+    @Bean
+    public AuthenticationTokenService<IJWTInfo> authenticationTokenService(StringRedisTemplate redisTemplate) {
+        AuthenticationConfig config = new AuthenticationConfig();
+        // 配置密钥、签发者、access/refresh token 有效期、多设备登录数等
+        return new JwtRefreshAuthenticationTokenService<>(config, redisTemplate, JWTInfo.class);
     }
 }
+```
+
+排除路径（如静态资源、接口文档）通过注解属性声明，同时排除鉴权与请求日志：
+
+```java
+@EnableMidwareWeb(excludePathPatterns = {"/webjars/**", "/v2/api-docs"})
 ```
 
 ### 跳过认证
@@ -141,7 +144,7 @@ public class UserController {
 
     @IgnoreAuth  // 仅该方法跳过认证
     @PostMapping("/register")
-    public Response<Void> register(@RequestBody RegisterDTO dto) {
+    public Result<Void> register(@RequestBody RegisterDTO dto) {
         // ...
     }
 }
@@ -151,7 +154,7 @@ public class UserController {
 
 ```java
 // 在认证通过后，可以通过 CurrentContextHolder 获取当前用户
-Long userId = CurrentContextHolder.getUserId();
+String userId = CurrentContextHolder.getUserId();
 String username = CurrentContextHolder.getUsername();
 ```
 
@@ -176,16 +179,17 @@ Authorization: Bearer <access_token>
 ### 配置
 
 ```yaml
-snowflake:
-  enabled: true
-  service-name: your-service-name    # 服务名称（必填）
-  worker-id-bits: 5                  # WorkerId 位数，默认 5
-  datacenter-id: 0                   # 数据中心 ID
-  ttl-seconds: 60                    # WorkerId 租约时间（秒）
-  heartbeat-seconds: 20              # 心跳间隔（秒）
-  auto-recover: true                 # 是否自动恢复
-  clock-backward-tolerance-ms: 5     # 时钟回拨容忍（毫秒）
-  epoch: 1672531200000               # 起始时间戳（毫秒）
+aicyi:
+  snowflake:
+    enabled: true
+    service-name: your-service-name    # 服务名称（必填）
+    worker-id-bits: 5                  # WorkerId 位数，默认 5
+    datacenter-id: 0                   # 数据中心 ID
+    ttl-seconds: 60                    # WorkerId 租约时间（秒）
+    heartbeat-seconds: 20              # 心跳间隔（秒）
+    auto-recover: true                 # 是否自动恢复
+    clock-backward-tolerance-ms: 5     # 时钟回拨容忍（毫秒）
+    epoch: 1672531200000               # 起始时间戳（毫秒）
 ```
 
 ### 使用方式
@@ -364,26 +368,27 @@ VALUES ('welcome-email', '欢迎邮件', 'EMAIL', 'FREEMARKER', '欢迎注册', 
 ### 配置
 
 ```yaml
-message:
-  email:
-    host: smtp.example.com
-    port: 465
-    username: noreply@example.com
-    password: your_password
-    protocol: smtps
-    default-encoding: UTF-8
-    from: noreply@example.com
+aicyi:
+  message:
+    email:
+      host: smtp.example.com
+      port: 465
+      username: noreply@example.com
+      password: your_password
+      protocol: smtps
+      default-encoding: UTF-8
+      from: noreply@example.com
 
-  sms:
-    provider: twilio  # twilio 或 yunpian
-    twilio:
-      account-sid: your_account_sid
-      auth-token: your_auth_token
-      from: +1234567890
+    sms:
+      provider: twilio  # twilio 或 yunpian
+      twilio:
+        account-sid: your_account_sid
+        auth-token: your_auth_token
+        from: +1234567890
 
-  mq:
-    provider: rabbitmq
-    default-exchange: default.exchange
+    mq:
+      provider: rabbitmq
+      default-exchange: default.exchange
 ```
 
 ---

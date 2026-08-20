@@ -31,10 +31,13 @@ import java.util.Map;
  * 读取注解属性并按需注册 Bean 定义，取代在各配置类中以 {@code @Bean} 返回 null 的条件装配方式：
  * <ul>
  *     <li>{@link MidwareWebMvcConfiguration}：拦截器聚合注册（始终注册，按拦截器 Bean 是否存在决定注册哪些拦截器）</li>
- *     <li>{@link TraceIdFilter}：链路追踪过滤器（最先执行，保证后续全部日志携带 traceId）
- *     <li>{@link CachingRequestBodyFilter}：请求体缓存过滤器</li>
+ *     <li>{@link TraceIdFilter}：链路追踪过滤器（最先执行，保证后续全部日志携带 traceId），
+ *     由 {@code aicyi.web.trace-id.enabled} 控制</li>
+ *     <li>{@link CachingRequestBodyFilter}：请求体缓存过滤器，由 {@code aicyi.web.body-cache.enabled} 控制</li>
  *     <li>{@link RequestLogInterceptor}：请求信息日志拦截器，由 {@code enableRequestLog} 与
+ *     {@code aicyi.web.request-log.enabled} 控制</li>
  *     <li>{@link AuthInterceptor}、{@link AuthenticationTokenServiceRegistrar}：鉴权能力，由 {@code enableAuth} 控制</li>
+ *     <li>{@link GlobalExceptionHandler}：全局异常处理器（始终注册）</li>
  * </ul>
  * <p>
  * 重复标注 {@link EnableMidwareWeb} 时仅首个声明生效，后续声明输出告警日志并跳过
@@ -53,6 +56,11 @@ public class MidwareWebConfigurationRegistrar implements ImportBeanDefinitionReg
      * 配置项：链路追踪过滤器是否启用
      */
     private static final String AICYI_WEB_TRACE_ID_ENABLED = "aicyi.web.trace-id.enabled";
+
+    /**
+     * 配置项：请求体缓存过滤器是否启用
+     */
+    private static final String AICYI_WEB_BODY_CACHE_ENABLED = "aicyi.web.body-cache.enabled";
 
     /**
      * 装配标记 Bean 定义名，用于检测重复标注
@@ -86,7 +94,7 @@ public class MidwareWebConfigurationRegistrar implements ImportBeanDefinitionReg
 
         // 重复标注检测：仅首个声明生效，避免重复注册与属性覆盖
         if (registry.containsBeanDefinition(ENABLED_MARKER_BEAN_NAME)) {
-            LOGGER.warn("Duplicate @EnableRestApi detected on '{}', duplicated declaration is ignored. Keep the annotation in only one place",
+            LOGGER.warn("Duplicate @EnableMidwareWeb detected on '{}', duplicated declaration is ignored. Keep the annotation in only one place",
                     importingClassMetadata.getClassName());
             return;
         }
@@ -103,18 +111,20 @@ public class MidwareWebConfigurationRegistrar implements ImportBeanDefinitionReg
         // Web MVC 配置：按拦截器 Bean 是否存在决定注册内容（始终注册）
         BeanDefinitionBuilder mvcConfigurationBuilder = BeanDefinitionBuilder.genericBeanDefinition(MidwareWebMvcConfiguration.class)
                 .setAutowireMode(AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR);
-        // 第三个构造参数为鉴权放行路径，其余参数由容器按构造器自动装配
+        // 第三个构造参数为拦截器排除路径，其余参数由容器按构造器自动装配
         mvcConfigurationBuilder.getBeanDefinition().getConstructorArgumentValues()
                 .addIndexedArgumentValue(2, excludePathPatterns);
-        registerBeanDefinition(registry, "restApiWebMvcConfiguration", mvcConfigurationBuilder);
+        registerBeanDefinition(registry, "midwareWebMvcConfiguration", mvcConfigurationBuilder);
 
         // 链路追踪过滤器（最先执行）
         if (isPropertyEnabled(AICYI_WEB_TRACE_ID_ENABLED)) {
             registerTraceIdFilter(registry);
         }
 
-        // 请求体缓存过滤器（始终开启）
-        registerCachingRequestBodyFilter(registry);
+        // 请求体缓存过滤器
+        if (isPropertyEnabled(AICYI_WEB_BODY_CACHE_ENABLED)) {
+            registerCachingRequestBodyFilter(registry);
+        }
 
         // 请求信息日志拦截器
         if (enableRequestLog && isPropertyEnabled(AICYI_WEB_REQUEST_LOG_ENABLED)) {

@@ -84,8 +84,8 @@ curl -X POST http://localhost/user/register \
 
 ```json
 {
-  "code": "200",
-  "message": "success",
+  "code": 0,
+  "message": "Success",
   "data": null
 }
 ```
@@ -105,8 +105,8 @@ curl -X POST http://localhost/auth/login \
 
 ```json
 {
-  "code": "200",
-  "message": "success",
+  "code": 0,
+  "message": "Success",
   "data": {
     "accessToken": "eyJhbGciOiJIUzI1NiJ9...",
     "refreshToken": "eyJhbGciOiJIUzI1NiJ9...",
@@ -147,7 +147,7 @@ curl http://localhost/user/info \
     <!-- 核心公共库 -->
     <dependency>
         <groupId>io.github.aicyi.commons</groupId>
-        <artifactId>commons-core</artifactId>
+        <artifactId>aicyi-commons-core</artifactId>
     </dependency>
 
     <!-- 中间件自动装配（包含 Redis、Web、ID 生成等） -->
@@ -172,7 +172,7 @@ curl http://localhost/user/info \
 
 ```java
 @SpringBootApplication
-@EnableRestApi               // 启用统一响应与全局异常处理
+@EnableMidwareWeb            // 启用统一响应、全局异常处理、鉴权与请求日志
 @MapperScan("com.your.dao")  // 扫描 MyBatis Mapper
 public class YourApplication {
     public static void main(String[] args) {
@@ -187,9 +187,10 @@ public class YourApplication {
 server:
   port: 8080
 
-snowflake:
-  enabled: true
-  service-name: your-service
+aicyi:
+  snowflake:
+    enabled: true
+    service-name: your-service
 ```
 
 ## 常见问题
@@ -201,8 +202,9 @@ snowflake:
 ### Q: 如何关闭 Snowflake ID 生成？
 
 ```yaml
-snowflake:
-  enabled: false
+aicyi:
+  snowflake:
+    enabled: false
 ```
 
 ### Q: 如何跳过特定接口的认证？

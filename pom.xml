@@ -17,7 +17,6 @@
         <module>aicyi-base-starter-parent</module>
         <module>aicyi-commons</module>
         <module>aicyi-midware</module>
-        <module>aicyi-example</module>
     </modules>
 
     <properties>

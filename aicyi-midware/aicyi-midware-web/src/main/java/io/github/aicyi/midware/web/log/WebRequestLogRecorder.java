@@ -220,7 +220,7 @@ public final class WebRequestLogRecorder {
      * 记录请求日志：成功输出 INFO，失败输出 ERROR 并附带异常堆栈
      * <p>
      * 若异常已被异常处理器记录（见 {@link #logError(HttpServletRequest, Exception)}），
-     * 则不再重复输出完整异常日志，仅以 INFO 输出一条简要生命周期日志（含耗时与状态码）。
+     * 则不再重复输出完整异常日志，仅以 WARN 输出一条简要生命周期日志（含耗时与状态码）。
      *
      * @param request  HTTP 请求
      * @param response HTTP 响应
