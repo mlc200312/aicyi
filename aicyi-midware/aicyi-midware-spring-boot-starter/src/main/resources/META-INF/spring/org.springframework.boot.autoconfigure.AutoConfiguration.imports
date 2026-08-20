@@ -1,3 +1,3 @@
-io.github.aicyi.midware.autoconfigure.RedisAutoConfiguration
-io.github.aicyi.midware.autoconfigure.SnowflakeAutoConfiguration
-io.github.aicyi.midware.autoconfigure.SpringAutoConfiguration
+io.github.aicyi.midware.starter.autoconfigure.RedisAutoConfiguration
+io.github.aicyi.midware.starter.autoconfigure.SnowflakeAutoConfiguration
+io.github.aicyi.midware.starter.autoconfigure.SpringAutoConfiguration

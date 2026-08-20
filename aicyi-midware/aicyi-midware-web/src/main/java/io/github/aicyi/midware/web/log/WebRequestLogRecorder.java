@@ -3,12 +3,14 @@ package io.github.aicyi.midware.web.log;
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.logging.LoggerType;
-import io.github.aicyi.commons.util.JsonSensitiveMaskUtils;
-import io.github.aicyi.commons.util.NumberUtils;
-import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.commons.util.json.JsonSensitiveMaskUtils;
+import io.github.aicyi.commons.util.number.NumberUtils;
+import io.github.aicyi.commons.util.id.UUIDUtils;
 import io.github.aicyi.midware.web.filter.CachedBodyRequestWrapper;
+import io.github.aicyi.midware.web.filter.TraceIdFilter;
 import io.github.aicyi.midware.web.util.CharsetUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,9 +42,10 @@ import java.util.Map;
 public final class WebRequestLogRecorder {
 
     /**
-     * 请求 ID Header 名称
+     * 链路标识 Header 名称：与 {@link TraceIdFilter} 的 traceId 统一（X-Trace-Id），
+     * 保证请求日志 ID 与 MDC/%X{traceId}、响应头同源
      */
-    public static final String REQUEST_ID_HEADER = "X-Request-Id";
+    public static final String REQUEST_ID_HEADER = TraceIdFilter.TRACE_ID_HEADER;
 
     /**
      * 请求开始时间属性名（仅模块内部约定，外部请通过 {@link #markStart(HttpServletRequest)} 标记）
@@ -134,18 +137,25 @@ public final class WebRequestLogRecorder {
     }
 
     /**
-     * 解析请求 ID
+     * 解析链路标识（traceId）
      * <p>
-     * 优先取请求属性，其次取 {@value #REQUEST_ID_HEADER} Header（需通过安全校验），最后自动生成。
+     * 优先级：请求属性（setRequestId 显式覆盖）→ {@link TraceIdFilter} 写入 MDC 的 traceId → Header（需通过安全校验）→ 自动生成。
      * 首次解析结果会回填请求属性，保证同一请求在任意阶段（如异常处理器与拦截器）获取的 ID 一致。
      *
      * @param request HTTP 请求
-     * @return 请求 ID
+     * @return 链路标识
      */
     public static String getRequestId(HttpServletRequest request) {
         Object requestId = request.getAttribute(REQUEST_ID_ATTRIBUTE);
         if (requestId instanceof String && StringUtils.isNotBlank((String) requestId)) {
             return (String) requestId;
+        }
+
+        // 优先采用 TraceIdFilter 写入 MDC 的 traceId，保证与日志 pattern %X{traceId} 同一来源
+        String mdcTraceId = MDC.get(TraceIdFilter.MDC_TRACE_ID_KEY);
+        if (StringUtils.isNotBlank(mdcTraceId)) {
+            request.setAttribute(REQUEST_ID_ATTRIBUTE, mdcTraceId);
+            return mdcTraceId;
         }
 
         String headerRequestId = request.getHeader(REQUEST_ID_HEADER);

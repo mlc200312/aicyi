@@ -1,0 +1,24 @@
+{
+  "properties": [
+    {
+      "name": "aicyi.web.request-log.enabled",
+      "type": "java.lang.String",
+      "description": "Description for aicyi.web.request-log.enabled."
+    },
+    {
+      "name": "aicyi.web.trace-id.enabled",
+      "type": "java.lang.String",
+      "description": "Description for aicyi.web.trace-id.enabled."
+    },
+    {
+      "name": "aicyi.web.body-cache.enabled",
+      "type": "java.lang.String",
+      "description": "Description for aicyi.web.body-cache.enabled."
+    },
+    {
+      "name": "aicyi.web.body-cache.max-size",
+      "type": "java.lang.String",
+      "description": "Description for aicyi.web.body-cache.max-size."
+    }
+  ]
+}

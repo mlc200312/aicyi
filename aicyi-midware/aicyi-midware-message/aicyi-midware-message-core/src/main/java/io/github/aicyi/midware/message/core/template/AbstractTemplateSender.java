@@ -7,7 +7,7 @@ import io.github.aicyi.commons.core.template.TemplateEngineType;
 import io.github.aicyi.commons.core.template.TemplateRequest;
 import io.github.aicyi.commons.core.template.TemplateSender;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.util.JsonUtils;
+import io.github.aicyi.commons.util.json.JsonUtils;
 import io.github.aicyi.midware.message.core.exception.MessageResultCode;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.midware.message.core.model.MessageTemplate;

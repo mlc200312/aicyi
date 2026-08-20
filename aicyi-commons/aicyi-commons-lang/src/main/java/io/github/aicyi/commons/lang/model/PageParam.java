@@ -3,6 +3,9 @@ package io.github.aicyi.commons.lang.model;
 /**
  * @author Mr.Min
  * @description 分页参数对象
+ * <p>
+ * 分工说明：本类为服务层/通用层分页参数（null 或非法值走兑底 {@link #getPageOrDefault()}/{@link #getSizeOrDefault()}），
+ * Web 请求参数如需 JSR-303 强校验，请使用 aicyi-midware-web 的 {@code PageRequest}
  * @date 15:50
  **/
 public class PageParam extends BaseBean {

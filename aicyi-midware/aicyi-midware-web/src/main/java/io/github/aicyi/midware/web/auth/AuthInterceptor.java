@@ -1,8 +1,10 @@
 package io.github.aicyi.midware.web.auth;
 
 import io.github.aicyi.commons.core.token.AuthenticationTokenService;
+import io.github.aicyi.commons.lang.exception.TokenException;
+import io.github.aicyi.commons.lang.exception.TokenExpiredException;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
-import io.github.aicyi.commons.util.CurrentContextHolder;
+import io.github.aicyi.commons.util.context.CurrentContextHolder;
 import io.github.aicyi.midware.web.annotation.IgnoreAuth;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
@@ -80,11 +82,17 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new UnauthorizedException();
         }
 
-        if (!tokenService.validateAccessToken(accessToken)) {
+        Object principal;
+        try {
+            // parsePrincipal 内部完成验签与有效期校验：过期抛 TokenExpiredException(40102)，
+            // 无效/解析失败抛 TokenInvalidException 等 TokenException(40101)，
+            // 据此区分返回码，前端可依据 40102 触发 token 刷新
+            principal = tokenService.parsePrincipal(accessToken);
+        } catch (TokenExpiredException e) {
+            throw e;
+        } catch (TokenException e) {
             throw new UnauthorizedException();
         }
-
-        Object principal = tokenService.parsePrincipal(accessToken);
 
         // 通过 SPI 写入用户上下文，默认处理 IJWTInfo 主体，业务可替换
         principalHandlerProvider.getIfAvailable(() -> defaultPrincipalHandler).handle(principal);

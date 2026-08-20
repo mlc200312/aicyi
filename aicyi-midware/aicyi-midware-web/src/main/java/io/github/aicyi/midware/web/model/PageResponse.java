@@ -7,7 +7,10 @@ import java.util.List;
 
 /**
  * @author Mr.Min
- * @description 分页响应对象
+ * @description 分页响应对象（Web 层，附加 hasNext/hasPrev 翻页标记）
+ * <p>
+ * 分工说明：通用服务层/接口层响应推荐使用 aicyi-commons-lang 的 {@code PageResult}，
+ * 需要翻页标记时再用本类包装转换
  * @date 14:24
  **/
 public class PageResponse<E> extends BaseBean {

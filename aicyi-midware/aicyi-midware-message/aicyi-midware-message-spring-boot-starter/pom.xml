@@ -36,19 +36,6 @@
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-db-mybatisplus</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-kit</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-message-mail</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
@@ -64,6 +51,13 @@
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-message-sms</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-message-db</artifactId>
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
@@ -93,13 +87,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- cache：仅模板缓存能力使用，标为 optional 不强制传递给使用方 -->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
             <optional>true</optional>
         </dependency>
 

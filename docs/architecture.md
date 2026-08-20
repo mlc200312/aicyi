@@ -9,9 +9,24 @@ aicyi
 ├── aicyi-base-dependencies       # 版本 BOM
 ├── aicyi-base-starter-parent     # Maven parent 和插件管理
 ├── aicyi-commons                 # 基础抽象与通用工具
+│   ├── aicyi-commons-lang
+│   ├── aicyi-commons-core
+│   ├── aicyi-commons-logging
+│   ├── aicyi-commons-security
+│   └── aicyi-commons-util
 ├── aicyi-midware                 # 中间件实现与 Spring Boot starter
-└── aicyi-example                 # 示例应用
+│   ├── aicyi-midware-db (db-commons / db-mybatisplus)
+│   ├── aicyi-midware-message (core / mail / mq / sms / db / spring-boot-starter)
+│   ├── aicyi-midware-rabbitmq
+│   ├── aicyi-midware-redis
+│   ├── aicyi-midware-web
+│   └── aicyi-midware-spring-boot-starter
+└── docs                          # 使用文档
 ```
+
+> 说明：`aicyi-example` 示例应用当前未包含在本仓库中；集成示例见 quickstart.md。
+> `aicyi-midware-db-mybatisplus` 提供真实 MyBatis-Plus 能力（分页/乐观锁/字段自动填充），
+> `aicyi-midware-message-db` 为可选引入的消息模板 DB 持久化模块。
 
 整体依赖方向应保持为：
 
@@ -52,39 +67,12 @@ aicyi-example -> aicyi-midware -> aicyi-commons -> aicyi-base-*
 
 ## 推荐目标结构
 
-```text
-aicyi
-├── aicyi-base-dependencies
-├── aicyi-base-starter-parent
-├── aicyi-commons
-│   ├── aicyi-commons-lang
-│   ├── aicyi-commons-core
-│   ├── aicyi-commons-logging
-│   ├── aicyi-commons-security
-│   └── aicyi-commons-util
-├── aicyi-midware
-│   ├── aicyi-midware-db
-│   │   ├── aicyi-midware-aicyi-midware-db-commons
-│   │   └── aicyi-midware-aicyi-midware-db-mybatisplus
-│   ├── aicyi-midware-message
-│   │   ├── aicyi-midware-aicyi-midware-message-core
-│   │   ├── aicyi-midware-aicyi-midware-message-mail
-│   │   ├── aicyi-midware-aicyi-midware-message-mq
-│   │   ├── aicyi-midware-aicyi-midware-message-sms
-│   │   └── aicyi-midware-aicyi-midware-message-spring-boot-starter
-│   ├── aicyi-midware-rabbitmq
-│   ├── aicyi-midware-redis
-│   ├── aicyi-midware-web
-│   └── aicyi-midware-spring-boot-starter
-└── aicyi-example
-    ├── aicyi-example-domain
-    ├── aicyi-example-dao
-    ├── aicyi-example-service
-    ├── aicyi-example-web
-    ├── aicyi-example-boot
-    ├── aicyi-example-consumer
-    └── aicyi-example-fixture
-```
+当前仓库结构已基本符合目标（见上文 当前结论 的目录树），后续演进方向：
+
+- 若需发布到外部仓库，建议为 `aicyi-example` 示例应用单独建仓或拆分 `aicyi-example-fixture`，
+  避免示例代码进入正式 SDK 发布面；
+- 长期建议给 `commons`、`midware` 增加依赖方向检查（如 maven-enforcer 的 bannedDependencies / dependencyConvergence），
+  防止上层模块反向依赖底层。
 
 ## 迁移建议
 

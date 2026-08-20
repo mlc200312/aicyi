@@ -3,7 +3,7 @@ package io.github.aicyi.midware.message.core.model;
 import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageType;
 import io.github.aicyi.commons.lang.model.BaseBean;
-import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.commons.util.id.UUIDUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

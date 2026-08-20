@@ -63,6 +63,11 @@ public class MidwareWebConfigurationRegistrar implements ImportBeanDefinitionReg
     private static final String AICYI_WEB_BODY_CACHE_ENABLED = "aicyi.web.body-cache.enabled";
 
     /**
+     * 配置项：请求体缓存大小上限（字节），未配置时使用默认值
+     */
+    private static final String AICYI_WEB_BODY_CACHE_MAX_SIZE = "aicyi.web.body-cache.max-size";
+
+    /**
      * 装配标记 Bean 定义名，用于检测重复标注
      */
     private static final String ENABLED_MARKER_BEAN_NAME = MidwareWebConfigurationRegistrar.class.getName() + ".enabledMarker";
@@ -162,8 +167,16 @@ public class MidwareWebConfigurationRegistrar implements ImportBeanDefinitionReg
      * 注册请求体缓存过滤器
      */
     private void registerCachingRequestBodyFilter(BeanDefinitionRegistry registry) {
+        BeanDefinitionBuilder filterBuilder = BeanDefinitionBuilder.genericBeanDefinition(CachingRequestBodyFilter.class);
+
+        // 缓存大小上限可配置（aicyi.web.body-cache.max-size），未配置或非法值回退默认上限
+        Integer maxCachedBodySize = environment.getProperty(AICYI_WEB_BODY_CACHE_MAX_SIZE, Integer.class);
+        if (maxCachedBodySize != null && maxCachedBodySize > 0) {
+            filterBuilder.addPropertyValue("maxCachedBodySize", maxCachedBodySize);
+        }
+
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(FilterRegistrationBean.class)
-                .addPropertyValue("filter", BeanDefinitionBuilder.genericBeanDefinition(CachingRequestBodyFilter.class).getBeanDefinition())
+                .addPropertyValue("filter", filterBuilder.getBeanDefinition())
                 .addPropertyValue("urlPatterns", Collections.singletonList("/*"))
                 .addPropertyValue("order", CACHING_FILTER_ORDER);
         registerBeanDefinition(registry, "cachingRequestBodyFilter", builder);

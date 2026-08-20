@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.web.auth;
 
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
-import io.github.aicyi.commons.util.CurrentContextHolder;
+import io.github.aicyi.commons.util.context.CurrentContextHolder;
 
 /**
  * @author Mr.Min

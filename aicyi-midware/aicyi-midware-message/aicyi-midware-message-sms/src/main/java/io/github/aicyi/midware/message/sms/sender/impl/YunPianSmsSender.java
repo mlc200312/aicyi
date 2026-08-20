@@ -3,7 +3,7 @@ package io.github.aicyi.midware.message.sms.sender.impl;
 import com.yunpian.sdk.YunpianClient;
 import com.yunpian.sdk.model.Result;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
-import io.github.aicyi.commons.util.Maps;
+import io.github.aicyi.commons.util.map.Maps;
 import io.github.aicyi.midware.message.core.exception.MessageResultCode;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>aicyi-midware-message-db</artifactId>
+
+    <packaging>jar</packaging>
+    <name>aicyi midware message db</name>
+    <description>aicyi midware message db (message_template table persistence provider, opt-in)</description>
+
+    <parent>
+        <groupId>io.github.aicyi.midware</groupId>
+        <artifactId>aicyi-midware-message</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>aicyi-commons-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>aicyi-commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.aicyi.commons</groupId>
+            <artifactId>aicyi-commons-util</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-message-core</artifactId>
+        </dependency>
+
+        <!-- 模板表持久化：普通 MyBatis（Mapper/SqlProvider），版本收敛于 aicyi-base-dependencies -->
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-db-commons</artifactId>
+        </dependency>
+
+        <!-- Redis 远程缓存：RedisCache / EnhancedRedisTemplateFactory -->
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-redis</artifactId>
+        </dependency>
+
+        <!-- 本地缓存：仅模板本地缓存使用 -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <!-- 独立 opt-in 模块：依赖均为编译+运行期常规 scope，类加载不再依赖 optional 条件；
+             spring-boot-autoconfigure 由应用侧 Boot 提供 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>

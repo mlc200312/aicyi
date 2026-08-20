@@ -5,7 +5,9 @@ import java.util.List;
 /**
  * @author Mr.Min
  * @description 通用分页结果对象，与 {@link PageParam} 分页参数配套；
- * Web 层如需附加翻页标记等展示属性，可使用 midware-web 的 PageResponse 包装转换
+ * <p>
+ * 分工说明：通用服务层/接口层分页响应；Web 层如需附加 hasNext/hasPrev 翻页标记，
+ * 可使用 aicyi-midware-web 的 {@code PageResponse} 包装转换
  * @date 10:48
  **/
 public class PageResult<E> extends BaseBean {

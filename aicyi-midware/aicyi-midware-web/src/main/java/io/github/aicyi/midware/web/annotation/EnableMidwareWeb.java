@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * <p>
  * 各能力另支持配置项细粒度关闭（缺省均为开启）：
  * {@code aicyi.web.trace-id.enabled}、{@code aicyi.web.request-log.enabled}、
- * {@code aicyi.web.body-cache.enabled}
+ * {@code aicyi.web.body-cache.enabled}（缓存上限 {@code aicyi.web.body-cache.max-size}）
  * @date 2020-02-19
  **/
 @Retention(RetentionPolicy.RUNTIME)

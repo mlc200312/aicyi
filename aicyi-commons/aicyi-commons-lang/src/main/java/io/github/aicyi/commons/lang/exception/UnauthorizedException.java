@@ -1,6 +1,6 @@
 package io.github.aicyi.commons.lang.exception;
 
-import io.github.aicyi.commons.lang.type.CommonResultCode;
+import io.github.aicyi.commons.lang.CommonResultCode;
 
 /**
  * @author Mr.Min

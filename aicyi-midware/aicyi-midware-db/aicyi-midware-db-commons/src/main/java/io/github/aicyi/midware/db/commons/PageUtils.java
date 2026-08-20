@@ -4,7 +4,7 @@ import com.github.pagehelper.ISelect;
 import com.github.pagehelper.PageHelper;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.model.PageParam;
-import io.github.aicyi.commons.lang.type.CommonResultCode;
+import io.github.aicyi.commons.lang.CommonResultCode;
 import org.springframework.data.domain.*;
 
 import java.util.List;
@@ -60,12 +60,13 @@ public class PageUtils {
     }
 
     public static <T> Page<T> getPage(PageParam pageParam, ISelect select) {
-        Pageable pageable = createPageable(pageParam.getPage(), pageParam.getSize());
+        // 使用兑底方法，避免 page/size 为 null 时自动拆箱 NPE，page<=0/size>500 亦被归一
+        Pageable pageable = createPageable(pageParam.getPageOrDefault(), pageParam.getSizeOrDefault());
         return getPage(pageable, select, true);
     }
 
     public static <T> List<T> getList(PageParam pageParam, ISelect select) {
-        Pageable pageable = createPageable(pageParam.getPage(), pageParam.getSize());
+        Pageable pageable = createPageable(pageParam.getPageOrDefault(), pageParam.getSizeOrDefault());
         Page<T> page = getPage(pageable, select, false);
         return page.getContent();
     }

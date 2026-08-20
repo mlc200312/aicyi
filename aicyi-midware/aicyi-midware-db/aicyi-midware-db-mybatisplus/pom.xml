@@ -8,7 +8,7 @@
 
     <packaging>jar</packaging>
     <name>aicyi midware db mybatisplus</name>
-    <description>aicyi midware db mybatisplus</description>
+    <description>aicyi midware db mybatisplus (MyBatis-Plus capability: pagination / optimistic lock / auto-fill)</description>
 
     <parent>
         <groupId>io.github.aicyi.midware</groupId>
@@ -17,10 +17,25 @@
     </parent>
 
     <dependencies>
+        <!-- MyBatis-Plus，版本收敛于 aicyi-base-dependencies -->
         <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-db-commons</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+
+        <!-- spring-boot-autoconfigure 由应用侧 Boot 提供 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

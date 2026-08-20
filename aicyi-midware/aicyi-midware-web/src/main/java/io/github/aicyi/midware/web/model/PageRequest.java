@@ -8,7 +8,10 @@ import javax.validation.constraints.Positive;
 
 /**
  * @author Mr.Min
- * @description 分页请求对象
+ * @description 分页请求对象（Web 层输入，JSR-303 强校验）
+ * <p>
+ * 分工说明：Web 层接口入参使用本类（配合 @Valid）；服务层/通用层可使用
+ * aicyi-commons-lang 的 {@code PageParam}（null/非法值兑底）
  * @date 15:12
  **/
 public class PageRequest extends BaseBean {

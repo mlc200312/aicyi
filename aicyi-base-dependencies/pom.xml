@@ -15,13 +15,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring-boot.version>2.7.18</spring-boot.version>
-        <spring-data.version>2.7.18</spring-data.version>
         <spring-cloud.version>2021.0.8</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
 
         <!-- mybatis-spring-boot-starter 2.3.1 为支持 Java 8 的最新版本 -->
         <mybatis-spring-boot.version>2.3.1</mybatis-spring-boot.version>
         <pagehelper-spring-boot.version>1.4.3</pagehelper-spring-boot.version>
+        <!-- mybatis-plus 3.5.x：兼容 Spring Boot 2.7 / Java 8 -->
+        <mybatis-plus.version>3.5.7</mybatis-plus.version>
 
         <slf4j.version>1.7.36</slf4j.version>
         <hutool.version>5.8.47</hutool.version>
@@ -33,18 +34,7 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- jackson：必须先于 spring-boot-dependencies 导入——多 BOM 版本冲突时先声明者胜，
-                 若放在其后会被 Boot 内置的旧版 Jackson 覆盖导致 jackson.version 失效 -->
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!-- jackson end -->
-
-            <!-- Spring Boot -->
+            <!-- Spring Boot（jackson/snakeyaml 等第三方版本回归 Boot 托管版本，保持兼容矩阵） -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -53,13 +43,7 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- Spring Data -->
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-redis</artifactId>
-                <version>${spring-data.version}</version>
-            </dependency>
-            <!-- Spring Data end -->
+            <!-- Spring Data 版本由 spring-boot-dependencies 统一管理，不再单独声明 -->
 
             <!-- Spring Cloud -->
             <dependency>
@@ -123,11 +107,7 @@
                 <artifactId>dom4j</artifactId>
                 <version>2.1.3</version>
             </dependency>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>8.0.33</version>
-            </dependency>
+            <!-- mysql 驱动：使用新 GAV com.mysql:mysql-connector-j（旧 mysql:mysql-connector-java 已废弃/迁移） -->
             <dependency>
                 <groupId>com.mysql</groupId>
                 <artifactId>mysql-connector-j</artifactId>
@@ -138,39 +118,9 @@
                 <artifactId>cglib</artifactId>
                 <version>3.3.0</version>
             </dependency>
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>2.10.1</version>
-            </dependency>
-            <dependency>
-                <groupId>net.jcip</groupId>
-                <artifactId>jcip-annotations</artifactId>
-                <version>1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.2</version>
-            </dependency>
             <!-- base -->
 
             <!-- apache -->
-            <dependency>
-                <groupId>commons-configuration</groupId>
-                <artifactId>commons-configuration</artifactId>
-                <version>1.10</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.21.0</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>1.9.4</version>
-            </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
@@ -196,60 +146,7 @@
                 <artifactId>poi-ooxml</artifactId>
                 <version>5.5.1</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>4.4.16</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.5.14</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpmime</artifactId>
-                <version>4.5.14</version>
-            </dependency>
             <!-- apache end -->
-
-            <!-- hutool -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-core</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-http</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-crypto</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-json</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-cache</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-log</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-jwt</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <!-- hutool end -->
 
             <!-- alibaba -->
             <dependency>
@@ -260,11 +157,6 @@
             <!-- alibaba end -->
 
             <!-- google -->
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.14.0</version>
-            </dependency>
             <!-- zxing 核心库 -->
             <dependency>
                 <groupId>com.google.zxing</groupId>
@@ -303,18 +195,6 @@
                 <artifactId>orika-core</artifactId>
                 <version>1.5.4</version>
             </dependency>
-            <!-- MapStruct 依赖 -->
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct</artifactId>
-                <version>1.5.3.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>1.5.3.Final</version>
-            </dependency>
-            <!-- MapStruct 依赖 end -->
             <!-- MyBatis + PageHelper（db 中间件，供 aicyi-midware-db 使用） -->
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
@@ -326,39 +206,20 @@
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${pagehelper-spring-boot.version}</version>
             </dependency>
+            <!-- MyBatis-Plus（供 aicyi-midware-db-mybatisplus 使用） -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
             <!-- MyBatis end -->
             <!-- ORM end -->
 
             <!-- cache -->
             <dependency>
-                <groupId>redis.clients</groupId>
-                <artifactId>jedis</artifactId>
-                <version>3.0.1</version>
-            </dependency>
-            <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
                 <version>3.9.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alicp.jetcache</groupId>
-                <artifactId>jetcache-starter-redis</artifactId>
-                <version>2.5.12</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alicp.jetcache</groupId>
-                <artifactId>jetcache-starter-redis-lettuce</artifactId>
-                <version>2.5.12</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>33.6.0-jre</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>2.10.6</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
@@ -405,16 +266,6 @@
                 <groupId>com.github.f4b6a3</groupId>
                 <artifactId>uuid-creator</artifactId>
                 <version>6.1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.belerweb</groupId>
-                <artifactId>pinyin4j</artifactId>
-                <version>2.5.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>2.6</version>
             </dependency>
             <!-- utils end -->
         </dependencies>

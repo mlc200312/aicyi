@@ -18,6 +18,7 @@
 
     <modules>
         <module>aicyi-midware-message-core</module>
+        <module>aicyi-midware-message-db</module>
         <module>aicyi-midware-message-mail</module>
         <module>aicyi-midware-message-mq</module>
         <module>aicyi-midware-message-sms</module>
