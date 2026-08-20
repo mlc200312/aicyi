@@ -2,8 +2,22 @@ package io.github.aicyi.midware.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * @author Mr.Min
+ * @description 雪花 ID 配置属性（aicyi.snowflake.*）
+ **/
 @ConfigurationProperties(prefix = "aicyi.snowflake")
 public class SnowflakeProperties {
+
+    /**
+     * serviceName 默认值：多服务共用同一 Redis 时会共享 workerId 命名空间，生产环境应显式配置
+     */
+    public static final String DEFAULT_SERVICE_NAME = "default-service";
+
+    /**
+     * 底层 SnowflakeIdGenerator 固定的 workerId 位宽，当前不支持调整
+     */
+    public static final int FIXED_WORKER_ID_BITS = 5;
 
     /**
      * 是否启用
@@ -11,17 +25,15 @@ public class SnowflakeProperties {
     private boolean enabled = true;
 
     /**
-     * 服务名（Redis workerId namespace）
+     * 服务名（Redis workerId namespace），多服务部署同一 Redis 时必须各不相同
      */
-    private String serviceName = "default-service";
+    private String serviceName = DEFAULT_SERVICE_NAME;
 
     /**
-     * workerId bit 数
-     * <p>
-     * 5 -> max 31
-     * 10 -> max 1023
+     * workerId bit 数：底层 SnowflakeIdGenerator 固定 5 位（max 31），
+     * 配置其他值将在启动期校验失败（见 SnowflakeAutoConfiguration#validateProperties）
      */
-    private int workerIdBits = 5;
+    private int workerIdBits = FIXED_WORKER_ID_BITS;
 
     /**
      * datacenterId

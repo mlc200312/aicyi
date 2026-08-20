@@ -1,19 +1,34 @@
 package io.github.aicyi.midware.utils;
 
 import io.github.aicyi.commons.core.id.IdGenerator;
+import io.github.aicyi.commons.core.logging.Logger;
+import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.util.id.SnowflakeIdGenerator;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Mr.Min
  * @description ID生成工具类
+ * <p>
+ * 容器注入 {@link IdGenerator} 后以分布式发号器生成 ID；
+ * 未注入时（如未启用 aicyi.snowflake）降级为本地 SnowflakeIdGenerator(workerId=0)，
+ * 降级仅适用于单机场景，多实例部署会产生重复 ID（首次降级时输出告警日志）
  * @date 19:15
  **/
 public class IdUtils implements InitializingBean {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(IdUtils.class);
+
     private static final SnowflakeIdGenerator DEFAULT_ID_GENERATOR = new SnowflakeIdGenerator(0, 0);
 
-    private static IdUtils INSTANCE;
+    /**
+     * 降级告警仅输出一次，避免高频发号场景日志风暴
+     */
+    private static final AtomicBoolean FALLBACK_WARNED = new AtomicBoolean(false);
+
+    private static volatile IdUtils INSTANCE;
 
     private final IdGenerator idGenerator;
 
@@ -22,10 +37,17 @@ public class IdUtils implements InitializingBean {
     }
 
     public static long generateId() {
-        if (INSTANCE == null || INSTANCE.idGenerator == null) {
+
+        IdUtils instance = INSTANCE;
+        if (instance == null || instance.idGenerator == null) {
+            if (FALLBACK_WARNED.compareAndSet(false, true)) {
+                LOGGER.warn("IdGenerator is not injected, fallback to local SnowflakeIdGenerator(workerId=0). "
+                        + "Multi-instance deployments may generate duplicate IDs, "
+                        + "please enable aicyi.snowflake for distributed ID generation");
+            }
             return DEFAULT_ID_GENERATOR.nextId();
         }
-        return INSTANCE.idGenerator.nextId();
+        return instance.idGenerator.nextId();
     }
 
     @Override

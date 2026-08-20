@@ -182,7 +182,7 @@ Authorization: Bearer <access_token>
 aicyi:
   snowflake:
     enabled: true
-    service-name: your-service-name    # 服务名称（必填）
+    service-name: your-service-name    # 服务名，多服务共用同一 Redis 时必须各不相同（缺省 default-service 会共享命名空间并告警）
     worker-id-bits: 5                  # WorkerId 位数，默认 5
     datacenter-id: 0                   # 数据中心 ID
     ttl-seconds: 60                    # WorkerId 租约时间（秒）
