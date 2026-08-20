@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.redis.lock;
 
 import io.github.aicyi.commons.lang.exception.BaseException;
-import io.github.aicyi.commons.lang.type.CommonResultCode;
+import io.github.aicyi.commons.lang.CommonResultCode;
 
 public class LockException extends BaseException {
 

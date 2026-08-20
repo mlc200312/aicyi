@@ -2,7 +2,7 @@ package io.github.aicyi.midware.web.auth;
 
 import io.github.aicyi.commons.core.token.AuthenticationTokenService;
 import io.github.aicyi.commons.lang.exception.UnauthorizedException;
-import io.github.aicyi.commons.util.CurrentContextHolder;
+import io.github.aicyi.commons.util.context.CurrentContextHolder;
 import io.github.aicyi.midware.web.annotation.IgnoreAuth;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;

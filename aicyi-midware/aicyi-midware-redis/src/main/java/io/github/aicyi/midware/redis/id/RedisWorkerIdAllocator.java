@@ -2,7 +2,7 @@ package io.github.aicyi.midware.redis.id;
 
 import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.util.UUIDUtils;
+import io.github.aicyi.commons.util.id.UUIDUtils;
 import io.github.aicyi.commons.core.id.WorkerIdAllocator;
 import io.github.aicyi.commons.core.id.WorkerIdLease;
 import org.springframework.data.redis.core.StringRedisTemplate;

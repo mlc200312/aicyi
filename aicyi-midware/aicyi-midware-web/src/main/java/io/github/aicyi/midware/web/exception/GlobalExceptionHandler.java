@@ -2,7 +2,7 @@ package io.github.aicyi.midware.web.exception;
 
 import io.github.aicyi.commons.lang.exception.BaseException;
 import io.github.aicyi.commons.lang.model.Result;
-import io.github.aicyi.commons.lang.type.CommonResultCode;
+import io.github.aicyi.commons.lang.CommonResultCode;
 import io.github.aicyi.midware.web.log.WebRequestLogRecorder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;

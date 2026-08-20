@@ -4,7 +4,7 @@ import io.github.aicyi.commons.core.logging.Logger;
 import io.github.aicyi.midware.message.core.exception.MessageResultCode;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.commons.logging.LoggerFactory;
-import io.github.aicyi.commons.util.Maps;
+import io.github.aicyi.commons.util.map.Maps;
 import io.github.aicyi.midware.message.mq.sender.MqSender;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;

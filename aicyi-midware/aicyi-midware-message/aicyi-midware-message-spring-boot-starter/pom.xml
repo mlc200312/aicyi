@@ -42,13 +42,6 @@
 
         <dependency>
             <groupId>io.github.aicyi.midware</groupId>
-            <artifactId>aicyi-midware-kit</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.aicyi.midware</groupId>
             <artifactId>aicyi-midware-message-mail</artifactId>
             <scope>provided</scope>
             <optional>true</optional>

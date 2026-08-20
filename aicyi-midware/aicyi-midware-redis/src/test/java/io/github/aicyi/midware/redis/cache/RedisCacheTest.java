@@ -4,7 +4,7 @@ import io.github.aicyi.commons.core.cache.CacheLoader;
 import io.github.aicyi.commons.core.cache.CacheLock;
 import io.github.aicyi.commons.core.cache.CacheLockHandle;
 import io.github.aicyi.commons.core.cache.CacheWrapper;
-import io.github.aicyi.commons.util.serializer.CacheWrapperCodec;
+import io.github.aicyi.commons.util.codec.CacheWrapperCodec;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

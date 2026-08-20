@@ -3,7 +3,7 @@ package io.github.aicyi.midware.db.commons;
 import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.lang.model.BaseEntity;
 import io.github.aicyi.commons.lang.type.BooleanType;
-import io.github.aicyi.commons.util.ReflectionUtils;
+import io.github.aicyi.commons.util.reflect.ReflectionUtils;
 
 import java.time.LocalDateTime;
 

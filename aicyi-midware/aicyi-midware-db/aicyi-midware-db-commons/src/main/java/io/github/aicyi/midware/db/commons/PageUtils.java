@@ -4,7 +4,7 @@ import com.github.pagehelper.ISelect;
 import com.github.pagehelper.PageHelper;
 import io.github.aicyi.commons.lang.exception.BusinessException;
 import io.github.aicyi.commons.lang.model.PageParam;
-import io.github.aicyi.commons.lang.type.CommonResultCode;
+import io.github.aicyi.commons.lang.CommonResultCode;
 import org.springframework.data.domain.*;
 
 import java.util.List;

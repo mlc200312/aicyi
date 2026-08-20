@@ -3,8 +3,8 @@ package io.github.aicyi.midware.redis.token;
 import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
 import io.github.aicyi.commons.core.token.AbstractAuthenticationTokenService;
 import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
-import io.github.aicyi.commons.util.UUIDUtils;
-import io.github.aicyi.commons.util.serializer.JsonCodecPrincipalSerializer;
+import io.github.aicyi.commons.util.id.UUIDUtils;
+import io.github.aicyi.commons.util.codec.JsonCodecPrincipalSerializer;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
