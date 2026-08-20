@@ -15,8 +15,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring-boot.version>2.7.18</spring-boot.version>
-        <spring-cloud.version>2021.0.9</spring-cloud.version>
         <spring-data.version>2.7.18</spring-data.version>
+        <spring-cloud.version>2021.0.8</spring-cloud.version>
+        <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
 
         <!-- mybatis-spring-boot-starter 2.3.1 为支持 Java 8 的最新版本 -->
         <mybatis-spring-boot.version>2.3.1</mybatis-spring-boot.version>
@@ -43,7 +44,7 @@
             </dependency>
             <!-- jackson end -->
 
-            <!-- spring boot -->
+            <!-- Spring Boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -51,9 +52,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- spring boot end -->
 
-            <!-- spring cloud -->
+            <!-- Spring Data -->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-redis</artifactId>
+                <version>${spring-data.version}</version>
+            </dependency>
+            <!-- Spring Data end -->
+
+            <!-- Spring Cloud -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -61,15 +69,15 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- spring cloud end -->
 
-            <!-- spring-data -->
+            <!-- Spring Cloud Alibaba：置于 spring-cloud-dependencies 之后，共享构件以 Spring Cloud 版本为准 -->
             <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-redis</artifactId>
-                <version>${spring-data.version}</version>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
-            <!-- spring-data end -->
 
             <!-- javax -->
             <dependency>
