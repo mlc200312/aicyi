@@ -12,27 +12,27 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author Mr.Min
  * @description Web MVC 配置
  * <p>
- * 按序注册拦截器，拦截器 Bean 由 {@link RestApiConfigurationRegistrar} 按 {@code @EnableRestApi} 属性条件注册：
+ * 按序注册拦截器，拦截器 Bean 由 {@link MidwareWebConfigurationRegistrar} 按 {@code @EnableRestApi} 属性条件注册：
  * <ul>
  *     <li>{@link RequestLogInterceptor}：请求信息日志（先注册，保证鉴权失败时也能记录日志）</li>
  *     <li>{@link AuthInterceptor}：身份验证拦截</li>
  * </ul>
  * @date 2026/8/13
  **/
-public class RestApiWebMvcConfiguration implements WebMvcConfigurer {
+public class MidwareWebMvcConfiguration implements WebMvcConfigurer {
 
     private final ObjectProvider<RequestLogInterceptor> requestLogInterceptorProvider;
 
     private final ObjectProvider<AuthInterceptor> authInterceptorProvider;
 
-    private final String[] authExcludePathPatterns;
+    private final String[] excludePathPatterns;
 
-    public RestApiWebMvcConfiguration(ObjectProvider<RequestLogInterceptor> requestLogInterceptorProvider,
+    public MidwareWebMvcConfiguration(ObjectProvider<RequestLogInterceptor> requestLogInterceptorProvider,
                                       ObjectProvider<AuthInterceptor> authInterceptorProvider,
-                                      String[] authExcludePathPatterns) {
+                                      String[] excludePathPatterns) {
         this.requestLogInterceptorProvider = requestLogInterceptorProvider;
         this.authInterceptorProvider = authInterceptorProvider;
-        this.authExcludePathPatterns = authExcludePathPatterns != null ? authExcludePathPatterns : new String[0];
+        this.excludePathPatterns = excludePathPatterns != null ? excludePathPatterns : new String[0];
     }
 
     @Override
@@ -41,7 +41,7 @@ public class RestApiWebMvcConfiguration implements WebMvcConfigurer {
         // 日志拦截器先注册：最先标记开始时间、最后输出日志，鉴权失败也能记录
         RequestLogInterceptor requestLogInterceptor = requestLogInterceptorProvider.getIfAvailable();
         if (requestLogInterceptor != null) {
-            registry.addInterceptor(requestLogInterceptor);
+            applyAuthExcludePatterns(registry.addInterceptor(requestLogInterceptor));
         }
 
         AuthInterceptor authInterceptor = authInterceptorProvider.getIfAvailable();
@@ -51,8 +51,8 @@ public class RestApiWebMvcConfiguration implements WebMvcConfigurer {
     }
 
     private void applyAuthExcludePatterns(InterceptorRegistration registration) {
-        if (authExcludePathPatterns.length > 0) {
-            registration.excludePathPatterns(authExcludePathPatterns);
+        if (excludePathPatterns.length > 0) {
+            registration.excludePathPatterns(excludePathPatterns);
         }
     }
 }

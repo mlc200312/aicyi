@@ -2,6 +2,7 @@ package io.github.aicyi.midware.web.model;
 
 import io.github.aicyi.commons.lang.model.BaseBean;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
@@ -19,9 +20,10 @@ public class PageRequest extends BaseBean {
     private Integer page;
 
     /**
-     * 每页条数
+     * 每页条数，上限 500，防止超大分页拖垮数据库；需更大值时由业务自行扩展子类覆盖
      */
     @Positive
+    @Max(500)
     @NotNull
     private Integer size;
 

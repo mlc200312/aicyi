@@ -151,7 +151,7 @@ public class WebRequestLog extends BaseBean {
         private String method;
 
         /**
-         * 请求 Header
+         * 请求 Header（预留扩展字段，当前版本不填充）
          */
         private Map<String, String> headers;
 
@@ -161,7 +161,7 @@ public class WebRequestLog extends BaseBean {
         private Map<String, Object> queryParams;
 
         /**
-         * Path 参数
+         * Path 参数（预留扩展字段，当前版本不填充）
          */
         private Map<String, Object> pathParams;
 
@@ -276,12 +276,12 @@ public class WebRequestLog extends BaseBean {
         private Integer statusCode;
 
         /**
-         * Response Header
+         * Response Header（预留扩展字段，当前版本不填充）
          */
         private Map<String, String> headers;
 
         /**
-         * Response Body
+         * Response Body（预留扩展字段，当前版本不填充）
          */
         private Object body;
 

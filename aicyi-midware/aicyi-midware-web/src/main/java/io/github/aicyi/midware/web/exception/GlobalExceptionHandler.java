@@ -5,7 +5,6 @@ import io.github.aicyi.commons.lang.model.Result;
 import io.github.aicyi.commons.lang.type.CommonResultCode;
 import io.github.aicyi.midware.web.log.WebRequestLogRecorder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -27,7 +26,7 @@ import java.util.List;
  * @description 全局异常处理器，实现 API 接口统一异常响应，并记录异常请求信息日志
  * <p>
  * 统一返回 {@link Result}（Integer code）；固定状态码的异常以 {@link ResponseStatus} 声明状态码，
- * 状态码需动态推导的异常（如 {@link BaseException}）返回 {@link ResponseEntity}
+ * 业务异常（{@link BaseException}）与未知异常统一返回 HTTP 200 并以业务码传达错误信息，堆栈不对外泄露
  * @date 2021/5/2
  **/
 @RestControllerAdvice
@@ -206,19 +205,5 @@ public class GlobalExceptionHandler {
             name = node.getName();
         }
         return name != null ? name : propertyPath.toString();
-    }
-
-    /**
-     * 解析业务异常对应的 HTTP 状态码；业务 code 位数不足或推导出的状态码非法时回退 500，避免响应阶段二次异常
-     */
-    private static HttpStatus resolveHttpStatus(BaseException e) {
-        Integer status = e.getStatus();
-        if (status != null) {
-            HttpStatus resolved = HttpStatus.resolve(status);
-            if (resolved != null) {
-                return resolved;
-            }
-        }
-        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 }

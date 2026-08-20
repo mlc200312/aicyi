@@ -132,7 +132,7 @@ public class PageResponse<E> extends BaseBean {
      * @param page Spring Data 分页对象
      * @return 分页结果
      */
-    public static <E> PageResponse<E> build(List<E> list, Page page) {
+    public static <E> PageResponse<E> build(List<E> list, Page<?> page) {
         return build(list, page.getNumber() + 1, page.getSize(), page.getTotalElements());
     }
 }

@@ -6,6 +6,7 @@ import io.github.aicyi.commons.util.CurrentContextHolder;
 import io.github.aicyi.midware.web.annotation.IgnoreAuth;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -44,10 +45,17 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
 
-        AuthenticationTokenService<?> tokenService = tokenServiceProvider.getIfAvailable();
-        // Token 服务未注册时不进行身份验证，直接放行
-        if (tokenService == null || !(handler instanceof HandlerMethod)) {
+        // 非控制器处理器（静态资源等）不做鉴权，直接放行
+        if (!(handler instanceof HandlerMethod)) {
             return true;
+        }
+
+        // Token 服务缺失时快速失败而非放行：enableAuth=true 时启动期已拦截该场景，
+        // 运行期出现说明装配错误，静默放行会导致鉴权整体失效（fail-closed）
+        AuthenticationTokenService<?> tokenService = tokenServiceProvider.getIfAvailable();
+        if (tokenService == null) {
+            throw new IllegalStateException("AuthInterceptor requires an AuthenticationTokenService bean, but none is available. "
+                    + "Please provide one or disable auth via @EnableRestApi(enableAuth = false)");
         }
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -59,7 +67,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         // 否则必须带 token
-        String authorization = request.getHeader("Authorization");
+        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         // 严格校验 Bearer 前缀（含空格），避免 Bearerabc 等畸形头进入解析环节
         if (StringUtils.isBlank(authorization) || !authorization.startsWith(BEARER_PREFIX)) {

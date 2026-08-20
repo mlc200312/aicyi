@@ -16,8 +16,8 @@ import java.util.UUID;
  * @author Mr.Min
  * @description 链路追踪过滤器：为每个请求建立 traceId 并写入 MDC，供日志 pattern（%X{traceId}）输出。
  * <p>
- * 上游传入 {@value #TRACE_ID_HEADER} 请求头时沿用（网关/跨服务透传），否则本地生成；
- * traceId 同时回写响应头，便于前端/调用方与后端日志对账。
+ * 上游传入 {@value #TRACE_ID_HEADER} 请求头且通过安全校验（长度上限、无控制字符，防日志注入）时沿用（网关/跨服务透传），
+ * 否则本地生成；traceId 同时回写响应头，便于前端/调用方与后端日志对账。
  * <p>
  * finally 中强制 remove：Servlet 容器线程池复用线程，残留 MDC 会污染同一线程的下一个请求
  * @date 2026/8/19
@@ -33,6 +33,11 @@ public class TraceIdFilter implements Filter {
      * MDC 中的链路 ID 键名，与 logback pattern 的 %X{traceId} 对齐
      */
     public static final String MDC_TRACE_ID_KEY = "traceId";
+
+    /**
+     * 外部传入 traceId 的最大长度，超出则拒绝采纳并自动生成，防止恶意超长 Header 污染日志
+     */
+    private static final int MAX_TRACE_ID_LENGTH = 64;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -55,15 +60,37 @@ public class TraceIdFilter implements Filter {
     }
 
     /**
-     * 解析 traceId：上游传入则沿用，否则生成 32 位无横线 UUID
+     * 解析 traceId：上游传入且通过安全校验时沿用，否则生成 32 位无横线 UUID
      */
     private String resolveTraceId(ServletRequest request) {
         if (request instanceof HttpServletRequest) {
             String upstream = ((HttpServletRequest) request).getHeader(TRACE_ID_HEADER);
-            if (upstream != null && !upstream.trim().isEmpty()) {
+            if (upstream != null && isAcceptableTraceId(upstream.trim())) {
                 return upstream.trim();
             }
         }
         return UUID.randomUUID().toString().replace("-", "");
+    }
+
+    /**
+     * 校验上游透传的 traceId 是否可采纳
+     * <p>
+     * 拒绝空值、超长（防日志膨胀）与含控制字符（防日志注入）的值，不合法时回退自动生成
+     *
+     * @param traceId 上游 traceId
+     * @return 可采纳时返回 true
+     */
+    private static boolean isAcceptableTraceId(String traceId) {
+        if (traceId.isEmpty() || traceId.length() > MAX_TRACE_ID_LENGTH) {
+            return false;
+        }
+
+        for (int i = 0; i < traceId.length(); i++) {
+            char c = traceId.charAt(i);
+            if (c <= 0x1F || c == 0x7F) {
+                return false;
+            }
+        }
+        return true;
     }
 }
