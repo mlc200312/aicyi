@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.starter.util;
+package io.github.aicyi.midware.kit.util;
 
 import io.github.aicyi.commons.core.codec.JsonCodec;
 import io.github.aicyi.commons.util.json.JsonUtils;

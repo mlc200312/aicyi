@@ -20,6 +20,7 @@
 
     <modules>
         <module>aicyi-midware-db</module>
+        <module>aicyi-midware-kit</module>
         <module>aicyi-midware-message</module>
         <module>aicyi-midware-rabbitmq</module>
         <module>aicyi-midware-redis</module>
@@ -62,6 +63,11 @@
             <dependency>
                 <groupId>io.github.aicyi.midware</groupId>
                 <artifactId>aicyi-midware-db-mybatisplus</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.midware</groupId>
+                <artifactId>aicyi-midware-kit</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>

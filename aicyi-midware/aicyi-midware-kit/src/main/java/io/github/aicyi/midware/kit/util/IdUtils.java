@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.starter.util;
+package io.github.aicyi.midware.kit.util;
 
 import io.github.aicyi.commons.core.id.IdGenerator;
 import io.github.aicyi.commons.core.logging.Logger;
