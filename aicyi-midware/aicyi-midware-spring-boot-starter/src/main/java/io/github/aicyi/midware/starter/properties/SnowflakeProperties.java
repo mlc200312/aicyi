@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @author Mr.Min
  * @description 雪花 ID 配置属性（aicyi.snowflake.*）
+ * @date 2026/08/21
  **/
 @ConfigurationProperties(prefix = "aicyi.snowflake")
 public class SnowflakeProperties {

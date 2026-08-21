@@ -37,6 +37,11 @@
 
         <!-- 版本由 aicyi-base-dependencies 统一管理，禁止子模块复写 version -->
         <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
         </dependency>

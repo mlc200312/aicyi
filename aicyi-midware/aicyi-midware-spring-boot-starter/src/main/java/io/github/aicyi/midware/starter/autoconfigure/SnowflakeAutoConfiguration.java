@@ -29,8 +29,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @ConditionalOnProperty(
         prefix = "aicyi.snowflake",
         name = "enabled",
-        havingValue = "true",
-        matchIfMissing = true
+        havingValue = "true"
 )
 public class SnowflakeAutoConfiguration {
 

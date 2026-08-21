@@ -23,7 +23,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
  **/
 @AutoConfiguration
 @ConditionalOnClass({RedisConnectionFactory.class, EnhancedRedisTemplateFactory.class})
-@ConditionalOnProperty(prefix = "aicyi.redis", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "aicyi.redis", name = "enabled", havingValue = "true")
 public class RedisAutoConfiguration {
 
     @Bean
