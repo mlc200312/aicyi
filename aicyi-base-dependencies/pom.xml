@@ -22,7 +22,7 @@
         <mybatis-spring-boot.version>2.3.1</mybatis-spring-boot.version>
         <pagehelper-spring-boot.version>1.4.3</pagehelper-spring-boot.version>
         <!-- mybatis-plus 3.5.x：兼容 Spring Boot 2.7 / Java 8 -->
-        <mybatis-plus.version>3.5.17</mybatis-plus.version>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
 
         <slf4j.version>1.7.36</slf4j.version>
         <hutool.version>5.8.47</hutool.version>
@@ -210,12 +210,6 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <!-- MyBatis-Plus 3.5.9+ 分页插件需要 -->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-jsqlparser</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>

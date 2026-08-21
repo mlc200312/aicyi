@@ -26,8 +26,24 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         LocalDateTime now = LocalDateTime.now();
         strictInsertFill(metaObject, FIELD_CREATE_TIME, LocalDateTime.class, now);
         strictInsertFill(metaObject, FIELD_UPDATE_TIME, LocalDateTime.class, now);
-        strictInsertFill(metaObject, FIELD_DELETED, Integer.class, 0);
+        fillDeleted(metaObject);
         strictInsertFill(metaObject, FIELD_VERSION, Integer.class, 0);
+    }
+
+    /**
+     * 按实体 deleted 字段的实际类型填充初始值：Boolean -> false，其余按 Integer 0。
+     * strictInsertFill 要求填充类型与字段类型完全一致，否则会静默跳过，故此处区分处理。
+     */
+    private void fillDeleted(MetaObject metaObject) {
+        if (!metaObject.hasGetter(FIELD_DELETED)) {
+            return;
+        }
+        Class<?> deletedType = metaObject.getGetterType(FIELD_DELETED);
+        if (boolean.class.equals(deletedType) || Boolean.class.equals(deletedType)) {
+            strictInsertFill(metaObject, FIELD_DELETED, Boolean.class, Boolean.FALSE);
+        } else {
+            strictInsertFill(metaObject, FIELD_DELETED, Integer.class, 0);
+        }
     }
 
     @Override
