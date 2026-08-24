@@ -2,7 +2,6 @@ package io.github.aicyi.midware.message.core.model;
 
 import io.github.aicyi.commons.lang.model.BaseEntity;
 import io.github.aicyi.commons.lang.type.BooleanType;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

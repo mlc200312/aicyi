@@ -1,7 +1,6 @@
 package io.github.aicyi.midware.message.template.model;
 
 import io.github.aicyi.commons.lang.type.BooleanType;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
