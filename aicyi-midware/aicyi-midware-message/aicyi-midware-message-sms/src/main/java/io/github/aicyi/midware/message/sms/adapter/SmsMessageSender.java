@@ -7,6 +7,7 @@ import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageType;
 import io.github.aicyi.commons.core.message.MessageSendResult;
 import io.github.aicyi.midware.message.core.sender.AbstractMessageSender;
+import io.github.aicyi.midware.message.core.sender.ChannelMessageSender;
 import io.github.aicyi.midware.message.sms.model.SmsMessage;
 import io.github.aicyi.midware.message.sms.sender.SmsSender;
 
@@ -15,7 +16,7 @@ import io.github.aicyi.midware.message.sms.sender.SmsSender;
  * @description 短信消息发送器适配器，对接通用消息框架
  * @date 2025/8/25
  **/
-public class SmsMessageSender extends AbstractMessageSender {
+public class SmsMessageSender extends AbstractMessageSender implements ChannelMessageSender {
     private final SmsSender smsSender; // 短信服务
 
     public SmsMessageSender(SmsSender smsSender) {

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  aicyi 默认日志配置片段（opt-in）。
+  基础包不再随 jar 分发根级 logback-spring.xml，避免静默接管应用日志配置；
+  应用如需复用本套配置，在自有 logback-spring.xml 中显式引入：
+      <include resource="aicyi/logback-aicyi-defaults.xml"/>
+  （需使用 logback-spring.xml 文件名，保证 springProperty 等 Spring 扩展生效；
+   文件热加载可在应用根配置上设置 scan="true"）
+-->
 <!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL，如果设置为WARN，则低于WARN的信息都不会输出 -->
-<!-- scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true，扫描间隔默认1分钟 -->
-<!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
-<configuration scan="true">
+<included>
 
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
@@ -295,4 +301,4 @@
         <appender-ref ref="errorAppender"/>
     </root>
 
-</configuration>
+</included>

@@ -11,8 +11,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- 默认跳过测试，可通过 -DskipTests=false 开启 -->
-        <skipTests>true</skipTests>
+        <!-- 默认执行测试，可通过 -DskipTests=true 跳过 -->
+        <skipTests>false</skipTests>
     </properties>
 
     <parent>

@@ -183,6 +183,11 @@ public class MidwareWebConfigurationRegistrar implements ImportBeanDefinitionReg
     }
 
     private static void registerBeanDefinition(BeanDefinitionRegistry registry, String beanName, BeanDefinitionBuilder builder) {
+        // 同名 Bean 已存在（通常为业务自定义）时跳过注册，业务定义优先，避免基础包覆盖业务能力
+        if (registry.containsBeanDefinition(beanName)) {
+            LOGGER.warn("Bean '{}' already exists, skip registration from aicyi midware-web. Business definition takes precedence", beanName);
+            return;
+        }
         registry.registerBeanDefinition(beanName, builder.getBeanDefinition());
     }
 

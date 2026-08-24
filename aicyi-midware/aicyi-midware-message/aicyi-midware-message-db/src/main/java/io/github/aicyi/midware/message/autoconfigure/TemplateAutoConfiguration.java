@@ -16,6 +16,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.annotation.MapperScan;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,16 +32,22 @@ import java.time.Duration;
  * @description 模版自动配置（独立 opt-in 模块 aicyi-midware-message-db）
  * <p>
  * 装配条件：aicyi.message.template.enabled=true，且 classpath 同时存在 Redisson 与 MyBatis
- * （SqlSessionFactory）。本模块对 Redis/Redisson/MyBatis 均为常规编译依赖，引入模块即具备类路径；
+ * （SqlSessionFactory），且容器中已存在 EnhancedRedisTemplateFactory 与 RedissonClient 两个契约 Bean。
+ * 本模块对 Redis/Redisson/MyBatis 均为常规编译依赖，引入模块即具备类路径；
  * 类级守卫用于显式表达装配契约，并防止运行期被人为排除依赖后触发 NoClassDefFoundError。
+ * <p>
+ * EnhancedRedisTemplateFactory 由 Redis 自动配置（aicyi.redis.enabled=true）生产，
+ * RedissonClient 由业务自行定义；任一缺失时本配置整体静默跳过，不再以构造器注入方式启动失败。
  * @date 22:57
  **/
 @AutoConfiguration
+@AutoConfigureAfter(name = "io.github.aicyi.midware.starter.autoconfigure.RedisAutoConfiguration")
 @ConditionalOnProperty(
         prefix = "aicyi.message.template",
         name = "enabled",
         havingValue = "true")
 @ConditionalOnClass({RedissonClient.class, SqlSessionFactory.class})
+@ConditionalOnBean({EnhancedRedisTemplateFactory.class, RedissonClient.class})
 public class TemplateAutoConfiguration {
 
     private final EnhancedRedisTemplateFactory templateFactory;

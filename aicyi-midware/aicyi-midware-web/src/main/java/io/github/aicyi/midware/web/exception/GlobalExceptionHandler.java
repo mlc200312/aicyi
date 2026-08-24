@@ -4,7 +4,9 @@ import io.github.aicyi.commons.lang.exception.BaseException;
 import io.github.aicyi.commons.lang.exception.SystemException;
 import io.github.aicyi.commons.lang.model.Result;
 import io.github.aicyi.commons.lang.CommonResultCode;
+import io.github.aicyi.midware.web.filter.TraceIdFilter;
 import io.github.aicyi.midware.web.log.WebRequestLogRecorder;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
@@ -31,27 +34,33 @@ import java.util.List;
  * <p>
  * 统一返回 {@link Result}（Integer code）。HTTP 状态口径约定：
  * <ul>
- *     <li>传输级错误（请求体非法 JSON、方法不支持、媒体类型不支持、参数缺失/绑定失败/类型转换失败）→ 4xx 状态码 + 40001 业务码</li>
- *     <li>业务级错误（{@link BaseException} 及子类，含鉴权 40101/40102/40300）与未知异常 → HTTP 200 + 业务错误码，堆栈不对外泄露</li>
+ *     <li>传输级错误（请求体非法 JSON、方法不支持、媒体类型不支持、参数缺失/绑定失败/类型转换失败、无匹配处理器）→ 4xx 状态码 + 业务码</li>
+ *     <li>业务级错误（{@link BaseException} 及子类，含鉴权 40101/40102/40300，以及业务常用于参数校验的 {@link IllegalArgumentException}）与未知异常 → HTTP 200 + 业务错误码，堆栈不对外泄露</li>
  * </ul>
+ * 所有失败响应经 {@link #withTraceId} 回填 traceId，便于客户端关联服务端日志。
+ * <p>
+ * 注：404 处理需应用开启 spring.mvc.throw-exception-if-no-handler-found=true 方可生效。
  * @date 2021/5/2
  **/
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
-     * IllegalArgumentException 异常处理
+     * IllegalArgumentException 异常处理（HTTP 状态码200）
+     * <p>
+     * 业务层广泛用其做参数/前置条件校验，按业务级错误口径返回 HTTP 200 + 40001 业务码，
+     * 与 {@link BaseException} 保持一致，避免同一类参数问题出现两种 HTTP 状态口径
      *
      * @param e       异常
      * @param request HTTP 请求
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     public Result<Void> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage());
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage()));
     }
 
     /**
@@ -66,7 +75,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), "request body is not readable");
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), "request body is not readable"));
     }
 
     /**
@@ -81,7 +90,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage());
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage()));
     }
 
     /**
@@ -96,7 +105,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage());
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage()));
     }
 
     /**
@@ -126,7 +135,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message);
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message));
     }
 
     /**
@@ -149,7 +158,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message);
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message));
     }
 
     /**
@@ -166,7 +175,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message);
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message));
     }
 
     /**
@@ -184,7 +193,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message);
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message));
     }
 
     /**
@@ -201,7 +210,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message);
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), message));
     }
 
     /**
@@ -216,10 +225,25 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage());
+        return withTraceId(Result.failure(CommonResultCode.PARAM_ERROR.getCode(), e.getMessage()));
     }
 
     /**
+     * 无匹配处理器异常处理（需应用开启 throw-exception-if-no-handler-found）
+     *
+     * @param e       异常
+     * @param request HTTP 请求
+     */
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Result<Void> handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletRequest request) {
+
+        WebRequestLogRecorder.logError(request, e);
+
+        return withTraceId(Result.failure(CommonResultCode.NOT_FOUND));
+    }
+
+        /**
      * SystemException 异常处理（HTTP 状态码200）
      * <p>
      * 系统级异常统一返回通用 50001 文案，不回显异常携带的内部 message，避免内部细节外泄；
@@ -234,7 +258,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.SYSTEM_ERROR);
+        return withTraceId(Result.failure(CommonResultCode.SYSTEM_ERROR));
     }
 
     /**
@@ -249,7 +273,7 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(e.getCode(), e.getMessage());
+        return withTraceId(Result.failure(e.getCode(), e.getMessage()));
     }
 
     /**
@@ -264,10 +288,18 @@ public class GlobalExceptionHandler {
 
         WebRequestLogRecorder.logError(request, e);
 
-        return Result.failure(CommonResultCode.SYSTEM_ERROR);
+        return withTraceId(Result.failure(CommonResultCode.SYSTEM_ERROR));
     }
 
     /**
+     * 回填 traceId：取自 {@link TraceIdFilter} 写入 MDC 的当前请求链路 ID，缺失时保持为空
+     */
+    private static Result<Void> withTraceId(Result<Void> result) {
+        result.setTraceId(MDC.get(TraceIdFilter.MDC_TRACE_ID_KEY));
+        return result;
+    }
+
+        /**
      * 解析约束违反的属性名：取属性路径的叶子节点名，仅依赖标准 {@link Path} API，不耦合具体校验实现
      */
     private static String resolvePropertyName(Path propertyPath) {

@@ -6,6 +6,7 @@ import io.github.aicyi.commons.core.message.MessageContent;
 import io.github.aicyi.commons.core.message.MessageType;
 import io.github.aicyi.commons.core.message.MessageSendResult;
 import io.github.aicyi.midware.message.core.sender.AbstractMessageSender;
+import io.github.aicyi.midware.message.core.sender.ChannelMessageSender;
 import io.github.aicyi.midware.message.mq.model.MqMessage;
 import io.github.aicyi.midware.message.mq.sender.MqSender;
 
@@ -14,7 +15,7 @@ import io.github.aicyi.midware.message.mq.sender.MqSender;
  * @description MQ消息发送器适配器，对接通用消息框架
  * @date 2025/8/25
  **/
-public class MqMessageSender extends AbstractMessageSender {
+public class MqMessageSender extends AbstractMessageSender implements ChannelMessageSender {
     private final MqSender mqSender;
 
     public MqMessageSender(MqSender mqSender) {

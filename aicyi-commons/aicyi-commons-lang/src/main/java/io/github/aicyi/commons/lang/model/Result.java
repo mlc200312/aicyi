@@ -15,6 +15,12 @@ public class Result<D> extends BaseBean implements IResult<Integer, D> {
     private D data;
 
     /**
+     * 请求链路 traceId：由全局异常处理器从 MDC 回填，便于客户端拿失败响应直接关联服务端日志；
+     * 无链路上下文时为空（响应头 X-Trace-Id 仍由 TraceIdFilter 统一输出）
+     */
+    private String traceId;
+
+    /**
      * 保留无参构造器，支持 Jackson 等框架反序列化；业务代码请使用静态工厂方法创建
      */
     protected Result() {
@@ -55,6 +61,14 @@ public class Result<D> extends BaseBean implements IResult<Integer, D> {
 
     public void setData(D data) {
         this.data = data;
+    }
+
+    public String getTraceId() {
+        return traceId;
+    }
+
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
     }
 
     public static <T> Result<T> success(T data) {

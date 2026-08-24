@@ -25,10 +25,6 @@
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
 
         <slf4j.version>1.7.36</slf4j.version>
-        <hutool.version>5.8.47</hutool.version>
-        <jackson.version>2.21.4</jackson.version>
-        <redis.version>7.2.4</redis.version>
-        <org.quartz.version>2.3.2</org.quartz.version>
     </properties>
 
     <dependencyManagement>
@@ -75,11 +71,6 @@
                 <version>2.3.0</version>
             </dependency>
             <dependency>
-                <groupId>javax.persistence</groupId>
-                <artifactId>persistence-api</artifactId>
-                <version>1.0.2</version>
-            </dependency>
-            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>4.0.1</version>
@@ -88,19 +79,14 @@
 
             <!-- base -->
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-nop</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>0.9.11</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.dom4j</groupId>
@@ -238,16 +224,6 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-boot-starter</artifactId>
                 <version>3.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>${org.quartz.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz-jobs</artifactId>
-                <version>${org.quartz.version}</version>
             </dependency>
             <!-- web end -->
 

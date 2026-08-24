@@ -1,23 +1,18 @@
 package io.github.aicyi.midware.message.autoconfigure;
 
 import io.github.aicyi.commons.core.logging.Logger;
-import io.github.aicyi.commons.logging.LoggerFactory;
 import io.github.aicyi.commons.core.message.MessageSender;
 import io.github.aicyi.commons.core.message.MessageType;
 import io.github.aicyi.commons.core.template.DefaultTemplateEngine;
 import io.github.aicyi.commons.core.template.TemplateEngineFactory;
 import io.github.aicyi.commons.core.template.TemplateEngineType;
+import io.github.aicyi.commons.logging.LoggerFactory;
+import io.github.aicyi.midware.message.core.sender.ChannelMessageSender;
 import io.github.aicyi.midware.message.core.sender.DefaultUnifiedMessageManager;
 import io.github.aicyi.midware.message.core.sender.MessageSenderFactory;
 import io.github.aicyi.midware.message.core.sender.UnifiedMessageManager;
 import io.github.aicyi.midware.message.factory.DefaultMessageSenderFactory;
-import io.github.aicyi.midware.message.mail.adapter.EmailMessageSender;
-import io.github.aicyi.midware.message.mail.sender.EmailSender;
-import io.github.aicyi.midware.message.mq.adapter.MqMessageSender;
 import io.github.aicyi.midware.message.properties.MessageProperties;
-import io.github.aicyi.midware.message.sms.adapter.SmsMessageSender;
-import io.github.aicyi.midware.message.sms.sender.SmsSender;
-import io.github.aicyi.midware.message.mq.sender.MqSender;
 import io.github.aicyi.midware.message.template.factory.DefaultTemplateEngineFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
@@ -28,17 +23,18 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Mr.Min
  * @description Message配置自动注入
  * <p>
- * 渠道发送器统一走 Bean 方法参数 + ObjectProvider 注入（而非配置类构造器），
- * 避免与各渠道 AutoConfiguration 的工厂方法 Bean 形成循环依赖
+ * 本配置类不引用任何渠道模块（mail/sms/mq/rabbitmq）的类：各渠道适配器由对应渠道
+ * AutoConfiguration 按自身类守卫装配为 {@link MessageSender} Bean（实现
+ * {@link ChannelMessageSender} 标记），本类仅通过 {@link MessageSender} 接口聚合，
+ * 只引入 starter 未引入任何渠道模块时不会触发 NoClassDefFoundError
  * @date 18:10
  **/
-@AutoConfiguration
+@AutoConfiguration(before = {EmailAutoConfiguration.class, SmsAutoConfiguration.class, MqAutoConfiguration.class})
 @EnableConfigurationProperties({MessageProperties.class})
 public class MessageAutoConfiguration implements InitializingBean {
 
@@ -55,27 +51,34 @@ public class MessageAutoConfiguration implements InitializingBean {
 
     @Bean
     @ConditionalOnMissingBean(UnifiedMessageManager.class)
-    public UnifiedMessageManager unifiedMessageManager(
-            ObjectProvider<EmailSender> emailSenderProvider,
-            ObjectProvider<MqSender> mqSenderProvider,
-            ObjectProvider<SmsSender> smsSenderProvider,
-            ObjectProvider<List<MessageSender>> messageSenders) {
+    public UnifiedMessageManager unifiedMessageManager(ObjectProvider<List<MessageSender>> messageSenders) {
         MessageSenderFactory factory = new DefaultMessageSenderFactory();
-        Optional.ofNullable(emailSenderProvider.getIfAvailable()).ifPresent(item -> factory.registerSender(MessageType.MAIL, new EmailMessageSender(item)));
-        Optional.ofNullable(mqSenderProvider.getIfAvailable()).ifPresent(item -> factory.registerSender(MessageType.MQ, new MqMessageSender(item)));
-        Optional.ofNullable(smsSenderProvider.getIfAvailable()).ifPresent(item -> factory.registerSender(MessageType.SMS, new SmsMessageSender(item)));
 
-        // 业务自定义发送器后注册，同类型覆盖默认渠道实现（允许业务覆盖 Bean）
-        for (MessageSender sender : messageSenders.getIfAvailable(Collections::emptyList)) {
-            for (MessageType messageType : MessageType.values()) {
-                if (sender.supports(messageType)) {
-                    factory.registerSender(messageType, sender);
-                }
+        List<MessageSender> senders = messageSenders.getIfAvailable(Collections::emptyList);
+
+        // 先注册基础包内置渠道适配器，再注册业务自定义发送器；
+        // 同一消息类型后注册覆盖先注册，保证业务 Bean 可覆盖默认渠道实现
+        for (MessageSender sender : senders) {
+            if (sender instanceof ChannelMessageSender) {
+                registerSender(factory, sender);
+            }
+        }
+        for (MessageSender sender : senders) {
+            if (!(sender instanceof ChannelMessageSender)) {
+                registerSender(factory, sender);
             }
         }
 
         // 创建统一消息服务
         return new DefaultUnifiedMessageManager(factory);
+    }
+
+    private static void registerSender(MessageSenderFactory factory, MessageSender sender) {
+        for (MessageType messageType : MessageType.values()) {
+            if (sender.supports(messageType)) {
+                factory.registerSender(messageType, sender);
+            }
+        }
     }
 
     @Override
