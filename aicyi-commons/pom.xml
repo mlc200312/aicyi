@@ -25,4 +25,34 @@
         <module>aicyi-commons-security</module>
         <module>aicyi-commons-util</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-core</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-lang</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-logging</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-security</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aicyi.commons</groupId>
+                <artifactId>aicyi-commons-util</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

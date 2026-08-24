@@ -32,28 +32,10 @@
         <dependencies>
             <dependency>
                 <groupId>io.github.aicyi.commons</groupId>
-                <artifactId>aicyi-commons-core</artifactId>
+                <artifactId>aicyi-commons</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.aicyi.commons</groupId>
-                <artifactId>aicyi-commons-lang</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.aicyi.commons</groupId>
-                <artifactId>aicyi-commons-logging</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.aicyi.commons</groupId>
-                <artifactId>aicyi-commons-security</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.aicyi.commons</groupId>
-                <artifactId>aicyi-commons-util</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>io.github.aicyi.midware</groupId>

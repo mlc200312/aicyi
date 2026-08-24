@@ -18,6 +18,12 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.aicyi.midware</groupId>
+            <artifactId>aicyi-midware-kit</artifactId>
+        </dependency>
+
+
         <!-- MyBatis-Plus，版本收敛于 aicyi-base-dependencies -->
         <dependency>
             <groupId>com.baomidou</groupId>
