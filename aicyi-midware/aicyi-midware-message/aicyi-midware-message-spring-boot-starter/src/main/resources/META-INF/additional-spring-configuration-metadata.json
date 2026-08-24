@@ -2,7 +2,7 @@
   "properties": [
     {
       "name": "aicyi.message.template.enabled",
-      "type": "java.lang.String",
+      "type": "java.lang.Boolean",
       "description": "Description for aicyi.message.template.enabled."
   }
 ] }

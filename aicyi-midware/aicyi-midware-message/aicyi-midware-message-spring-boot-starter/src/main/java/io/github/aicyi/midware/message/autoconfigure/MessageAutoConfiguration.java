@@ -34,7 +34,11 @@ import java.util.List;
  * 只引入 starter 未引入任何渠道模块时不会触发 NoClassDefFoundError
  * @date 18:10
  **/
-@AutoConfiguration(before = {EmailAutoConfiguration.class, SmsAutoConfiguration.class, MqAutoConfiguration.class})
+// 与各渠道 AutoConfiguration 之间不声明相互排序：渠道适配器作为 MessageSender Bean
+// 在 unifiedMessageManager 实例化期注入，与装配顺序无关（注册顺序敏感性已由
+// ChannelMessageSender 标记两遍注册解耦：内置渠道先注册、业务覆盖后注册）。
+// 声明双向 before 排序会触发 Spring Boot AutoConfigurationSorter 的环检测
+@AutoConfiguration
 @EnableConfigurationProperties({MessageProperties.class})
 public class MessageAutoConfiguration implements InitializingBean {
 

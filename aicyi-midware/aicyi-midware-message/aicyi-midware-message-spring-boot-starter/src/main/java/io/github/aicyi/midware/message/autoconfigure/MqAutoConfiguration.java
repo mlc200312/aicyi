@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 
-@AutoConfiguration(before = MessageAutoConfiguration.class)
+@AutoConfiguration
 @ConditionalOnClass({StreamBridge.class, StreamMqSender.class})
 @ConditionalOnProperty(
         prefix = "aicyi.message.mq",

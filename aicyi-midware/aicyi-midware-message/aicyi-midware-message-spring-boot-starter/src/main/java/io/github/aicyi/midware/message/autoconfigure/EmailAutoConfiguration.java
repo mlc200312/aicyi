@@ -22,7 +22,7 @@ import org.thymeleaf.standard.StandardDialect;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
-@AutoConfiguration(before = MessageAutoConfiguration.class)
+@AutoConfiguration
 @ConditionalOnClass(EmailSender.class)
 @ConditionalOnProperty(
         prefix = "aicyi.message.email",

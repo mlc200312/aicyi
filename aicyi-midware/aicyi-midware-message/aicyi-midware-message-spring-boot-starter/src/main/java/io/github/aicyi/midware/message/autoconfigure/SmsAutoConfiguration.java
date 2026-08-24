@@ -19,7 +19,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@AutoConfiguration(before = MessageAutoConfiguration.class, after = EmailAutoConfiguration.class)
+@AutoConfiguration(after = EmailAutoConfiguration.class)
 @ConditionalOnClass(SmsSender.class)
 @ConditionalOnProperty(
         prefix = "aicyi.message.sms",

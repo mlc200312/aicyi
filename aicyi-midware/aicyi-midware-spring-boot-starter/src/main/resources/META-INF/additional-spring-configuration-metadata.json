@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "aicyi.redis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Description for aicyi.redis.enabled."
+    },
+    {
+      "name": "aicyi.mybatis-plus.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Description for aicyi.mybatis-plus.enabled."
+    },
+    {
+      "name": "aicyi.snowflake.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Description for aicyi.snowflake."
+    }
+  ]
+}
