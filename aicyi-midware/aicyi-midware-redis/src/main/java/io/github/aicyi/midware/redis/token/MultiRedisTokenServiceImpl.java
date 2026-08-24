@@ -1,7 +1,7 @@
 package io.github.aicyi.midware.redis.token;
 
 import io.github.aicyi.commons.core.logging.Logger;
-import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
+import io.github.aicyi.commons.core.token.IJWTInfo;
 import io.github.aicyi.commons.core.token.TokenCreateRequest;
 import io.github.aicyi.commons.lang.Assert;
 import io.github.aicyi.commons.logging.LoggerFactory;

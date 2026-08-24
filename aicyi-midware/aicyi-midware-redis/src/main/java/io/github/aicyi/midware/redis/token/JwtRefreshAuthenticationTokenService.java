@@ -1,6 +1,6 @@
 package io.github.aicyi.midware.redis.token;
 
-import io.github.aicyi.commons.security.token.jwt.IJWTInfo;
+import io.github.aicyi.commons.core.token.IJWTInfo;
 import io.github.aicyi.commons.core.token.AbstractAuthenticationTokenService;
 import io.github.aicyi.commons.security.token.jwt.JwtTokenProvider;
 import io.github.aicyi.commons.util.id.UUIDUtils;
