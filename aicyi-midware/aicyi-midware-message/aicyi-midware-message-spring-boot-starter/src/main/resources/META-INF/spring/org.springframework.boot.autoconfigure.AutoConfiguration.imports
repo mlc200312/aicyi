@@ -1,3 +1,4 @@
+io.github.aicyi.midware.message.autoconfigure.TemplateAutoConfiguration
 io.github.aicyi.midware.message.autoconfigure.EmailAutoConfiguration
 io.github.aicyi.midware.message.autoconfigure.MqAutoConfiguration
 io.github.aicyi.midware.message.autoconfigure.SmsAutoConfiguration

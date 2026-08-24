@@ -29,7 +29,7 @@ import java.time.Duration;
 
 /**
  * @author Mr.Min
- * @description 模版自动配置（独立 opt-in 模块 aicyi-midware-message-db）
+ * @description 模版自动配置
  * <p>
  * 装配条件：aicyi.message.template.enabled=true，且 classpath 同时存在 Redisson 与 MyBatis
  * （SqlSessionFactory），且容器中已存在 EnhancedRedisTemplateFactory 与 RedissonClient 两个契约 Bean。

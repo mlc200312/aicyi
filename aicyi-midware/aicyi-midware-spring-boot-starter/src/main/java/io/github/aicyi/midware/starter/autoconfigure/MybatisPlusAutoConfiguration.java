@@ -1,4 +1,4 @@
-package io.github.aicyi.midware.db.mybatisplus.autoconfigure;
+package io.github.aicyi.midware.starter.autoconfigure;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
