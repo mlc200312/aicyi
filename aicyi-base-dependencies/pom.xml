@@ -219,6 +219,13 @@
             </dependency>
             <!-- cache end -->
 
+            <!-- xxl-job -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>2.5.0</version>
+            </dependency>
+
             <!-- web -->
             <dependency>
                 <groupId>io.springfox</groupId>
