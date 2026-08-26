@@ -24,7 +24,8 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(
         prefix = "aicyi.message.sms",
         name = "enabled",
-        havingValue = "true")
+        havingValue = "true",
+        matchIfMissing = true)
 public class SmsAutoConfiguration {
 
     private final TemplateProvider templateProvider;

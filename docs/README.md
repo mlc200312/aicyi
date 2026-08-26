@@ -97,13 +97,13 @@ aicyi
 | `aicyi.web.trace-id.enabled` | **开** | TraceIdFilter：traceId 写入 MDC 并回写 `X-Trace-Id` 响应头 |
 | `aicyi.web.body-cache.enabled` | **开** | 请求体缓存过滤器（`aicyi.web.body-cache.max-size` 可调上限，字节，默认 256KB） |
 | `aicyi.web.request-log.enabled` | **开** | 请求日志拦截器，另需 `@EnableMidwareWeb(enableRequestLog = true)`（缺省开启） |
-| `aicyi.redis.enabled` | **关** | Redis 增强模板工厂/锁能力，需显式开启；锁管理器还需容器存在 `RedissonClient` Bean |
+| `aicyi.redis.enabled` | **开** | Redis 增强模板工厂/锁能力，需显式开启；锁管理器还需容器存在 `RedissonClient` Bean |
 | `aicyi.snowflake.enabled` | **关** | 分布式 Snowflake ID，需显式开启 |
 | `aicyi.mybatis-plus.enabled` | **开** | MyBatis-Plus 增强（分页/乐观锁/自动填充），引入模块即生效 |
-| `aicyi.message.email.enabled` | **关** | 邮件渠道 |
-| `aicyi.message.sms.enabled` | **关** | 短信渠道（`aicyi.message.sms.provider`：default/twilio/yunPian） |
-| `aicyi.message.mq.enabled` | **关** | MQ 渠道（`aicyi.message.mq.provider`：rabbitMq） |
-| `aicyi.message.template.enabled` | **关** | 消息模板 DB 持久化（另需容器中已有 `EnhancedRedisTemplateFactory` 与 `RedissonClient` Bean，缺失时静默跳过） |
+| `aicyi.message.email.enabled` | **开** | 邮件渠道 |
+| `aicyi.message.sms.enabled` | **开** | 短信渠道（`aicyi.message.sms.provider`：default/twilio/yunPian） |
+| `aicyi.message.mq.enabled` | **开** | MQ 渠道（`aicyi.message.mq.provider`：rabbitMq） |
+| `aicyi.message.template.enabled` | **开** | 消息模板 DB 持久化（另需容器中已有 `EnhancedRedisTemplateFactory` 与 `RedissonClient` Bean，缺失时静默跳过） |
 
 > 口径约定：Web 请求链路上的能力（日志/链路/请求体缓存）缺省开，降低接入成本；
 > 依赖外部基础设施的能力（Redis/雪花 ID/消息渠道/模板库）缺省关，避免未配置基础设施时启动失败。

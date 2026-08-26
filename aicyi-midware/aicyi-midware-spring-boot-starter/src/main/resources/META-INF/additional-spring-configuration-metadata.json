@@ -1,6 +1,11 @@
 {
   "properties": [
     {
+      "name": "aicyi.mq.rabbitmq.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Description for aicyi.mq.rabbitmq.enabled."
+    },
+    {
       "name": "aicyi.redis.enabled",
       "type": "java.lang.Boolean",
       "description": "Description for aicyi.redis.enabled."

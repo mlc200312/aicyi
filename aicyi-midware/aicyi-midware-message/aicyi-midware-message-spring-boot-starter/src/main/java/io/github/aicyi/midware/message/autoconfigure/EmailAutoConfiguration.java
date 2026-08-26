@@ -27,7 +27,8 @@ import org.thymeleaf.templateresolver.StringTemplateResolver;
 @ConditionalOnProperty(
         prefix = "aicyi.message.email",
         name = "enabled",
-        havingValue = "true")
+        havingValue = "true",
+        matchIfMissing = true)
 public class EmailAutoConfiguration {
 
     private final TemplateProvider templateProvider;

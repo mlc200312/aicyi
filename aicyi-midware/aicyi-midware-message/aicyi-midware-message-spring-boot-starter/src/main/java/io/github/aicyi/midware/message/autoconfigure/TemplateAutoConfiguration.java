@@ -45,7 +45,8 @@ import java.time.Duration;
 @ConditionalOnProperty(
         prefix = "aicyi.message.template",
         name = "enabled",
-        havingValue = "true")
+        havingValue = "true",
+        matchIfMissing = true)
 @ConditionalOnClass({RedissonClient.class, SqlSessionFactory.class})
 @ConditionalOnBean({EnhancedRedisTemplateFactory.class, RedissonClient.class})
 public class TemplateAutoConfiguration {
