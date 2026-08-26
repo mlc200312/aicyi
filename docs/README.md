@@ -125,6 +125,6 @@ mvn clean install -DskipTests
 ```
 
 > 注：当前仓库仅包含基础包（BOM/commons/midware）与文档，`aicyi-example` 示例应用在独立仓库中维护；
-> 集成方式见下文及 [快速开始指南](../../aicyi-example/docs/quickstart.md)。
+> 集成方式见下文及 [快速开始指南](https://github.com/mlc200312/aicyi-example/blob/main/docs/quickstart.md)。
 
-详细说明请参考 [快速开始指南](../../aicyi-example/docs/quickstart.md)，高级功能请参考 [高级功能文档](./advanced.md)。
+详细说明请参考 [快速开始指南](https://github.com/mlc200312/aicyi-example/blob/main/docs/quickstart.md)，高级功能请参考 [高级功能文档](./advanced.md)。
