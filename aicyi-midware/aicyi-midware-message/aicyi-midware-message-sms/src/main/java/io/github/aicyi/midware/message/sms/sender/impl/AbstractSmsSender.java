@@ -11,7 +11,7 @@ import io.github.aicyi.midware.message.sms.model.SmsMessage;
 import io.github.aicyi.midware.message.sms.sender.SmsSender;
 import org.slf4j.MDC;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;

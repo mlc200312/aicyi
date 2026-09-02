@@ -30,7 +30,8 @@ public class LocalDateTimeMapperConverter extends BidirectionalConverter<LocalDa
 
     @Override
     public LocalDateTime convertFrom(String dateStr, Type<LocalDateTime> type, MappingContext mappingContext) {
-        return DateTimeUtils.parseDateTime(dateStr, pattern);
+        // 自动解析，兼容 yyyy-MM-dd HH:mm:ss 与 yyyy-MM-dd HH:mm:ss.SSS 等格式
+        return DateTimeUtils.parseAuto(dateStr);
     }
 
 }

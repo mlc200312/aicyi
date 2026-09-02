@@ -13,8 +13,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Objects;
 
 /**
@@ -48,7 +49,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
 
         // 非控制器处理器（静态资源等）不做鉴权，直接放行
-        if (!(handler instanceof HandlerMethod)) {
+        if (!(handler instanceof HandlerMethod handlerMethod)) {
             return true;
         }
 
@@ -60,7 +61,6 @@ public class AuthInterceptor implements HandlerInterceptor {
                     + "Please provide one or disable auth via @EnableMidwareWeb(enableAuth = false)");
         }
 
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
         // 配置该注解，说明不进行用户拦截
         IgnoreAuth annotation = handlerMethod.getBeanType().getAnnotation(IgnoreAuth.class);
         // 有 IgnoreAuth 就放行

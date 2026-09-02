@@ -31,5 +31,11 @@
             <groupId>com.yunpian.sdk</groupId>
             <artifactId>yunpian-java-sdk</artifactId>
         </dependency>
+
+        <!-- jakarta.annotation：@PreDestroy 等注解（JDK 17 移除 javax.annotation），版本由 Boot 托管 -->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

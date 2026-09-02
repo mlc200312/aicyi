@@ -11,35 +11,40 @@
     <name>aicyi base dependencies</name>
     <description>aicyi base dependencies</description>
 
+    <!-- 父工程继承 spring-boot-starter-parent：统一管理 Boot 依赖版本与构建插件 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version>
+        <relativePath/>
+    </parent>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>17</java.version>
 
-        <spring-boot.version>2.7.18</spring-boot.version>
-        <spring-cloud.version>2021.0.8</spring-cloud.version>
-        <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
+        <!-- Spring Boot 版本由 spring-boot-starter-parent 继承，此处显式声明供插件引用 -->
+        <spring-boot.version>3.2.5</spring-boot.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
 
-        <!-- mybatis-spring-boot-starter 2.3.1 为支持 Java 8 的最新版本 -->
-        <mybatis-spring-boot.version>2.3.1</mybatis-spring-boot.version>
-        <pagehelper-spring-boot.version>1.4.3</pagehelper-spring-boot.version>
-        <!-- mybatis-plus 3.5.x：兼容 Spring Boot 2.7 / Java 8 -->
-        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
-
-        <slf4j.version>1.7.36</slf4j.version>
+        <!-- mybatis-spring-boot-starter 3.x 支持 Spring Boot 3.x / Jakarta EE -->
+        <mybatis-spring-boot.version>3.0.3</mybatis-spring-boot.version>
+        <pagehelper-spring-boot.version>2.1.0</pagehelper-spring-boot.version>
+        <!-- mybatis-plus 3.5.5：搭配 mybatis-plus-spring-boot3-starter 支持 Spring Boot 3.x -->
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <!-- springdoc-openapi 2.x 取代 springfox（springfox 不兼容 Spring Boot 3） -->
+        <springdoc.version>2.5.0</springdoc.version>
+        <!-- redisson 3.27.x 支持 Spring Boot 3.2 -->
+        <redisson.version>3.27.2</redisson.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
 
-            <!-- Spring Boot（jackson/snakeyaml 等第三方版本回归 Boot 托管版本，保持兼容矩阵） -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+            <!-- Spring Boot 依赖版本由父工程 spring-boot-starter-parent 统一管理，无需重复导入 -->
 
-            <!-- Spring Data 版本由 spring-boot-dependencies 统一管理，不再单独声明 -->
+            <!-- Spring Data 版本由 spring-boot-starter-parent 统一管理，不再单独声明 -->
 
             <!-- Spring Cloud -->
             <dependency>
@@ -59,35 +64,15 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- javax -->
-            <dependency>
-                <groupId>com.sun.mail</groupId>
-                <artifactId>javax.mail</artifactId>
-                <version>1.6.2</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>2.3.0</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>4.0.1</version>
-            </dependency>
-            <!-- javax end -->
+            <!-- jakarta：servlet/mail/xml.bind 等 API 版本均由 spring-boot-starter-parent 托管，此处不再显式声明 -->
 
             <!-- base -->
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
-                <version>0.9.11</version>
+                <version>0.10.2</version>
             </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
+            <!-- slf4j 版本由 spring-boot-starter-parent 托管（Boot 3.x 需 slf4j 2.x），不再显式声明 -->
             <dependency>
                 <groupId>org.dom4j</groupId>
                 <artifactId>dom4j</artifactId>
@@ -192,10 +177,11 @@
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis-spring-boot.version}</version>
             </dependency>
-            <!-- MyBatis-Plus（供 aicyi-midware-db-mybatisplus 使用） -->
+            <!-- MyBatis-Plus（供 aicyi-midware-db-mybatisplus 使用）：
+                 Spring Boot 3.x 必须使用 mybatis-plus-spring-boot3-starter -->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>
@@ -210,12 +196,12 @@
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
-                <version>3.9.1</version>
+                <version>${redisson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
-                <version>2.9.3</version>
+                <version>3.1.8</version>
             </dependency>
             <!-- cache end -->
 
@@ -226,11 +212,11 @@
                 <version>2.5.0</version>
             </dependency>
 
-            <!-- web -->
+            <!-- web：springfox 不兼容 Spring Boot 3.x，替换为 springdoc-openapi -->
             <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-boot-starter</artifactId>
-                <version>3.0.0</version>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
             </dependency>
             <!-- web end -->
 
