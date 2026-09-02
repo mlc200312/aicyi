@@ -15,7 +15,7 @@ aicyi 是一套基于 Spring Boot 2.7 的 Java 基础设施框架/SDK，提供�
 - **JWT 认证**：Bearer Token 认证 + 刷新令牌，支持多设备登录，`@IgnoreAuth` 注解跳过认证，`AuthenticationTokens` 静态工具免注入调用
 - **数据访问**：MyBatis / MyBatis-Plus 基础能力（分页上限 500、乐观锁、字段自动填充）、`PageUtils` 分页工具、枚举 TypeHandler
 - **Spring Boot Starter 自动装配**：按需引入（`AutoConfiguration.imports` + `@ConditionalOnClass`/`@ConditionalOnProperty`），可插拔
-- **通用工具集**：JSON（Jackson）、对象映射（Orika）、Excel（EasyExcel/Apache POI）、二维码（zxing）、加解密（AES/RSA/MD5）等
+- **通用工具集**：JSON（Jackson）、对象映射（MapStruct）、Excel（EasyExcel/Apache POI）、二维码（zxing）、加解密（AES/RSA/MD5）等
 
 ## 技术栈
 

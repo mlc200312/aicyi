@@ -37,6 +37,8 @@
         <springdoc.version>2.5.0</springdoc.version>
         <!-- redisson 3.27.x 支持 Spring Boot 3.2 -->
         <redisson.version>3.27.2</redisson.version>
+        <!-- mapstruct 1.6.x 编译期 Bean 映射（取代 Orika），完整支持 JDK 17 -->
+        <mapstruct.version>1.6.3</mapstruct.version>
     </properties>
 
     <dependencyManagement>
@@ -161,10 +163,16 @@
             <!-- jwt end -->
 
             <!-- ORM -->
+            <!-- MapStruct：编译期类型安全 Bean 映射（Spring 官方推荐），运行时零反射，JDK 17 无强封装问题 -->
             <dependency>
-                <groupId>ma.glasnost.orika</groupId>
-                <artifactId>orika-core</artifactId>
-                <version>1.5.4</version>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
             </dependency>
             <!-- MyBatis + PageHelper（db 中间件，供 aicyi-midware-db 使用） -->
             <dependency>

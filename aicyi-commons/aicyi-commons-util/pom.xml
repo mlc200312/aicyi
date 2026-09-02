@@ -87,9 +87,11 @@
         </dependency>
         <!-- Jackson 依赖 End -->
 
+        <!-- MapStruct 注解（EnumTypeConverters / DateTimeTypeConverters 的 @TargetType 使用），
+             实现由使用方通过 annotationProcessorPaths 生成 -->
         <dependency>
-            <groupId>ma.glasnost.orika</groupId>
-            <artifactId>orika-core</artifactId>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
         </dependency>
 
         <dependency>

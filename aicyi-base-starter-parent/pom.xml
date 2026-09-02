@@ -41,6 +41,19 @@
                 <configuration>
                     <release>17</release>
                     <encoding>utf-8</encoding>
+                    <annotationProcessorPaths>
+                        <!-- lombok 必须在 mapstruct 之前，保证生成代码可访问 lombok 生成的 getter/setter -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
