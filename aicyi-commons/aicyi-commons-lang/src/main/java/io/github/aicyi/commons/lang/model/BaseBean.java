@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -24,6 +25,8 @@ import java.io.Serializable;
  * @date 2025/8/5
  **/
 public class BaseBean implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Override
