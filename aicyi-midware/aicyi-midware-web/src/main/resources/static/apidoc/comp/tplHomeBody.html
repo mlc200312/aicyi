@@ -1,0 +1,213 @@
+<!--
+    首页：文档概要。数据契约见 swagger-ui.js 的 renderHome()。
+      info             已在解析层归一化，并补齐 contact 与 license 空对象，可直取三级字段而不必层层判空
+      specVersion      OpenAPI 3 取 openapi 字段，Swagger 2 取 swagger 字段
+      servers          服务地址数组，每项含 url / abs / description
+      activeServer     当前生效的绝对地址，调试请求按它拼接
+      securitySchemes  已转义的安全方案展示数组，每项含 name / type / detail / description / isBearerToken
+      docUrl           文档来源地址；group 为当前分组
+      tags             合成的导航数据，此处仅用于统计
+    旧版此处的 d.host、d.basePath、d.swagger 在 OpenAPI 3 文档下全部为 undefined，故整体重写：
+    OpenAPI 3 用 servers 数组取代了 Swagger 2 的 schemes、host、basePath 三件套。
+    laytpl 会把整个模板压成一行，故井号语句块内禁止行注释，且语句块内不得出现相邻的右花括号对。
+-->
+<fieldset class="layui-elem-field layui-field-title">
+    <legend><a href="javascript:;">首页</a></legend>
+    <div class="layui-field-box main-content">
+        <div class="layui-collapse">
+
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">API概要</h2>
+                <div class="layui-colla-content layui-show">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="180">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td>标题</td>
+                            <td>{{ d.info.title }}</td>
+                        </tr>
+                        {{# if(d.info.description){ }}
+                        <tr>
+                            <td>描述</td>
+                            <td>{{ d.info.description }}</td>
+                        </tr>
+                        {{# } }}
+                        <tr>
+                            <td>API版本</td>
+                            <td>{{ d.info.version }}</td>
+                        </tr>
+                        {{# if(d.info.termsOfService){ }}
+                        <tr>
+                            <td>服务条款</td>
+                            <td><a href="{{ d.info.termsOfService }}" target="_blank">{{ d.info.termsOfService }}</a></td>
+                        </tr>
+                        {{# } }}
+                        {{# if(d.info.contact.name || d.info.contact.email || d.info.contact.url){ }}
+                        <tr>
+                            <td>联系方式</td>
+                            <td class="api-inner-td">
+                                <table class="layui-table api-inner-table">
+                                    <colgroup>
+                                        <col width="120">
+                                        <col>
+                                    </colgroup>
+                                    <tbody>
+                                    {{# if(d.info.contact.name){ }}
+                                    <tr>
+                                        <td>姓名</td>
+                                        <td>{{ d.info.contact.name }}</td>
+                                    </tr>
+                                    {{# } }}
+                                    {{# if(d.info.contact.email){ }}
+                                    <tr>
+                                        <td>邮箱</td>
+                                        <td><a href="mailto:{{ d.info.contact.email }}">{{ d.info.contact.email }}</a></td>
+                                    </tr>
+                                    {{# } }}
+                                    {{# if(d.info.contact.url){ }}
+                                    <tr>
+                                        <td>网址</td>
+                                        <td><a href="{{ d.info.contact.url }}" target="_blank">{{ d.info.contact.url }}</a></td>
+                                    </tr>
+                                    {{# } }}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        {{# } }}
+                        {{# if(d.info.license.name){ }}
+                        <tr>
+                            <td>许可证</td>
+                            <td>{{# if(d.info.license.url){ }}<a href="{{ d.info.license.url }}" target="_blank">{{ d.info.license.name }}</a>{{# } else { }}{{ d.info.license.name }}{{# } }}</td>
+                        </tr>
+                        {{# } }}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">文档来源</h2>
+                <div class="layui-colla-content layui-show">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="180">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td>规范版本</td>
+                            <td>{{# if(!d.specVersion){ }}未知{{# } else if(d.specVersion.indexOf('3') === 0){ }}OpenAPI {{ d.specVersion }}{{# } else { }}Swagger {{ d.specVersion }}{{# } }}</td>
+                        </tr>
+                        <tr>
+                            <td>当前分组</td>
+                            <td>{{ d.group ? d.group : '未分组（文档根端点）' }}</td>
+                        </tr>
+                        <tr>
+                            <td>文档地址</td>
+                            <td><a href="{{ d.docUrl }}" target="_blank">{{ d.docUrl }}</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">服务地址</h2>
+                <div class="layui-colla-content layui-show">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th width="120">状态</th>
+                            <th>声明地址</th>
+                            <th>解析后地址</th>
+                            <th width="200">说明</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{# layui.each(d.servers, function(i, s){ }}
+                        <tr>
+                            <td>{{# if(s.abs === d.activeServer){ }}<span class="api-badge">生效中</span>{{# } else { }}<span class="api-badge badge-optional">备用</span>{{# } }}</td>
+                            <td>{{ s.url }}</td>
+                            <td>{{ s.abs }}</td>
+                            <td>{{ s.description }}</td>
+                        </tr>
+                        {{# }); }}
+                        </tbody>
+                    </table>
+                    <p class="api-constraint">接口调试按「生效中」的地址拼接请求 URL，可在顶栏 Server 下拉切换。相对地址会按文档来源站点补全，变量取 default 值代入。</p>
+                </div>
+            </div>
+
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">鉴权方式</h2>
+                <div class="layui-colla-content layui-show">
+                    {{# if(d.securitySchemes.length){ }}
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th width="160">方案名称</th>
+                            <th width="100">类型</th>
+                            <th width="220">参数</th>
+                            <th>说明</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{# layui.each(d.securitySchemes, function(i, s){ }}
+                        <tr>
+                            <td>{{ s.name }}</td>
+                            <td>{{ s.type }}</td>
+                            <td>{{ s.detail }}</td>
+                            <td>{{ s.description }}</td>
+                        </tr>
+                        {{# }); }}
+                        </tbody>
+                    </table>
+                    {{# var hasBearer = false; layui.each(d.securitySchemes, function(i, s){ if(s.isBearerToken){ hasBearer = true; return false; } }); }}
+                    {{# if(hasBearer){ }}
+                    <p class="token-hint">左侧标记「鉴权」的接口需要先在顶栏 Token 输入框填入 accessToken，调试时会自动补全 Bearer 前缀并携带。</p>
+                    {{# } }}
+                    {{# } else { }}
+                    <p class="api-constraint">文档未声明 components.securitySchemes，接口默认公开。若调试返回未授权，请在顶栏填入 Token 后重试。</p>
+                    {{# } }}
+                </div>
+            </div>
+
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">接口统计</h2>
+                <div class="layui-colla-content layui-show">
+                    {{# var seen = {}, total = 0, authTotal = 0, depTotal = 0; layui.each(d.tags, function(i, t){ layui.each(t.paths, function(j, p){ var k = p.httpmethod + ' ' + p.path; if(seen[k]){ return; } seen[k] = 1; total++; if(p.needToken){ authTotal++; } if(p.deprecated){ depTotal++; } }); }); }}
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="180">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td>分类（tag）数</td>
+                            <td>{{ d.tags.length }}</td>
+                        </tr>
+                        <tr>
+                            <td>接口总数</td>
+                            <td>{{ total }}</td>
+                        </tr>
+                        <tr>
+                            <td>需要鉴权</td>
+                            <td>{{ authTotal }}</td>
+                        </tr>
+                        <tr>
+                            <td>已废弃</td>
+                            <td>{{ depTotal }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p class="api-constraint">同一接口可能挂在多个 tag 下，统计按「方法 + 路径」去重。</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</fieldset>

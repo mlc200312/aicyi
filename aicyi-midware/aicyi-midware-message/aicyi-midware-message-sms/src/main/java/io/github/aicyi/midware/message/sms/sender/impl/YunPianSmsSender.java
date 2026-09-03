@@ -8,7 +8,7 @@ import io.github.aicyi.midware.message.core.exception.MessageResultCode;
 import io.github.aicyi.midware.message.core.exception.MessageSendException;
 import io.github.aicyi.midware.message.core.template.TemplateProvider;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 import java.util.Map;
 
 /**

@@ -22,9 +22,10 @@
             <artifactId>aicyi-midware-message-core</artifactId>
         </dependency>
 
+        <!-- Jakarta Mail（Boot 3.x）：angus-mail 为 jakarta.mail API 的实现，版本由 Boot 托管 -->
         <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-mail</artifactId>
         </dependency>
 
         <!-- FreeMarker 模板引擎 -->

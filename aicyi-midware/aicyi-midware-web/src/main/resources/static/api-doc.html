@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>接口文档</title>
+    <!--
+      文档入口跳板：本文件位于 classpath:/static/api-doc.html，由 Spring Boot 默认静态资源映射
+      直接暴露为 /api-doc.html，无需自定义 ResourceHandler。
+      自研 UI 已从 classpath:/webjars/swagger-ui/ 迁至 classpath:/static/apidoc/，
+      原因是自定义的 /webjars/** -> classpath:/webjars/ 映射会覆盖 Boot 默认的
+      /webjars/** -> classpath:/META-INF/resources/webjars/，导致 springdoc 自带的
+      org.webjars:swagger-ui 资源无法按 webjars 路径访问（异常被全局处理器吞成 HTTP 200 + JSON 错误体）。
+      保留 location.hash 透传，兼容旧的 #文档地址 书签。
+    -->
+    <script>
+        location.replace("apidoc/index.html" + location.hash + location.search);
+    </script>
+</head>
+<body>
+正在跳转到接口文档&hellip;
+</body>
+</html>

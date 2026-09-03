@@ -22,22 +22,21 @@
             <artifactId>aicyi-commons-core</artifactId>
         </dependency>
 
-        <!-- JaxbUtils 使用 javax.xml.bind：JDK 8 由运行时自带，JDK 9+ 已移除，
-             显式声明保证升级 JDK 后不报 ClassNotFound -->
+        <!-- JaxbUtils 使用 jakarta.xml.bind：JDK 11+ 已移除内置 JAXB，且 Boot 3 迁移至 Jakarta 命名空间，
+             API + 运行时实现均需显式声明，版本由 Boot 托管 -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- 直接使用的 API，必须显式声明，不依赖传递 -->
@@ -82,9 +81,11 @@
         </dependency>
         <!-- Jackson 依赖 End -->
 
+        <!-- MapStruct 注解（EnumTypeConverters / DateTimeTypeConverters 的 @TargetType 使用），
+             实现由使用方通过 annotationProcessorPaths 生成 -->
         <dependency>
-            <groupId>ma.glasnost.orika</groupId>
-            <artifactId>orika-core</artifactId>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
         </dependency>
 
         <dependency>

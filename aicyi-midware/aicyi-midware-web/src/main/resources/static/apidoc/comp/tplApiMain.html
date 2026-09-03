@@ -1,0 +1,30 @@
+<!--
+    左侧接口导航。
+    数据契约：tags 数组，每项含 name / description / paths；
+             paths 每项含 name / description / path / httpmethod / deprecated / needToken。
+    tags 由 nswagger.buildTags() 合成：springdoc 输出的文档没有顶层 tags（只在 operation 上写），
+    直接遍历 apidoc.tags 会得到 null，导致左侧导航与顶部搜索全空。
+    name 与 description 已在解析层转义（laytpl 的双花括号输出不做 HTML 转义）；
+    path 与 httpmethod 刻意保留原文，它们要参与 DOM 属性选择器匹配与请求 URL 拼接，转义会破坏功能。
+    laytpl 会把整个模板的空白与换行压成单个空格，故井号语句块内禁止使用行注释。
+-->
+<div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+        <ul class="layui-nav layui-nav-tree left-nav" lay-filter="left-nav">
+            <li class="layui-nav-item nav-home"><a class="nav-title" href="javascript:;">首页</a></li>
+            {{# layui.each(d.tags, function(i, tag){ }}
+            <li class="layui-nav-item">
+                <a class="nav-title" href="javascript:;" dtitle="{{ tag.description ? tag.name + '<br/>' + tag.description : tag.name }}">{{ tag.name }}<span class="api-badge">{{ tag.paths.length }}</span><span class="layui-nav-more"></span></a>
+                <dl class="layui-nav-child">
+                    {{# layui.each(tag.paths, function(j, path){ }}
+                    <dd>
+                        <a href="javascript:;" dtitle="{{ path.httpmethod.toUpperCase() + ' ' + path.path }}<br/>{{ path.name }}{{ path.description ? '<br/>' + path.description : '' }}" dtag="{{ tag.name }}" dpath="{{ path.path }}" dhttpmethod="{{ path.httpmethod }}"><span class="nav-method m-{{ path.httpmethod }}">{{ path.httpmethod.toUpperCase() }}</span><span class="{{ path.deprecated ? 'nav-name nav-deprecated' : 'nav-name' }}">{{ path.name }}</span>{{# if(path.needToken){ }}<span class="nav-flag nav-flag-token">鉴权</span>{{# } }}{{# if(path.deprecated){ }}<span class="nav-flag nav-flag-dep">废弃</span>{{# } }}</a>
+                    </dd>
+                    {{# }); }}
+                </dl>
+            </li>
+            {{# }); }}
+        </ul>
+    </div>
+</div>
+<div class="main-body"></div>

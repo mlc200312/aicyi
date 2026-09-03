@@ -2,9 +2,9 @@ package io.github.aicyi.midware.web.model;
 
 import io.github.aicyi.commons.lang.model.BaseBean;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 /**
  * @author Mr.Min

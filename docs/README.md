@@ -2,7 +2,7 @@
 
 > 爱创意、爱科技、爱生活
 
-aicyi 是一套基于 Spring Boot 2.7 的 Java 基础设施框架/SDK，提供开箱即用的通用中间件与公共组件，帮助开发者快速构建微服务应用。
+aicyi 是一套基于 Spring Boot 3.2 / JDK 17 的 Java 基础设施框架/SDK，提供开箱即用的通用中间件与公共组件，帮助开发者快速构建微服务应用。
 
 ## 特性
 
@@ -15,22 +15,28 @@ aicyi 是一套基于 Spring Boot 2.7 的 Java 基础设施框架/SDK，提供�
 - **JWT 认证**：Bearer Token 认证 + 刷新令牌，支持多设备登录，`@IgnoreAuth` 注解跳过认证，`AuthenticationTokens` 静态工具免注入调用
 - **数据访问**：MyBatis / MyBatis-Plus 基础能力（分页上限 500、乐观锁、字段自动填充）、`PageUtils` 分页工具、枚举 TypeHandler
 - **Spring Boot Starter 自动装配**：按需引入（`AutoConfiguration.imports` + `@ConditionalOnClass`/`@ConditionalOnProperty`），可插拔
-- **通用工具集**：JSON（Jackson）、对象映射（Orika）、Excel（EasyExcel/Apache POI）、二维码（zxing）、加解密（AES/RSA/MD5）等
+- **通用工具集**：JSON（Jackson）、对象映射（MapStruct 1.6.3）、Excel（EasyExcel/Apache POI）、二维码（zxing）、加解密（AES/RSA/MD5）等
 
 ## 技术栈
 
 | 类别 | 技术 | 版本 |
 |------|------|------|
-| 语言 | Java | 8 |
-| 框架 | Spring Boot | 2.7.18 |
-| 微服务 | Spring Cloud | 2021.0.8 |
-| 配置中心 | Spring Cloud Alibaba (Nacos) | 2021.0.5.0 |
-| ORM | MyBatis / MyBatis-Plus | 2.3.1 / 3.5.3.1 |
+| 语言 | Java | 17 |
+| 框架 | Spring Boot | 3.2.8 |
+| 微服务 | Spring Cloud | 2023.0.3 |
+| 配置中心 | Spring Cloud Alibaba (Nacos) | 2023.0.1.2 |
+| ORM | MyBatis-Spring-Boot / MyBatis-Plus | 3.0.3 / 3.5.7 |
 | 数据库 | MySQL | 8.0.x |
-| 缓存 | Redis (Redisson 3.9.1 / Caffeine 2.9.3) | |
-| 消息队列 | RabbitMQ (Spring Cloud Stream) | |
+| 缓存 | Redis (Redisson 3.27.2 / Caffeine 3.1.8) | |
+| 消息队列 | RabbitMQ (Spring Cloud Stream) | 4.1.3 |
 | 认证 | JWT (jjwt) | 0.13.0 |
 | 定时任务 | XXL-Job | 2.5.0 |
+| 接口文档 | springdoc-openapi (OpenAPI 3) | 2.5.0 |
+| 对象映射 | MapStruct | 1.6.3 |
+
+> 版本以 `aicyi-base-dependencies/pom.xml`（BOM）为唯一事实来源。
+> Caffeine 未单独声明版本，沿用 Spring Boot 3.2.8 BOM 管理的 3.1.8；
+> Servlet API 已迁至 Jakarta EE 命名空间（`jakarta.*`），不再兼容 `javax.*`。
 
 ## 模块结构
 
@@ -100,13 +106,17 @@ aicyi
 | `aicyi.redis.enabled` | **开** | Redis 增强模板工厂/锁能力，需显式开启；锁管理器还需容器存在 `RedissonClient` Bean |
 | `aicyi.snowflake.enabled` | **关** | 分布式 Snowflake ID，需显式开启 |
 | `aicyi.mybatis-plus.enabled` | **开** | MyBatis-Plus 增强（分页/乐观锁/自动填充），引入模块即生效 |
+| `aicyi.mq.rabbitmq.enabled` | **开** | RabbitMQ 集成（`StreamMqSender`），`aicyi.message.mq.provider` 缺省即 `rabbitMq` |
 | `aicyi.message.email.enabled` | **开** | 邮件渠道 |
 | `aicyi.message.sms.enabled` | **开** | 短信渠道（`aicyi.message.sms.provider`：default/twilio/yunPian） |
 | `aicyi.message.mq.enabled` | **开** | MQ 渠道（`aicyi.message.mq.provider`：rabbitMq） |
 | `aicyi.message.template.enabled` | **开** | 消息模板 DB 持久化（另需容器中已有 `EnhancedRedisTemplateFactory` 与 `RedissonClient` Bean，缺失时静默跳过） |
 
-> 口径约定：Web 请求链路上的能力（日志/链路/请求体缓存）缺省开，降低接入成本；
-> 依赖外部基础设施的能力（Redis/雪花 ID/消息渠道/模板库）缺省关，避免未配置基础设施时启动失败。
+> 口径约定：绝大多数能力缺省**开**（`matchIfMissing = true`），降低接入成本 ——
+> Web 请求链路（日志/链路/请求体缓存）、Redis、MyBatis-Plus、RabbitMQ、三个消息渠道与消息模板库均属此类。
+> **唯一缺省关的是 `aicyi.snowflake.enabled`**：Snowflake 需 Redis 协调 WorkerId 租约，
+> 且多实例误用同一 workerId 会产生重复 ID，故要求显式开启。
+> 消息模板库虽缺省开，但容器中缺少 `EnhancedRedisTemplateFactory` / `RedissonClient` Bean 时静默跳过，不会导致启动失败。
 
 日志配置：基础包提供 opt-in 的 logback 片段 `aicyi/logback-aicyi-defaults.xml`，
 应用在自己的 `logback-spring.xml` 中 `<include resource="aicyi/logback-aicyi-defaults.xml"/>` 即可复用

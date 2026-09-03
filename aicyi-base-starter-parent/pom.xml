@@ -13,6 +13,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- 默认执行测试，可通过 -DskipTests=true 跳过 -->
         <skipTests>false</skipTests>
+
+        <!-- ==================== 构建插件版本（properties 统一管理，子模块禁止重复声明版本） ==================== -->
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
+        <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
     </properties>
 
     <parent>
@@ -34,20 +40,59 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <!-- 构建环境护栏：Maven >= 3.8.8、JDK >= 17（本机曾出现默认 JAVA_HOME 指向 JDK 8 导致
+                 「类文件具有错误的版本 61.0, 应为 52.0」的编译失败，此处提前拦截），
+                 并禁止同一 pom 内重复声明依赖 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-build-environment</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.8.8,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[17,)</version>
+                                </requireJavaVersion>
+                                <banDuplicatePomDependencyVersions/>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <release>17</release>
                     <encoding>utf-8</encoding>
+                    <annotationProcessorPaths>
+                        <!-- lombok 必须在 mapstruct 之前，保证生成代码可访问 lombok 生成的 getter/setter -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <skipTests>${skipTests}</skipTests>
                 </configuration>
@@ -55,7 +100,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>${maven-resources-plugin.version}</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>

@@ -1,0 +1,64 @@
+.header-top{ height:60px; border-bottom:none }
+.header-top .logo{ position:absolute; top:10px; left:0; }
+.header-top .logo img{ width:150px; height:40px }
+.header{ height:59px; border-bottom:1px solid #404553; background-color:#393d49 }
+/* 顶栏改为 flex 排布：分组 / Server / Token / 搜索 / 文档地址，旧版用绝对定位无法容纳新增控件 */
+.header-bar{ position:absolute; left:170px; right:20px; top:14px; display:flex; align-items:center; }
+.bar-item{ position:relative; margin-right:10px; }
+.bar-group{ width:150px; }
+.bar-server{ width:200px; }
+.bar-token{ width:210px; }
+.api-quick{ width:200px; }
+.api-url{ flex:1 1 auto; min-width:200px; margin-right:0; }
+.header-bar .layui-input{ height:30px; line-height:30px; padding-left:12px; background-color:rgba(255, 255, 255, .05); border:none 0; color:#ffffff; font-size:12px; }
+.api-url .layui-input{ padding-right:50px; }
+.bar-token .layui-input{ padding-right:30px; }
+/* 输入框高度由 layui 默认的 38px 压到 30px，下拉面板的偏移需同步收紧，否则会留出一道空隙 */
+.header-bar .layui-form-select dl{ top:32px; }
+.api-url .btn-gourl{ position:absolute; right:10px; top:8px; color:#999999; cursor:pointer; }
+.api-url .btn-clearurl{ position:absolute; right:30px; top:8px; color:#999999; cursor:pointer; display:none; }
+.bar-token .btn-savetoken{ position:absolute; right:8px; top:8px; color:#999999; cursor:pointer; }
+.left-nav .layui-nav-item{ line-height:40px; }
+.left-nav .layui-nav-item .nav-title{ padding:0 60px 0 10px }
+.api-main .main-body{ position:fixed; left:200px; right:0; padding:10px; top:60px; bottom:0; }
+.api-main .main-body li{ width:100px; }
+.api-main .main-body .main-content{ position:absolute; overflow-y:auto; bottom:10px; top:60px; left:10px; right:10px; padding-top:0; padding-bottom:0; }
+.api-main .main-body .layui-tab-content{ top:120px; padding-left:0; padding-right:0; padding-bottom:0; }
+.api-main .main-body .layui-tab-content a{ color:#009688; }
+.api-main .main-body .layui-colla-content{ padding:0 10px; }
+.api-main .main-body .request-param, .api-main .main-body .request-body{ padding:0 10px; margin-bottom:0; }
+.api-main .main-body .request-param .layui-field-box, .api-main .main-body .request-body .layui-field-box{ padding:0; }
+.api-main .main-body .request-param legend, .api-main .main-body .request-body legend, .api-main .main-body .request-console legend{ font-size:14px; font-weight:400; }
+.api-main .main-body .lal-api-url{ background-color:#009688; font-weight:500; color:#ffffff; }
+.api-main .main-body .ipt-api-url{ width:500px; }
+.api-main .main-body .request-console{ display:none; margin-bottom:0; margin-top:10px; }
+.api-main .main-body .request-console .layui-field-box{ padding:10px; color:green; }
+.api-main .main-body .request-console .layui-field-box p{ font-size:12px; line-height:20px; }
+.layui-table .api-inner-td{ padding:0; }
+.api-inner-td .api-inner-table{ margin:0; }
+.api-inner-td .api-inner-table td{ border-top:none; border-left:none; }
+.api-badge{ display:inline-block; min-width:10px; padding:.25em .4em; font-size:0.8rem; font-weight:500; color:#ffffff; line-height:1; vertical-align:baseline; white-space:nowrap; text-align:center; background-color:#009688; border-radius:2px; }
+/* 必填/选填用颜色区分，旧版直接把 true/false 打进同色徽章，一眼看不出哪些参数必须填 */
+.badge-required{ background-color:#ff5722; }
+.badge-optional{ background-color:#909399; }
+.left-nav .api-badge{ position:absolute; right:30px; top:10px; }
+/* 左侧导航的 HTTP 方法色块不能用 .api-badge：它在 .left-nav 下被绝对定位到右上角，会与接口数徽章重叠 */
+.left-nav .nav-method{ display:inline-block; min-width:40px; margin-right:6px; padding:0 3px; font-size:11px; line-height:16px; text-align:center; color:#ffffff; border-radius:2px; background-color:#909399; }
+.left-nav .nav-method.m-get{ background-color:#009688; }
+.left-nav .nav-method.m-post{ background-color:#1e9fff; }
+.left-nav .nav-method.m-put{ background-color:#ffb800; }
+.left-nav .nav-method.m-delete{ background-color:#ff5722; }
+.left-nav .nav-method.m-patch{ background-color:#a233c6; }
+/* 鉴权 / 废弃标记用行内文本而非图标：layui 2.2.2 的图标码位在各版本间有差异，写错会显示为方块 */
+.left-nav .nav-flag{ margin-left:4px; font-size:11px; }
+.left-nav .nav-flag-token{ color:#ffb800; }
+.left-nav .nav-flag-dep{ color:#909399; }
+.left-nav .nav-deprecated{ color:#999999; text-decoration:line-through; }
+.data-none{ padding:10px; display:block; }
+.api-response-header legend{ font-size:16px; }
+.api-response-header .layui-field-title{ margin-bottom:0; }
+/* OpenAPI 3 新增语义的呈现：可空标记、媒体类型、约束信息 */
+.api-nullable{ color:#999999; font-size:12px; margin-left:4px; }
+.api-content-type{ color:#999999; font-size:12px; }
+.api-constraint{ color:#999999; font-size:12px; }
+.token-hint{ margin:0 10px 8px; padding:6px 10px; font-size:12px; line-height:20px; color:#ffb800; background-color:rgba(255, 184, 0, .1); border-radius:2px; }
