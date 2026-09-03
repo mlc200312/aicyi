@@ -160,8 +160,16 @@ public class WebConfiguration {
 排除路径（如静态资源、接口文档）通过注解属性声明，同时排除鉴权与请求日志拦截器：
 
 ```java
-@EnableMidwareWeb(excludePathPatterns = {"/webjars/**", "/v2/api-docs", "/favicon.ico", "/error"})
+@EnableMidwareWeb(excludePathPatterns = {
+        "/apidoc/**", "/api-doc.html",     // 自研 layui 文档 UI（含跳板页）
+        "/swagger-ui/**", "/webjars/**",   // springdoc 自带的官方 Swagger UI 及其 webjars 资源
+        "/v3/api-docs/**"
+})
 ```
+
+> 使用 springdoc-openapi 2.x 时数据端点是 `/v3/api-docs`，**不是** springfox 时代的 `/v2/api-docs`；
+> 沿用旧值会导致文档端点被鉴权拦截器拦下（返回 `code=40101`），UI 表现为空白或加载失败。
+> 路径模式由 Boot 3 默认的 `PathPatternParser` 解析，无需配置 `spring.mvc.path-match.matching-strategy`。
 
 ### 跳过认证
 
@@ -305,7 +313,7 @@ public interface DistributedLock {
 ```
 
 > 启用前置：`aicyi.redis.enabled=true` 且容器中存在 `RedissonClient` Bean 时，
-> 自动装配 `DistributedLockManager`（`RedissonDistributedLockManager`）。Redisson 版本为 3.9.1。
+> 自动装配 `DistributedLockManager`（`RedissonDistributedLockManager`）。Redisson 版本为 3.27.2（由 BOM 统一管理）。
 
 ### 使用方式
 
@@ -680,6 +688,9 @@ spring:
                 username: guest
                 password: guest
                 virtual-host: /
+      # 4.x 函数式模型：消费端必须声明函数名（分号分隔），绑定名自动派生为 <函数名>-in-0
+      function:
+        definition: messageInput;delayedInput;directInput;orderEvents;systemLogs
       bindings:
         message-output:          # 通道名（MqMessage.destination 对应此名）
           destination: default.exchange
@@ -716,24 +727,33 @@ public void sendMessage(String channel, Object payload) {
 
 ### 消费者
 
-示例应用使用 `@EnableBinding` + `@StreamListener` 消费（也可使用函数式 `Consumer` Bean）：
+Spring Cloud Stream 4.x **已移除** `@EnableBinding` / `@Input` / `@Output` / `@StreamListener`
+注解式编程模型（4.1.3 的 jar 中已无这些类型），消费者一律以 `Consumer<T>` 函数 Bean 声明：
 
 ```java
 @Configuration
-@EnableBinding(MessageChannels.MessageInput.class)
 public class MessageConfiguration {
-}
 
-@Component
-public class OrderMessageHandler {
+    /**
+     * Bean 名即函数名，绑定名自动派生为 messageInput-in-0；
+     * 函数名须在 spring.cloud.stream.function.definition 中声明
+     */
+    @Bean
+    public Consumer<UserBean> messageInput(MessageHandlers handlers) {
+        return handlers::handleMessage;
+    }
 
-    @StreamListener(MessageChannels.INPUT)
-    public void onOrder(String message) {
-        log.info("收到订单消息: {}", message);
-        // 处理业务逻辑
+    /** 需要读取消息头（如 routingKey）时，用 Message<T> 包装入参 */
+    @Bean
+    public Consumer<Message<UserBean>> orderEvents(TopicMessageHandlers handlers) {
+        return handlers::handleOrderEvent;
     }
 }
 ```
+
+> 旧版 `@StreamListener(condition = "...")` 的 SpEL 条件路由在函数式模型中不再支持，
+> 需改为在方法内按消息头自行分发（示例见 `TopicMessageHandlers#handleOrderEvent`）。
+> 通道名建议集中到常量接口维护（如示例应用的 `InputMessageChannels` / `OutputMessageChannels`）。
 
 ### 延迟消息
 

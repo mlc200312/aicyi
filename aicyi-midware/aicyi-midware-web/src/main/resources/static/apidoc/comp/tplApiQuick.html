@@ -1,0 +1,11 @@
+<!--
+    顶栏接口快速检索。value 固定为 httpmethod 与 path 以双冒号拼接，
+    由 swagger-ui.js 的 select(api-quick) 回调拆解后转成左侧导航对应项的点击，复用同一套渲染路径。
+    option 文本带上方法名与鉴权、废弃标记，使 lay-search 能按这些关键字直接搜到接口。
+-->
+<select lay-search lay-filter="api-quick">
+    <option value="">直接选择或搜索选择</option>
+    {{# layui.each(d.tags, function(i, tag){ layui.each(tag.paths, function(j, path){ }}
+    <option value="{{ path.httpmethod }}::{{ path.path }}">{{ path.httpmethod.toUpperCase() }} | {{ tag.name }} - {{ path.name }}（{{ path.path }}）{{ path.needToken ? '[鉴权]' : '' }}{{ path.deprecated ? '[废弃]' : '' }}</option>
+    {{# }); }); }}
+</select>

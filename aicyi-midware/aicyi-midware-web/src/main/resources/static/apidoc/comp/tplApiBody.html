@@ -1,0 +1,682 @@
+<!--
+    接口详情：定义 + 调试。
+    数据契约见 swagger-ui.js 的 renderApiBody()：apidoc / tagname / dpath / dhttpmethod / mmeta，
+    其中 mmeta 已由 nswagger 归一化：debugParameters（已展平 query 对象参数、已剔除鉴权头）、
+    reqBody（requestBody 归一化，含表单字段与 JSON 样例）、responses（按 content 取 schema）、
+    models（依赖模型，已阻断循环引用）、needToken。
+    laytpl 约束（全文适用）：
+      1. 模板会被压成一行，井号语句块内严禁双斜杠行注释；
+      2. 不得出现相邻的三个右花括号，laytpl 会将其改写为「一个右花括号 + 空格 + 两个右花括号」；
+      3. 双花括号输出不做 HTML 转义，故所有展示文本均已在解析层转义，模板直出即可。
+-->
+<fieldset class="layui-elem-field layui-field-title">
+    <legend><a name="onnav">{{ d.tagname }}&nbsp;-&nbsp;{{ d.mmeta.summary }}</a></legend>
+    <div class="layui-field-box">
+        <div class="layui-tab layui-tab-brief" lay-filter="apiDefine">
+            <ul class="layui-tab-title api-tab-title">
+                <li class="layui-this">接口定义</li>
+                <li>接口调试</li>
+            </ul>
+            <div class="layui-tab-content main-content">
+                <!-- ==================== 接口定义 ==================== -->
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-collapse">
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">接口概要</h2>
+                            <div class="layui-colla-content layui-show">
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="180">
+                                        <col>
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <td>接口方式</td>
+                                        <td><span class="api-badge">{{ d.dhttpmethod.toUpperCase() }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>接口URL</td>
+                                        <td>{{ d.dpath }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>接口名称</td>
+                                        <td>{{ d.mmeta.summary }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>接口说明</td>
+                                        <td>{{ d.mmeta.description }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>是否需要鉴权</td>
+                                        <td>
+                                            {{# if(d.mmeta.needToken){ }}
+                                            <span class="api-badge badge-required">需要 Bearer Token</span>
+                                            {{# } else { }}
+                                            <span class="api-badge badge-optional">公开接口</span>
+                                            {{# } }}
+                                        </td>
+                                    </tr>
+                                    {{# if(d.mmeta.deprecated){ }}
+                                    <tr>
+                                        <td>接口状态</td>
+                                        <td><span class="api-badge badge-optional">已废弃</span></td>
+                                    </tr>
+                                    {{# } }}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">接口参数</h2>
+                            <div class="layui-colla-content">
+                                <!--
+                                  这里展示的是文档声明的原始参数（OpenAPI 3 的 parameters 只含
+                                  query / path / header / cookie，请求体已独立到下一节）。
+                                  鉴权头参数仅作事实呈现，调试时由顶栏 Token 统一提供。
+                                -->
+                                {{# if(d.mmeta.parameters && d.mmeta.parameters.length){ }}
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="140">
+                                        <col width="140">
+                                        <col width="60">
+                                        <col width="70">
+                                        <col width="240">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>类型</th>
+                                        <th>必须</th>
+                                        <th>位置</th>
+                                        <th>约束</th>
+                                        <th>说明</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{# layui.each(d.mmeta.parameters, function(i, param){ }}
+                                    <tr>
+                                        <td>
+                                            {{ param.name }}
+                                            {{# if(param.isAuthHeader){ }}
+                                            <span class="api-constraint">（调试时由顶栏 Token 提供）</span>
+                                            {{# } }}
+                                        </td>
+                                        <td>{{ param.showtype }}</td>
+                                        <td>
+                                            {{# if(param.required){ }}
+                                            <span class="api-badge badge-required">是</span>
+                                            {{# } else { }}
+                                            <span class="api-badge badge-optional">否</span>
+                                            {{# } }}
+                                        </td>
+                                        <td><span class="api-badge">{{ param.in }}</span></td>
+                                        <td class="api-constraint">{{ param.constraint }}</td>
+                                        <td>{{ param.description }}</td>
+                                    </tr>
+                                    {{# }); }}
+                                    </tbody>
+                                </table>
+                                {{# } else { }}
+                                <span class="data-none">无</span>
+                                {{# } }}
+                            </div>
+                        </div>
+                        {{# if(d.mmeta.reqBody){ }}
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">请求体</h2>
+                            <div class="layui-colla-content">
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="180">
+                                        <col>
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <td>媒体类型</td>
+                                        <td><span class="api-content-type">{{ d.mmeta.reqBody.contentType }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>是否必填</td>
+                                        <td>
+                                            {{# if(d.mmeta.reqBody.required){ }}
+                                            <span class="api-badge badge-required">是</span>
+                                            {{# } else { }}
+                                            <span class="api-badge badge-optional">否</span>
+                                            {{# } }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>数据类型</td>
+                                        <td>{{ d.mmeta.reqBody.showtype }}</td>
+                                    </tr>
+                                    {{# if(d.mmeta.reqBody.description){ }}
+                                    <tr>
+                                        <td>说明</td>
+                                        <td>{{ d.mmeta.reqBody.description }}</td>
+                                    </tr>
+                                    {{# } }}
+                                    </tbody>
+                                </table>
+                                {{# if(d.mmeta.reqBody.isForm){ }}
+                                <fieldset class="layui-elem-field layui-field-title">
+                                    <legend>表单字段</legend>
+                                </fieldset>
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="140">
+                                        <col width="140">
+                                        <col width="60">
+                                        <col width="240">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>类型</th>
+                                        <th>必须</th>
+                                        <th>约束</th>
+                                        <th>说明</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{# layui.each(d.mmeta.reqBody.formFields, function(i, f){ }}
+                                    <tr>
+                                        <td>{{ f.name }}</td>
+                                        <td>{{ f.showtype }}</td>
+                                        <td>
+                                            {{# if(f.required){ }}
+                                            <span class="api-badge badge-required">是</span>
+                                            {{# } else { }}
+                                            <span class="api-badge badge-optional">否</span>
+                                            {{# } }}
+                                        </td>
+                                        <td class="api-constraint">{{ f.constraint }}</td>
+                                        <td>{{ f.description }}</td>
+                                    </tr>
+                                    {{# }); }}
+                                    </tbody>
+                                </table>
+                                {{# } else if(d.mmeta.reqBody.mockJson){ }}
+                                <fieldset class="layui-elem-field layui-field-title">
+                                    <legend>请求体样例</legend>
+                                </fieldset>
+                                <pre class="api-sample">{{ layui.nswagger.esc(d.mmeta.reqBody.mockJson) }}</pre>
+                                {{# } }}
+                            </div>
+                        </div>
+                        {{# } }}
+                        <div class="layui-colla-item">
+                            <h2 class="layui-colla-title">接口响应</h2>
+                            <div class="layui-colla-content">
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="100">
+                                        <col width="240">
+                                        <col width="160">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>响应码</th>
+                                        <th>响应说明</th>
+                                        <th>媒体类型</th>
+                                        <th>响应数据</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{# layui.each(d.mmeta.responses, function(status, response){ }}
+                                    <tr>
+                                        <td rowspan="{{ response.hasOwnProperty('headers') ? 2 : 1 }}">{{ status }}</td>
+                                        <td>{{ response.description }}</td>
+                                        <td class="api-content-type">{{ response.contentType }}</td>
+                                        <td>
+                                            {{ response.showtype }}
+                                            {{# if(response.isBinary && response.hasBody){ }}
+                                            <span class="api-nullable">二进制流</span>
+                                            {{# } }}
+                                        </td>
+                                    </tr>
+                                    {{# if(response.hasOwnProperty("headers")){ }}
+                                    <tr class="api-response-header">
+                                        <td colspan="3">
+                                            <fieldset class="layui-elem-field layui-field-title">
+                                                <legend>返回Http头</legend>
+                                            </fieldset>
+                                            <table class="layui-table" lay-skin="nob">
+                                                <colgroup>
+                                                    <col>
+                                                    <col>
+                                                    <col>
+                                                </colgroup>
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>类型</th>
+                                                    <th>说明</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {{# layui.each(response.headers, function(hname, hmeta){ }}
+                                                <tr>
+                                                    <td>{{ hname }}</td>
+                                                    <td>{{ hmeta.showtype }}</td>
+                                                    <td>{{ hmeta.description }}</td>
+                                                </tr>
+                                                {{# }); }}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    {{# } }}
+                                    {{# }); }}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {{# if(!layui.jquery.isEmptyObject(d.mmeta.models)){ }}
+                        <div class="layui-colla-item depend-model">
+                            <h2 class="layui-colla-title">依赖数据</h2>
+                            <div class="layui-colla-content">
+                                {{# layui.each(d.mmeta.models, function(name, model){ }}
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="160">
+                                        <col width="180">
+                                        <col width="60">
+                                        <col width="240">
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th colspan="5" mid="{{ name }}">{{ name }}</th>
+                                    </tr>
+                                    {{# if(model.hasOwnProperty("properties")){ }}
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>类型</th>
+                                        <th>必须</th>
+                                        <th>约束</th>
+                                        <th>说明</th>
+                                    </tr>
+                                    {{# } }}
+                                    </thead>
+                                    <tbody>
+                                    {{# if(model.hasOwnProperty("properties")){ }}
+                                    {{# layui.each(model.properties, function(prop, propmeta){ }}
+                                    <tr>
+                                        <td>{{ prop }}</td>
+                                        <td>
+                                            {{ propmeta.showtype }}
+                                            {{# if(propmeta.nullable){ }}
+                                            <span class="api-nullable">可空</span>
+                                            {{# } }}
+                                        </td>
+                                        <td>
+                                            {{# if(propmeta.required){ }}
+                                            <span class="api-badge badge-required">是</span>
+                                            {{# } else { }}
+                                            <span class="api-badge badge-optional">否</span>
+                                            {{# } }}
+                                        </td>
+                                        <td class="api-constraint">{{ propmeta.constraint }}</td>
+                                        <td>{{ propmeta.description || "" }}</td>
+                                    </tr>
+                                    {{# }); }}
+                                    {{# }else{ }}
+                                    <tr>
+                                        <td colspan="5">无</td>
+                                    </tr>
+                                    {{# } }}
+                                    </tbody>
+                                </table>
+                                {{# }); }}
+                            </div>
+                        </div>
+                        {{# } }}
+                    </div>
+                </div>
+                <!-- ==================== 接口调试 ==================== -->
+                <div class="layui-tab-item">
+                    {{# if(d.mmeta.needToken){ }}
+                    <div class="token-hint">
+                        该接口需要鉴权：请在顶栏「Bearer Token」中填入登录后获得的 accessToken 并保存，
+                        发送请求时会自动补全 Bearer 前缀。
+                    </div>
+                    {{# } }}
+                    <div class="layui-form layui-form-pane">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label lal-api-url">{{ d.dhttpmethod.toUpperCase() }}</label>
+                            <div class="layui-input-inline ipt-api-url">
+                                <!--
+                                  请求地址在渲染时按当前选中的 server 算好，切换 server 会触发重渲染；
+                                  path / httpmethod / needToken 用属性承载，避免把文档内容拼进 JS 字符串字面量
+                                -->
+                                <input type="text" autocomplete="off" class="layui-input" readonly
+                                       value="{{ layui.nswagger.requestUrl(d.dpath) }}"
+                                       dpath="{{ d.dpath }}"
+                                       dhttpmethod="{{ d.dhttpmethod }}"
+                                       dneedtoken="{{ d.mmeta.needToken }}"/>
+                            </div>
+                            <div class="layui-input-inline">
+                                <button class="layui-btn" onclick="sendRequest()">发送请求</button>
+                            </div>
+                        </div>
+                    </div>
+                    <fieldset class="layui-elem-field request-param">
+                        <legend>请求参数</legend>
+                        <div class="layui-field-box">
+                            <!--
+                              调试表单用的是 debugParameters：其中 query 位置的对象参数
+                              （@ModelAttribute 未标注 @ParameterObject 时 springdoc 会输出成单个
+                              schema=$ref 的参数）已按模型属性展平，与 Spring MVC 的扁平绑定行为一致
+                            -->
+                            {{# if(d.mmeta.debugParameters && d.mmeta.debugParameters.length){ }}
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="160">
+                                    <col width="140">
+                                    <col width="60">
+                                    <col width="70">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>类型</th>
+                                    <th>必须</th>
+                                    <th>位置</th>
+                                    <th>值</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{# layui.each(d.mmeta.debugParameters, function(i, param){ }}
+                                <tr>
+                                    <td>
+                                        {{ param.debugName }}
+                                        {{# if(param.expandedFrom){ }}
+                                        <span class="api-constraint">（由 {{ param.expandedFrom }} 展开）</span>
+                                        {{# } }}
+                                    </td>
+                                    <td>{{ param.showtype }}</td>
+                                    <td>
+                                        {{# if(param.required){ }}
+                                        <span class="api-badge badge-required">是</span>
+                                        {{# } else { }}
+                                        <span class="api-badge badge-optional">否</span>
+                                        {{# } }}
+                                    </td>
+                                    <td><span class="api-badge">{{ param.in }}</span></td>
+                                    <td>
+                                        <input dreq="{{ param.required }}" dtype="{{ param.inLower }}"
+                                               dprop="{{ param.debugName }}" type="text" placeholder="请输入"
+                                               autocomplete="off" class="layui-input"
+                                               value="{{ param.exampleValue || param.defaultValue }}"/>
+                                        {{# if(param.constraint){ }}
+                                        <div class="api-constraint">{{ param.constraint }}</div>
+                                        {{# } }}
+                                    </td>
+                                </tr>
+                                {{# }); }}
+                                </tbody>
+                            </table>
+                            {{# } else { }}
+                            <span class="data-none">无</span>
+                            {{# } }}
+                        </div>
+                    </fieldset>
+                    {{# if(d.mmeta.reqBody){ }}
+                    <fieldset class="layui-elem-field request-body">
+                        <legend>请求体&nbsp;<span class="api-content-type">{{ d.mmeta.reqBody.contentType }}</span></legend>
+                        <div class="layui-field-box">
+                            {{# if(d.mmeta.reqBody.isForm){ }}
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="160">
+                                    <col width="140">
+                                    <col width="60">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>名称</th>
+                                    <th>类型</th>
+                                    <th>必须</th>
+                                    <th>值</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{# layui.each(d.mmeta.reqBody.formFields, function(i, f){ }}
+                                <tr>
+                                    <td>{{ f.name }}</td>
+                                    <td>{{ f.showtype }}</td>
+                                    <td>
+                                        {{# if(f.required){ }}
+                                        <span class="api-badge badge-required">是</span>
+                                        {{# } else { }}
+                                        <span class="api-badge badge-optional">否</span>
+                                        {{# } }}
+                                    </td>
+                                    <td>
+                                        {{# if(f.isFile){ }}
+                                        <input dreq="{{ f.required }}" dtype="formfile" dprop="{{ f.name }}"
+                                               type="file" class="ipt-file"/>
+                                        {{# } else { }}
+                                        <input dreq="{{ f.required }}" dtype="form" dprop="{{ f.name }}"
+                                               type="text" placeholder="请输入" autocomplete="off"
+                                               class="layui-input" value="{{ f.defaultValue }}"/>
+                                        {{# } }}
+                                        {{# if(f.constraint){ }}
+                                        <div class="api-constraint">{{ f.constraint }}</div>
+                                        {{# } }}
+                                    </td>
+                                </tr>
+                                {{# }); }}
+                                </tbody>
+                            </table>
+                            {{# } else { }}
+                            <textarea rows="12" dreq="{{ d.mmeta.reqBody.required }}" dtype="body"
+                                      dprop="__body__" dcontenttype="{{ d.mmeta.reqBody.contentType }}"
+                                      placeholder="请输入 JSON 请求体"
+                                      class="layui-textarea">{{ layui.nswagger.esc(d.mmeta.reqBody.mockJson) }}</textarea>
+                            {{# } }}
+                        </div>
+                    </fieldset>
+                    {{# } }}
+                    <fieldset class="layui-elem-field request-console">
+                        <legend>控制台</legend>
+                        <div class="layui-field-box"></div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<script>
+    /*
+     * 本脚本位于 laytpl 模板内。laytpl 渲染前会把整个模板的空白与换行压成单个空格，
+     * 因此这里严禁使用双斜杠行注释：压行后它会吞掉其后全部代码（含收尾花括号），
+     * 使整段调试脚本变成语法错误；而这种破坏对模板源码做 JS 语法检查是查不出来的。
+     */
+    var $ = layui.jquery,
+        layer = layui.layer,
+        element = layui.element,
+        nswagger = layui.nswagger,
+        mainOffsetTop = $(".main-content").offset().top;
+
+    element.on('tab(apiDefine)', function () {
+        scrollToEl(0);
+    });
+
+    function scrollToEl(top) {
+        $(".main-content").scrollTop(top - mainOffsetTop + $(".main-content").scrollTop());
+    }
+
+    function gotoModel(mid) {
+        $(".api-tab-title :first").click();
+        $(".depend-model .layui-colla-content").addClass("layui-show");
+        var $th = $("th[mid='" + mid + "']");
+        if ($th.length) {
+            scrollToEl($th.offset().top);
+        }
+    }
+
+    /** 控制台输出统一转义：响应内容属外部数据，直接拼进 HTML 会破坏页面结构 */
+    function consoleLog(msg) {
+        $(".request-console .layui-field-box").append(
+            "<p>[" + nswagger.esc(new Date().toLocaleString()) + "] " + nswagger.esc(msg) + "</p>");
+        scrollToEl(10000);
+    }
+
+    function sendRequest() {
+        var loading = null;
+        try {
+            $(".request-console .layui-field-box").empty();
+            $(".request-console").show();
+            consoleLog("开始发送请求");
+
+            var $urlInput = $(".ipt-api-url input");
+            var durl = $urlInput.val();
+            var httpmethod = String($urlInput.attr("dhttpmethod") || "get").toUpperCase();
+            var needToken = $urlInput.attr("dneedtoken") === "true";
+
+            var headers = {}, paths = {}, querys = {}, formdata = {}, files = {};
+            var bodydata = null, bodyContentType = "", checkok = true;
+
+            $(".request-param [dprop], .request-body [dprop]").each(function () {
+                if (!checkok) {
+                    return false;
+                }
+                var $item = $(this);
+                var dtype = $item.attr("dtype");
+                var dprop = $item.attr("dprop");
+                var dreq = $item.attr("dreq");
+                var pval = $item.val();
+                pval = (pval === null || pval === undefined) ? "" : String(pval);
+
+                if (dtype === "formfile") {
+                    var picked = this.files && this.files.length ? this.files : null;
+                    if (dreq === "true" && !picked) {
+                        checkok = false;
+                        layer.msg("参数:" + dprop + "是必须的，请选择文件", {icon: 5});
+                        return false;
+                    }
+                    if (picked) {
+                        files[dprop] = picked[0];
+                    }
+                    return;
+                }
+
+                if (dtype === "body") {
+                    bodyContentType = $item.attr("dcontenttype") || "application/json";
+                    if (pval === "") {
+                        if (dreq === "true") {
+                            checkok = false;
+                            layer.msg("请求体是必须的，请填写内容", {icon: 5});
+                        }
+                        return false;
+                    }
+                    try {
+                        bodydata = JSON.parse(pval);
+                    } catch (pe) {
+                        checkok = false;
+                        layer.msg("请求体不是合法的 JSON：" + pe.message, {icon: 5});
+                        return false;
+                    }
+                    return;
+                }
+
+                if (dreq === "true" && pval === "") {
+                    checkok = false;
+                    layer.msg("参数:" + dprop + "是必须的，请填写参数", {icon: 5});
+                    return false;
+                }
+                /* 选填项留空则不提交，避免把一堆空串塞进查询条件干扰后端判断 */
+                if (pval === "") {
+                    return;
+                }
+                if (dtype === "header") {
+                    headers[dprop] = pval;
+                } else if (dtype === "path") {
+                    paths[dprop] = pval;
+                } else if (dtype === "form") {
+                    formdata[dprop] = pval;
+                } else {
+                    querys[dprop] = pval;
+                }
+            });
+            if (!checkok) {
+                return;
+            }
+
+            /* 路径变量替换放在收集完成之后：旧版把它嵌在遍历内部，既重复执行又依赖参数出现顺序 */
+            $.each(paths, function (pvar, pval) {
+                durl = durl.replace("{" + pvar + "}", encodeURIComponent(pval));
+            });
+
+            if (needToken) {
+                $.extend(headers, nswagger.authHeader());
+                if (!headers[nswagger.authHeaderName()]) {
+                    consoleLog("已中止：该接口需要鉴权，但顶栏未保存 Bearer Token");
+                    layer.msg("该接口需要鉴权，请先在顶栏填写并保存 Bearer Token", {icon: 5, time: 4000});
+                    return;
+                }
+            }
+
+            loading = layer.load();
+            var hasFiles = !$.isEmptyObject(files);
+            var ajaxopt = {
+                method: httpmethod,
+                headers: headers,
+                timeout: 30000,
+                complete: function (jqXHR) {
+                    layer.close(loading);
+                    consoleLog('请求远程 "' + httpmethod + " " + durl + " "
+                        + jqXHR.status + " " + jqXHR.statusText + '"');
+                    consoleLog("请求头 " + JSON.stringify(headers));
+                    consoleLog("响应头 " + (jqXHR.getAllResponseHeaders() || ""));
+                    if (jqXHR.responseJSON !== undefined && jqXHR.responseJSON !== null) {
+                        consoleLog("服务器返回JSON：" + JSON.stringify(jqXHR.responseJSON, null, 2));
+                    } else {
+                        consoleLog("服务器返回文本：" + (jqXHR.responseText || ""));
+                    }
+                }
+            };
+
+            if (hasFiles) {
+                /*
+                 * layui 2.2.2 的 upload 组件不支持自定义请求头，无法携带 Bearer Token，
+                 * 故改用原生 FormData 提交，同时天然支持多个文件字段与普通表单字段混排
+                 */
+                var fd = new FormData();
+                $.each(querys, function (k, v) {
+                    fd.append(k, v);
+                });
+                $.each(formdata, function (k, v) {
+                    fd.append(k, v);
+                });
+                $.each(files, function (k, v) {
+                    fd.append(k, v);
+                });
+                ajaxopt.data = fd;
+                /* 交给浏览器自行生成带 boundary 的 multipart 头，手工设置反而会导致解析失败 */
+                ajaxopt.processData = false;
+                ajaxopt.contentType = false;
+                consoleLog("以 multipart/form-data 提交，文件字段：" + Object.keys(files).join(", "));
+            } else if (bodydata !== null) {
+                ajaxopt.data = JSON.stringify(bodydata);
+                ajaxopt.contentType = bodyContentType + "; charset=utf-8";
+                ajaxopt.processData = false;
+            } else {
+                ajaxopt.data = querys;
+            }
+            $.ajax(durl, ajaxopt);
+        } catch (e) {
+            if (loading !== null) {
+                layer.close(loading);
+            }
+            consoleLog("请求处理异常：" + ((e && e.message) ? e.message : e));
+        }
+    }
+</script>
