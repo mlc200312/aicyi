@@ -75,7 +75,7 @@ public class MqMessage extends AbstractMessage<Object> {
             return this;
         }
 
-        public Builder delayLevel(Long delay) {
+        public Builder delay(Long delay) {
             this.delay = delay;
             return this;
         }
